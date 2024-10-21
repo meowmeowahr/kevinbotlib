@@ -41,6 +41,13 @@ class DrivebaseState:
 
 
 @dataclass
+class ServoState:
+    """The state of the servo subsystem"""
+
+    angles: list[int] = field(default_factory=lambda: [-1] * 32)
+
+
+@dataclass
 class KevinbotState:
     """The state of the robot as a whole"""
 
@@ -48,3 +55,4 @@ class KevinbotState:
     enabled: bool = False
     error: CoreErrors = CoreErrors.OK
     motion: DrivebaseState = field(default_factory=DrivebaseState)
+    servos: ServoState = field(default_factory=ServoState)

@@ -17,12 +17,12 @@ while not robot.get_state().enabled:  # Wait until the core is enabled
 
 while True:
     inp = input("Servo? ")
-    print(f"Bank: {servos[int(inp)].bank}")
+    print(f"Bank: {servos[int(inp)].bank}")  # noqa: T201
     for i in range(181):
         servos[int(inp)].angle = i
         time.sleep(0.02)
-        print(i)
+        print(i)  # noqa: T201
     for i in reversed(range(181)):
         servos[int(inp)].angle = i
         time.sleep(0.02)
-        print(i)
+        print(i)  # noqa: T201

@@ -14,9 +14,9 @@ from kevinbotlib.states import CoreErrors, KevinbotState, MotorDriveStatus
 
 
 class BaseKevinbotSubsystem:
-    def __init__(self, robot: 'Kevinbot') -> None:
+    def __init__(self, robot: "Kevinbot") -> None:
         self.robot = robot
-        self.robot._register_component(self)
+        self.robot._register_component(self)  # noqa: SLF001
 
 
 class Kevinbot:
@@ -211,6 +211,7 @@ class Kevinbot:
     def _register_component(self, component: BaseKevinbotSubsystem):
         self._subsystems.append(component)
 
+
 class Drivebase(BaseKevinbotSubsystem):
     def get_amps(self):
         return self.robot.get_state().motion.amps
@@ -230,6 +231,7 @@ class Drivebase(BaseKevinbotSubsystem):
     def stop(self):
         self.robot.send("drive.stop")
 
+
 class Servo:
     def __init__(self, robot: Kevinbot, index: int) -> None:
         self.robot = robot
@@ -238,29 +240,30 @@ class Servo:
     @property
     def bank(self) -> int:
         return self.index // 16
-    
+
     @property
     def angle(self) -> int:
-        logger.error("Servos don't support angle retrieval yet")
-        return -1
+        return self.robot.get_state().servos.angles[self.index]
 
     @angle.setter
     def angle(self, angle: int):
         self.robot.send(f"s={self.index},{angle}")
+        self.robot.get_state().servos.angles[self.index] = angle
+
 
 class Servos(BaseKevinbotSubsystem):
     def __len__(self) -> int:
         return 32
-    
+
     def __iter__(self):
         for i in range(self.__len__()):
             yield Servo(self.robot, i)
 
     def __getitem__(self, index: int):
-        if index > 31:
-            msg = f"Servo index {index} > 31"
+        if index > self.__len__():
+            msg = f"Servo index {index} > {self.__len__()}"
             raise IndexError(msg)
-        elif index < 0:
+        if index < 0:
             msg = f"Servo index {index} < 0"
             raise IndexError(msg)
         return Servo(self.robot, index)
@@ -269,5 +272,4 @@ class Servos(BaseKevinbotSubsystem):
         if channel > self.__len__() or channel < 0:
             logger.error(f"Servo channel {channel} is out of bounds.")
             return
-        else:
-            return Servo(self.robot, channel)
+        return Servo(self.robot, channel)
