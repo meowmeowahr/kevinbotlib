@@ -35,9 +35,9 @@ class DrivebaseState:
 
     left_power: int = 0
     right_power: int = 0
-    amps: tuple[float, float] = (0, 0)
-    watts: tuple[float, float] = (0, 0)
-    status: tuple[MotorDriveStatus, MotorDriveStatus] = (MotorDriveStatus.UNKNOWN, MotorDriveStatus.UNKNOWN)
+    amps: list[float] = field(default_factory=lambda: [0, 0])
+    watts: list[float] = field(default_factory=lambda: [0, 0])
+    status: list[MotorDriveStatus] = field(default_factory=lambda: [MotorDriveStatus.UNKNOWN, MotorDriveStatus.UNKNOWN])
 
 
 @dataclass

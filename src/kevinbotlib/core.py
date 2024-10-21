@@ -10,7 +10,7 @@ from loguru import logger
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import CoreErrors, KevinbotState
+from kevinbotlib.states import CoreErrors, KevinbotState, MotorDriveStatus
 
 
 class Kevinbot:
@@ -136,6 +136,15 @@ class Kevinbot:
         """
         return self._state
 
+    def send(self, data: str):
+        self.raw_tx((data+"\n").encode("utf-8"))
+
+    def raw_tx(self, data: bytes):
+        if self.serial:
+            self.serial.write(data)
+        else:
+            logger.warning(f"Couldn't transmit data: {data!r}, Core isn't connected")
+
     @property
     def auto_disconnect(self):
         return self._auto_disconnect
@@ -151,11 +160,11 @@ class Kevinbot:
     def _rx_loop(self, serial: Serial, delimeter: str = "="):
         while True:
             raw: bytes = serial.readline()
-            cmd: str = raw.decode("utf-8").split(delimeter)[0]
+            cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0]
 
             val: str | None = None
             if len(raw.decode("utf-8").split(delimeter)) > 1:
-                val = raw.decode("utf-8").split(delimeter)[1].strip("\r\n")
+                val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n")
 
             match cmd:
                 case "core.enabled":
@@ -166,6 +175,15 @@ class Kevinbot:
                         self._state.enabled = True
                     else:
                         self._state.enabled = False
+                case "motors.amps":
+                    if val:
+                        self._state.motion.amps = list(map(float, val.split(",")))
+                case "motors.watts":
+                    if val:
+                        self._state.motion.watts = list(map(float, val.split(",")))
+                case "motors.status":
+                    if val:
+                        self._state.motion.status = list(map(lambda x: MotorDriveStatus(int(x)), val.split(",")))
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)
@@ -174,3 +192,20 @@ class Kevinbot:
     def _tick(self):
         if self.serial:
             self.serial.write(b"core.tick\n")
+
+
+class Drivebase:
+    def __init__(self, robot: Kevinbot) -> None:
+        self.robot = robot
+
+    def get_amps(self):
+        return self.robot.get_state().motion.amps
+    
+    def get_watts(self):
+        return self.robot.get_state().motion.watts
+    
+    def get_powers(self):
+        return self.robot.get_state().motion.left_power, self.robot.get_state().motion.right_power
+    
+    def get_states(self):
+        return self.robot.get_state().motion.status
