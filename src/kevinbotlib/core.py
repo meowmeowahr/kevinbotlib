@@ -13,9 +13,16 @@ from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import CoreErrors, KevinbotState, MotorDriveStatus
 
 
+class BaseKevinbotSubsystem:
+    def __init__(self, robot: 'Kevinbot') -> None:
+        self.robot = robot
+        self.robot._register_component(self)
+
+
 class Kevinbot:
     def __init__(self) -> None:
         self._state = KevinbotState()
+        self._subsystems: list[BaseKevinbotSubsystem] = []
 
         self.serial: Serial | None = None
         self.rx_thread: Thread | None = None
@@ -201,11 +208,10 @@ class Kevinbot:
         if self.serial:
             self.serial.write(b"core.tick\n")
 
+    def _register_component(self, component: BaseKevinbotSubsystem):
+        self._subsystems.append(component)
 
-class Drivebase:
-    def __init__(self, robot: Kevinbot) -> None:
-        self.robot = robot
-
+class Drivebase(BaseKevinbotSubsystem):
     def get_amps(self):
         return self.robot.get_state().motion.amps
 
