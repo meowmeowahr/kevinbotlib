@@ -15,8 +15,8 @@ robot.request_enable()  # Ask the core to enable
 while not robot.get_state().enabled:  # Wait until the core is enabled
     time.sleep(0.01)
 
-time.sleep(1) # Wait for data to arrive
+time.sleep(1)  # Wait for data to arrive
 
-print(f"Speeds: {drive.get_powers()}")
-print(f"Watts: {drive.get_watts()}")
-print(f"Amps: {drive.get_amps()}")
+print(f"Speeds: {drive.get_powers()}")  # noqa: T201
+print(f"Watts: {drive.get_watts()}")  # noqa: T201
+print(f"Amps: {drive.get_amps()}")  # noqa: T201

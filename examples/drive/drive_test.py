@@ -17,7 +17,7 @@ robot.request_enable()  # Ask the core to enable
 while not robot.get_state().enabled:  # Wait until the core is enabled
     time.sleep(0.01)
 
-time.sleep(1) # Wait for data to arrive
+time.sleep(1)  # Wait for data to arrive
 drive.drive_at_power(0.2, 0.2)
 time.sleep(3)
 drive.drive_at_power(0.5, 0.2)

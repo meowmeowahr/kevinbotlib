@@ -119,8 +119,7 @@ class Kevinbot:
         return 1
 
     def e_stop(self):
-        """Attempt to send and E-Stop signal to the Core
-        """
+        """Attempt to send and E-Stop signal to the Core"""
         if not self.serial:
             logger.error("Couldn't send e-stop, please use connect() first")
             return
@@ -146,7 +145,7 @@ class Kevinbot:
         return self._state
 
     def send(self, data: str):
-        self.raw_tx((data+"\n").encode("utf-8"))
+        self.raw_tx((data + "\n").encode("utf-8"))
 
     def raw_tx(self, data: bytes):
         if self.serial:
@@ -192,7 +191,7 @@ class Kevinbot:
                         self._state.motion.watts = list(map(float, val.split(",")))
                 case "motors.status":
                     if val:
-                        self._state.motion.status = list(map(lambda x: MotorDriveStatus(int(x)), val.split(",")))
+                        self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)

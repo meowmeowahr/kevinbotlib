@@ -6,4 +6,12 @@ from kevinbotlib.core import Drivebase, Kevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import CoreErrors, DrivebaseState, KevinbotState, MotorDriveStatus
 
-__all__ = ["Kevinbot", "Drivebase", "KevinbotState", "DrivebaseState", "MotorDriveStatus", "CoreErrors", "HandshakeTimeoutException"]
+__all__ = [
+    "Kevinbot",
+    "Drivebase",
+    "KevinbotState",
+    "DrivebaseState",
+    "MotorDriveStatus",
+    "CoreErrors",
+    "HandshakeTimeoutException",
+]
