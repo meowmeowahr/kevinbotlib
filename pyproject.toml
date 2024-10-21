@@ -23,7 +23,8 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "pyserial~=3.5"
+  "pyserial~=3.5",
+  "loguru~=0.6"
 ]
 
 [project.urls]
@@ -31,8 +32,16 @@ Documentation = "https://github.com/meowmeowahr/kevinbotlib#readme"
 Issues = "https://github.com/meowmeowahr/kevinbotlib/issues"
 Source = "https://github.com/meowmeowahr/kevinbotlib"
 
+[tool.hatch.build]
+include = [
+  "*.typed"
+]
+
 [tool.hatch.version]
 path = "src/kevinbotlib/__about__.py"
+
+[tool.hatch.envs]
+default = { dependencies = ["mkdocs", "mkdocs-material", "mkdocstrings[python]>=0.18"], scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" }}
 
 [tool.hatch.envs.types]
 extra-dependencies = [
