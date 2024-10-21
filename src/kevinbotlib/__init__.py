@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from kevinbotlib.core import Kevinbot
-from kevinbotlib.states import KevinbotState, MotorDriveStatus, DrivebaseState, CoreErrors
 from kevinbotlib.exceptions import HandshakeTimeoutException
+from kevinbotlib.states import CoreErrors, DrivebaseState, KevinbotState, MotorDriveStatus
 
 __all__ = ["Kevinbot", "KevinbotState", "DrivebaseState", "MotorDriveStatus", "CoreErrors", "HandshakeTimeoutException"]
