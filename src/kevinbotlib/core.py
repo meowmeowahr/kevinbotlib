@@ -229,3 +229,45 @@ class Drivebase(BaseKevinbotSubsystem):
 
     def stop(self):
         self.robot.send("drive.stop")
+
+class Servo:
+    def __init__(self, robot: Kevinbot, index: int) -> None:
+        self.robot = robot
+        self.index = index
+
+    @property
+    def bank(self) -> int:
+        return self.index // 16
+    
+    @property
+    def angle(self) -> int:
+        logger.error("Servos don't support angle retrieval yet")
+        return -1
+
+    @angle.setter
+    def angle(self, angle: int):
+        self.robot.send(f"s={self.index},{angle}")
+
+class Servos(BaseKevinbotSubsystem):
+    def __len__(self) -> int:
+        return 32
+    
+    def __iter__(self):
+        for i in range(self.__len__()):
+            yield Servo(self.robot, i)
+
+    def __getitem__(self, index: int):
+        if index > 31:
+            msg = f"Servo index {index} > 31"
+            raise IndexError(msg)
+        elif index < 0:
+            msg = f"Servo index {index} < 0"
+            raise IndexError(msg)
+        return Servo(self.robot, index)
+
+    def get_servo(self, channel: int):
+        if channel > self.__len__() or channel < 0:
+            logger.error(f"Servo channel {channel} is out of bounds.")
+            return
+        else:
+            return Servo(self.robot, channel)
