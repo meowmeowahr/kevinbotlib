@@ -12,4 +12,5 @@ plugins:
   - mkdocstrings
 
 nav:
+  - index.md
   - reference.md
