@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kevinbotlib"
-dynamic = ["version"]
+version = "0.0.1"
 description = ''
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,6 +26,9 @@ dependencies = [
   "pyserial~=3.5",
   "loguru~=0.6"
 ]
+
+[project.scripts]
+kevinbot = "kevinbotlib.launch:kevinbot"
 
 [project.urls]
 Documentation = "https://github.com/meowmeowahr/kevinbotlib#readme"

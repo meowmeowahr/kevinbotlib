@@ -4,7 +4,7 @@
 
 import time
 
-from kevinbotlib import Kevinbot, Drivebase
+from kevinbotlib import Drivebase, Kevinbot
 
 robot = Kevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)

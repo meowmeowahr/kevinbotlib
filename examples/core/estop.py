@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from kevinbotlib import Kevinbot, Drivebase
+from kevinbotlib import Kevinbot
 
 robot = Kevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)

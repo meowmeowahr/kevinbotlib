@@ -117,14 +117,14 @@ class Kevinbot:
             return -2
         self.serial.write(b"kevinbot.tryenable=0\n")
         return 1
-    
+
     def e_stop(self):
         """Attempt to send and E-Stop signal to the Core
         """
         if not self.serial:
             logger.error("Couldn't send e-stop, please use connect() first")
             return
-        
+
         self.serial.write(b"system.estop\n")
 
     def tick_loop(self, interval: float = 1):
@@ -209,16 +209,16 @@ class Drivebase:
 
     def get_amps(self):
         return self.robot.get_state().motion.amps
-    
+
     def get_watts(self):
         return self.robot.get_state().motion.watts
-    
+
     def get_powers(self):
         return self.robot.get_state().motion.left_power, self.robot.get_state().motion.right_power
-    
+
     def get_states(self):
         return self.robot.get_state().motion.status
-    
+
     def drive_at_power(self, left: float, right: float):
         self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
 

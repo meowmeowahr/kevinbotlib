@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from kevinbotlib.core import Kevinbot, Drivebase
+from kevinbotlib.core import Drivebase, Kevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import CoreErrors, DrivebaseState, KevinbotState, MotorDriveStatus
 
