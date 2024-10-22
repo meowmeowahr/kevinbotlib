@@ -13,6 +13,7 @@ from kevinbotlib.states import (
     MotorDriveStatus,
     ServoState,
     IMUState,
+    ThermometerState,
 )
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     "ServoState",
     "BMState",
     "IMUState",
+    "ThermometerState",
     "MotorDriveStatus",
     "BmsBatteryState",
     "CoreErrors",

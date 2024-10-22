@@ -11,6 +11,7 @@ from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import BmsBatteryState, CoreErrors, KevinbotState, MotorDriveStatus
+from kevinbotlib.misc import Temperature
 
 
 class BaseKevinbotSubsystem:
@@ -251,6 +252,12 @@ class Kevinbot:
                 case "sensors.accel":
                     if val:
                         self._state.imu.accel = [int(x) for x in val.split(",")]
+                case "sensors.temps":
+                    if val:
+                        temps = val.split(",")
+                        self._state.thermal.left_motor = Temperature(int(temps[0]) / 100)
+                        self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
+                        self._state.thermal.internal = Temperature(int(temps[2]) / 100)
                 case _:
                     logger.warning(f"Got a command that isn't supported yet: {cmd} with value {val}")
 

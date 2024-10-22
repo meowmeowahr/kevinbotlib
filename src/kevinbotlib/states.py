@@ -5,6 +5,8 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+from kevinbotlib.misc import Temperature
+
 
 class CoreErrors(Enum):
     """These are errors from Kevinbot Core"""
@@ -73,6 +75,14 @@ class IMUState:
     accel: list[int] = field(default_factory=lambda: [-1] * 3)  # X Y Z
     gyro: list[int] = field(default_factory=lambda: [-1] * 3)  # R P Y
 
+@dataclass
+class ThermometerState:
+    """The state of the DS18B20 Thermometers (does not include BME280)"""
+
+    left_motor:  Temperature = Temperature(-1)
+    right_motor: Temperature = Temperature(-1)
+    internal: Temperature = Temperature(-1)
+
 
 @dataclass
 class KevinbotState:
@@ -87,3 +97,4 @@ class KevinbotState:
     servos: ServoState = field(default_factory=ServoState)
     battery: BMState = field(default_factory=BMState)
     imu: IMUState = field(default_factory=IMUState)
+    thermal: ThermometerState = field(default_factory=ThermometerState)
