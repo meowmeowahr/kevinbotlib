@@ -39,6 +39,9 @@ plugins:
 
 nav:
   - index.md
+  - examples.md
+  - cli.md
+  - architecture.md
   - reference.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
