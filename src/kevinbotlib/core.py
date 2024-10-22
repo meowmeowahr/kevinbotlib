@@ -211,7 +211,7 @@ class Kevinbot:
                 val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n")
 
             match cmd:
-                case "ready\n": 
+                case "ready\n":
                     pass
                 case "core.enabled":
                     if not val:
