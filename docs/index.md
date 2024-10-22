@@ -1,5 +1,7 @@
 # Welcome to KevinbotLib
 
+![](media/icon.svg){: style="height:128px;width:128px"}
+
 This library consists of classes to operate Kevinbot v3.
 
 !!! note "Development"
