@@ -70,8 +70,8 @@ class BMState:
 class IMUState:
     """The state of the IMU (Inertial Measurement System)"""
 
-    accel: list[int] = field(default_factory=lambda: [-1]*3) # X Y Z
-    gyro: list[int] = field(default_factory=lambda: [-1]*3) # R P Y
+    accel: list[int] = field(default_factory=lambda: [-1] * 3)  # X Y Z
+    gyro: list[int] = field(default_factory=lambda: [-1] * 3)  # R P Y
 
 
 @dataclass
