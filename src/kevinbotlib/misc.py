@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+
 class Temperature(float):
-    """Extended float class that can convert it's value from Celcius to Farenheit
-    """
-    
+    """Extended float class that can convert it's value from Celcius to Farenheit"""
+
     @property
     def f(self) -> float:
         """Convert value to Farenheit
@@ -14,9 +14,9 @@ class Temperature(float):
             float: Value in F
         """
         return self.__float__() * 1.8 + 32
-    
+
     @staticmethod
-    def from_f(f: float) -> 'Temperature':
+    def from_f(f: float) -> "Temperature":
         """Convert a Farenheit value to a Temperature object
 
         Args:

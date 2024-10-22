@@ -75,13 +75,14 @@ class IMUState:
     accel: list[int] = field(default_factory=lambda: [-1] * 3)  # X Y Z
     gyro: list[int] = field(default_factory=lambda: [-1] * 3)  # R P Y
 
+
 @dataclass
 class ThermometerState:
     """The state of the DS18B20 Thermometers (does not include BME280)"""
 
-    left_motor:  Temperature = Temperature(-1)
-    right_motor: Temperature = Temperature(-1)
-    internal: Temperature = Temperature(-1)
+    left_motor: Temperature = field(default_factory=lambda: Temperature(-1))
+    right_motor: Temperature = field(default_factory=lambda: Temperature(-1))
+    internal: Temperature = field(default_factory=lambda: Temperature(-1))
 
 
 @dataclass
