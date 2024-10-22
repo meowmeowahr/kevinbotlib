@@ -4,11 +4,8 @@
 
 import time
 
-import loguru
-
 from kevinbotlib import Kevinbot
 
-loguru.logger.remove()
 robot = Kevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
