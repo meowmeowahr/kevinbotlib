@@ -1,7 +1,31 @@
 site_name: KevinbotLib Docs
 
 theme:
-  "material"
+  name: "material"
+  language: en
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: blue
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: blue
+      scheme: default 
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: blue
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
 
 markdown_extensions:
   - admonition
@@ -10,7 +34,10 @@ markdown_extensions:
 
 plugins:
   - mkdocstrings
+  - search
 
 nav:
   - index.md
   - reference.md
+
+repo_url: https://github.com/meowmeowahr/kevinbotlib
