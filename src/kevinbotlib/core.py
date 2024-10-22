@@ -211,6 +211,8 @@ class Kevinbot:
                 val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n")
 
             match cmd:
+                case "ready\n": 
+                    pass
                 case "core.enabled":
                     if not val:
                         logger.warning("No value recieved for 'core.enabled'")
@@ -237,6 +239,14 @@ class Kevinbot:
                 case "bms.status":
                     if val:
                         self._state.battery.states = [BmsBatteryState(int(x)) for x in val.split(",")]
+                case "sensors.gyro":
+                    if val:
+                        self._state.imu.gyro = [int(x) for x in val.split(",")]
+                case "sensors.accel":
+                    if val:
+                        self._state.imu.accel = [int(x) for x in val.split(",")]
+                case _:
+                    logger.warning(f"Got a command that isn't supported yet: {cmd} with value {val}")
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)

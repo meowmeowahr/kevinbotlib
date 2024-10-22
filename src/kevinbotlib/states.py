@@ -67,6 +67,14 @@ class BMState:
 
 
 @dataclass
+class IMUState:
+    """The state of the IMU (Inertial Measurement System)"""
+
+    accel: list[int] = field(default_factory=lambda: [-1]*3) # X Y Z
+    gyro: list[int] = field(default_factory=lambda: [-1]*3) # R P Y
+
+
+@dataclass
 class KevinbotState:
     """The state of the robot as a whole"""
 
@@ -76,3 +84,4 @@ class KevinbotState:
     motion: DrivebaseState = field(default_factory=DrivebaseState)
     servos: ServoState = field(default_factory=ServoState)
     battery: BMState = field(default_factory=BMState)
+    imu: IMUState = field(default_factory=IMUState)
