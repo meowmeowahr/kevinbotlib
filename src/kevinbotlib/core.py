@@ -221,6 +221,12 @@ class Kevinbot:
                         self._state.enabled = True
                     else:
                         self._state.enabled = False
+                case "core.uptime":
+                    if val:
+                        self._state.uptime = int(val)
+                case "core.uptime_ms":
+                    if val:
+                        self._state.uptime_ms = int(val)
                 case "motors.amps":
                     if val:
                         self._state.motion.amps = list(map(float, val.split(",")))

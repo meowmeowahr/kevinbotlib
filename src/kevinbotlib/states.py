@@ -81,6 +81,8 @@ class KevinbotState:
     connected: bool = False
     enabled: bool = False
     error: CoreErrors = CoreErrors.OK
+    uptime: int = 0
+    uptime_ms: int = 0
     motion: DrivebaseState = field(default_factory=DrivebaseState)
     servos: ServoState = field(default_factory=ServoState)
     battery: BMState = field(default_factory=BMState)
