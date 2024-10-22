@@ -273,3 +273,15 @@ class Servos(BaseKevinbotSubsystem):
             logger.error(f"Servo channel {channel} is out of bounds.")
             return
         return Servo(self.robot, channel)
+
+    @property
+    def all(self) -> int:
+        if all(i == self.robot.get_state().servos.angles[0] for i in self.robot.get_state().servos.angles):
+            return self.robot.get_state().servos.angles[0]
+        else:
+            return -1
+
+    @all.setter
+    def all(self, angle: int):
+        self.robot.send(f"servo.all={angle}")
+        self.robot.get_state().servos.angles = [angle] * self.__len__()
