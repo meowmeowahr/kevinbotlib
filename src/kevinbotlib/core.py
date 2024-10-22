@@ -10,21 +10,23 @@ from loguru import logger
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import CoreErrors, KevinbotState, MotorDriveStatus
+from kevinbotlib.states import BmsBatteryState, CoreErrors, KevinbotState, MotorDriveStatus
 
 
 class BaseKevinbotSubsystem:
-    """The base subsystem class. 
+    """The base subsystem class.
+
     Not to be used directly
     """
+
     def __init__(self, robot: "Kevinbot") -> None:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
 
 class Kevinbot:
-    """The main robot class
-    """
+    """The main robot class"""
+
     def __init__(self) -> None:
         self._state = KevinbotState()
         self._subsystems: list[BaseKevinbotSubsystem] = []
@@ -157,7 +159,8 @@ class Kevinbot:
         return self._state
 
     def send(self, data: str):
-        """Send a string through serial. 
+        """Send a string through serial.
+
         Automatically adds a newline.
 
         Args:
@@ -225,6 +228,15 @@ class Kevinbot:
                 case "motors.status":
                     if val:
                         self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
+                case "bms.voltages":
+                    if val:
+                        self._state.battery.voltages = [float(x) / 10 for x in val.split(",")]
+                case "bms.raw_voltages":
+                    if val:
+                        self._state.battery.raw_voltages = [float(x) / 10 for x in val.split(",")]
+                case "bms.status":
+                    if val:
+                        self._state.battery.states = [BmsBatteryState(int(x)) for x in val.split(",")]
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)
@@ -239,8 +251,8 @@ class Kevinbot:
 
 
 class Drivebase(BaseKevinbotSubsystem):
-    """Drivebase subsystem for Kevinbot
-    """
+    """Drivebase subsystem for Kevinbot"""
+
     def get_amps(self) -> list[float]:
         """Get the amps being used by the drivebase
 
@@ -283,8 +295,7 @@ class Drivebase(BaseKevinbotSubsystem):
         self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
 
     def stop(self):
-        """Set all wheel powers to 0
-        """
+        """Set all wheel powers to 0"""
         self.robot.send("drive.stop")
 
 
@@ -334,8 +345,7 @@ class Servos(BaseKevinbotSubsystem):
     def all(self) -> int:
         if all(i == self.robot.get_state().servos.angles[0] for i in self.robot.get_state().servos.angles):
             return self.robot.get_state().servos.angles[0]
-        else:
-            return -1
+        return -1
 
     @all.setter
     def all(self, angle: int):

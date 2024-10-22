@@ -21,12 +21,22 @@ class CoreErrors(Enum):
 
 
 class MotorDriveStatus(Enum):
-    """The status of each motor in the drrivebase"""
+    """The status of each motor in the drivebase"""
 
     UNKNOWN = 10
     MOVING = 11
     HOLDING = 12
     OFF = 13
+
+
+class BmsBatteryState(Enum):
+    """The status of a single battery attached to the BMS"""
+
+    UNKNOWN = 0
+    NORMAL = 1
+    UNDER = 2
+    OVER = 3
+    STOPPED = 4  # Stopped state if BMS driver crashed
 
 
 @dataclass
@@ -48,6 +58,15 @@ class ServoState:
 
 
 @dataclass
+class BMState:
+    """The state of the BMS (Battery Management System)"""
+
+    voltages: list[float] = field(default_factory=lambda: [0.0, 0.0])
+    raw_voltages: list[float] = field(default_factory=lambda: [0.0, 0.0])
+    states: list[BmsBatteryState] = field(default_factory=lambda: [BmsBatteryState.UNKNOWN, BmsBatteryState.UNKNOWN])
+
+
+@dataclass
 class KevinbotState:
     """The state of the robot as a whole"""
 
@@ -56,3 +75,4 @@ class KevinbotState:
     error: CoreErrors = CoreErrors.OK
     motion: DrivebaseState = field(default_factory=DrivebaseState)
     servos: ServoState = field(default_factory=ServoState)
+    battery: BMState = field(default_factory=BMState)
