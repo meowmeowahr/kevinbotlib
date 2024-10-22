@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
+import re
 import time
 from threading import Thread
 
@@ -217,7 +218,7 @@ class Kevinbot:
                 case "core.enabled":
                     if not val:
                         logger.warning("No value recieved for 'core.enabled'")
-                        return
+                        continue
                     if val.lower() in ["true", "t", "1"]:
                         self._state.enabled = True
                     else:
@@ -255,9 +256,26 @@ class Kevinbot:
                 case "sensors.temps":
                     if val:
                         temps = val.split(",")
+                        for temp in temps:
+                            if not re.match("^[-+]?[0-9]+$", temp):
+                                logger.error(f"Found non-integer value in temps, {temps}")
+                                continue
+
                         self._state.thermal.left_motor = Temperature(int(temps[0]) / 100)
                         self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
                         self._state.thermal.internal = Temperature(int(temps[2]) / 100)
+                case "sensors.bme":
+                        
+                    if val:
+                        vals = val.split(",")
+                        for value in vals:
+                            if not re.match("^[-+]?[0-9]+$", value):
+                                logger.error(f"Found non-integer value in bme values, {temps}")
+                                continue
+
+                        self._state.enviro.temperature = Temperature(int(vals[0]))
+                        self._state.enviro.humidity = int(vals[2])
+                        self._state.enviro.pressure = int(vals[3])
                 case _:
                     logger.warning(f"Got a command that isn't supported yet: {cmd} with value {val}")
 

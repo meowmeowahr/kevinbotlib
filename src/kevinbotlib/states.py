@@ -84,6 +84,14 @@ class ThermometerState:
     right_motor: Temperature = field(default_factory=lambda: Temperature(-1))
     internal: Temperature = field(default_factory=lambda: Temperature(-1))
 
+@dataclass
+class EnviroState:
+    """The state of the BME280 Envoronmental sensor"""
+
+    temperature: Temperature = field(default_factory=lambda: Temperature(-1))
+    humidity: float = 0
+    pressure: int = 0
+
 
 @dataclass
 class KevinbotState:
@@ -99,3 +107,4 @@ class KevinbotState:
     battery: BMState = field(default_factory=BMState)
     imu: IMUState = field(default_factory=IMUState)
     thermal: ThermometerState = field(default_factory=ThermometerState)
+    enviro: EnviroState = field(default_factory=EnviroState)
