@@ -14,12 +14,17 @@ from kevinbotlib.states import CoreErrors, KevinbotState, MotorDriveStatus
 
 
 class BaseKevinbotSubsystem:
+    """The base subsystem class. 
+    Not to be used directly
+    """
     def __init__(self, robot: "Kevinbot") -> None:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
 
 class Kevinbot:
+    """The main robot class
+    """
     def __init__(self) -> None:
         self._state = KevinbotState()
         self._subsystems: list[BaseKevinbotSubsystem] = []
@@ -152,20 +157,41 @@ class Kevinbot:
         return self._state
 
     def send(self, data: str):
+        """Send a string through serial. 
+        Automatically adds a newline.
+
+        Args:
+            data (str): Data to send
+        """
         self.raw_tx((data + "\n").encode("utf-8"))
 
     def raw_tx(self, data: bytes):
+        """Send raw bytes over serial.
+
+        Args:
+            data (bytes): Raw data
+        """
         if self.serial:
             self.serial.write(data)
         else:
             logger.warning(f"Couldn't transmit data: {data!r}, Core isn't connected")
 
     @property
-    def auto_disconnect(self):
+    def auto_disconnect(self) -> bool:
+        """Getter for auto disconnect state.
+
+        Returns:
+            bool: Whether to disconnect on application exit
+        """
         return self._auto_disconnect
 
     @auto_disconnect.setter
     def auto_disconnect(self, value: bool):
+        """Setter for auto disconnect.
+
+        Args:
+            value (bool): Whether to disconnect on application exit
+        """
         self._auto_disconnect = value
         if value:
             atexit.register(self.disconnect)
@@ -213,22 +239,52 @@ class Kevinbot:
 
 
 class Drivebase(BaseKevinbotSubsystem):
-    def get_amps(self):
+    """Drivebase subsystem for Kevinbot
+    """
+    def get_amps(self) -> list[float]:
+        """Get the amps being used by the drivebase
+
+        Returns:
+            list[float]: Amps
+        """
         return self.robot.get_state().motion.amps
 
-    def get_watts(self):
+    def get_watts(self) -> list[float]:
+        """Get the watts being used by the drivebase
+
+        Returns:
+            list[float]: Watts
+        """
         return self.robot.get_state().motion.watts
 
-    def get_powers(self):
+    def get_powers(self) -> tuple[int, int]:
+        """Get the currently set wheel speeds in percent
+
+        Returns:
+            tuple[int, int]: Percent values from 0 to 100
+        """
         return self.robot.get_state().motion.left_power, self.robot.get_state().motion.right_power
 
-    def get_states(self):
+    def get_states(self) -> list[MotorDriveStatus]:
+        """Get the wheels states
+
+        Returns:
+            list[MotorDriveStatus]: States
+        """
         return self.robot.get_state().motion.status
 
     def drive_at_power(self, left: float, right: float):
+        """Set the drive power for wheels. 0 to 1
+
+        Args:
+            left (float): Left motor power
+            right (float): Right motor power
+        """
         self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
 
     def stop(self):
+        """Set all wheel powers to 0
+        """
         self.robot.send("drive.stop")
 
 
