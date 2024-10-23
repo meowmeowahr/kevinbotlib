@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
+</p>
+
 # KevinbotLib
 
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg)](https://pypi.org/project/kevinbotlib)
@@ -5,15 +9,50 @@
 
 -----
 
+**Communicate with Kevinbot v3 Hardware**
+
+KevinbotLib incldes all the necessary classes for communicating with and controlling Kevinbot v3 hardware. It also contains an interface over MQTT to allow multiple clients on-robot as well as off-robot. Your code stays mostly the same whether you are communicating directly over serial, or using MQTT.
+
 ## Table of Contents
 
 - [Installation](#installation)
+- [Developing](#developing)
 - [License](#license)
 
 ## Installation
 
 ```console
 pip install kevinbotlib
+```
+
+## Developing
+
+### Set up module in development mode
+
+* Install hatch
+  
+  [Hatch Installation](https://hatch.pypa.io/1.12/install/) (I recommend using pipx)
+* Clone this repo
+
+  ```console
+  git clone https://github.com/meowmeowahr/kevinbotlib && cd kevinbotlib
+  ```
+* Create env
+  ```console
+  hatch env create
+  ```
+* Activate env
+
+  ```console
+  hatch shell
+  ```
+
+### Formatting
+
+Formatting is done through ruff. You can run the formatter using:
+
+```console
+hatch fmt
 ```
 
 ## License
