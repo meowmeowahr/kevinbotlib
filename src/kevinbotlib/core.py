@@ -508,7 +508,7 @@ class Lighting(BaseKevinbotSubsystem):
 
         Args:
             channel (Channel): Base, Body, or Head
-            effect (Iterable[int]): RGB Color values. Must have a length of 3
+            effect (str): Animation ID
         """
         self.robot.send(f"lighting.{channel.value}.effect={effect}")
         match channel:
@@ -518,3 +518,19 @@ class Lighting(BaseKevinbotSubsystem):
                 self.robot.get_state().lighting.base_effect = effect
             case self.Channel.Head:
                 self.robot.get_state().lighting.base_effect = effect
+
+    def set_update(self, channel: Channel, update: int):
+        """Set the animation of a lighting segment
+
+        Args:
+            channel (Channel): Base, Body, or Head
+            update (int): Update rate (no fixed unit)
+        """
+        self.robot.send(f"lighting.{channel.value}.update={update}")
+        match channel:
+            case self.Channel.Base:
+                self.robot.get_state().lighting.base_update = update
+            case self.Channel.Body:
+                self.robot.get_state().lighting.base_update = update
+            case self.Channel.Head:
+                self.robot.get_state().lighting.base_update = update
