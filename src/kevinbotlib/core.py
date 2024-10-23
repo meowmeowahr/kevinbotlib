@@ -478,7 +478,7 @@ class Lighting(BaseKevinbotSubsystem):
             channel (Channel): Base, Body, or Head
             color (Iterable[int]): RGB Color values. Must have a length of 3
         """
-        self.robot.send(f"lighting.{channel.value}.color1={color[0]:02x}{color[1]:02x}{color[2]:02x}")
+        self.robot.send(f"lighting.{channel.value}.color1={color[0]:02x}{color[1]:02x}{color[2]:02x}00")
         match channel:
             case self.Channel.Base:
                 self.robot.get_state().lighting.base_color1 = color
@@ -494,7 +494,7 @@ class Lighting(BaseKevinbotSubsystem):
             channel (Channel): Base, Body, or Head
             color (Iterable[int]): RGB Color values. Must have a length of 3
         """
-        self.robot.send(f"lighting.{channel.value}.color2={color[0]:02x}{color[1]:02x}{color[2]:02x}")
+        self.robot.send(f"lighting.{channel.value}.color2={color[0]:02x}{color[1]:02x}{color[2]:02x}00")
         match channel:
             case self.Channel.Base:
                 self.robot.get_state().lighting.base_color2 = color
