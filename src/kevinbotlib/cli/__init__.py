@@ -11,7 +11,7 @@ from kevinbotlib.cli.listen import listen
 )
 @click.version_option(version=__version__, prog_name='KevinbotLib')
 @click.pass_context
-def cli(ctx: click.Context, interactive: bool | None):
+def cli(ctx: click.Context):
     """
     \b
     ██╗  ██╗███████╗██╗   ██╗██╗███╗   ██╗██████╗  ██████╗ ████████╗
@@ -28,7 +28,7 @@ cli.add_command(serve)
 cli.add_command(listen)
 cli.add_command(pub)
 
-def main():
+def main(): # no cov
     cli(prog_name='kevinbot')
 
 if __name__ == "__main__":
