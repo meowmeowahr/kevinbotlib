@@ -34,7 +34,13 @@ markdown_extensions:
   - pymdownx.superfences
 
 plugins:
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+          python:
+            options:
+              members_order: source
+              show_symbol_type_heading: true
+              show_symbol_type_toc: true
   - search
 
 nav:

@@ -12,13 +12,21 @@ from kevinbotlib.misc import Temperature
 class CoreErrors(Enum):
     """These are errors from Kevinbot Core"""
 
+    """No errors are present"""
     OK = 0
+    """Error state unknown"""
     UNKNOWN = 1
+    """One-Wire bus is shorted"""
     OW_SHORT = 2
+    """One-Wire bus error"""
     OW_ERROR = 3
+    """One-Wire device not found"""
     OW_DNF = 4
+    """LCD Init failed"""
     LCD_INIT_FAIL = 5
+    """PCA9685 (servos) init fail"""
     PCA_INIT_FAIL = 6
+    """Failure to recieve core tick"""
     TICK_FAIL = 7
     # TODO: Add full error list
 
