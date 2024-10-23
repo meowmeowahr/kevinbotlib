@@ -5,10 +5,8 @@
 import atexit
 import re
 import time
-from collections.abc import Iterable
 from enum import Enum
 from threading import Thread
-from typing import List
 
 from loguru import logger
 from serial import Serial
