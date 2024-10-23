@@ -5,14 +5,17 @@
 import atexit
 import re
 import time
+from collections.abc import Iterable
+from enum import Enum
 from threading import Thread
+from typing import List
 
 from loguru import logger
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.misc import Temperature
-from kevinbotlib.states import BmsBatteryState, CoreErrors, KevinbotState, MotorDriveStatus
+from kevinbotlib.states import BmsBatteryState, CoreErrors, KevinbotState, LightingState, MotorDriveStatus
 
 
 class BaseKevinbotSubsystem:
@@ -427,3 +430,91 @@ class Servos(BaseKevinbotSubsystem):
 
 class Lighting(BaseKevinbotSubsystem):
     """Lighting subsystem for Kevinbot"""
+
+    class Channel(Enum):
+        """Lighting segment identifier"""
+
+        Head = "head"
+        Body = "body"
+        Base = "base"
+
+    def get_state(self) -> LightingState:
+        """Get the state of the robot's light segments
+
+        Returns:
+            LightingState: State
+        """
+        return self.robot.get_state().lighting
+
+    def set_cam_brightness(self, brightness: int):
+        """Set brightness of camera illumination
+
+        Args:
+            brightness (int): Brightness from 0 to 255
+        """
+        self.robot.send(f"lighting.cam.bright={brightness}")
+        self.robot.get_state().lighting.camera = brightness
+
+    def set_brightness(self, channel: Channel, brightness: int):
+        """Set the brightness of a lighting segment
+
+        Args:
+            channel (Channel): Base, Body, or Head
+            brightness (int): Brightness from 0 to 255
+        """
+        self.robot.send(f"lighting.{channel.value}.bright={brightness}")
+        match channel:
+            case self.Channel.Base:
+                self.robot.get_state().lighting.base_bright = brightness
+            case self.Channel.Body:
+                self.robot.get_state().lighting.body_bright = brightness
+            case self.Channel.Head:
+                self.robot.get_state().lighting.head_bright = brightness
+
+    def set_color1(self, channel: Channel, color: list[int] | tuple[int, int, int]):
+        """Set the Color 1 of a lighting segment
+
+        Args:
+            channel (Channel): Base, Body, or Head
+            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+        """
+        self.robot.send(f"lighting.{channel.value}.color1={color[0]:02x}{color[1]:02x}{color[2]:02x}")
+        match channel:
+            case self.Channel.Base:
+                self.robot.get_state().lighting.base_color1 = color
+            case self.Channel.Body:
+                self.robot.get_state().lighting.base_color1 = color
+            case self.Channel.Head:
+                self.robot.get_state().lighting.base_color1 = color
+
+    def set_color2(self, channel: Channel, color: list[int] | tuple[int, int, int]):
+        """Set the Color 2 of a lighting segment
+
+        Args:
+            channel (Channel): Base, Body, or Head
+            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+        """
+        self.robot.send(f"lighting.{channel.value}.color2={color[0]:02x}{color[1]:02x}{color[2]:02x}")
+        match channel:
+            case self.Channel.Base:
+                self.robot.get_state().lighting.base_color2 = color
+            case self.Channel.Body:
+                self.robot.get_state().lighting.base_color2 = color
+            case self.Channel.Head:
+                self.robot.get_state().lighting.base_color2 = color
+
+    def set_effect(self, channel: Channel, effect: str):
+        """Set the animation of a lighting segment
+
+        Args:
+            channel (Channel): Base, Body, or Head
+            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+        """
+        self.robot.send(f"lighting.{channel.value}.effect={effect}")
+        match channel:
+            case self.Channel.Base:
+                self.robot.get_state().lighting.base_effect = effect
+            case self.Channel.Body:
+                self.robot.get_state().lighting.base_effect = effect
+            case self.Channel.Head:
+                self.robot.get_state().lighting.base_effect = effect

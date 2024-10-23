@@ -110,13 +110,16 @@ class LightingState:
     camera: int = 0
     head_effect: str = "unknown"
     head_bright: int = 0
-    head_color: Iterable[int] = (0, 0, 0)
+    head_color1: Iterable[int] = (0, 0, 0)
+    head_color2: Iterable[int] = (0, 0, 0)
     body_effect: str = "unknown"
     body_bright: int = 0
-    body_color: Iterable[int] = (0, 0, 0)
+    body_color1: Iterable[int] = (0, 0, 0)
+    body_color2: Iterable[int] = (0, 0, 0)
     base_effect: str = "unknown"
     base_bright: int = 0
-    base_color: Iterable[int] = (0, 0, 0)
+    base_color1: Iterable[int] = (0, 0, 0)
+    base_color2: Iterable[int] = (0, 0, 0)
 
 
 @dataclass

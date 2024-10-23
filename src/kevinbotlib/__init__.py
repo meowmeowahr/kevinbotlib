@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from kevinbotlib.core import Drivebase, Kevinbot, Servo, Servos
+from kevinbotlib.core import Drivebase, Kevinbot, Lighting, Servo, Servos
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import (
     BmsBatteryState,
@@ -21,6 +21,7 @@ __all__ = [
     "Drivebase",
     "Servo",
     "Servos",
+    "Lighting",
     "KevinbotState",
     "DrivebaseState",
     "ServoState",
