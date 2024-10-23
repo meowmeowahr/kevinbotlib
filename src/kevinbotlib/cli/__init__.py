@@ -1,7 +1,7 @@
 import click
 
 from kevinbotlib.__about__ import __version__
-from kevinbotlib.cli.serve import serve
+from kevinbotlib.cli.server import server
 from kevinbotlib.cli.pub import pub
 from kevinbotlib.cli.listen import listen
 
@@ -24,7 +24,7 @@ def cli(ctx: click.Context):
 
 
 # Add commands to the main CLI group
-cli.add_command(serve)
+cli.add_command(server)
 cli.add_command(listen)
 cli.add_command(pub)
 
