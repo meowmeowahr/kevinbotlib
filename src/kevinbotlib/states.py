@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -84,6 +85,7 @@ class ThermometerState:
     right_motor: Temperature = field(default_factory=lambda: Temperature(-1))
     internal: Temperature = field(default_factory=lambda: Temperature(-1))
 
+
 @dataclass
 class EnviroState:
     """The state of the BME280 Envoronmental sensor"""
@@ -91,6 +93,22 @@ class EnviroState:
     temperature: Temperature = field(default_factory=lambda: Temperature(-1))
     humidity: float = 0
     pressure: int = 0
+
+
+@dataclass
+class LightingState:
+    """The state of Kevinbot's led segments"""
+
+    camera: int = 0
+    head_effect: str = "unknown"
+    head_bright: int = 0
+    head_color: Iterable[int] = (0, 0, 0)
+    body_effect: str = "unknown"
+    body_bright: int = 0
+    body_color: Iterable[int] = (0, 0, 0)
+    base_effect: str = "unknown"
+    base_bright: int = 0
+    base_color: Iterable[int] = (0, 0, 0)
 
 
 @dataclass
@@ -108,3 +126,4 @@ class KevinbotState:
     imu: IMUState = field(default_factory=IMUState)
     thermal: ThermometerState = field(default_factory=ThermometerState)
     enviro: EnviroState = field(default_factory=EnviroState)
+    lighting: LightingState = field(default_factory=LightingState)

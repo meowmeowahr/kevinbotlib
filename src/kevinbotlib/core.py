@@ -265,7 +265,6 @@ class Kevinbot:
                         self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
                         self._state.thermal.internal = Temperature(int(temps[2]) / 100)
                 case "sensors.bme":
-                        
                     if val:
                         vals = val.split(",")
                         for value in vals:
@@ -341,26 +340,50 @@ class Drivebase(BaseKevinbotSubsystem):
 
 
 class Servo:
+    """Individually controllable servo"""
+
     def __init__(self, robot: Kevinbot, index: int) -> None:
         self.robot = robot
         self.index = index
 
     @property
     def bank(self) -> int:
+        """Get the bank the servo is in
+
+        Returns:
+            int: Bank number
+        """
         return self.index // 16
 
     @property
     def angle(self) -> int:
+        """Get the optimistic current servo angle
+
+        Returns:
+            int: Angle in degrees
+        """
         return self.robot.get_state().servos.angles[self.index]
 
     @angle.setter
     def angle(self, angle: int):
+        """Set the optimistic servo angle
+
+        Args:
+            angle (int): Angle in degrees
+        """
         self.robot.send(f"s={self.index},{angle}")
         self.robot.get_state().servos.angles[self.index] = angle
 
 
 class Servos(BaseKevinbotSubsystem):
+    """Servo subsystem for Kevinbot"""
+
     def __len__(self) -> int:
+        """Length will always be 32 since the P2 Kevinbot Board can only control 32
+
+        Returns:
+            int: Number of servos in the subsystem
+        """
         return 32
 
     def __iter__(self):
@@ -376,10 +399,18 @@ class Servos(BaseKevinbotSubsystem):
             raise IndexError(msg)
         return Servo(self.robot, index)
 
-    def get_servo(self, channel: int):
+    def get_servo(self, channel: int) -> Servo:
+        """Get an individual servo in the subsystem
+
+        Args:
+            channel (int): PWM Port
+
+        Returns:
+            Servo: Individual servo
+        """
         if channel > self.__len__() or channel < 0:
-            logger.error(f"Servo channel {channel} is out of bounds.")
-            return
+            msg = f"Servo channel {channel} is out of bounds."
+            raise IndexError(msg)
         return Servo(self.robot, channel)
 
     @property
@@ -392,3 +423,7 @@ class Servos(BaseKevinbotSubsystem):
     def all(self, angle: int):
         self.robot.send(f"servo.all={angle}")
         self.robot.get_state().servos.angles = [angle] * self.__len__()
+
+
+class Lighting(BaseKevinbotSubsystem):
+    """Lighting subsystem for Kevinbot"""
