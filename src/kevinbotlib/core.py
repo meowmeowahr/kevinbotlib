@@ -476,7 +476,7 @@ class Lighting(BaseKevinbotSubsystem):
 
         Args:
             channel (Channel): Base, Body, or Head
-            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+            color (Iterable[int]): RGB Color values. Must have a length of 3
         """
         self.robot.send(f"lighting.{channel.value}.color1={color[0]:02x}{color[1]:02x}{color[2]:02x}")
         match channel:
@@ -492,7 +492,7 @@ class Lighting(BaseKevinbotSubsystem):
 
         Args:
             channel (Channel): Base, Body, or Head
-            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+            color (Iterable[int]): RGB Color values. Must have a length of 3
         """
         self.robot.send(f"lighting.{channel.value}.color2={color[0]:02x}{color[1]:02x}{color[2]:02x}")
         match channel:
@@ -508,7 +508,7 @@ class Lighting(BaseKevinbotSubsystem):
 
         Args:
             channel (Channel): Base, Body, or Head
-            brightness (Iterable[int]): RGB Color values. Must have a length of 3
+            effect (Iterable[int]): RGB Color values. Must have a length of 3
         """
         self.robot.send(f"lighting.{channel.value}.effect={effect}")
         match channel:
