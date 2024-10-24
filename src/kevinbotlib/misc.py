@@ -25,4 +25,4 @@ class Temperature(float):
         Returns:
             Temperature: Celcius, convertable
         """
-        return Temperature((f - 32) * 5/9)
+        return Temperature((f - 32) * 5 / 9)

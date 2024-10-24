@@ -25,7 +25,9 @@ classifiers = [
 dependencies = [
   "pyserial~=3.5",
   "loguru~=0.7.2",
-  "click~=8.1.7"
+  "click~=8.1.7",
+  "paho-mqtt~=2.1.0",
+  "dynaconf[yaml]~=3.2.6"
 ]
 
 [project.scripts]
