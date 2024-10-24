@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: 2024-present Kevin Ahr <meowmeowahr@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""
+KevinbotLib Command-line Interface
+"""
+
 import click
 
 from kevinbotlib.__about__ import __version__
