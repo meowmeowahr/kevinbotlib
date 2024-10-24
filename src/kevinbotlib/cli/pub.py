@@ -4,6 +4,8 @@ import click
 from loguru import logger
 from paho.mqtt import client as mqtt_client
 
+from kevinbotlib.config import KevinbotConfig
+
 
 @click.command()
 @click.argument("topic")
@@ -14,8 +16,12 @@ from paho.mqtt import client as mqtt_client
 @click.option("--retain", is_flag=True, help="MQTT Retain")
 def pub(topic: str, message: str, count: int, interval: float, qos: int, *, retain: bool):
     """Publish a message to a specific MQTT topic"""
+    conf = KevinbotConfig()
     client = mqtt_client.Client()
+    client.connect(conf.mqtt.host, conf.mqtt.port, conf.mqtt.keepalive)
+
     for i in range(count):
         logger.success(f"Published: Topic: {topic} Msg: '{message}' QoS: {qos} Retain: {retain}")
+        client.publish(topic, message, qos=qos, retain=retain)
         if i < count - 1:
             time.sleep(interval)
