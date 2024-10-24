@@ -12,6 +12,7 @@ from kevinbotlib.__about__ import __version__
 from kevinbotlib.cli.listen import listen
 from kevinbotlib.cli.pub import pub
 from kevinbotlib.cli.server import server
+from kevinbotlib.cli.config import config
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
@@ -32,6 +33,7 @@ def cli():
 cli.add_command(server)
 cli.add_command(listen)
 cli.add_command(pub)
+cli.add_command(config)
 
 
 def main():  # no cov

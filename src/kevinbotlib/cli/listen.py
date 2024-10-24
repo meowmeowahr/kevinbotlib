@@ -26,5 +26,6 @@ def listen(topic: str, qos: int):
 
     def on_message(_, __, msg):
         logger.info(f"Received: Topic: {msg.topic} Msg: '{msg.payload.decode()}' QoS: {msg.qos}")
+
     client.on_message = on_message
     client.loop_forever()
