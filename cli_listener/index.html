@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../cli_listener/">
+        <link rel="prev" href="../examples/">
       
       
-        <link rel="next" href="../reference/">
+        <link rel="next" href="../architecture/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Architecture - KevinbotLib Docs</title>
+        <title>MQTT Listener - KevinbotLib Docs</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#mqtt-listener" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture
+              MQTT Listener
             
           </span>
         </div>
@@ -300,17 +300,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -324,7 +326,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Command Line
@@ -335,10 +337,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../cli_listener/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    MQTT Listener
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -347,6 +369,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -363,19 +414,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -384,7 +426,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -429,6 +470,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -445,30 +503,29 @@
   
 
 
-<h1 id="architecture">Architecture</h1>
-<pre class="mermaid"><code>flowchart TD
- subgraph s1["KevinbotLib Server"]
-        n5["KevinbotLib&lt;br&gt;Direct Serial"]
-        n9["XBee Interface"]
-  end
-    n3["MQTT API Mode"] &lt;--&gt; n4["MQTT Broker"]
-    n4 &lt;--&gt; s1
-    n5 --&gt; n6["Kevinbot&lt;br&gt;Hardware"]
-    n2["Direct Serial"] --&gt; n6
-    n9 &lt;--&gt; n5
-    n9 --&gt; n4
-    n10["OR"] --&gt; n11["Direct Serial Mode&lt;br&gt;"] &amp; n12["MQTT Mode"]
-    n1["KevinbotLib"] --&gt; n10
-    n11 --&gt; n2
-    n12 --&gt; n3
-    n3@{ shape: rect}
-    n4@{ shape: rect}
-    n6@{ shape: rect}
-    n2@{ shape: rect}
-    n10@{ shape: diam}
-    n11@{ shape: text}
-    n1@{ shape: rect}
-    n12@{ shape: text}</code></pre>
+<h1 id="mqtt-listener">MQTT Listener</h1>
+<p>The MQTT Listener command line tool provides an easy way to subscribe to MQTT topics. 
+It subscribes to an MQTT topic, and logs messages to the terminal.</p>
+<p>It can be invoked with the following:</p>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbot listen [OPTIONS] TOPIC</span>
+</code></pre></div>
+<h2 id="options">Options</h2>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--qos</code></td>
+<td>INT</td>
+<td>MQTT Quality-of-Service</td>
+</tr>
+</tbody>
+</table>
 
 
 
