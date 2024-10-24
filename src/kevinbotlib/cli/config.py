@@ -21,12 +21,32 @@ def config():
 
 
 @click.command("get", help="Get the value of a configuration entry")
-def c_get():
-    pass
+@click.argument("keys")
+@click.option("--system", is_flag=True, help="Use global config path")
+@click.option("--user", is_flag=True, help="Use user config path")
+@click.option("--config", "cfg", help="Manual configuration path")
+def c_get(keys, system, user, cfg):
+    validate_single_flag(system, user)
+    logger.disable("kevinbotlib.config")  # hush warnings
+
+    if cfg and not Path(cfg).exists():
+        logger.critical(f"Path {cfg} does not exist")
+        return
+    
+    config = get_config(system, user, cfg)
+    value = config.config
+    for key in keys.split("."):
+        if not key:
+            break
+        value = value[key]
+    click.echo(value)
 
 
 @click.command("set", help="Set the value of a configuration entry")
-def c_set():
+@click.option("--system", is_flag=True, help="Use global config path")
+@click.option("--user", is_flag=True, help="Use user config path")
+@click.option("--config", "cfg", help="Manual configuration path")
+def c_set(system, user, cfg):
     pass
 
 
