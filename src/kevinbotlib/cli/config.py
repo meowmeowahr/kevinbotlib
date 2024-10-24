@@ -32,7 +32,7 @@ def c_get(keys, system, user, cfg):
     if cfg and not Path(cfg).exists():
         logger.critical(f"Path {cfg} does not exist")
         return
-    
+
     config = get_config(system, user, cfg)
     value = config.config
     for key in keys.split("."):

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kevinbotlib"
-version = "0.0.1"
+dynamic = ["version"]
 description = ''
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,7 +27,8 @@ dependencies = [
   "loguru~=0.7.2",
   "click~=8.1.7",
   "paho-mqtt~=2.1.0",
-  "platformdirs~=4.3.6"
+  "platformdirs~=4.3.6",
+  "pyyaml~=6.0.2"
 ]
 
 [project.scripts]
