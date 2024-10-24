@@ -70,8 +70,7 @@ class KevinbotConfig:
         if self.config_location == ConfigLocation.MANUAL:
             if self.manual_path:
                 return Path(self.manual_path)
-            else:
-                return None # should never happen
+            return None  # should never happen
         if self.config_location == ConfigLocation.USER:
             return self.user_config_path
         if self.config_location == ConfigLocation.SYSTEM:
@@ -140,7 +139,7 @@ class KevinbotConfig:
                 yaml.dump(self.config, f)
             logger.info(f"Configuration saved to {self.config_path}")
         else:
-            logger.error(f"Couldn't save configuration to empty path")
+            logger.error("Couldn't save configuration to empty path")
 
     def dump(self) -> str:
         """Dump the yaml config

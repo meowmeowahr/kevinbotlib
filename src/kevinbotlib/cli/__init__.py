@@ -9,10 +9,10 @@ KevinbotLib Command-line Interface
 import click
 
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.cli.config import config
 from kevinbotlib.cli.listen import listen
 from kevinbotlib.cli.pub import pub
 from kevinbotlib.cli.server import server
-from kevinbotlib.cli.config import config
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
