@@ -43,11 +43,54 @@ def c_get(keys, system, user, cfg):
 
 
 @click.command("set", help="Set the value of a configuration entry")
+@click.argument("keys")
+@click.argument("value")
+@click.option("--int", "as_int", is_flag=True, help="Set value as an integer")
+@click.option("--float", "as_float", is_flag=True, help="Set value as a float")
+@click.option("--bool", "as_bool", is_flag=True, help="Set value as a boolean")
+@click.option("--str", "as_str", is_flag=True, help="Set value as a string (default)")
 @click.option("--system", is_flag=True, help="Use global config path")
 @click.option("--user", is_flag=True, help="Use user config path")
 @click.option("--config", "cfg", help="Manual configuration path")
-def c_set(system, user, cfg):
-    pass
+def c_set(keys, value, as_int, as_float, as_bool, as_str, system, user, cfg):
+    validate_single_flag(system, user)
+    logger.disable("kevinbotlib.config")  # hush warnings
+
+    if cfg and not Path(cfg).exists():
+        logger.critical(f"Path {cfg} does not exist")
+        return
+
+    # Get the current configuration
+    config = get_config(system, user, cfg)
+    config_data = config.config
+
+    # Split keys into nested parts (for dot notation)
+    keys_list = keys.split(".")
+    sub_config = config_data
+    for key in keys_list[:-1]:
+        if key not in sub_config:
+            sub_config[key] = {}  # Create nested dictionaries if needed
+        sub_config = sub_config[key]
+
+    # Determine the type of value based on flags
+    if as_int:
+        casted_value = int(value)
+    elif as_float:
+        casted_value = float(value)
+    elif as_bool:
+        casted_value = value.lower() in ["true", "1", "yes"]
+    else:
+        casted_value = value  # Default to string
+
+    # Set the value
+    sub_config[keys_list[-1]] = casted_value
+
+    # Save the updated configuration
+    config.save_config()
+
+    click.echo(f"Set {keys} to {casted_value} (type: {type(casted_value).__name__}) in configuration file.")
+
+
 
 
 def validate_single_flag(system, user):
