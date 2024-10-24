@@ -3,6 +3,9 @@ site_name: KevinbotLib Docs
 theme:
   name: "material"
   language: en
+  icon:
+    logo:
+      material/robot
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
