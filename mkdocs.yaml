@@ -31,7 +31,11 @@ markdown_extensions:
   - attr_list
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 plugins:
   - mkdocstrings:
@@ -46,7 +50,8 @@ plugins:
 nav:
   - index.md
   - examples.md
-  - cli.md
+  - Command Line:
+    - cli_listener.md
   - architecture.md
   - reference.md
 
