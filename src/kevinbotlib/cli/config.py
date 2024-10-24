@@ -42,6 +42,26 @@ def c_path(system, user):
     else:
         click.echo(KevinbotConfig(ConfigLocation.AUTO).config_path)
 
+@click.command("echo")
+@click.option("--system", is_flag=True, help="Use global config path")
+@click.option("--user", is_flag=True, help="Use user config path")
+def c_echo(system, user):
+    """Echo out a configuration file"""
+    logger.disable("kevinbotlib.config") # hush warnings
+    if system:
+        path = KevinbotConfig(ConfigLocation.SYSTEM).config_path
+    elif user:
+        path = KevinbotConfig(ConfigLocation.USER).config_path
+    else:
+        path = KevinbotConfig(ConfigLocation.NONE).config_path
+
+    if path and path.exists():
+        with open(path, "r", encoding="utf-8") as f:
+            click.echo(f.read())
+    else:
+        click.echo("#@# Configuration is auto-generated. Use `kevinbot config save` to create a configuration file\n\n" + KevinbotConfig(ConfigLocation.NONE).dump())
+
 config.add_command(c_get)
 config.add_command(c_set)
 config.add_command(c_path)
+config.add_command(c_echo)

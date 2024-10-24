@@ -17,6 +17,8 @@ class ConfigLocation(Enum):
     USER = "user"
     SYSTEM = "system"
     AUTO = "auto"
+    NONE = "none"
+    MANUAL = "manual"
 
 
 @dataclass
@@ -35,28 +37,46 @@ class MqttConfig:
 class KevinbotConfig:
     """Handle Kevinbot configuration changes"""
 
-    def __init__(self, location: ConfigLocation = ConfigLocation.AUTO):
+    def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: Path | str | None = None):
+        """Initialize Kevinbot Configuration storage
+
+        Args:
+            location (ConfigLocation, optional): Where to find config files. Defaults to ConfigLocation.AUTO.
+            path (Path | str | None, optional): Manually define config path. Only works if `location` is `MANUAL`. Defaults to None.
+        """
         self.config_location = location
 
-        # Set paths for user and system-wide configuration
         self.user_config_path = Path(user_config_dir("kevinbotlib")) / "settings.yaml"
         self.system_config_path = Path(site_config_dir("kevinbotlib")) / "settings.yaml"
 
-        # Choose the appropriate config path based on location
+        self.manual_path: Path | None = None
+        if path:
+            self.manual_path = Path(path)
+
         self.config_path = self._get_config_path()
 
-        # Load configuration with fallback to defaults
         self.config = self._load_config()
 
-        # Set default values if missing
         self._validate_mqtt_config()
 
-    def _get_config_path(self) -> Path:
-        """Determine the correct config path based on the provided location."""
+    def _get_config_path(self) -> Path | None:
+        """Get the optimal configuration path
+
+        Returns:
+            Path | None: File location
+        """
+        if self.config_location == ConfigLocation.NONE:
+            return None
+        if self.config_location == ConfigLocation.MANUAL:
+            if self.manual_path:
+                return Path(self.manual_path)
+            else:
+                return None # should never happen
         if self.config_location == ConfigLocation.USER:
             return self.user_config_path
         if self.config_location == ConfigLocation.SYSTEM:
             return self.system_config_path
+        # AUTO: Prefer user, else system, if none, return user
         if self.user_config_path.exists():
             return self.user_config_path
         if self.system_config_path.exists():
@@ -65,7 +85,7 @@ class KevinbotConfig:
 
     def _load_config(self) -> dict:
         """Loads the config from user or system file, or returns an empty dict if not found."""
-        if self.config_path.exists():
+        if self.config_path and self.config_path.exists():
             logger.info(f"Loading config from {self.config_path}")
             with open(self.config_path) as f:
                 return yaml.safe_load(f) or {}
@@ -110,11 +130,22 @@ class KevinbotConfig:
         self.config["mqtt"]["host"] = new_config.host
         self.config["mqtt"]["port"] = new_config.port
         self.config["mqtt"]["keepalive"] = new_config.keepalive
-        self._save_config()
+        self.save_config()
 
-    def _save_config(self):
+    def save_config(self):
         """Save the configuration to the selected location"""
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.config_path, "w") as f:
-            yaml.dump(self.config, f)
-        logger.info(f"Configuration saved to {self.config_path}")
+        if self.config_path:
+            self.config_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.config_path, "w") as f:
+                yaml.dump(self.config, f)
+            logger.info(f"Configuration saved to {self.config_path}")
+        else:
+            logger.error(f"Couldn't save configuration to empty path")
+
+    def dump(self) -> str:
+        """Dump the yaml config
+
+        Returns:
+            str: YAML
+        """
+        return yaml.dump(self.config, stream=None)
