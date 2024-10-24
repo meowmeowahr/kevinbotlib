@@ -8,7 +8,7 @@ from platformdirs import site_config_dir, user_config_dir
 
 @dataclass
 class MqttConfig:
-    """Class to represent MQTT configuration."""
+    """MQTT configuration"""
 
     host: str
     port: int
@@ -20,7 +20,7 @@ class MqttConfig:
 
 
 class KevinbotConfig:
-    """Class to handle Kevinbot configuration, allowing real setters."""
+    """Handle Kevinbot configuration changes"""
 
     def __init__(self):
         # Set paths for user and system-wide configuration
@@ -63,7 +63,11 @@ class KevinbotConfig:
 
     @property
     def mqtt(self) -> MqttConfig:
-        """Return the current MQTT configuration as a dataclass."""
+        """Get the mqtt configuration
+
+        Returns:
+            MqttConfig: `MqttConfig` object
+        """
         return MqttConfig(
             host=self.config["mqtt"]["host"],
             port=self.config["mqtt"]["port"],
@@ -72,13 +76,17 @@ class KevinbotConfig:
 
     @mqtt.setter
     def mqtt(self, new_config: MqttConfig):
-        """Set the entire MQTT configuration and save it."""
+        """Set the mqtt configuration
+
+        Args:
+            new_config (MqttConfig): Mqtt configurations
+        """
         self.config["mqtt"]["host"] = new_config.host
         self.config["mqtt"]["port"] = new_config.port
         self._save_config()
 
     def _save_config(self):
-        """Save the current config to the user config file."""
+        """Save the configuration to the user"""
         self.user_config_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.user_config_path, "w") as f:
             yaml.dump(self.config, f)
