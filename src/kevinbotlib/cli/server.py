@@ -16,6 +16,6 @@ import kevinbotlib.server
 @click.option("--xbee-baud", "xbee_baud", type=int, help="XBee Baud rate (Config override)")
 @click.option("--verbose", "verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--trace", "trace", is_flag=True, help="Enable extra-verbose trace logging")
-def server(cfg: str | None, core_port: str, core_baud: int, xbee_port: str, xbee_api: int, xbee_baud: int, *, verbose: bool, trace: bool):
+def server(cfg: str | None, core_port: str | None, core_baud: int | None, xbee_port: str | None, xbee_api: int | None, xbee_baud: int | None, *, verbose: bool, trace: bool):
     """Start the Kevinbot MQTT and XBee inferface"""
     kevinbotlib.server.bringup(cfg, core_port, core_baud, xbee_port, xbee_api, xbee_baud, verbose=verbose, trace=trace)

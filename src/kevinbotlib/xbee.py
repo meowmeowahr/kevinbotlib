@@ -1,3 +1,4 @@
+from typing import Callable
 from loguru import logger
 from serial import Serial
 import xbee
@@ -21,5 +22,15 @@ class WirelessRadio(BaseKevinbotSubsystem):
             logger.error(f"XBee API Mode {api} isn't supported. Assuming API escaped (2)")
             api = 2
 
+        self.callback: Callable | None = None
+
         self.serial = Serial(port, baud, timeout=timeout)
-        self.xbee = xbee.XBee(self.serial)
+        self.xbee = xbee.XBee(self.serial, callback=self.callback)
+
+    def get(self) -> dict:
+        """Get the latest packet (blocking)
+
+        Returns:
+            dict: Data packet
+        """
+        return self.xbee.wait_read_frame()

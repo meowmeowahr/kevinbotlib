@@ -57,6 +57,102 @@ class _MQTT:
     def data(self):
         return {"port": self.port, "host": self.host, "keepalive": self.keepalive}
 
+class _Core:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
+
+    @property
+    def port(self) -> str:
+        return self._data.get("port", "/dev/ttyAMA2")
+
+    @port.setter
+    def port(self, value: str):
+        self._data["port"] = value
+        self._config.save()
+
+    @property
+    def baud(self) -> int:
+        return self._data.get("baud", 921600)
+
+    @baud.setter
+    def baud(self, value: int):
+        self._data["baud"] = value
+        self._config.save()
+
+    @property
+    def handshake_timeout(self) -> float:
+        return self._data.get("handshake_timeout", 5.0)
+
+    @handshake_timeout.setter
+    def handshake_timeout(self, value: int):
+        self._data["handshake_timeout"] = value
+        self._config.save()
+
+    @property
+    def timeout(self) -> float:
+        return self._data.get("timeout", 5.0)
+
+    @timeout.setter
+    def timeout(self, value: int):
+        self._data["timeout"] = value
+        self._config.save()
+
+    @property
+    def tick(self) -> float:
+        return self._data.get("tick", 1)
+
+    @tick.setter
+    def tick(self, value: float):
+        self._data["tick"] = value
+        self._config.save()
+    @property
+    def data(self):
+        return {"port": self.port, "baud": self.baud, "handshake_timeout": self.handshake_timeout, "timeout": self.timeout, "tick": self.tick}
+
+class _XBee:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
+
+    @property
+    def port(self) -> str:
+        return self._data.get("port", "/dev/ttyAMA0")
+
+    @port.setter
+    def port(self, value: str):
+        self._data["port"] = value
+        self._config.save()
+
+    @property
+    def baud(self) -> int:
+        return self._data.get("baud", 921600)
+
+    @baud.setter
+    def baud(self, value: int):
+        self._data["baud"] = value
+        self._config.save()
+
+    @property
+    def timeout(self) -> float:
+        return self._data.get("timeout", 5.0)
+
+    @timeout.setter
+    def timeout(self, value: int):
+        self._data["timeout"] = value
+        self._config.save()
+
+    @property
+    def api(self) -> int:
+        return self._data.get("api", 2)
+
+    @api.setter
+    def api(self, value: int):
+        self._data["api"] = value
+        self._config.save()
+    @property
+    def data(self):
+        return {"port": self.port, "baud": self.baud, "timeout": self.timeout, "api": self.api}
 
 class KevinbotConfig:
     def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: str | Path | None = None):
@@ -72,6 +168,11 @@ class KevinbotConfig:
         self.config_path = self._get_config_path()
 
         self.config: dict = {}
+
+        self.mqtt: _MQTT = _MQTT({}, self)
+        self.core: _Core = _Core({}, self)
+        self.xbee: _XBee = _XBee({}, self)
+
         self.load()
 
     def _get_config_path(self) -> Path | None:
@@ -104,6 +205,8 @@ class KevinbotConfig:
                 self.config = yaml.safe_load(file) or {}
 
         self.mqtt = _MQTT(self.config.get("mqtt", {}), self)
+        self.core = _Core(self.config.get("core", {}), self)
+        self.xbee = _XBee(self.config.get("xbee", {}), self)
 
     def save(self) -> None:
         if self.config_path:
