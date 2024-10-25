@@ -85,6 +85,7 @@ class KevinbotConfig:
         if self.config_location == ConfigLocation.MANUAL:
             if self.manual_path:
                 return Path(self.manual_path)
+            logger.warning(f"ConfigLocation.MANUAL set without config path, defaulting to ConfigLocation.NONE")
             return None  # should never happen
         if self.config_location == ConfigLocation.USER:
             return self.user_config_path
