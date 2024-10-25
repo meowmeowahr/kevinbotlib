@@ -2,15 +2,20 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""
-KevinbotLib Robot Server
-Allow accessing KevinbotLib APIs over MQTT and XBee API Mode
-"""
-
 import click
+
+import kevinbotlib.server
 
 
 @click.command()
-def server():
+@click.option("--config", "cfg", help="Manual configuration path")
+@click.option("--core-port", "core_port", help="Core serial port (Config override)")
+@click.option("--core-baud", "core_baud", type=int, help="Core Baud rate (Config override)")
+@click.option("--xbee-port", "xbee_port", help="XBee serial port (Config override)")
+@click.option("--xbee-api", "xbee_api", type=int, help="XBee API mode (Config override)")
+@click.option("--xbee-baud", "xbee_baud", type=int, help="XBee Baud rate (Config override)")
+@click.option("--verbose", "verbose", is_flag=True, help="Enable verbose logging")
+@click.option("--trace", "trace", is_flag=True, help="Enable extra-verbose trace logging")
+def server(cfg: str | None, core_port: str, core_baud: int, xbee_port: str, xbee_api: int, xbee_baud: int, *, verbose: bool, trace: bool):
     """Start the Kevinbot MQTT and XBee inferface"""
-    click.echo("In the future...")
+    kevinbotlib.server.bringup(cfg, core_port, core_baud, xbee_port, xbee_api, xbee_baud, verbose=verbose, trace=trace)

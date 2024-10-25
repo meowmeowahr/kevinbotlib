@@ -60,19 +60,16 @@ def c_set(keys, value, as_int, as_float, as_bool, _, system, user, cfg):
         logger.critical(f"Path {cfg} does not exist")
         return
 
-    # Get the current configuration
     config = get_config(system, user, cfg)
     config_data = config.config
 
-    # Split keys into nested parts (for dot notation)
     keys_list = keys.split(".")
     sub_config = config_data
     for key in keys_list[:-1]:
         if key not in sub_config:
-            sub_config[key] = {}  # Create nested dictionaries if needed
+            sub_config[key] = {}
         sub_config = sub_config[key]
 
-    # Determine the type of value based on flags
     if as_int:
         casted_value = int(value)
     elif as_float:
@@ -82,10 +79,8 @@ def c_set(keys, value, as_int, as_float, as_bool, _, system, user, cfg):
     else:
         casted_value = value  # Default to string
 
-    # Set the value
     sub_config[keys_list[-1]] = casted_value
 
-    # Save the updated configuration
     config.save()
 
     click.echo(f"Set {keys} to {casted_value} (type: {type(casted_value).__name__}) in configuration file.")
