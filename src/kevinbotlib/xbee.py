@@ -1,9 +1,14 @@
-from typing import Callable
+from typing import TYPE_CHECKING
+
+import xbee
 from loguru import logger
 from serial import Serial
-import xbee
 
 from kevinbotlib.core import BaseKevinbotSubsystem, Kevinbot
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 
 class WirelessRadio(BaseKevinbotSubsystem):
     def __init__(self, robot: Kevinbot, port: str, baud: int, api: int, timeout: float) -> None:

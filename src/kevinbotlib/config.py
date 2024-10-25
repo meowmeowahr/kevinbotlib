@@ -57,6 +57,7 @@ class _MQTT:
     def data(self):
         return {"port": self.port, "host": self.host, "keepalive": self.keepalive}
 
+
 class _Core:
     def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
         self._config = config
@@ -106,9 +107,17 @@ class _Core:
     def tick(self, value: float):
         self._data["tick"] = value
         self._config.save()
+
     @property
     def data(self):
-        return {"port": self.port, "baud": self.baud, "handshake_timeout": self.handshake_timeout, "timeout": self.timeout, "tick": self.tick}
+        return {
+            "port": self.port,
+            "baud": self.baud,
+            "handshake_timeout": self.handshake_timeout,
+            "timeout": self.timeout,
+            "tick": self.tick,
+        }
+
 
 class _XBee:
     def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
@@ -150,9 +159,11 @@ class _XBee:
     def api(self, value: int):
         self._data["api"] = value
         self._config.save()
+
     @property
     def data(self):
         return {"port": self.port, "baud": self.baud, "timeout": self.timeout, "api": self.api}
+
 
 class KevinbotConfig:
     def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: str | Path | None = None):
