@@ -2,9 +2,9 @@
 Configuration manager for KevinbotLib
 """
 
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import Any
 
 import yaml
 from loguru import logger
@@ -21,29 +21,45 @@ class ConfigLocation(Enum):
     MANUAL = "manual"
 
 
-@dataclass
-class MqttConfig:
-    """MQTT configuration"""
+class _MQTT:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
 
-    host: str
-    port: int
-    keepalive: int
+    @property
+    def port(self):
+        return self._data.get("port", 1883)
 
-    def __setattr__(self, key, value):
-        """Allow setting attributes directly."""
-        super().__setattr__(key, value)
+    @port.setter
+    def port(self, value: int):
+        self._data["port"] = value
+        self._config.save()
+
+    @property
+    def host(self):
+        return self._data.get("host", "localhost")
+
+    @host.setter
+    def host(self, value: str):
+        self._data["host"] = value
+        self._config.save()
+
+    @property
+    def keepalive(self):
+        return self._data.get("keepalive", 60)
+
+    @keepalive.setter
+    def keepalive(self, value: int):
+        self._data["keepalive"] = value
+        self._config.save()
+
+    @property
+    def data(self):
+        return {"port": self.port, "host": self.host, "keepalive": self.keepalive}
 
 
 class KevinbotConfig:
-    """Handle Kevinbot configuration changes"""
-
-    def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: Path | str | None = None):
-        """Initialize Kevinbot Configuration storage
-
-        Args:
-            location (ConfigLocation, optional): Where to find config files. Defaults to ConfigLocation.AUTO.
-            path (Path | str | None, optional): Manually define config path. Only works if `location` is `MANUAL`. Defaults to None.
-        """
+    def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: str | Path | None = None):
         self.config_location = location
 
         self.user_config_path = Path(user_config_dir("kevinbotlib")) / "settings.yaml"
@@ -55,9 +71,8 @@ class KevinbotConfig:
 
         self.config_path = self._get_config_path()
 
-        self.config = self._load_config()
-
-        self._validate_mqtt_config()
+        self.config: dict = {}
+        self.load()
 
     def _get_config_path(self) -> Path | None:
         """Get the optimal configuration path
@@ -82,69 +97,32 @@ class KevinbotConfig:
             return self.system_config_path
         return self.user_config_path
 
-    def _load_config(self) -> dict:
-        """Loads the config from user or system file, or returns an empty dict if not found."""
+    def load(self) -> None:
         if self.config_path and self.config_path.exists():
-            logger.info(f"Loading config from {self.config_path}")
-            with open(self.config_path) as f:
-                return yaml.safe_load(f) or {}
-        else:
-            logger.warning(f"No config found at {self.config_path}, using defaults.")
-            return {}
+            with open(self.config_path) as file:
+                self.config = yaml.safe_load(file) or {}
 
-    def _validate_mqtt_config(self):
-        """Ensure that default values for MQTT config are present."""
-        if "mqtt" not in self.config:
-            self.config["mqtt"] = {}
-        if "host" not in self.config["mqtt"]:
-            self.config["mqtt"]["host"] = "localhost"
-            logger.warning("MQTT host missing, defaulting to 'localhost'.")
-        if "port" not in self.config["mqtt"]:
-            self.config["mqtt"]["port"] = 1883
-            logger.warning("MQTT port missing, defaulting to 1883.")
-        if "keepalive" not in self.config["mqtt"]:
-            self.config["mqtt"]["keepalive"] = 60
-            logger.warning("MQTT keepalive missing, defaulting to 60.")
+        self.mqtt = _MQTT(self.config.get("mqtt", {}), self)
 
-    @property
-    def mqtt(self) -> MqttConfig:
-        """Get the mqtt configuration
-
-        Returns:
-            MqttConfig: `MqttConfig` object
-        """
-        return MqttConfig(
-            host=self.config["mqtt"]["host"],
-            port=self.config["mqtt"]["port"],
-            keepalive=self.config["mqtt"]["keepalive"],
-        )
-
-    @mqtt.setter
-    def mqtt(self, new_config: MqttConfig):
-        """Set the mqtt configuration
-
-        Args:
-            new_config (MqttConfig): Mqtt configurations
-        """
-        self.config["mqtt"]["host"] = new_config.host
-        self.config["mqtt"]["port"] = new_config.port
-        self.config["mqtt"]["keepalive"] = new_config.keepalive
-        self.save_config()
-
-    def save_config(self):
-        """Save the configuration to the selected location"""
+    def save(self) -> None:
         if self.config_path:
-            self.config_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.config_path, "w") as f:
-                yaml.dump(self.config, f)
-            logger.info(f"Configuration saved to {self.config_path}")
+            with open(self.config_path, "w") as file:
+                yaml.dump(self._get_data(), file, default_flow_style=False)
         else:
             logger.error("Couldn't save configuration to empty path")
 
     def dump(self) -> str:
-        """Dump the yaml config
+        """Dump configuration
 
         Returns:
             str: YAML
         """
-        return yaml.dump(self.config, stream=None)
+        return yaml.dump(self._get_data(), default_flow_style=False)
+
+    def _get_data(self):
+        return {
+            "mqtt": self.mqtt.data,
+        }
+
+    def __repr__(self):
+        return f"{super().__repr__()}\n\n{yaml.dump(self._get_data(), default_flow_style=False)}"

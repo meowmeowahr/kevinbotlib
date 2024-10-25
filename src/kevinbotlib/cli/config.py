@@ -52,7 +52,7 @@ def c_get(keys, system, user, cfg):
 @click.option("--system", is_flag=True, help="Use global config path")
 @click.option("--user", is_flag=True, help="Use user config path")
 @click.option("--config", "cfg", help="Manual configuration path")
-def c_set(keys, value, as_int, as_float, as_bool, as_str, system, user, cfg):
+def c_set(keys, value, as_int, as_float, as_bool, _, system, user, cfg):
     validate_single_flag(system, user)
     logger.disable("kevinbotlib.config")  # hush warnings
 
@@ -86,11 +86,9 @@ def c_set(keys, value, as_int, as_float, as_bool, as_str, system, user, cfg):
     sub_config[keys_list[-1]] = casted_value
 
     # Save the updated configuration
-    config.save_config()
+    config.save()
 
     click.echo(f"Set {keys} to {casted_value} (type: {type(casted_value).__name__}) in configuration file.")
-
-
 
 
 def validate_single_flag(system, user):
