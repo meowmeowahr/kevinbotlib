@@ -15,6 +15,16 @@ from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Kevinbot
 from kevinbotlib.xbee import WirelessRadio
 
+class KevinbotServer:
+    def __init__(self, config: KevinbotConfig, robot: Kevinbot, radio: WirelessRadio) -> None:
+        self.config = config
+        self.robot = robot
+        self.radio = radio
+
+        self.radio.callback = self.radio_callback
+
+    def radio_callback(self, rf_data: dict):
+        logger.trace(f"Got rf packet: {rf_data}")
 
 def bringup(
     config_path: str | Path | None,
@@ -29,5 +39,7 @@ def bringup(
     logger.info(f"New core connection: {config.core.port}@{config.core.baud}")
     logger.debug(f"Robot status is: {robot.get_state()}")
 
-    _ = WirelessRadio(robot, config.xbee.port, config.xbee.baud, config.xbee.api, config.xbee.timeout)
+    radio = WirelessRadio(robot, config.xbee.port, config.xbee.baud, config.xbee.api, config.xbee.timeout)
     logger.info(f"Xbee connection: {config.xbee.port}@{config.xbee.baud}")
+
+    KevinbotServer(config, robot, radio)
