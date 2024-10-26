@@ -237,6 +237,8 @@ class KevinbotConfig:
     def _get_data(self):
         return {
             "mqtt": self.mqtt.data,
+            "core": self.core.data,
+            "xbee": self.xbee.data,
         }
 
     def __repr__(self):

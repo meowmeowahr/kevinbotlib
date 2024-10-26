@@ -86,6 +86,21 @@ def c_set(keys, value, as_int, as_float, as_bool, _, system, user, cfg):
     click.echo(f"Set {keys} to {casted_value} (type: {type(casted_value).__name__}) in configuration file.")
 
 
+@click.command("save", help="Save the configuration file, updates current file, or creates a new one")
+@click.option("--system", is_flag=True, help="Use global config path")
+@click.option("--user", is_flag=True, help="Use user config path")
+@click.option("--config", "cfg", help="Manual configuration path")
+def c_save(system, user, cfg):
+    validate_single_flag(system, user)
+
+    if cfg and not Path(cfg).exists():
+        logger.critical(f"Path {cfg} does not exist")
+        return
+
+    config = get_config(system, user, cfg)
+    config.save()
+
+
 def validate_single_flag(system, user):
     """Ensure only one flag is passed"""
     if system and user:
@@ -143,3 +158,4 @@ config.add_command(c_get)
 config.add_command(c_set)
 config.add_command(c_path)
 config.add_command(c_echo)
+config.add_command(c_save)
