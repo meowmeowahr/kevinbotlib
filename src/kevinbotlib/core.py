@@ -98,7 +98,7 @@ class Kevinbot:
     def disconnect(self):
         """Disconnect core gracefully"""
         self._state.connected = False
-        if self.serial:
+        if self.serial and self.serial.is_open:
             self.serial.write(b"core.link.unlink\n")
             self.serial.flush()
             self.serial.close()
@@ -206,7 +206,12 @@ class Kevinbot:
 
     def _rx_loop(self, serial: Serial, delimeter: str = "="):
         while True:
-            raw: bytes = serial.readline()
+            try:
+                raw: bytes = serial.readline()
+            except TypeError:
+                # serial has been stopped
+                return
+            
             cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0]
 
             val: str | None = None
@@ -284,7 +289,7 @@ class Kevinbot:
         return self.serial
 
     def _tick(self):
-        if self.serial:
+        if self.serial and self.serial.is_open:
             self.serial.write(b"core.tick\n")
 
     def _register_component(self, component: BaseKevinbotSubsystem):

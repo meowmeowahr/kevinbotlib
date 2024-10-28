@@ -141,3 +141,10 @@ class KevinbotState:
     thermal: ThermometerState = field(default_factory=ThermometerState)
     enviro: EnviroState = field(default_factory=EnviroState)
     lighting: LightingState = field(default_factory=LightingState)
+
+
+@dataclass
+class KevinbotServerState:
+    """The state system used internally in the Kevinbot Server"""
+
+    mqtt_connected: bool = False

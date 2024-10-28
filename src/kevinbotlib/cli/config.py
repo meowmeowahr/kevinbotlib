@@ -48,7 +48,7 @@ def c_get(keys, system, user, cfg):
 @click.option("--int", "as_int", is_flag=True, help="Set value as an integer")
 @click.option("--float", "as_float", is_flag=True, help="Set value as a float")
 @click.option("--bool", "as_bool", is_flag=True, help="Set value as a boolean")
-@click.option("--str", "as_str", is_flag=True, help="Set value as a string (default)")
+@click.option("--str", "_", is_flag=True, help="Set value as a string (default)")
 @click.option("--system", is_flag=True, help="Use global config path")
 @click.option("--user", is_flag=True, help="Use user config path")
 @click.option("--config", "cfg", help="Manual configuration path")

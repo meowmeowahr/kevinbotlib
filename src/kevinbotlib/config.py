@@ -165,6 +165,25 @@ class _XBee:
         return {"port": self.port, "baud": self.baud, "timeout": self.timeout, "api": self.api}
 
 
+class _Server:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
+
+    @property
+    def root_topic(self):
+        return self._data.get("root_topic", "kevinbot")
+
+    @root_topic.setter
+    def root_topic(self, value: int):
+        self._data["root_topic"] = value
+        self._config.save()
+
+    @property
+    def data(self):
+        return {"root_topic": self.root_topic}
+
+
 class KevinbotConfig:
     def __init__(self, location: ConfigLocation = ConfigLocation.AUTO, path: str | Path | None = None):
         self.config_location = location
@@ -183,6 +202,7 @@ class KevinbotConfig:
         self.mqtt: _MQTT = _MQTT({}, self)
         self.core: _Core = _Core({}, self)
         self.xbee: _XBee = _XBee({}, self)
+        self.server: _Server = _Server({}, self)
 
         self.load()
 
@@ -218,6 +238,7 @@ class KevinbotConfig:
         self.mqtt = _MQTT(self.config.get("mqtt", {}), self)
         self.core = _Core(self.config.get("core", {}), self)
         self.xbee = _XBee(self.config.get("xbee", {}), self)
+        self.server = _Server(self.config.get("server", {}), self)
 
     def save(self) -> None:
         if self.config_path:
@@ -239,6 +260,7 @@ class KevinbotConfig:
             "mqtt": self.mqtt.data,
             "core": self.core.data,
             "xbee": self.xbee.data,
+            "server": self.server.data,
         }
 
     def __repr__(self):

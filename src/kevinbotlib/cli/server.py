@@ -12,10 +12,12 @@ import kevinbotlib.server
 
 @click.command()
 @click.option("--config", "cfg", help="Manual configuration path")
+@click.option("--root-topic", "root", help="MQTT Topic override")
 @click.option("--verbose", "verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--trace", "trace", is_flag=True, help="Enable extra-verbose trace logging")
 def server(
     cfg: str | None,
+    root: str | None,
     *,
     verbose: bool,
     trace: bool,
@@ -29,4 +31,4 @@ def server(
         logger.remove()
         logger.add(sys.stdout, level=10)
 
-    kevinbotlib.server.bringup(cfg)
+    kevinbotlib.server.bringup(cfg, root)
