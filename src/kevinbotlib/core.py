@@ -211,7 +211,7 @@ class Kevinbot:
             except TypeError:
                 # serial has been stopped
                 return
-            
+
             cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0]
 
             val: str | None = None
@@ -262,14 +262,16 @@ class Kevinbot:
                 case "sensors.temps":
                     if val:
                         temps = val.split(",")
+                        valid = True
                         for temp in temps:
                             if not re.match("^[-+]?[0-9]+$", temp):
                                 logger.error(f"Found non-integer value in temps, {temps}")
-                                continue
-
-                        self._state.thermal.left_motor = Temperature(int(temps[0]) / 100)
-                        self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
-                        self._state.thermal.internal = Temperature(int(temps[2]) / 100)
+                                valid = False
+                                break
+                        if valid:
+                            self._state.thermal.left_motor = Temperature(int(temps[0]) / 100)
+                            self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
+                            self._state.thermal.internal = Temperature(int(temps[2]) / 100)
                 case "sensors.bme":
                     if val:
                         vals = val.split(",")

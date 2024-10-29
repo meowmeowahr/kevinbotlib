@@ -41,7 +41,6 @@ class WirelessRadio(BaseKevinbotSubsystem):
         return self.xbee.wait_read_frame()
 
     def disconnect(self):
-        """Disconnect robot radio, and halt processing
-        """
+        """Disconnect robot radio, and halt processing"""
         self.xbee.halt()
         self.serial.close()

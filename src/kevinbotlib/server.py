@@ -7,16 +7,16 @@ KevinbotLib Robot Server
 Allow accessing KevinbotLib APIs over MQTT and XBee API Mode
 """
 
-import sys
 import atexit
+import sys
 from pathlib import Path
 
 import shortuuid
 from loguru import logger
-from paho.mqtt.client import Client
+from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ignore
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
-from kevinbotlib.core import Kevinbot
+from kevinbotlib.core import Drivebase, Kevinbot
 from kevinbotlib.states import KevinbotServerState
 from kevinbotlib.xbee import WirelessRadio
 
@@ -29,6 +29,8 @@ class KevinbotServer:
         self.root: str = root_topic if root_topic else self.config.server.root_topic
         self.state: KevinbotServerState = KevinbotServerState()
 
+        self.drive = Drivebase(robot)
+
         self.radio.callback = self.radio_callback
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
@@ -36,8 +38,9 @@ class KevinbotServer:
 
         # Create mqtt client
         self.client_id = f"kevinbot-server-{shortuuid.random()}"
-        self.client = Client(client_id=self.client_id)
+        self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
         self.client.on_connect = self.on_mqtt_connect
+        self.client.on_message = self.on_mqtt_message
 
         try:
             self.client.connect(self.config.mqtt.host, self.config.mqtt.port, self.config.mqtt.keepalive)
@@ -57,10 +60,44 @@ class KevinbotServer:
         if robot.rx_thread:
             robot.rx_thread.join()
 
-    def on_mqtt_connect(self, _, __, ___, rc):
-        logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}")
-        self.client.subscribe(self.root + "/#")
-    
+    def on_mqtt_connect(self, _, __, ___, rc, props):
+        logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
+        self.client.subscribe(self.root + "/#", 0)  # low-priority
+        self.client.subscribe(self.root + "/drivebase/drive/cmd", 1)  # mid-priority
+        self.client.subscribe(self.root + "/core/enable/cmd", 1)
+        self.client.publish(self.root + "/core/enable/st", "False", 1)
+
+    def on_mqtt_message(self, _, __, msg: MQTTMessage):
+        logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
+
+        if msg.topic[0] == "/" or msg.topic[-1] == "/":
+            logger.warning(f"MQTT topic: {msg.topic} has a leading/trailing slash. Removing it.")
+            topic = msg.topic.strip("/")
+        else:
+            topic = msg.topic
+
+        subtopics = topic.split("/")[1:]
+        if subtopics[-1] == "st":
+            return  # topic is state topic, useless here
+        if subtopics[-1] == "cmd":
+            # command topic
+            subtopics.remove("cmd")
+        else:
+            logger.warning(f"Unknown topic ending: {subtopics[-1]}, should either be 'st' or 'cmd'")
+
+        value = msg.payload.decode("utf-8")
+
+        match msg.qos:
+            case 1:
+                match subtopics:
+                    case ["core", "enable"]:
+                        if value in ["1", "True", "true", "TRUE"]:
+                            self.robot.request_enable()
+                        else:
+                            self.robot.request_disable()
+                    case ["drivebase", "drive"]:
+                        self.drive.drive_at_power(float(value.split(",", 2)[0]), float(value.split(",", 2)[1]))
+
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")
 
@@ -69,6 +106,7 @@ class KevinbotServer:
         self.client.disconnect()
         self.robot.disconnect()
         self.radio.disconnect()
+
 
 def bringup(
     config_path: str | Path | None,
