@@ -26,19 +26,97 @@ class BaseKevinbotSubsystem:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
-
-class Kevinbot:
-    """The main robot class"""
-
+class BaseKevinbot:
     def __init__(self) -> None:
         self._state = KevinbotState()
         self._subsystems: list[BaseKevinbotSubsystem] = []
 
+        self._auto_disconnect = True
+        atexit.register(self.disconnect)
+    def get_state(self) -> KevinbotState:
+        """Gets the current state of the robot
+
+        Returns:
+            KevinbotState: State class
+        """
+        return self._state
+
+    def disconnect(self):
+        """Basic robot disconnect
+        """
+        self._state.connected = False
+        self.send("core.link.unlink")
+
+
+    @property
+    def auto_disconnect(self) -> bool:
+        """Getter for auto disconnect state.
+
+        Returns:
+            bool: Whether to disconnect on application exit
+        """
+        return self._auto_disconnect
+
+    @auto_disconnect.setter
+    def auto_disconnect(self, value: bool):
+        """Setter for auto disconnect.
+
+        Args:
+            value (bool): Whether to disconnect on application exit
+        """
+        self._auto_disconnect = value
+        if value:
+            atexit.register(self.disconnect)
+        else:
+            atexit.unregister(self.disconnect)
+
+    def send(self, data: str):
+        """Null implementation of the send method
+
+        Args:
+            data (str): Data to send nowhere
+
+        Raises:
+            NotImplementedError: Always raised
+        """
+        msg = "Function not implemented"
+        raise NotImplementedError(msg)
+
+    def request_enable(self) -> int:
+        """Request the core to enable
+
+        Returns:
+            int: Always 1
+        """
+        self.send("kevinbot.tryenable=1")
+        return 1
+
+    def request_disable(self) -> int:
+        """Request the core to disable
+
+        Returns:
+            int: Always 1
+        """
+        self.send("kevinbot.tryenable=0")
+        return 1
+
+
+    def e_stop(self):
+        """Attempt to send and E-Stop signal to the Core"""
+        self.send("system.estop")
+
+    def _register_component(self, component: BaseKevinbotSubsystem):
+        self._subsystems.append(component)
+
+class Kevinbot(BaseKevinbot):
+    """The main serial robot class"""
+
+    def __init__(self) -> None:
+        super().__init__()
+
         self.serial: Serial | None = None
         self.rx_thread: Thread | None = None
 
-        self._auto_disconnect = True
-        atexit.register(self.disconnect)
 
     def connect(
         self,
@@ -97,51 +175,13 @@ class Kevinbot:
 
     def disconnect(self):
         """Disconnect core gracefully"""
-        self._state.connected = False
+        super().disconnect()
         if self.serial and self.serial.is_open:
-            self.serial.write(b"core.link.unlink\n")
             self.serial.flush()
             self.serial.close()
         else:
             logger.warning("Already disconnected")
 
-    def request_enable(self) -> int:
-        """Request the core to enable
-
-        Returns:
-            int: -1 = core disconnected, -2 = core in error state, 1 = enable requested
-        """
-        if not self.serial:
-            logger.error("Couldn't request state change, please use connect() first")
-            return -1
-        if self._state.error != CoreErrors.OK:
-            logger.error("Couldn't request state change, core is in an error state")
-            return -2
-        self.serial.write(b"kevinbot.tryenable=1\n")
-        return 1
-
-    def request_disable(self) -> int:
-        """Request the core to disable
-
-        Returns:
-            int: -1 = core disconnected, -2 = core in error state, 1 = disable requested
-        """
-        if not self.serial:
-            logger.error("Couldn't request state change, please use connect() first")
-            return -1
-        if self._state.error != CoreErrors.OK:
-            logger.error("Couldn't request state change, core is in an error state")
-            return -2
-        self.serial.write(b"kevinbot.tryenable=0\n")
-        return 1
-
-    def e_stop(self):
-        """Attempt to send and E-Stop signal to the Core"""
-        if not self.serial:
-            logger.error("Couldn't send e-stop, please use connect() first")
-            return
-
-        self.serial.write(b"system.estop\n")
 
     def tick_loop(self, interval: float = 1):
         """Send ticks indefinetely
@@ -153,13 +193,6 @@ class Kevinbot:
             self._tick()
             time.sleep(interval)
 
-    def get_state(self) -> KevinbotState:
-        """Gets the current state of the robot
-
-        Returns:
-            KevinbotState: State class
-        """
-        return self._state
 
     def send(self, data: str):
         """Send a string through serial.
@@ -181,28 +214,6 @@ class Kevinbot:
             self.serial.write(data)
         else:
             logger.warning(f"Couldn't transmit data: {data!r}, Core isn't connected")
-
-    @property
-    def auto_disconnect(self) -> bool:
-        """Getter for auto disconnect state.
-
-        Returns:
-            bool: Whether to disconnect on application exit
-        """
-        return self._auto_disconnect
-
-    @auto_disconnect.setter
-    def auto_disconnect(self, value: bool):
-        """Setter for auto disconnect.
-
-        Args:
-            value (bool): Whether to disconnect on application exit
-        """
-        self._auto_disconnect = value
-        if value:
-            atexit.register(self.disconnect)
-        else:
-            atexit.unregister(self.disconnect)
 
     def _rx_loop(self, serial: Serial, delimeter: str = "="):
         while True:
@@ -293,9 +304,6 @@ class Kevinbot:
     def _tick(self):
         if self.serial and self.serial.is_open:
             self.serial.write(b"core.tick\n")
-
-    def _register_component(self, component: BaseKevinbotSubsystem):
-        self._subsystems.append(component)
 
 
 class Drivebase(BaseKevinbotSubsystem):

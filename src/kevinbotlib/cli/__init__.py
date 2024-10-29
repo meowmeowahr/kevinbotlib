@@ -34,6 +34,7 @@ cli.add_command(server)
 cli.add_command(listen)
 cli.add_command(pub)
 cli.add_command(config)
+cli.add_command(config)
 
 
 def main():  # no cov
