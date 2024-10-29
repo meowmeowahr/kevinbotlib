@@ -22,11 +22,15 @@ class BaseKevinbotSubsystem:
     Not to be used directly
     """
 
-    def __init__(self, robot: "Kevinbot") -> None:
+    def __init__(self, robot: "SerialKevinbot") -> None:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
 class BaseKevinbot:
+    """The base robot class.
+
+    Not to be used directly
+    """
     def __init__(self) -> None:
         self._state = KevinbotState()
         self._subsystems: list[BaseKevinbotSubsystem] = []
@@ -108,7 +112,7 @@ class BaseKevinbot:
     def _register_component(self, component: BaseKevinbotSubsystem):
         self._subsystems.append(component)
 
-class Kevinbot(BaseKevinbot):
+class SerialKevinbot(BaseKevinbot):
     """The main serial robot class"""
 
     def __init__(self) -> None:
@@ -358,7 +362,7 @@ class Drivebase(BaseKevinbotSubsystem):
 class Servo:
     """Individually controllable servo"""
 
-    def __init__(self, robot: Kevinbot, index: int) -> None:
+    def __init__(self, robot: SerialKevinbot, index: int) -> None:
         self.robot = robot
         self.index = index
 

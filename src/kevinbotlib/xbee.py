@@ -4,14 +4,14 @@ import xbee
 from loguru import logger
 from serial import Serial
 
-from kevinbotlib.core import BaseKevinbotSubsystem, Kevinbot
+from kevinbotlib.core import BaseKevinbotSubsystem, SerialKevinbot
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 
 class WirelessRadio(BaseKevinbotSubsystem):
-    def __init__(self, robot: Kevinbot, port: str, baud: int, api: int, timeout: float) -> None:
+    def __init__(self, robot: SerialKevinbot, port: str, baud: int, api: int, timeout: float) -> None:
         """Initialize Kevinbot Wireless Radio (XBee)
 
         Args:

@@ -4,9 +4,9 @@
 
 import time
 
-from kevinbotlib import Drivebase, Kevinbot
+from kevinbotlib import Drivebase, SerialKevinbot
 
-robot = Kevinbot()
+robot = SerialKevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 drive = Drivebase(robot)

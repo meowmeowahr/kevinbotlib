@@ -16,13 +16,13 @@ from loguru import logger
 from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ignore
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
-from kevinbotlib.core import Drivebase, Kevinbot
+from kevinbotlib.core import Drivebase, SerialKevinbot
 from kevinbotlib.states import KevinbotServerState
 from kevinbotlib.xbee import WirelessRadio
 
 
 class KevinbotServer:
-    def __init__(self, config: KevinbotConfig, robot: Kevinbot, radio: WirelessRadio, root_topic: str | None) -> None:
+    def __init__(self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio, root_topic: str | None) -> None:
         self.config = config
         self.robot = robot
         self.radio = radio
@@ -119,7 +119,7 @@ def bringup(
     config = KevinbotConfig(ConfigLocation.MANUAL, config_path) if config_path else KevinbotConfig(ConfigLocation.AUTO)
     logger.info(f"Loaded config at {config.config_path}")
 
-    robot = Kevinbot()
+    robot = SerialKevinbot()
     robot.auto_disconnect = False
     robot.connect(
         config.core.port, config.core.baud, config.core.handshake_timeout, config.core.tick, config.core.timeout

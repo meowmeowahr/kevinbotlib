@@ -5,9 +5,9 @@
 
 import time
 
-from kevinbotlib import Kevinbot, Lighting
+from kevinbotlib import SerialKevinbot, Lighting
 
-robot = Kevinbot()
+robot = SerialKevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 light = Lighting(robot)

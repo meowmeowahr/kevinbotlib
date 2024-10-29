@@ -7,9 +7,9 @@ import time
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-from kevinbotlib import Kevinbot
+from kevinbotlib import SerialKevinbot
 
-robot = Kevinbot()
+robot = SerialKevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 yaw_data, pitch_data, roll_data, time_data = [], [], [], []
