@@ -45,6 +45,10 @@ class KevinbotServer:
             logger.critical(f"MQTT client failed to connect: {e!r}")
             sys.exit()
 
+        if self.root[0] == "/" or self.root[-1] == "/":
+            logger.warning(f"MQTT topic: {self.root} has a leading/trailing slash. Removing it.")
+            self.root = self.root.strip("/")
+
         self.client.loop_start()
 
         atexit.register(self.stop)
@@ -55,7 +59,8 @@ class KevinbotServer:
 
     def on_mqtt_connect(self, _, __, ___, rc):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}")
-
+        self.client.subscribe(self.root + "/#")
+    
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")
 
