@@ -44,6 +44,7 @@ class KevinbotServer:
         self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
+        self.clients = 0
 
         try:
             self.client.connect(self.config.mqtt.host, self.config.mqtt.port, self.config.mqtt.keepalive)
@@ -66,10 +67,19 @@ class KevinbotServer:
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
         self.client.subscribe(self.root + "/#", 0)
-        self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
+        self.client.subscribe("$SYS/broker/clients/connected")
+        # self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
+
+        if msg.topic.startswith("$SYS"):
+            # system data
+            match msg.topic:
+                case "$SYS/broker/clients/connected":
+                    self.clients = int(msg.payload.decode("utf-8")) - 1
+                    logger.info(f"There are now {self.clients} connected clients")
+            return
 
         if msg.topic[0] == "/" or msg.topic[-1] == "/":
             logger.warning(f"MQTT topic: {msg.topic} has a leading/trailing slash. Removing it.")
