@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from kevinbotlib.core import Drivebase, SerialKevinbot, Lighting, Servo, Servos
+from kevinbotlib.core import Drivebase, Lighting, SerialKevinbot, Servo, Servos, MqttKevinbot
+from kevinbotlib.xbee import WirelessRadio
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import (
     BmsBatteryState,
@@ -18,10 +19,12 @@ from kevinbotlib.states import (
 
 __all__ = [
     "SerialKevinbot",
+    "MqttKevinbot",
     "Drivebase",
     "Servo",
     "Servos",
     "Lighting",
+    "WirelessRadio",
     "KevinbotState",
     "DrivebaseState",
     "ServoState",

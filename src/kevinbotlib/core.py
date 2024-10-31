@@ -3,17 +3,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
+import logging
 import re
 import time
 from enum import Enum
 from threading import Thread
 
+import shortuuid
 from loguru import logger
+from paho.mqtt.client import CallbackAPIVersion, Client, MQTTErrorCode  # type: ignore
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.misc import Temperature
-from kevinbotlib.states import BmsBatteryState, CoreErrors, KevinbotState, LightingState, MotorDriveStatus
+from kevinbotlib.states import BmsBatteryState, KevinbotState, LightingState, MotorDriveStatus
 
 
 class BaseKevinbotSubsystem:
@@ -26,17 +29,20 @@ class BaseKevinbotSubsystem:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
+
 class BaseKevinbot:
     """The base robot class.
 
     Not to be used directly
     """
+
     def __init__(self) -> None:
         self._state = KevinbotState()
         self._subsystems: list[BaseKevinbotSubsystem] = []
 
         self._auto_disconnect = True
         atexit.register(self.disconnect)
+
     def get_state(self) -> KevinbotState:
         """Gets the current state of the robot
 
@@ -46,11 +52,9 @@ class BaseKevinbot:
         return self._state
 
     def disconnect(self):
-        """Basic robot disconnect
-        """
+        """Basic robot disconnect"""
         self._state.connected = False
         self.send("core.link.unlink")
-
 
     @property
     def auto_disconnect(self) -> bool:
@@ -83,7 +87,7 @@ class BaseKevinbot:
         Raises:
             NotImplementedError: Always raised
         """
-        msg = "Function not implemented"
+        msg = f"Function not implemented, attempting to send {data}"
         raise NotImplementedError(msg)
 
     def request_enable(self) -> int:
@@ -104,13 +108,13 @@ class BaseKevinbot:
         self.send("kevinbot.tryenable=0")
         return 1
 
-
     def e_stop(self):
         """Attempt to send and E-Stop signal to the Core"""
         self.send("system.estop")
 
     def _register_component(self, component: BaseKevinbotSubsystem):
         self._subsystems.append(component)
+
 
 class SerialKevinbot(BaseKevinbot):
     """The main serial robot class"""
@@ -120,7 +124,6 @@ class SerialKevinbot(BaseKevinbot):
 
         self.serial: Serial | None = None
         self.rx_thread: Thread | None = None
-
 
     def connect(
         self,
@@ -186,7 +189,6 @@ class SerialKevinbot(BaseKevinbot):
         else:
             logger.warning("Already disconnected")
 
-
     def tick_loop(self, interval: float = 1):
         """Send ticks indefinetely
 
@@ -196,7 +198,6 @@ class SerialKevinbot(BaseKevinbot):
         while True:
             self._tick()
             time.sleep(interval)
-
 
     def send(self, data: str):
         """Send a string through serial.
@@ -308,6 +309,64 @@ class SerialKevinbot(BaseKevinbot):
     def _tick(self):
         if self.serial and self.serial.is_open:
             self.serial.write(b"core.tick\n")
+
+
+class MqttKevinbot(BaseKevinbot):
+    """KevinbotLib interface over MQTT"""
+
+    def __init__(self, cid: str | None = None) -> None:
+        """Instansiate a new KevinbotLib interface over MQTT
+
+        Args:
+            cid (str | None, optional): MQTT Client id. Defaults to an auto-generated uuid.
+        """
+        super().__init__()
+
+        self.root_topic = "kevinbot"
+        self.host = "localhost"
+        self.port = 1883
+        self.keepalive = 60
+
+        self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
+        self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
+        self.client.loop_start()
+
+    def connect(
+        self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60
+    ) -> MQTTErrorCode:
+        """Connect to MQTT Broker
+
+        Args:
+            root_topic (str, optional): Root communication topic. Defaults to "kevinbot".
+            host (str, optional): KevinbotLib server host. Defaults to "localhost".
+            port (int, optional): Kevinbot MQTT Broker port. Defaults to 1883.
+            keepalive (int, optional): Maximum period in seconds between communications with the broker. Defaults to 60.
+
+        Returns:
+            MQTTErrorCode: Connection error
+        """
+        self.host = host
+        self.port = port
+        self.keepalive = keepalive
+        self.root_topic = root_topic
+
+        return self.client.connect(self.host, self.port, self.keepalive)
+    
+
+    def send(self, data: str):
+        """Determine topic and publish data. Compatible with send of `SerialKevinbot`
+
+        Args:
+            data (str): Data to parse and publish
+        """
+        cmd, val = data.split("=", 2)
+
+        match cmd:
+            case "kevinbot.tryenable": qos = 1
+            case "system.estop": qos = 1
+            case _: qos = 0
+
+        self.client.publish(f"{self.root_topic}/{cmd.replace('.', '/')}/cmd", val, qos)
 
 
 class Drivebase(BaseKevinbotSubsystem):

@@ -22,13 +22,16 @@ from kevinbotlib.xbee import WirelessRadio
 
 
 class KevinbotServer:
-    def __init__(self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio, root_topic: str | None) -> None:
+    def __init__(
+        self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio, root_topic: str | None
+    ) -> None:
         self.config = config
         self.robot = robot
         self.radio = radio
         self.root: str = root_topic if root_topic else self.config.server.root_topic
         self.state: KevinbotServerState = KevinbotServerState()
 
+        self.robot.request_disable()
         self.drive = Drivebase(robot)
 
         self.radio.callback = self.radio_callback
@@ -62,12 +65,8 @@ class KevinbotServer:
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
-        self.client.subscribe(self.root + "/#", 0)  # low-priority
-        self.client.subscribe(self.root + "/drive/power/cmd", 1)  # mid-priority
-        self.client.subscribe(self.root + "/drive/stop/cmd", 1)
-        self.client.subscribe(self.root + "/core/request_enable/cmd", 1)
-        self.client.subscribe(self.root + "/system/estop/cmd", 1)
-        self.client.publish(self.root + "/core/request_enable/st", "False", 1)
+        self.client.subscribe(self.root + "/#", 0)
+        self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -88,19 +87,16 @@ class KevinbotServer:
             logger.warning(f"Unknown topic ending: {subtopics[-1]}, should either be 'st' or 'cmd'")
 
         value = msg.payload.decode("utf-8")
-
-        match msg.qos:
-            case 1:
-                match subtopics:
-                    case ["core", "request_enable"]:
-                        if value in ["1", "True", "true", "TRUE"]:
-                            self.robot.request_enable()
-                        else:
-                            self.robot.request_disable()
-                    case ["system", "estop"]:
-                        self.robot.e_stop()
-                    case ["drive", "power"]:
-                        self.drive.drive_at_power(float(value.split(",", 2)[0]), float(value.split(",", 2)[1]))
+        match subtopics:
+            case ["kevinbot", "tryenable"]:
+                if value in ["1", "True", "true", "TRUE"]:
+                    self.robot.request_enable()
+                else:
+                    self.robot.request_disable()
+            case ["system", "estop"]:
+                self.robot.e_stop()
+            case ["drive", "power"]:
+                self.drive.drive_at_power(float(value.split(",", 2)[0])/100, float(value.split(",", 2)[1])/100)
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")

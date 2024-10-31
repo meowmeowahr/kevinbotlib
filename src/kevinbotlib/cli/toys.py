@@ -5,5 +5,3 @@
 """
 Combination of various utility apps for KevinbotLib
 """
-
-import click
