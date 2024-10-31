@@ -2,11 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from collections.abc import Iterable
-from dataclasses import dataclass, field
 from enum import Enum
 
-from kevinbotlib.misc import Temperature
+from pydantic import BaseModel, Field
 
 
 class CoreErrors(Enum):
@@ -50,83 +48,75 @@ class BmsBatteryState(Enum):
     STOPPED = 4  # Stopped state if BMS driver crashed
 
 
-@dataclass
-class DrivebaseState:
+class DrivebaseState(BaseModel):
     """The state of the drivebase as a whole"""
 
     left_power: int = 0
     right_power: int = 0
-    amps: list[float] = field(default_factory=lambda: [0, 0])
-    watts: list[float] = field(default_factory=lambda: [0, 0])
-    status: list[MotorDriveStatus] = field(default_factory=lambda: [MotorDriveStatus.UNKNOWN, MotorDriveStatus.UNKNOWN])
+    amps: list[float] = Field(default_factory=lambda: [0, 0])
+    watts: list[float] = Field(default_factory=lambda: [0, 0])
+    status: list[MotorDriveStatus] = Field(default_factory=lambda: [MotorDriveStatus.UNKNOWN, MotorDriveStatus.UNKNOWN])
 
 
-@dataclass
-class ServoState:
+class ServoState(BaseModel):
     """The state of the servo subsystem"""
 
-    angles: list[int] = field(default_factory=lambda: [-1] * 32)
+    angles: list[int] = Field(default_factory=lambda: [-1] * 32)
 
 
-@dataclass
-class BMState:
+class BMState(BaseModel):
     """The state of the BMS (Battery Management System)"""
 
-    voltages: list[float] = field(default_factory=lambda: [0.0, 0.0])
-    raw_voltages: list[float] = field(default_factory=lambda: [0.0, 0.0])
-    states: list[BmsBatteryState] = field(default_factory=lambda: [BmsBatteryState.UNKNOWN, BmsBatteryState.UNKNOWN])
+    voltages: list[float] = Field(default_factory=lambda: [0.0, 0.0])
+    raw_voltages: list[float] = Field(default_factory=lambda: [0.0, 0.0])
+    states: list[BmsBatteryState] = Field(default_factory=lambda: [BmsBatteryState.UNKNOWN, BmsBatteryState.UNKNOWN])
 
 
-@dataclass
-class IMUState:
+class IMUState(BaseModel):
     """The state of the IMU (Inertial Measurement System)"""
 
-    accel: list[int] = field(default_factory=lambda: [-1] * 3)  # X Y Z
-    gyro: list[int] = field(default_factory=lambda: [-1] * 3)  # R P Y
+    accel: list[int] = Field(default_factory=lambda: [-1] * 3)  # X Y Z
+    gyro: list[int] = Field(default_factory=lambda: [-1] * 3)  # R P Y
 
 
-@dataclass
-class ThermometerState:
+class ThermometerState(BaseModel):
     """The state of the DS18B20 Thermometers (does not include BME280)"""
 
-    left_motor: Temperature = field(default_factory=lambda: Temperature(-1))
-    right_motor: Temperature = field(default_factory=lambda: Temperature(-1))
-    internal: Temperature = field(default_factory=lambda: Temperature(-1))
+    left_motor: float = -1
+    right_motor: float = -1
+    internal: float = -1
 
 
-@dataclass
-class EnviroState:
+class EnviroState(BaseModel):
     """The state of the BME280 Envoronmental sensor"""
 
-    temperature: Temperature = field(default_factory=lambda: Temperature(-1))
+    temperature: float = -1
     humidity: float = 0
     pressure: int = 0
 
 
-@dataclass
-class LightingState:
+class LightingState(BaseModel):
     """The state of Kevinbot's led segments"""
 
     camera: int = 0
     head_effect: str = "unknown"
     head_bright: int = 0
     head_update: int = -1
-    head_color1: Iterable[int] = (0, 0, 0)
-    head_color2: Iterable[int] = (0, 0, 0)
+    head_color1: list[int] = Field(default=[0,0,0], min_length=3)
+    head_color2: list[int] = Field(default=[0,0,0], min_length=3)
     body_effect: str = "unknown"
     body_bright: int = 0
     body_update: int = -1
-    body_color1: Iterable[int] = (0, 0, 0)
-    body_color2: Iterable[int] = (0, 0, 0)
+    body_color1: list[int] = Field(default=[0,0,0], min_length=3)
+    body_color2: list[int] = Field(default=[0,0,0], min_length=3)
     base_effect: str = "unknown"
     base_bright: int = 0
     base_update: int = -1
-    base_color1: Iterable[int] = (0, 0, 0)
-    base_color2: Iterable[int] = (0, 0, 0)
+    base_color1: list[int] = Field(default=[0,0,0], min_length=3)
+    base_color2: list[int] = Field(default=[0,0,0], min_length=3)
 
 
-@dataclass
-class KevinbotState:
+class KevinbotState(BaseModel):
     """The state of the robot as a whole"""
 
     connected: bool = False
@@ -134,17 +124,16 @@ class KevinbotState:
     error: CoreErrors = CoreErrors.OK
     uptime: int = 0
     uptime_ms: int = 0
-    motion: DrivebaseState = field(default_factory=DrivebaseState)
-    servos: ServoState = field(default_factory=ServoState)
-    battery: BMState = field(default_factory=BMState)
-    imu: IMUState = field(default_factory=IMUState)
-    thermal: ThermometerState = field(default_factory=ThermometerState)
-    enviro: EnviroState = field(default_factory=EnviroState)
-    lighting: LightingState = field(default_factory=LightingState)
+    motion: DrivebaseState = Field(default_factory=DrivebaseState)
+    servos: ServoState = Field(default_factory=ServoState)
+    battery: BMState = Field(default_factory=BMState)
+    imu: IMUState = Field(default_factory=IMUState)
+    thermal: ThermometerState = Field(default_factory=ThermometerState)
+    enviro: EnviroState = Field(default_factory=EnviroState)
+    lighting: LightingState = Field(default_factory=LightingState)
 
 
-@dataclass
-class KevinbotServerState:
+class KevinbotServerState(BaseModel):
     """The state system used internally in the Kevinbot Server"""
 
     mqtt_connected: bool = False

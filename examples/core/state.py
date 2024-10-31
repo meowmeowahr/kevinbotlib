@@ -7,7 +7,8 @@ import time
 from kevinbotlib import MqttKevinbot
 
 robot = MqttKevinbot()
-robot.connect("kevinbot", "localhost", 1883)
+robot.connect()
 
 while True:
+    print(robot.get_state()) # noqa: T201
     time.sleep(1)

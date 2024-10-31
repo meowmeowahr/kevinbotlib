@@ -42,6 +42,7 @@ class KevinbotServer:
         # Create mqtt client
         self.client_id = f"kevinbot-server-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
+        self.robot.callback = self.on_robot_state_change
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
         self.clients = 0
@@ -66,7 +67,7 @@ class KevinbotServer:
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
-        self.client.subscribe(self.root + "/#", 0)
+        self.client.subscribe(self.root + "/request_enable", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         # self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
 
@@ -97,16 +98,21 @@ class KevinbotServer:
             logger.warning(f"Unknown topic ending: {subtopics[-1]}, should either be 'st' or 'cmd'")
 
         value = msg.payload.decode("utf-8")
-        match subtopics:
-            case ["kevinbot", "tryenable"]:
-                if value in ["1", "True", "true", "TRUE"]:
-                    self.robot.request_enable()
-                else:
-                    self.robot.request_disable()
-            case ["system", "estop"]:
-                self.robot.e_stop()
-            case ["drive", "power"]:
-                self.drive.drive_at_power(float(value.split(",", 2)[0])/100, float(value.split(",", 2)[1])/100)
+        # match subtopics:
+            # case ["kevinbot", "tryenable"]:
+            #     if value in ["1", "True", "true", "TRUE"]:
+            #         self.robot.request_enable()
+            #     else:
+            #         self.robot.request_disable()
+            # case ["system", "estop"]:
+            #     self.robot.e_stop()
+            # case ["drive", "power"]:
+            #     self.drive.drive_at_power(float(value.split(",", 2)[0])/100, float(value.split(",", 2)[1])/100)
+
+    def on_robot_state_change(self, _: str, __: str | None):
+
+        self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
+
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")

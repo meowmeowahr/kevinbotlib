@@ -4,10 +4,11 @@
 
 import time
 
-from kevinbotlib import MqttKevinbot
+from kevinbotlib import SerialKevinbot
 
-robot = MqttKevinbot()
-robot.connect("kevinbot", "localhost", 1883)
+robot = SerialKevinbot()
+robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 while True:
+    print(robot.get_state()) # noqa: T201
     time.sleep(1)

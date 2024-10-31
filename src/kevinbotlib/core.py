@@ -3,21 +3,27 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
-import logging
+import json
 import re
 import time
+from collections.abc import Callable
 from enum import Enum
 from threading import Thread
+from typing import Any
 
 import shortuuid
 from loguru import logger
-from paho.mqtt.client import CallbackAPIVersion, Client, MQTTErrorCode  # type: ignore
+from paho.mqtt.client import CallbackAPIVersion, Client, MQTTErrorCode, MQTTMessage  # type: ignore
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.misc import Temperature
 from kevinbotlib.states import BmsBatteryState, KevinbotState, LightingState, MotorDriveStatus
 
+
+class KevinbotConnectionType(Enum):
+    BASE = 0
+    SERIAL = 1
+    MQTT = 2
 
 class BaseKevinbotSubsystem:
     """The base subsystem class.
@@ -38,6 +44,7 @@ class BaseKevinbot:
 
     def __init__(self) -> None:
         self._state = KevinbotState()
+        self.type = KevinbotConnectionType.BASE
         self._subsystems: list[BaseKevinbotSubsystem] = []
 
         self._auto_disconnect = True
@@ -121,9 +128,12 @@ class SerialKevinbot(BaseKevinbot):
 
     def __init__(self) -> None:
         super().__init__()
+        self.type = KevinbotConnectionType.SERIAL
 
         self.serial: Serial | None = None
         self.rx_thread: Thread | None = None
+
+        self._callback: Callable[[str, str | None], Any] | None = None
 
     def connect(
         self,
@@ -188,6 +198,14 @@ class SerialKevinbot(BaseKevinbot):
             self.serial.close()
         else:
             logger.warning("Already disconnected")
+
+    @property
+    def callback(self) -> Callable[[str, str | None], Any] | None:
+        return self._callback
+
+    @callback.setter
+    def callback(self, callback: Callable[[str, str | None], Any]) -> None:
+        self._callback = callback
 
     def tick_loop(self, interval: float = 1):
         """Send ticks indefinetely
@@ -285,9 +303,9 @@ class SerialKevinbot(BaseKevinbot):
                                 valid = False
                                 break
                         if valid:
-                            self._state.thermal.left_motor = Temperature(int(temps[0]) / 100)
-                            self._state.thermal.right_motor = Temperature(int(temps[1]) / 100)
-                            self._state.thermal.internal = Temperature(int(temps[2]) / 100)
+                            self._state.thermal.left_motor = int(temps[0]) / 100
+                            self._state.thermal.right_motor = int(temps[1]) / 100
+                            self._state.thermal.internal = int(temps[2]) / 100
                 case "sensors.bme":
                     if val:
                         vals = val.split(",")
@@ -296,11 +314,14 @@ class SerialKevinbot(BaseKevinbot):
                                 logger.error(f"Found non-integer value in bme values, {temps}")
                                 continue
 
-                        self._state.enviro.temperature = Temperature(int(vals[0]))
+                        self._state.enviro.temperature = int(vals[0])
                         self._state.enviro.humidity = int(vals[2])
                         self._state.enviro.pressure = int(vals[3])
                 case _:
                     logger.warning(f"Got a command that isn't supported yet: {cmd} with value {val}")
+
+            if self.callback:
+                self.callback(cmd, val)
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)
@@ -321,6 +342,7 @@ class MqttKevinbot(BaseKevinbot):
             cid (str | None, optional): MQTT Client id. Defaults to an auto-generated uuid.
         """
         super().__init__()
+        self.type = KevinbotConnectionType.MQTT
 
         self.root_topic = "kevinbot"
         self.host = "localhost"
@@ -329,7 +351,7 @@ class MqttKevinbot(BaseKevinbot):
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
-        self.client.loop_start()
+        self.client.on_message = self._on_message
 
     def connect(
         self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60
@@ -350,8 +372,11 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = keepalive
         self.root_topic = root_topic
 
-        return self.client.connect(self.host, self.port, self.keepalive)
-    
+        rc = self.client.connect(self.host, self.port, self.keepalive)
+        self.client.subscribe(f"{self.root_topic}/state", 0)
+        self.client.loop_start()
+        return rc
+
 
     def send(self, data: str):
         """Determine topic and publish data. Compatible with send of `SerialKevinbot`
@@ -362,11 +387,31 @@ class MqttKevinbot(BaseKevinbot):
         cmd, val = data.split("=", 2)
 
         match cmd:
-            case "kevinbot.tryenable": qos = 1
-            case "system.estop": qos = 1
-            case _: qos = 0
+            case "kevinbot.tryenable":
+                qos = 1
+            case "system.estop":
+                qos = 1
+            case _:
+                qos = 0
 
         self.client.publish(f"{self.root_topic}/{cmd.replace('.', '/')}/cmd", val, qos)
+
+    def _on_message(self, _, __, msg: MQTTMessage):
+        logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
+
+        if msg.topic[0] == "/" or msg.topic[-1] == "/":
+            logger.warning(f"MQTT topic: {msg.topic} has a leading/trailing slash. Removing it.")
+            topic = msg.topic.strip("/")
+        else:
+            topic = msg.topic
+
+        value = msg.payload.decode("utf-8")
+
+        subtopics = topic.split("/")[1:]
+        match subtopics:
+            case ["state"]:
+                self._state = KevinbotState(**json.loads(value))
+
 
 
 class Drivebase(BaseKevinbotSubsystem):
@@ -557,11 +602,11 @@ class Lighting(BaseKevinbotSubsystem):
         self.robot.send(f"lighting.{channel.value}.color1={color[0]:02x}{color[1]:02x}{color[2]:02x}00")
         match channel:
             case self.Channel.Base:
-                self.robot.get_state().lighting.base_color1 = color
+                self.robot.get_state().lighting.base_color1 = list(color)
             case self.Channel.Body:
-                self.robot.get_state().lighting.base_color1 = color
+                self.robot.get_state().lighting.base_color1 = list(color)
             case self.Channel.Head:
-                self.robot.get_state().lighting.base_color1 = color
+                self.robot.get_state().lighting.base_color1 = list(color)
 
     def set_color2(self, channel: Channel, color: list[int] | tuple[int, int, int]):
         """Set the Color 2 of a lighting segment
@@ -573,11 +618,11 @@ class Lighting(BaseKevinbotSubsystem):
         self.robot.send(f"lighting.{channel.value}.color2={color[0]:02x}{color[1]:02x}{color[2]:02x}00")
         match channel:
             case self.Channel.Base:
-                self.robot.get_state().lighting.base_color2 = color
+                self.robot.get_state().lighting.base_color2 = list(color)
             case self.Channel.Body:
-                self.robot.get_state().lighting.base_color2 = color
+                self.robot.get_state().lighting.base_color2 = list(color)
             case self.Channel.Head:
-                self.robot.get_state().lighting.base_color2 = color
+                self.robot.get_state().lighting.base_color2 = list(color)
 
     def set_effect(self, channel: Channel, effect: str):
         """Set the animation of a lighting segment
