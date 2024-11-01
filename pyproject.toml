@@ -19,8 +19,10 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
 ]
 dependencies = [
   "pyserial~=3.5",
@@ -64,6 +66,9 @@ omit = [
   "src/kevinbotlib/__about__.py",
 ]
 
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.13", "3.12", "3.11", "3.10"]
+
 [tool.hatch.envs.hatch-test]
 dependencies = [
   "coverage-enable-subprocess==1.0",
@@ -76,6 +81,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.hatch-test.scripts]
+python = ["3.12", "3.11", "3.10"]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
 run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
 cov-combine = "coverage combine"
