@@ -117,7 +117,7 @@ class KevinbotServer:
                 self.robot.e_stop()
             case ["drive", "power"]:
                 values = value.strip().split(",")
-                if len(values) != 2:
+                if len(values) != 2:  # noqa: PLR2004
                     logger.error(f"Invalid drive power format. Expected 'left,right', got: {value!r}")
                     return
 
@@ -129,13 +129,15 @@ class KevinbotServer:
                 right = float(values[1]) / 100
 
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
-                    logger.error(f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}")
+                    logger.error(
+                        f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}"
+                    )
                     return
 
                 self.drive.drive_at_power(left, right)
             case ["servo", "set"]:
                 values = value.strip().split(",")
-                if len(values) != 2:
+                if len(values) != 2:  # noqa: PLR2004
                     logger.error(f"Invalid servo data format. Expected 'channel,degrees', got: {value!r}")
                     return
 
@@ -146,11 +148,17 @@ class KevinbotServer:
                 ch = int(values[0])
                 deg = int(values[1])
 
-                if not (0 <= ch <= len(self.servos) and 0 <= deg <= 180):
-                    logger.error(f"Servo channel must be 0~{len(self.servos)}, Servo angle must be between 0~180")
+                if not (0 <= ch <= len(self.servos)):
+                    logger.error(f"Servo channel must be 0~{len(self.servos)}")
                     return
-                
+
                 self.servos[ch].angle = deg
+            case ["servo", "all"]:
+                if not value.isdigit():
+                    logger.error(f"Servo value must be numbers, got: {value!r}")
+                    return
+
+                self.servos.all = int(value)
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())

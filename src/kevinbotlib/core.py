@@ -271,7 +271,7 @@ class SerialKevinbot(BaseKevinbot):
                 return
 
             cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0].strip()
-            if not cmd: 
+            if not cmd:
                 continue
 
             val: str | None = None
@@ -571,7 +571,7 @@ class Servo:
             self.robot.client.publish(f"{self.robot.root_topic}/servo/set", f"{self.index},{angle}", 0)
         else:
             return
-        
+
         self.robot.get_state().servos.angles[self.index] = angle
 
 
