@@ -6,6 +6,9 @@ theme:
   features:
     - content.code.copy
     - content.tabs.link
+    - navigation.top
+    - navigation.instant
+    - navigation.footer
   icon:
     logo:
       material/robot
@@ -58,9 +61,10 @@ plugins:
 
 nav:
   - index.md
-  - examples.md
-  - Command Line:
+  - Command Line Tools:
     - cli_listener.md
+    - cli_pub.md
+  - examples.md
   - architecture.md
   - reference.md
 
