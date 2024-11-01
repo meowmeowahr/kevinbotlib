@@ -102,18 +102,18 @@ class LightingState(BaseModel):
     head_effect: str = "unknown"
     head_bright: int = 0
     head_update: int = -1
-    head_color1: list[int] = Field(default=[0,0,0], min_length=3)
-    head_color2: list[int] = Field(default=[0,0,0], min_length=3)
+    head_color1: list[int] = Field(default=[0, 0, 0], min_length=3)
+    head_color2: list[int] = Field(default=[0, 0, 0], min_length=3)
     body_effect: str = "unknown"
     body_bright: int = 0
     body_update: int = -1
-    body_color1: list[int] = Field(default=[0,0,0], min_length=3)
-    body_color2: list[int] = Field(default=[0,0,0], min_length=3)
+    body_color1: list[int] = Field(default=[0, 0, 0], min_length=3)
+    body_color2: list[int] = Field(default=[0, 0, 0], min_length=3)
     base_effect: str = "unknown"
     base_bright: int = 0
     base_update: int = -1
-    base_color1: list[int] = Field(default=[0,0,0], min_length=3)
-    base_color2: list[int] = Field(default=[0,0,0], min_length=3)
+    base_color1: list[int] = Field(default=[0, 0, 0], min_length=3)
+    base_color2: list[int] = Field(default=[0, 0, 0], min_length=3)
 
 
 class KevinbotState(BaseModel):
@@ -122,6 +122,7 @@ class KevinbotState(BaseModel):
     connected: bool = False
     enabled: bool = False
     error: CoreErrors = CoreErrors.OK
+    estop: bool = False
     uptime: int = 0
     uptime_ms: int = 0
     motion: DrivebaseState = Field(default_factory=DrivebaseState)

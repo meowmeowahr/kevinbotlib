@@ -25,6 +25,7 @@ class KevinbotConnectionType(Enum):
     SERIAL = 1
     MQTT = 2
 
+
 class BaseKevinbotSubsystem:
     """The base subsystem class.
 
@@ -48,7 +49,7 @@ class BaseKevinbot:
         self._subsystems: list[BaseKevinbotSubsystem] = []
 
         self._auto_disconnect = True
-        atexit.register(self.disconnect)
+        self._auto_disable = True
 
     def get_state(self) -> KevinbotState:
         """Gets the current state of the robot
@@ -61,7 +62,8 @@ class BaseKevinbot:
     def disconnect(self):
         """Basic robot disconnect"""
         self._state.connected = False
-        self.send("core.link.unlink")
+        if self.auto_disable:
+            self.request_disable()
 
     @property
     def auto_disconnect(self) -> bool:
@@ -84,6 +86,24 @@ class BaseKevinbot:
             atexit.register(self.disconnect)
         else:
             atexit.unregister(self.disconnect)
+
+    @property
+    def auto_disable(self) -> bool:
+        """Getter for auto disable state.
+
+        Returns:
+            bool: Whether to disconnect on application exit
+        """
+        return self._auto_disable
+
+    @auto_disable.setter
+    def auto_disable(self, value: bool):
+        """Setter for auto disable.
+
+        Args:
+            value (bool): Whether to disconnect on application exit
+        """
+        self._auto_disable = value
 
     def send(self, data: str):
         """Null implementation of the send method
@@ -118,6 +138,7 @@ class BaseKevinbot:
     def e_stop(self):
         """Attempt to send and E-Stop signal to the Core"""
         self.send("system.estop")
+        self._state.estop = True
 
     def _register_component(self, component: BaseKevinbotSubsystem):
         self._subsystems.append(component)
@@ -134,6 +155,8 @@ class SerialKevinbot(BaseKevinbot):
         self.rx_thread: Thread | None = None
 
         self._callback: Callable[[str, str | None], Any] | None = None
+
+        atexit.register(self.disconnect)
 
     def connect(
         self,
@@ -246,14 +269,16 @@ class SerialKevinbot(BaseKevinbot):
                 # serial has been stopped
                 return
 
-            cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0]
+            cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0].strip()
+            if not cmd: 
+                continue
 
             val: str | None = None
             if len(raw.decode("utf-8").split(delimeter)) > 1:
                 val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n")
 
             match cmd:
-                case "ready\n":
+                case "ready":
                     pass
                 case "core.enabled":
                     if not val:
@@ -269,6 +294,11 @@ class SerialKevinbot(BaseKevinbot):
                 case "core.uptime_ms":
                     if val:
                         self._state.uptime_ms = int(val)
+                case "connection.requesthandshake":
+                    serial.write(b"connection.start\n")
+                    serial.write(b"core.errors.clear\n")
+                    serial.write(b"connection.ok\n")
+                    logger.warning("A handshake was re-requested. This could indicate a core power fault or reset")
                 case "motors.amps":
                     if val:
                         self._state.motion.amps = list(map(float, val.split(",")))
@@ -353,6 +383,8 @@ class MqttKevinbot(BaseKevinbot):
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
         self.client.on_message = self._on_message
 
+        atexit.register(self.disconnect)
+
     def connect(
         self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60
     ) -> MQTTErrorCode:
@@ -371,12 +403,18 @@ class MqttKevinbot(BaseKevinbot):
         self.port = port
         self.keepalive = keepalive
         self.root_topic = root_topic
+        self.connected = False
 
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
+        self.client.subscribe(f"{self.root_topic}/clients/connect/ack", 0)
+        self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
         self.client.loop_start()
-        return rc
 
+        while not self.connected:
+            time.sleep(0.01)
+
+        return rc
 
     def send(self, data: str):
         """Determine topic and publish data. Compatible with send of `SerialKevinbot`
@@ -384,17 +422,40 @@ class MqttKevinbot(BaseKevinbot):
         Args:
             data (str): Data to parse and publish
         """
-        cmd, val = data.split("=", 2)
+        if len(data.split("=", 2)) > 1:
+            cmd, val = data.split("=", 2)
+        else:
+            cmd = data
+            val = None
 
-        match cmd:
-            case "kevinbot.tryenable":
-                qos = 1
-            case "system.estop":
-                qos = 1
-            case _:
-                qos = 0
+        self.client.publish(f"{self.root_topic}/{cmd.replace('.', '/')}", val, 0)
 
-        self.client.publish(f"{self.root_topic}/{cmd.replace('.', '/')}/cmd", val, qos)
+    def disconnect(self):
+        """Disconnect from server"""
+        super().disconnect()
+        self.client.publish(f"{self.root_topic}/clients/disconnect", self.cid, 0).wait_for_publish(1)
+
+    def request_enable(self) -> int:
+        """Request the core to enable
+
+        Returns:
+            int: Always 1
+        """
+        self.client.publish(f"{self.root_topic}/main/state_request", "enable", 1)
+        return 1
+
+    def request_disable(self) -> int:
+        """Request the core to disable
+
+        Returns:
+            int: Always 1
+        """
+        self.client.publish(f"{self.root_topic}/main/state_request", "disable", 1)
+        return 1
+
+    def e_stop(self):
+        """Attempt to send and E-Stop signal to the Core"""
+        self.client.publish(f"{self.root_topic}/main/estop", 1)
 
     def _on_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -411,7 +472,9 @@ class MqttKevinbot(BaseKevinbot):
         match subtopics:
             case ["state"]:
                 self._state = KevinbotState(**json.loads(value))
-
+            case ["clients", "connect", "ack"]:
+                if value == f"ack:{self.cid}":
+                    self.connected = True
 
 
 class Drivebase(BaseKevinbotSubsystem):

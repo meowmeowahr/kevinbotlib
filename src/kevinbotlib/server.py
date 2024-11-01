@@ -46,6 +46,8 @@ class KevinbotServer:
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
         self.clients = 0
+        self.connected_cids: list[str] = []
+        self.last_driver_cid: str | None = None
 
         try:
             self.client.connect(self.config.mqtt.host, self.config.mqtt.port, self.config.mqtt.keepalive)
@@ -67,7 +69,10 @@ class KevinbotServer:
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
-        self.client.subscribe(self.root + "/request_enable", 0)
+        self.client.subscribe(self.root + "/main/state_request", 1)
+        self.client.subscribe(self.root + "/main/estop", 1)
+        self.client.subscribe(self.root + "/clients/connect", 0)
+        self.client.subscribe(self.root + "/clients/disconnect", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         # self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
 
@@ -89,30 +94,29 @@ class KevinbotServer:
             topic = msg.topic
 
         subtopics = topic.split("/")[1:]
-        if subtopics[-1] == "st":
-            return  # topic is state topic, useless here
-        if subtopics[-1] == "cmd":
-            # command topic
-            subtopics.remove("cmd")
-        else:
-            logger.warning(f"Unknown topic ending: {subtopics[-1]}, should either be 'st' or 'cmd'")
-
         value = msg.payload.decode("utf-8")
-        # match subtopics:
-            # case ["kevinbot", "tryenable"]:
-            #     if value in ["1", "True", "true", "TRUE"]:
-            #         self.robot.request_enable()
-            #     else:
-            #         self.robot.request_disable()
-            # case ["system", "estop"]:
-            #     self.robot.e_stop()
+        match subtopics:
+            case ["main", "state_request"]:
+                if value == "enable":
+                    self.robot.request_enable()
+                else:
+                    self.robot.request_disable()
+            case ["clients", "connect"]:
+                self.connected_cids.append(value)
+                self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
+                logger.info(f"Client connected with cid:{value}")
+            case ["clients", "disconnect"]:
+                if value in self.connected_cids:
+                    self.connected_cids.remove(value)
+                self.client.publish(f"{self.root}/clients/disconnect/ack", f"ack:{value}")
+                logger.info(f"Client disconnected with cid:{value}")
+            case ["main", "estop"]:
+                self.robot.e_stop()
             # case ["drive", "power"]:
             #     self.drive.drive_at_power(float(value.split(",", 2)[0])/100, float(value.split(",", 2)[1])/100)
 
     def on_robot_state_change(self, _: str, __: str | None):
-
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
-
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")

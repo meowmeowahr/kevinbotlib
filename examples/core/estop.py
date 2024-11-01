@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from kevinbotlib import SerialKevinbot
+from kevinbotlib import MqttKevinbot
 
-robot = SerialKevinbot()
-robot.connect("/dev/ttyAMA2", 921600, 5, 1)
+robot = MqttKevinbot()
+robot.connect()
 
 robot.e_stop()

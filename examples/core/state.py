@@ -10,5 +10,5 @@ robot = MqttKevinbot()
 robot.connect()
 
 while True:
-    print(robot.get_state()) # noqa: T201
+    print(robot.get_state())  # noqa: T201
     time.sleep(1)

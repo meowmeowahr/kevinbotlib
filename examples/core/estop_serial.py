@@ -2,13 +2,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import time
-
 from kevinbotlib import SerialKevinbot
 
 robot = SerialKevinbot()
 robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
-while True:
-    print(robot.get_state())  # noqa: T201
-    time.sleep(1)
+robot.e_stop()
