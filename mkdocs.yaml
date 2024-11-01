@@ -3,6 +3,9 @@ site_name: KevinbotLib Docs
 theme:
   name: "material"
   language: en
+  features:
+    - content.code.copy
+    - content.tabs.link
   icon:
     logo:
       material/robot
@@ -34,6 +37,9 @@ markdown_extensions:
   - attr_list
   - admonition
   - pymdownx.details
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
