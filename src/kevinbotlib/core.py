@@ -32,7 +32,7 @@ class BaseKevinbotSubsystem:
     Not to be used directly
     """
 
-    def __init__(self, robot: "SerialKevinbot") -> None:
+    def __init__(self, robot: "SerialKevinbot | MqttKevinbot") -> None:
         self.robot = robot
         self.robot._register_component(self)  # noqa: SLF001
 
@@ -217,6 +217,7 @@ class SerialKevinbot(BaseKevinbot):
         """Disconnect core gracefully"""
         super().disconnect()
         if self.serial and self.serial.is_open:
+            self.send("core.link.unlink")
             self.serial.flush()
             self.serial.close()
         else:
@@ -519,17 +520,23 @@ class Drivebase(BaseKevinbotSubsystem):
             left (float): Left motor power
             right (float): Right motor power
         """
-        self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
+        if isinstance(self.robot, SerialKevinbot):
+            self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
+        elif isinstance(self.robot, MqttKevinbot):
+            self.robot.client.publish(f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)}", 1)
 
     def stop(self):
         """Set all wheel powers to 0"""
-        self.robot.send("drive.stop")
+        if isinstance(self.robot, SerialKevinbot):
+            self.robot.send("drive.power=0,0")
+        elif isinstance(self.robot, MqttKevinbot):
+            self.robot.client.publish(f"{self.robot.root_topic}/drive/power", "0,0", 1)
 
 
 class Servo:
     """Individually controllable servo"""
 
-    def __init__(self, robot: SerialKevinbot, index: int) -> None:
+    def __init__(self, robot: SerialKevinbot | MqttKevinbot, index: int) -> None:
         self.robot = robot
         self.index = index
 

@@ -4,10 +4,10 @@
 
 import time
 
-from kevinbotlib import Drivebase, MqttKevinbot
+from kevinbotlib import Drivebase, SerialKevinbot
 
-robot = MqttKevinbot()
-robot.connect()
+robot = SerialKevinbot()
+robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 drive = Drivebase(robot)
 

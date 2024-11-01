@@ -73,8 +73,8 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/main/estop", 1)
         self.client.subscribe(self.root + "/clients/connect", 0)
         self.client.subscribe(self.root + "/clients/disconnect", 0)
+        self.client.subscribe(self.root + "/drive/power", 1)
         self.client.subscribe("$SYS/broker/clients/connected")
-        # self.client.publish(self.root + "/kevinbot/tryenable/st", "False", 1)
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -112,8 +112,24 @@ class KevinbotServer:
                 logger.info(f"Client disconnected with cid:{value}")
             case ["main", "estop"]:
                 self.robot.e_stop()
-            # case ["drive", "power"]:
-            #     self.drive.drive_at_power(float(value.split(",", 2)[0])/100, float(value.split(",", 2)[1])/100)
+            case ["drive", "power"]:
+                values = value.strip().split(",")
+                if len(values) != 2:
+                    logger.error(f"Invalid drive power format. Expected 'left,right', got: {value!r}")
+                    return
+
+                if not all(v.replace(".", "", 1).replace("-", "", 1).isdigit() for v in values):
+                    logger.error(f"Drive powers must be numbers, got: {value!r}")
+                    return
+
+                left = float(values[0]) / 100
+                right = float(values[1]) / 100
+
+                if not (-1 <= left <= 1 and -1 <= right <= 1):
+                    logger.error(f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}")
+                    return
+
+                self.drive.drive_at_power(left, right)
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
