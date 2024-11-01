@@ -4,10 +4,10 @@
 
 import time
 
-from kevinbotlib import MqttKevinbot, Servos
+from kevinbotlib import SerialKevinbot, Servos
 
-robot = MqttKevinbot()
-robot.connect()
+robot = SerialKevinbot()
+robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 servos = Servos(robot)
 

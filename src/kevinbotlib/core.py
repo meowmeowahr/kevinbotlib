@@ -565,7 +565,13 @@ class Servo:
         Args:
             angle (int): Angle in degrees
         """
-        self.robot.send(f"s={self.index},{angle}")
+        if isinstance(self.robot, SerialKevinbot):
+            self.robot.send(f"s={self.index},{angle}")
+        elif isinstance(self.robot, MqttKevinbot):
+            self.robot.client.publish(f"{self.robot.root_topic}/servo/set", f"{self.index},{angle}", 0)
+        else:
+            return
+        
         self.robot.get_state().servos.angles[self.index] = angle
 
 

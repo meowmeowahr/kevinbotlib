@@ -16,7 +16,7 @@ from loguru import logger
 from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ignore
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
-from kevinbotlib.core import Drivebase, SerialKevinbot
+from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
 from kevinbotlib.states import KevinbotServerState
 from kevinbotlib.xbee import WirelessRadio
 
@@ -33,6 +33,7 @@ class KevinbotServer:
 
         self.robot.request_disable()
         self.drive = Drivebase(robot)
+        self.servos = Servos(robot)
 
         self.radio.callback = self.radio_callback
 
@@ -74,6 +75,8 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/clients/connect", 0)
         self.client.subscribe(self.root + "/clients/disconnect", 0)
         self.client.subscribe(self.root + "/drive/power", 1)
+        self.client.subscribe(self.root + "/servo/set", 0)
+        self.client.subscribe(self.root + "/servo/all", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
@@ -130,6 +133,24 @@ class KevinbotServer:
                     return
 
                 self.drive.drive_at_power(left, right)
+            case ["servo", "set"]:
+                values = value.strip().split(",")
+                if len(values) != 2:
+                    logger.error(f"Invalid servo data format. Expected 'channel,degrees', got: {value!r}")
+                    return
+
+                if not all(v.isdigit() for v in values):
+                    logger.error(f"Servo values must be numbers, got: {value!r}")
+                    return
+
+                ch = int(values[0])
+                deg = int(values[1])
+
+                if not (0 <= ch <= len(self.servos) and 0 <= deg <= 180):
+                    logger.error(f"Servo channel must be 0~{len(self.servos)}, Servo angle must be between 0~180")
+                    return
+                
+                self.servos[ch].angle = deg
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
