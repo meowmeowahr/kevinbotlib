@@ -99,3 +99,37 @@ kevinbot config set [OPTIONS] KEYS VALUE
 | `--bool`           | FLAG  | Set value as a boolean                         |
 | `--float`          | FLAG  | Set value as a floating-point                  |
 | `-h` *or* `--help` | FLAG  | Output help information                        |
+
+## path
+
+The `path` tool will retrieve the configuration file path for user or system-level configurations.
+
+It can be invoked with the following:
+
+```console
+kevinbot config path [OPTIONS]
+```
+
+### Example Usage
+
+* Getting default configuration path
+    ```console
+    kevinbot config path
+    ```
+* Getting user configuration path
+    ```console
+    kevinbot config path --user
+    ```
+* Getting system configuration path
+    ```console
+    kevinbot config path --system
+    ```
+
+### Options
+
+| Argument           | Type  | Description                                    |
+| ------------------ | ----- | ---------------------------------------------- |
+| `--config`         | STR   | Manually defined configuration path            |
+| `--system`         | FLAG  | Use system configuration path                  |
+| `--user`           | FLAG  | Use user configuration path                    |
+| `-h` *or* `--help` | FLAG  | Output help information                        |
