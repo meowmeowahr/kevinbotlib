@@ -5,7 +5,9 @@ Source code can be found [here](https://github.com/meowmeowahr/kevinbotlib/tree/
 
 For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
-## Robot Connection
+## Core
+
+### Robot Connection
 
 === "Serial"
 
@@ -20,7 +22,7 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/connecting.py"
     ```
 
-## Robot Enabling and Disabling
+### Robot Enabling and Disabling
 
 === "Serial"
 
@@ -35,7 +37,7 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/enable.py"
     ```
 
-## Robot Emergency Stop
+### Robot Emergency Stop
 
 === "Serial"
 
@@ -50,7 +52,7 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/estop.py"
     ```
 
-## Robot State Retrieval
+### Robot State Retrieval
 
 === "Serial"
 
@@ -65,7 +67,7 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/state.py"
     ```
 
-## Robot Uptime Retrieval
+### Robot Uptime Retrieval
 
 === "Serial"
 
@@ -78,4 +80,21 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
     ```python title="examples/core/uptimes.py" linenums="1" 
     --8<-- "examples/core/uptimes.py"
+    ```
+
+## Battery
+
+### Robot Battery Readings
+
+=== "Serial"
+
+    ```python title="examples/battery/readings_serial.py" linenums="1" 
+    --8<-- "examples/battery/readings_serial.py"
+    ```
+
+=== "MQTT"
+
+
+    ```python title="examples/battery/readings.py" linenums="1" 
+    --8<-- "examples/battery/readings.py"
     ```
