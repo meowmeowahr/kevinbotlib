@@ -11,9 +11,10 @@ kevinbot pub [OPTIONS] TOPIC MESSAGE
 
 ## Options
 
-| Argument      | Type  | Description                                    |
-| ------------- | ----- | ---------------------------------------------- |
-| `--count`     | INT   | Number of times to publish message             |
-| `--interval`  | FLOAT | Interval between publishing messages (seconds) |
-| `--qos`       | INT   | MQTT Quality-of-Service                        |
-| `--retain`    | FLAG  | MQTT Retain Message                            |
+| Argument         | Type  | Description                                    |
+| ---------------- | ----- | ---------------------------------------------- |
+| `--count`        | INT   | Number of times to publish message             |
+| `--interval`     | FLOAT | Interval between publishing messages (seconds) |
+| `--qos`          | INT   | MQTT Quality-of-Service                        |
+| `--retain`       | FLAG  | MQTT Retain Message                            |
+| `-h` or `--help` | FLAG  | Output help information                        |

@@ -65,6 +65,7 @@ nav:
   - Command Line Tools:
     - cli_listener.md
     - cli_pub.md
+    - cli_config.md
   - examples.md
   - architecture.md
   - reference.md

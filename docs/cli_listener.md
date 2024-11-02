@@ -11,6 +11,7 @@ kevinbot listen [OPTIONS] TOPIC
 
 ## Options
 
-| Argument | Type | Description             |
-| -------- | ---- | ----------------------- |
-| `--qos`  | INT  | MQTT Quality-of-Service |
+| Argument         | Type | Description             |
+| ---------------- | ---- | ----------------------- |
+| `--qos`          | INT  | MQTT Quality-of-Service |
+| `-h` or `--help` | FLAG | Output help information |
