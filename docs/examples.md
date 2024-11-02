@@ -17,7 +17,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
 === "MQTT"
 
-
     ```python title="examples/core/connecting.py" linenums="1" 
     --8<-- "examples/core/connecting.py"
     ```
@@ -31,7 +30,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```
 
 === "MQTT"
-
 
     ```python title="examples/core/enable.py" linenums="1" 
     --8<-- "examples/core/enable.py"
@@ -47,7 +45,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
 === "MQTT"
 
-
     ```python title="examples/core/estop.py" linenums="1" 
     --8<-- "examples/core/estop.py"
     ```
@@ -62,7 +59,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
 === "MQTT"
 
-
     ```python title="examples/core/state.py" linenums="1" 
     --8<-- "examples/core/state.py"
     ```
@@ -76,7 +72,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```
 
 === "MQTT"
-
 
     ```python title="examples/core/uptimes.py" linenums="1" 
     --8<-- "examples/core/uptimes.py"
@@ -93,7 +88,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```
 
 === "MQTT"
-
 
     ```python title="examples/battery/readings.py" linenums="1" 
     --8<-- "examples/battery/readings.py"
