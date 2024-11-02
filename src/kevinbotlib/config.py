@@ -175,7 +175,7 @@ class _Server:
         return self._data.get("root_topic", "kevinbot")
 
     @root_topic.setter
-    def root_topic(self, value: int):
+    def root_topic(self, value: str):
         self._data["root_topic"] = value
         self._config.save()
 
