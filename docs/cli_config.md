@@ -133,3 +133,37 @@ kevinbot config path [OPTIONS]
 | `--system`         | FLAG  | Use system configuration path                  |
 | `--user`           | FLAG  | Use user configuration path                    |
 | `-h` *or* `--help` | FLAG  | Output help information                        |
+
+## save
+
+The `save` tool will create or update a configuration file.
+
+It can be invoked with the following:
+
+```console
+kevinbot config save [OPTIONS]
+```
+
+### Example Usage
+
+* Create/update a user configuration file
+    ```console
+    kevinbot config save --user
+    ```
+* Create/update a user configuration file
+    ```console
+    kevinbot config save --system
+    ```
+* Create/update a custom configuration file
+    ```console
+    kevinbot config save --config ~/path/to/config.yaml
+    ```
+
+### Options
+
+| Argument           | Type  | Description                                    |
+| ------------------ | ----- | ---------------------------------------------- |
+| `--config`         | STR   | Manually defined configuration path            |
+| `--system`         | FLAG  | Use system configuration path                  |
+| `--user`           | FLAG  | Use user configuration path                    |
+| `-h` *or* `--help` | FLAG  | Output help information                        |
