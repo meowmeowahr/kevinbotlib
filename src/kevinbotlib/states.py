@@ -138,3 +138,7 @@ class KevinbotServerState(BaseModel):
     """The state system used internally in the Kevinbot Server"""
 
     mqtt_connected: bool = False
+    clients: int = 0
+    connected_cids: list[str] = []
+    last_driver_cid: str | None = None
+    driver_cid: str | None = None

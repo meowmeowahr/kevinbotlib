@@ -46,9 +46,6 @@ class KevinbotServer:
         self.robot.callback = self.on_robot_state_change
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
-        self.clients = 0
-        self.connected_cids: list[str] = []
-        self.last_driver_cid: str | None = None
 
         try:
             self.client.connect(self.config.mqtt.host, self.config.mqtt.port, self.config.mqtt.keepalive)
@@ -78,6 +75,8 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/servo/set", 0)
         self.client.subscribe(self.root + "/servo/all", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
+        self.state.mqtt_connected = True
+        self.on_server_state_change()
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -104,29 +103,53 @@ class KevinbotServer:
                     self.robot.request_enable()
                 else:
                     self.robot.request_disable()
+                    self.state.driver_cid = None
+                    self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+                    self.on_server_state_change()
             case ["clients", "connect"]:
-                self.connected_cids.append(value)
+                self.state.connected_cids.append(value)
                 self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
                 logger.info(f"Client connected with cid:{value}")
+                self.on_server_state_change()
             case ["clients", "disconnect"]:
-                if value in self.connected_cids:
-                    self.connected_cids.remove(value)
+                if value in self.state.connected_cids:
+                    self.state.connected_cids.remove(value)
+                if self.state.driver_cid == value:
+                    self.state.driver_cid = None
+                    self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
                 self.client.publish(f"{self.root}/clients/disconnect/ack", f"ack:{value}")
                 logger.info(f"Client disconnected with cid:{value}")
+                self.on_server_state_change()
             case ["main", "estop"]:
                 self.robot.e_stop()
+                self.state.driver_cid = None
+                self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
             case ["drive", "power"]:
                 values = value.strip().split(",")
-                if len(values) != 2:  # noqa: PLR2004
-                    logger.error(f"Invalid drive power format. Expected 'left,right', got: {value!r}")
+                if len(values) != 3:  # noqa: PLR2004
+                    logger.error(f"Invalid drive power format. Expected 'left,right,cid', got: {value!r}")
                     return
 
-                if not all(v.replace(".", "", 1).replace("-", "", 1).isdigit() for v in values):
+                if not all(v.replace(".", "", 1).replace("-", "", 1).isdigit() for v in values[:2]):
                     logger.error(f"Drive powers must be numbers, got: {value!r}")
                     return
 
+                cid = values[2]
+                if not cid in self.state.connected_cids:
+                    logger.error(f"Unknown cid, {cid} is trying to drive. Request denied")
+                    return
+                if (self.state.driver_cid != cid) and (self.state.driver_cid is not None):
+                    logger.error(f"CID: {self.state.driver_cid} is already driving, {cid} is trying to drive. Request denied")
+                    return
+
+
                 left = float(values[0]) / 100
                 right = float(values[1]) / 100
+                self.state.last_driver_cid = cid
+                self.state.driver_cid = None if (left == 0 and right == 0) else cid
+                self.client.publish(f"{self.root}/drive/driver", self.state.driver_cid, 0)
+                self.client.publish(f"{self.root}/drive/last_driver", self.state.last_driver_cid, 0)
+                self.on_server_state_change()
 
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
                     logger.error(
@@ -162,6 +185,9 @@ class KevinbotServer:
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
+
+    def on_server_state_change(self):
+        self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")
