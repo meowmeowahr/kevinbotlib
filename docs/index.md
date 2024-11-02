@@ -7,7 +7,39 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
 
-This library consists of classes to operate Kevinbot v3 using Direct Serial or and MQTT Broker
+KevinbotLib is a robot control system for Kevinbot v3 and the [Kevinbot Core](https://github.com/meowmeowahr/KevinbotV3-HW-Core). You can easily and safely control Kevinbot's drivebase, servos, lighting, and more. It also continuously polls sensor data. It can operate in two modes: Direct Serial, and MQTT with the Kevinbot Server.
 
-!!! note "Development"
+### Features
+
+* **Multiple Control Interfaces**
+    * Direct Serial mode
+    * MQTT networked mode (with KevinbotLib Server)
+    * XBee communication (planned)
+
+
+* **Comprehensive Subsystem Control**
+    * Drivebase with power and state monitoring
+    * Servo control
+    * Multi-zone lighting system with effects
+    * Continuous sensor polling
+    * Battery management and monitoring
+    * IMU support (gyroscope and accelerometer)
+
+
+* **Developer-Friendly Design**
+    * Simple MQTT API
+    * Extensive configuration options
+    * Real-time state tracking
+    * Built-in safety features
+    * Detailed logging and debugging
+    * Python 3.13 support
+
+
+* **Robust Architecture**
+    * Thread-safe communication
+    * Event-based callback system
+    * Auto-reconnection handling
+    * Multiple client support via MQTT
+
+!!! warning "Development"
     This project is in the early stage of development. There are many missing functions that will be supported in the future.
