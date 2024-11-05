@@ -66,6 +66,13 @@ nav:
     - cli_listener.md
     - cli_pub.md
     - cli_config.md
+  - Systems:
+    - kevinbot.md
+    - eyes.md
+  - Subsystems:
+    - drivebase.md
+    - servos.md
+    - lighting.md
   - examples.md
   - architecture.md
   - reference.md
