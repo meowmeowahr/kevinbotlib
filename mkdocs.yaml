@@ -8,6 +8,7 @@ theme:
     - content.tabs.link
     - navigation.top
     - navigation.instant
+    - navigation.instant.progress
     - navigation.footer
     - navigation.indexes
   icon:
