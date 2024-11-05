@@ -9,5 +9,6 @@ from kevinbotlib import SerialEyes
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
 
-while True:
-    time.sleep(1)
+for i in range(4):
+    eyes.set_skin(i)
+    time.sleep(2)

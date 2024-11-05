@@ -135,7 +135,7 @@ class KevinbotServer:
                     return
 
                 cid = values[2]
-                if not cid in self.state.connected_cids:
+                if cid not in self.state.connected_cids:
                     logger.error(f"Unknown cid, {cid} is trying to drive. Request denied")
                     return
                 if (self.state.driver_cid != cid) and (self.state.driver_cid is not None):

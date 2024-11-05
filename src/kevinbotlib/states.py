@@ -4,7 +4,7 @@
 
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CoreErrors(Enum):
@@ -134,10 +134,81 @@ class KevinbotState(BaseModel):
     lighting: LightingState = Field(default_factory=LightingState)
 
 
+class States(BaseModel):
+    page: int = 3
+    motion: int = 1
+    error: int = 0
+
+
+class LogoFormat(BaseModel):
+    logo_time: int = 2
+
+
+class Display(BaseModel):
+    speed: int = 82000000
+    backlight: int = 100
+    backlight_pin: int = 16
+
+
+class Motions(BaseModel):
+    speed: int = 78
+    left_point: tuple[int, int] = (80, 120)
+    center_point: tuple[int, int] = (120, 120)
+    right_point: tuple[int, int] = (160, 120)
+    pos: tuple[int, int] = (105, 129)
+
+
+class SimpleSkin(BaseModel):
+    bg_color: str = "#0022FF"
+    iris_color: str = "#FFFFFF"
+    pupil_color: str = "#000000"
+    iris_size: int = 105
+    pupil_size: int = 86
+
+
+class MetalSkin(BaseModel):
+    bg_color: str = "#ffffff"
+    iris_size: int = 200
+    tint: int = 171
+
+
+class NeonSkin(BaseModel):
+    bg_color: str = "#000000"
+    iris_size: int = 100
+    fg_color_start: str = "#0000FF"
+    fg_color_end: str = "#00FF00"
+    style: str = "neon1.png"
+
+
+class Skins(BaseModel):
+    simple: SimpleSkin = SimpleSkin()
+    metal: MetalSkin = MetalSkin()
+    neon: NeonSkin = NeonSkin()
+
+
+class Comms(BaseModel):
+    port: str = "/dev/ttyS0"
+    baud: int = 115200
+
+
+class EyeSettings(BaseModel):
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        str_min_length=1
+    )
+
+    states: States = States()
+    logo_format: LogoFormat = LogoFormat()
+    display: Display = Display()
+    motions: Motions = Motions()
+    skins: Skins = Skins()
+    comms: Comms = Comms()
+
 class KevinbotEyesState(BaseModel):
     """The state of the eye system"""
 
     connected: bool = False
+    settings: EyeSettings = EyeSettings()
 
 
 class KevinbotServerState(BaseModel):
