@@ -96,10 +96,15 @@ class DrivebaseState(BaseModel):
     """The state of the drivebase as a whole"""
 
     left_power: int = 0
+    """Current power of the left motor"""
     right_power: int = 0
+    """Current power of the right motor"""
     amps: list[float] = Field(default_factory=lambda: [0, 0])
+    """Current amps for both motors"""
     watts: list[float] = Field(default_factory=lambda: [0, 0])
+    """Current watts for both motors"""
     status: list[MotorDriveStatus] = Field(default_factory=lambda: [MotorDriveStatus.UNKNOWN, MotorDriveStatus.UNKNOWN])
+    """Current status for both motors"""
 
 
 class ServoState(BaseModel):
