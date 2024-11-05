@@ -61,22 +61,35 @@ class CoreErrors(Enum):
 
 
 class MotorDriveStatus(Enum):
-    """The status of each motor in the drivebase"""
+    """
+    The status of each motor in the drivebase
+    """
 
     UNKNOWN = 10
+    """Motor status is unknown"""
     MOVING = 11
+    """Motor is rotating"""
     HOLDING = 12
+    """Motor is holding at position"""
     OFF = 13
+    """Motor is off"""
 
 
 class BmsBatteryState(Enum):
-    """The status of a single battery attached to the BMS"""
+    """
+    The status of a single battery attached to the BMS
+    """
 
     UNKNOWN = 0
+    """State is unknown (usually at bootup)"""
     NORMAL = 1
+    """Battery is normal"""
     UNDER = 2
+    """Battery is undervoltage"""
     OVER = 3
+    """Battery is overvoltage"""
     STOPPED = 4  # Stopped state if BMS driver crashed
+    """BMS has crashed or stopped"""
 
 
 class DrivebaseState(BaseModel):
