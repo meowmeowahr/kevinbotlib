@@ -9,6 +9,7 @@ theme:
     - navigation.top
     - navigation.instant
     - navigation.footer
+    - navigation.indexes
   icon:
     logo:
       material/robot
@@ -66,6 +67,15 @@ nav:
     - cli_listener.md
     - cli_pub.md
     - cli_config.md
+  - Systems:
+    - systems/index.md
+    - systems/kevinbot.md
+    - systems/eyes.md
+  - Subsystems:
+    - subsystems/index.md
+    - subsystems/drivebase.md
+    - subsystems/servos.md
+    - subsystems/lighting.md
   - examples.md
   - architecture.md
   - reference.md
