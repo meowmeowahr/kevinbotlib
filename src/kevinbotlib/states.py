@@ -8,25 +8,56 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class CoreErrors(Enum):
-    """These are errors from Kevinbot Core"""
+    """
+    Kevinbot Core Error States
+    """
 
-    """No errors are present"""
     OK = 0
-    """Error state unknown"""
+    """No errors are present"""
     UNKNOWN = 1
-    """One-Wire bus is shorted"""
+    """Error state unknown"""
     OW_SHORT = 2
-    """One-Wire bus error"""
+    """One-Wire bus is shorted"""
     OW_ERROR = 3
-    """One-Wire device not found"""
+    """One-Wire bus error"""
     OW_DNF = 4
-    """LCD Init failed"""
+    """One-Wire device not found"""
     LCD_INIT_FAIL = 5
-    """PCA9685 (servos) init fail"""
+    """LCD Init failed"""
     PCA_INIT_FAIL = 6
-    """Failure to recieve core tick"""
+    """PCA9685 (servos) init fail"""
     TICK_FAIL = 7
-    # TODO: Add full error list
+    """Failure to recieve core tick"""
+    QUEUE_OVERRUN = 8
+    """Serial queue overrun"""
+    ESTOP = 9
+    """Core is in E-Stop state"""
+    BME_CHIP_ID = 10
+    """Error getting environment sensor chip id"""
+    BME_CALIB_NVM = 11
+    """Error with environment sensor calibration"""
+    BME_CALIB_TP = 12
+    """Error with environment sensor calibration"""
+    BME_CALIB_HUM = 13
+    """Error with environment sensor calibration"""
+    BME_THP = 14
+    """Error with environment sensor"""
+    BME_MEAS_TIMEOUT = 15
+    """Timeout with environment sensor measurement"""
+    BME_NOT_NORMAL_MODE = 16
+    """Environemnt sensor is not in normal mode"""
+    BATT1_UV = 17
+    """Battery #1 Undervoltage"""
+    BATT1_OV = 18
+    """Battery #1 Overvoltage"""
+    BATT2_UV = 19
+    """Battery #2 Undervoltage"""
+    BATT2_OV = 20
+    """Battery #2 Overvoltage"""
+    BATT_UV = 21
+    """Battery Undervoltage (single battery mode)"""
+    BATT_OV = 22
+    """Battery Overvoltage (single battery mode)"""
 
 
 class MotorDriveStatus(Enum):
