@@ -134,6 +134,12 @@ class KevinbotState(BaseModel):
     lighting: LightingState = Field(default_factory=LightingState)
 
 
+class KevinbotEyesState(BaseModel):
+    """The state of the eye system"""
+
+    connected: bool = False
+
+
 class KevinbotServerState(BaseModel):
     """The state system used internally in the Kevinbot Server"""
 
