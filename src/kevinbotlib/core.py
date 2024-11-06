@@ -523,7 +523,9 @@ class Drivebase(BaseKevinbotSubsystem):
         if isinstance(self.robot, SerialKevinbot):
             self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
         elif isinstance(self.robot, MqttKevinbot):
-            self.robot.client.publish(f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid}", 1)
+            self.robot.client.publish(
+                f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid}", 1
+            )
 
     def stop(self):
         """Set all wheel powers to 0"""

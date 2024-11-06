@@ -163,7 +163,6 @@ class SerialEyes(BaseKevinbotEyes):
         else:
             logger.warning(f"Couldn't transmit data: {data!r}, Eyes aren't connected")
 
-
     @property
     def callback(self) -> Callable[[str, str | None], Any] | None:
         return self._callback
@@ -184,17 +183,17 @@ class SerialEyes(BaseKevinbotEyes):
                 # serial has been stopped
                 return
 
-            cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0].strip().replace('\00', '')
+            cmd: str = raw.decode("utf-8").split(delimeter, maxsplit=1)[0].strip().replace("\00", "")
             if not cmd:
                 continue
 
             val: str | None = None
             if len(raw.decode("utf-8").split(delimeter)) > 1:
-                val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n").replace('\00', '')
+                val = raw.decode("utf-8").split(delimeter, maxsplit=1)[1].strip("\r\n").replace("\00", "")
 
             if cmd.startswith("eyeSettings."):
                 # Remove prefix and split into path and value
-                setting = cmd[len("eyeSettings."):]
+                setting = cmd[len("eyeSettings.") :]
 
                 path = setting.split(".")
 
@@ -202,26 +201,22 @@ class SerialEyes(BaseKevinbotEyes):
                     logger.error(f"Got eyeSettings command without a value: {cmd} :: {val}")
                     continue
 
-                # Convert the value to appropriate type
-                try:
-                    # Handle array values [x, y]
-                    if val.startswith("[") and val.endswith("]"):
-                        value_str = val.strip("[]")
-                        value = tuple(int(x.strip()) for x in value_str.split(","))
-                    # Handle hex colors
-                    elif val.startswith("#"):
+                # Handle array values [x, y]
+                if val.startswith("[") and val.endswith("]"):
+                    value_str = val.strip("[]")
+                    value = tuple(int(x.strip()) for x in value_str.split(","))
+                # Handle hex colors
+                elif val.startswith("#"):
+                    value = val
+                # Handle quoted strings
+                elif val.startswith('"') and val.endswith('"'):
+                    value = val.strip('"')
+                # Handle numbers
+                else:
+                    try:
+                        value = int(val)
+                    except ValueError:
                         value = val
-                    # Handle quoted strings
-                    elif val.startswith('"') and val.endswith('"'):
-                        value = val.strip('"')
-                    # Handle numbers
-                    else:
-                        try:
-                            value = int(val)
-                        except ValueError:
-                            value = val
-                except Exception as e:
-                    raise ValueError(f"Failed to parse value '{value_str}': {e!s}")
 
                 # Create a dict representation of the settings
                 settings_dict = self._state.settings.model_dump()
@@ -230,19 +225,22 @@ class SerialEyes(BaseKevinbotEyes):
                 current_dict = settings_dict
                 for i, key in enumerate(path[:-1]):
                     if key not in current_dict:
-                        raise ValueError(f"Invalid path: {'.'.join(path[:i+1])}")
+                        logger.error(f"Invalid path: {'.'.join(path[:i+1])}")
+                        continue
                     if not isinstance(current_dict[key], dict):
-                        raise ValueError(f"Cannot navigate through non-dict value at {'.'.join(path[:i+1])}")
+                        logger.error(f"Cannot navigate through non-dict value at {'.'.join(path[:i+1])}")
+                        continue
                     current_dict = current_dict[key]
 
                 # Update the value
                 if path[-1] not in current_dict:
-                    raise ValueError(f"Invalid setting: {'.'.join(path)}")
+                    logger.error(f"Invalid setting: {'.'.join(path)}")
+                    continue
                 current_dict[path[-1]] = value
 
                 # Create new settings instance with updated values
                 self._state.settings = EyeSettings.model_validate(settings_dict)
-        
+
             if self.callback:
                 self.callback(cmd, val)
 

@@ -139,9 +139,10 @@ class KevinbotServer:
                     logger.error(f"Unknown cid, {cid} is trying to drive. Request denied")
                     return
                 if (self.state.driver_cid != cid) and (self.state.driver_cid is not None):
-                    logger.error(f"CID: {self.state.driver_cid} is already driving, {cid} is trying to drive. Request denied")
+                    logger.error(
+                        f"CID: {self.state.driver_cid} is already driving, {cid} is trying to drive. Request denied"
+                    )
                     return
-
 
                 left = float(values[0]) / 100
                 right = float(values[1]) / 100

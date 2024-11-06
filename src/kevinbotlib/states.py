@@ -248,10 +248,7 @@ class Comms(BaseModel):
 
 
 class EyeSettings(BaseModel):
-    model_config = ConfigDict(
-        str_strip_whitespace=True,
-        str_min_length=1
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, str_min_length=1)
 
     states: States = States()
     logo_format: LogoFormat = LogoFormat()
@@ -259,6 +256,7 @@ class EyeSettings(BaseModel):
     motions: Motions = Motions()
     skins: Skins = Skins()
     comms: Comms = Comms()
+
 
 class KevinbotEyesState(BaseModel):
     """The state of the eye system"""

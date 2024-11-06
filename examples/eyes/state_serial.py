@@ -9,6 +9,6 @@ from kevinbotlib import SerialEyes
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
 
-print(eyes.get_state().model_dump_json(indent=4)) # noqa: T201
+print(eyes.get_state().model_dump_json(indent=4))  # noqa: T201
 
 time.sleep(1)

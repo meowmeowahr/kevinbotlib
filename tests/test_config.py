@@ -37,11 +37,13 @@ def test_auto_system_path(monkeypatch, tmp_path: Path):
     config = KevinbotConfig(ConfigLocation.AUTO)
     assert isinstance(config.config_path, Path)
 
+
 def test_auto_no_path(monkeypatch):
     monkeypatch.setattr("kevinbotlib.config.user_config_dir", lambda _: Path("/nonexistent"))
     monkeypatch.setattr("kevinbotlib.config.site_config_dir", lambda _: Path("/nonexistent"))
     config = KevinbotConfig(ConfigLocation.AUTO)
     assert isinstance(config.config_path, Path)
+
 
 def test_auto_user_path():
     config = KevinbotConfig(ConfigLocation.AUTO)
@@ -110,6 +112,7 @@ def test_core(tmp_path: Path):
     config.core.handshake_timeout = 12
     assert config.core.handshake_timeout == 12
 
+
 def test_xbee(tmp_path: Path):
     config = KevinbotConfig(ConfigLocation.MANUAL, tmp_path.joinpath("config.yaml"))
     assert config.xbee.baud == 921600
@@ -128,6 +131,7 @@ def test_xbee(tmp_path: Path):
 
     config.xbee.timeout = 10
     assert config.xbee.timeout == 10
+
 
 def test_server(tmp_path: Path):
     config = KevinbotConfig(ConfigLocation.MANUAL, tmp_path.joinpath("config.yaml"))
