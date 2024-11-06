@@ -15,7 +15,8 @@ from kevinbotlib.states import (
     MotorDriveStatus,
     ServoState,
     ThermometerState,
-    EyeSkin
+    EyeSkin,
+    EyeMotion,
 )
 from kevinbotlib.xbee import WirelessRadio
 
@@ -32,6 +33,7 @@ __all__ = [
     "SerialEyes",
     "KevinbotEyesState",
     "EyeSkin",
+    "EyeMotion",
     "ServoState",
     "BMState",
     "IMUState",

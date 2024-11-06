@@ -13,7 +13,7 @@ from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import EyeSettings, KevinbotEyesState, EyeSkin
+from kevinbotlib.states import EyeMotion, EyeSettings, KevinbotEyesState, EyeSkin
 
 
 class BaseKevinbotEyes:
@@ -248,7 +248,7 @@ class SerialEyes(BaseKevinbotEyes):
         """Set the current skin
 
         Args:
-            skin (int): Skin index
+            skin (EyeSkin): Skin index
         """
         self._state.settings.states.page = skin
         self.send(f"setState={skin.value}")
@@ -257,7 +257,16 @@ class SerialEyes(BaseKevinbotEyes):
         """Set the current backlight brightness
 
         Args:
-            skin (int): Skin index
+            bl (float): Brightness from 0 to 1
         """
         self._state.settings.display.backlight = min(int(bl * 100), 100)
         self.send(f"setBacklight={self._state.settings.display.backlight}")
+
+    def set_motion(self, motion: EyeMotion):
+        """Set the current backlight brightness
+
+        Args:
+            motion (EyeMotion): Motion mode
+        """
+        self._state.settings.states.motion = motion
+        self.send(f"setMotion={motion.value}")

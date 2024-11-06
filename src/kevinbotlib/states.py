@@ -184,15 +184,36 @@ class KevinbotState(BaseModel):
 
 
 class EyeSkin(Enum):
-    TV_STATIC = 0
-    SIMPLE = 1
-    METAL = 2
-    NEON = 3
+    """
+    Eye Skins for the eye system
+    """
 
+    TV_STATIC = 0
+    """TV Static-style random colors"""
+    SIMPLE = 1
+    """Simple skin with variable pupil, iris, and background"""
+    METAL = 2
+    """Skin with fancy pupil and iris over an aluminum background"""
+    NEON = 3
+    """Neon skin"""
+
+class EyeMotion(Enum):
+    """
+    Motion modes for the eye system
+    """
+
+    DISABLE = 0
+    """No motion"""
+    LEFT_RIGHT = 1
+    """Smooth left to right and back"""
+    JUMP = 2
+    """Jumpy left to right and back"""
+    MANUAL = 3
+    """Allow manual control of pupil position"""
 
 class States(BaseModel):
     page: EyeSkin = EyeSkin.SIMPLE
-    motion: int = 1
+    motion: EyeMotion = EyeMotion.LEFT_RIGHT
     error: int = 0
 
 
