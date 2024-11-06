@@ -270,3 +270,13 @@ class SerialEyes(BaseKevinbotEyes):
         """
         self._state.settings.states.motion = motion
         self.send(f"setMotion={motion.value}")
+
+    def set_manual_pos(self, x: int, y: int):
+        """Set the on-screen position of pupil
+
+        Args:
+            x (int): X Position of pupil
+            y (int): Y Position of pupil
+        """
+        self._state.settings.motions.pos = x, y
+        self.send(f"setPosition={x},{y}")
