@@ -183,7 +183,7 @@ class KevinbotState(BaseModel):
     lighting: LightingState = Field(default_factory=LightingState)
 
 
-class Skin(Enum):
+class EyeSkin(Enum):
     TV_STATIC = 0
     SIMPLE = 1
     METAL = 2
@@ -191,7 +191,7 @@ class Skin(Enum):
 
 
 class States(BaseModel):
-    page: Skin = Skin.SIMPLE
+    page: EyeSkin = EyeSkin.SIMPLE
     motion: int = 1
     error: int = 0
 

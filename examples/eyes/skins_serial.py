@@ -4,20 +4,19 @@
 
 import time
 
-from kevinbotlib import SerialEyes
-from kevinbotlib.states import Skin
+from kevinbotlib import SerialEyes, EyeSkin
 
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
 
-eyes.set_skin(Skin.TV_STATIC)
+eyes.set_skin(EyeSkin.TV_STATIC)
 time.sleep(2)
 
-eyes.set_skin(Skin.SIMPLE)
+eyes.set_skin(EyeSkin.SIMPLE)
 time.sleep(2)
 
-eyes.set_skin(Skin.METAL)
+eyes.set_skin(EyeSkin.METAL)
 time.sleep(2)
 
-eyes.set_skin(Skin.NEON)
+eyes.set_skin(EyeSkin.NEON)
 time.sleep(2)
