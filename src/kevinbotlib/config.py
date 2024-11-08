@@ -119,52 +119,6 @@ class _Core:
         }
 
 
-class _XBee:
-    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
-        self._config = config
-        self._data = data
-
-    @property
-    def port(self) -> str:
-        return self._data.get("port", "/dev/ttyAMA0")
-
-    @port.setter
-    def port(self, value: str):
-        self._data["port"] = value
-        self._config.save()
-
-    @property
-    def baud(self) -> int:
-        return self._data.get("baud", 921600)
-
-    @baud.setter
-    def baud(self, value: int):
-        self._data["baud"] = value
-        self._config.save()
-
-    @property
-    def timeout(self) -> float:
-        return self._data.get("timeout", 5.0)
-
-    @timeout.setter
-    def timeout(self, value: int):
-        self._data["timeout"] = value
-        self._config.save()
-
-    @property
-    def api(self) -> int:
-        return self._data.get("api", 2)
-
-    @api.setter
-    def api(self, value: int):
-        self._data["api"] = value
-        self._config.save()
-
-    @property
-    def data(self):
-        return {"port": self.port, "baud": self.baud, "timeout": self.timeout, "api": self.api}
-
-
 class _Server:
     def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
         self._config = config
@@ -180,17 +134,8 @@ class _Server:
         self._config.save()
 
     @property
-    def enable_xbee(self) -> bool:
-        return self._data.get("enable_xbee", True)
-
-    @enable_xbee.setter
-    def enable_xbee(self, value: bool):
-        self._data["enable_xbee"] = value
-        self._config.save()
-
-    @property
     def data(self):
-        return {"root_topic": self.root_topic, "enable_xbee": self.enable_xbee}
+        return {"root_topic": self.root_topic}
 
 
 class KevinbotConfig:
@@ -210,7 +155,6 @@ class KevinbotConfig:
 
         self.mqtt: _MQTT = _MQTT({}, self)
         self.core: _Core = _Core({}, self)
-        self.xbee: _XBee = _XBee({}, self)
         self.server: _Server = _Server({}, self)
 
         self.load()
@@ -246,7 +190,6 @@ class KevinbotConfig:
 
         self.mqtt = _MQTT(self.config.get("mqtt", {}), self)
         self.core = _Core(self.config.get("core", {}), self)
-        self.xbee = _XBee(self.config.get("xbee", {}), self)
         self.server = _Server(self.config.get("server", {}), self)
 
     def save(self) -> None:
@@ -268,7 +211,6 @@ class KevinbotConfig:
         return {
             "mqtt": self.mqtt.data,
             "core": self.core.data,
-            "xbee": self.xbee.data,
             "server": self.server.data,
         }
 
