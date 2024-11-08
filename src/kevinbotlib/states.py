@@ -293,6 +293,7 @@ class KevinbotServerState(BaseModel):
     mqtt_connected: bool = False
     clients: int = 0
     connected_cids: list[str] = []
+    dead_cids: list[str] = []
     last_driver_cid: str | None = None
     driver_cid: str | None = None
     last_drive_command_time: datetime | None = None

@@ -81,6 +81,7 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/main/estop", 1)
         self.client.subscribe(self.root + "/clients/connect", 0)
         self.client.subscribe(self.root + "/clients/disconnect", 0)
+        self.client.subscribe(self.root + "/clients/heartbeat", 0)
         self.client.subscribe(self.root + "/drive/power", 1)
         self.client.subscribe(self.root + "/servo/set", 0)
         self.client.subscribe(self.root + "/servo/all", 0)

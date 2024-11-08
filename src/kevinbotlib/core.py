@@ -393,7 +393,7 @@ class MqttKevinbot(BaseKevinbot):
         atexit.register(self.disconnect)
 
     def connect(
-        self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60
+        self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60, heartbeat: float = 1.0
     ) -> MQTTErrorCode:
         """Connect to MQTT Broker
 
@@ -402,6 +402,7 @@ class MqttKevinbot(BaseKevinbot):
             host (str, optional): KevinbotLib server host. Defaults to "localhost".
             port (int, optional): Kevinbot MQTT Broker port. Defaults to 1883.
             keepalive (int, optional): Maximum period in seconds between communications with the broker. Defaults to 60.
+            heartbeat (float, optional): Heartbeat interval in seconds. Defaults to 1.0.
 
         Returns:
             MQTTErrorCode: Connection error
@@ -422,8 +423,17 @@ class MqttKevinbot(BaseKevinbot):
             time.sleep(0.01)
 
         self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
-        
+
+        self.hb_thread = Thread(target=self._hb_loop, args=(heartbeat,), daemon=True)
+        self.hb_thread.name = f"KevinbotLib.Mqtt.Heartbeat:{self.cid}"
+        self.hb_thread.start()
+
         return rc
+
+    def _hb_loop(self, heartbeat: float):
+        while True:
+            self.client.publish(f"{self.root_topic}/clients/heartbeat", f"{self.cid},{self.ts.timestamp()}", 0)
+            time.sleep(heartbeat)
 
     def send(self, data: str):
         """Determine topic and publish data. Compatible with send of `SerialKevinbot`
