@@ -387,11 +387,21 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = 60
         self.connected = False
 
+        self._callback: Callable[[list[str], str | None], Any] | None = None
+
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
         self.client.on_message = self._on_message
 
         atexit.register(self.disconnect)
+
+    @property
+    def callback(self) -> Callable[[list[str], str | None], Any] | None:
+        return self._callback
+
+    @callback.setter
+    def callback(self, callback: Callable[[list[str], str | None], Any]) -> None:
+        self._callback = callback
 
     def connect(
         self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60, heartbeat: float = 1.0
@@ -507,6 +517,9 @@ class MqttKevinbot(BaseKevinbot):
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True
+
+        if self.callback:
+            self.callback(subtopics, value)
 
 
 class Drivebase(BaseKevinbotSubsystem):
