@@ -26,7 +26,6 @@ from kevinbotlib.xbee import WirelessRadio
 class KevinbotServer:
     DRIVE_COMMAND_TOLERANCE = timedelta(seconds=1)
 
-    
     def __init__(
         self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio | None, root_topic: str | None
     ) -> None:
@@ -45,13 +44,14 @@ class KevinbotServer:
         if self.radio:
             self.radio.callback = self.radio_callback
 
-        logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
+        logger.info(f"Connecting to MQTT broker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
 
         # Create mqtt client
         self.client_id = f"kevinbot-server-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
         self.robot.callback = self.on_robot_state_change
+        self.client.on_connect = self.on_mqtt_connect
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
 
@@ -115,10 +115,14 @@ class KevinbotServer:
                     self.robot.request_disable()
                     self.state.driver_cid = None
                     self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+                    if self.radio:
+                        self.radio.broadcast(f"drive/driver=NULL")
                     self.on_server_state_change()
             case ["clients", "connect"]:
                 self.state.connected_cids.append(value)
                 self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
+                if self.radio:
+                    self.radio.broadcast(f"clients/connect/ack=ack:{value}")
                 logger.info(f"Client connected with cid:{value}")
                 self.on_server_state_change()
             case ["clients", "disconnect"]:
@@ -127,13 +131,19 @@ class KevinbotServer:
                 if self.state.driver_cid == value:
                     self.state.driver_cid = None
                     self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+                    if self.radio:
+                        self.radio.broadcast(f"drive/driver=NULL")
                 self.client.publish(f"{self.root}/clients/disconnect/ack", f"ack:{value}")
+                if self.radio:
+                    self.radio.broadcast(f"clients/disconnect/ack=ack:{value}")
                 logger.info(f"Client disconnected with cid:{value}")
                 self.on_server_state_change()
             case ["main", "estop"]:
                 self.robot.e_stop()
                 self.state.driver_cid = None
                 self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+                if self.radio:
+                    self.radio.broadcast(f"drive/driver=NULL")
             case ["drive", "power"]:
                 values = value.strip().split(",")
                 if len(values) != 4:  # Expecting "left,right,cid,timestamp"
@@ -154,6 +164,8 @@ class KevinbotServer:
                 if self.state.timestamp and (abs(self.state.timestamp - command_time) > self.DRIVE_COMMAND_TOLERANCE):
                     logger.warning(f"Drive command timestamp out of sync: {command_time}, current time: {self.state.timestamp}")
                     self.client.publish(f"{self.root}/drive/warning", "Timestamp out of sync", 0)
+                    if self.radio:
+                        self.radio.broadcast(f"drive/warning=Timestamp out of sync")
                     return
 
                 # Update state with new timestamp
@@ -173,7 +185,11 @@ class KevinbotServer:
 
                 self.state.driver_cid = None if (left == 0 and right == 0) else cid
                 self.client.publish(f"{self.root}/drive/driver", self.state.driver_cid, 0)
+                if self.radio:
+                    self.radio.broadcast(f"drive/driver={self.state.driver_cid}")
                 self.client.publish(f"{self.root}/drive/last_driver", cid, 0)
+                if self.radio:
+                    self.radio.broadcast(f"drive/last_driver={cid}")
                 self.on_server_state_change()
 
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
@@ -208,9 +224,13 @@ class KevinbotServer:
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
+        if self.radio:
+            self.radio.broadcast(f"state={self.robot.get_state().model_dump_json()}")
 
     def on_server_state_change(self):
         self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
+        if self.radio:
+            self.radio.broadcast(f"serverstate={self.state.model_dump_json()}")
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")

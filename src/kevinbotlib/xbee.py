@@ -40,6 +40,14 @@ class WirelessRadio(BaseKevinbotSubsystem):
         """
         return self.xbee.wait_read_frame()
 
+    def broadcast(self, data: str):
+        """Broadcast data over the XBee interface
+
+        Args:
+            data (str): Data to broadcast
+        """
+        self.xbee.send("tx", dest_addr=b"\x00\x00", data=bytes(data, "utf-8"))
+
     def disconnect(self):
         """Disconnect robot radio, and halt processing"""
         self.xbee.halt()
