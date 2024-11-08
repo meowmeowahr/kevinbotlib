@@ -385,6 +385,7 @@ class MqttKevinbot(BaseKevinbot):
         self.host = "localhost"
         self.port = 1883
         self.keepalive = 60
+        self.connected = False
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
