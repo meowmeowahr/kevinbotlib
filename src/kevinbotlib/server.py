@@ -4,7 +4,7 @@
 
 """
 KevinbotLib Robot Server
-Allow accessing KevinbotLib APIs over MQTT and XBee API Mode
+Allow accessing KevinbotLib APIs over MQTT
 """
 
 import atexit
@@ -20,7 +20,6 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
 from kevinbotlib.states import KevinbotServerState
-from kevinbotlib.xbee import WirelessRadio
 
 
 class KevinbotServer:
@@ -28,11 +27,10 @@ class KevinbotServer:
 
     
     def __init__(
-        self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio | None, root_topic: str | None
+        self, config: KevinbotConfig, robot: SerialKevinbot, root_topic: str | None
     ) -> None:
         self.config = config
         self.robot = robot
-        self.radio = radio
         self.root: str = root_topic if root_topic else self.config.server.root_topic
 
         self.state: KevinbotServerState = KevinbotServerState()
@@ -41,9 +39,6 @@ class KevinbotServer:
         self.robot.request_disable()
         self.drive = Drivebase(robot)
         self.servos = Servos(robot)
-
-        if self.radio:
-            self.radio.callback = self.radio_callback
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
@@ -220,8 +215,6 @@ class KevinbotServer:
         logger.info("Exiting...")
         self.client.disconnect()
         self.robot.disconnect()
-        if self.radio:
-            self.radio.disconnect()
 
 
 def bringup(
@@ -239,11 +232,4 @@ def bringup(
     logger.info(f"New core connection: {config.core.port}@{config.core.baud}")
     logger.debug(f"Robot status is: {robot.get_state()}")
 
-    if config.server.enable_xbee:
-        radio = WirelessRadio(robot, config.xbee.port, config.xbee.baud, config.xbee.api, config.xbee.timeout)
-        logger.info(f"Xbee connection: {config.xbee.port}@{config.xbee.baud}")
-    else:
-        logger.info(f"Xbee connection: DISABLED")
-        radio = None
-
-    KevinbotServer(config, robot, radio, root_topic)
+    KevinbotServer(config, robot, root_topic)

@@ -15,7 +15,6 @@ KevinbotLib is a robot control system for Kevinbot v3 and the [Kevinbot Core](ht
 * **Multiple Control Interfaces**
     * Direct Serial mode
     * MQTT networked mode (with KevinbotLib Server)
-    * XBee communication (planned)
 
 
 * **Comprehensive Subsystem Control**

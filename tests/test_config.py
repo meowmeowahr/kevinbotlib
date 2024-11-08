@@ -113,26 +113,6 @@ def test_core(tmp_path: Path):
     assert config.core.handshake_timeout == 12
 
 
-def test_xbee(tmp_path: Path):
-    config = KevinbotConfig(ConfigLocation.MANUAL, tmp_path.joinpath("config.yaml"))
-    assert config.xbee.baud == 921600
-    assert config.xbee.port == "/dev/ttyAMA0"
-    assert config.xbee.api == 2
-    assert config.xbee.timeout == 5
-
-    config.xbee.baud = 921600
-    assert config.xbee.baud == 921600
-
-    config.xbee.port = "/dev/ttyAMA2"
-    assert config.xbee.port == "/dev/ttyAMA2"
-
-    config.xbee.api = 1
-    assert config.xbee.api == 1
-
-    config.xbee.timeout = 10
-    assert config.xbee.timeout == 10
-
-
 def test_server(tmp_path: Path):
     config = KevinbotConfig(ConfigLocation.MANUAL, tmp_path.joinpath("config.yaml"))
     assert config.server.root_topic == "kevinbot"

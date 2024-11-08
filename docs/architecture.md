@@ -4,14 +4,11 @@
 flowchart TD
  subgraph s1["KevinbotLib Server"]
         n5["KevinbotLib<br>Direct Serial"]
-        n9["XBee Interface"]
   end
     n3["MQTT API Mode"] <--> n4["MQTT Broker"]
     n4 <--> s1
     n5 --> n6["Kevinbot<br>Hardware"]
     n2["Direct Serial"] --> n6
-    n9 <--> n5
-    n9 --> n4
     n10["OR"] --> n11["Direct Serial Mode<br>"] & n12["MQTT Mode"]
     n1["KevinbotLib"] --> n10
     n11 --> n2
@@ -25,9 +22,6 @@ flowchart TD
     n1@{ shape: rect}
     n12@{ shape: text}
 ```
-
-!!! note "XBee"
-    KevinbotLib does not support XBee communication at this moment
 
 
 ## Serial vs. MQTT
