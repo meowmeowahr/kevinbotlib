@@ -24,7 +24,7 @@ from kevinbotlib.xbee import WirelessRadio
 
 
 class KevinbotServer:
-    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=1)
+    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=3)
 
     
     def __init__(
