@@ -22,7 +22,7 @@ def server(
     verbose: bool,
     trace: bool,
 ):
-    """Start the Kevinbot MQTT and XBee inferface"""
+    """Start the Kevinbot MQTT inferface"""
 
     if trace:
         logger.remove()

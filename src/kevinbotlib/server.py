@@ -4,7 +4,7 @@
 
 """
 KevinbotLib Robot Server
-Allow accessing KevinbotLib APIs over MQTT and XBee API Mode
+Allow accessing KevinbotLib APIs over MQTT
 """
 
 import atexit
