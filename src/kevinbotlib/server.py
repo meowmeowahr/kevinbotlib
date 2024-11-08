@@ -8,8 +8,10 @@ Allow accessing KevinbotLib APIs over MQTT and XBee API Mode
 """
 
 import atexit
+from datetime import datetime, timedelta, timezone
 import sys
 from pathlib import Path
+import time
 
 import shortuuid
 from loguru import logger
@@ -22,20 +24,26 @@ from kevinbotlib.xbee import WirelessRadio
 
 
 class KevinbotServer:
+    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=1)
+
+    
     def __init__(
-        self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio, root_topic: str | None
+        self, config: KevinbotConfig, robot: SerialKevinbot, radio: WirelessRadio | None, root_topic: str | None
     ) -> None:
         self.config = config
         self.robot = robot
         self.radio = radio
         self.root: str = root_topic if root_topic else self.config.server.root_topic
+
         self.state: KevinbotServerState = KevinbotServerState()
+        self.state.timestamp = datetime.now(timezone.utc)
 
         self.robot.request_disable()
         self.drive = Drivebase(robot)
         self.servos = Servos(robot)
 
-        self.radio.callback = self.radio_callback
+        if self.radio:
+            self.radio.callback = self.radio_callback
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
@@ -61,9 +69,11 @@ class KevinbotServer:
 
         atexit.register(self.stop)
 
-        # Join threads
-        if robot.rx_thread:
-            robot.rx_thread.join()
+        while True:
+            self.state.timestamp = datetime.now(timezone.utc)
+            self.on_server_state_change()
+
+            time.sleep(1)
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
@@ -126,36 +136,48 @@ class KevinbotServer:
                 self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
             case ["drive", "power"]:
                 values = value.strip().split(",")
-                if len(values) != 3:  # noqa: PLR2004
-                    logger.error(f"Invalid drive power format. Expected 'left,right,cid', got: {value!r}")
+                if len(values) != 4:  # Expecting "left,right,cid,timestamp"
+                    logger.error(f"Invalid drive power format. Expected 'left,right,cid,timestamp', got: {value!r}")
                     return
 
                 if not all(v.replace(".", "", 1).replace("-", "", 1).isdigit() for v in values[:2]):
                     logger.error(f"Drive powers must be numbers, got: {value!r}")
                     return
 
-                cid = values[2]
-                if cid not in self.state.connected_cids:
-                    logger.error(f"Unknown cid, {cid} is trying to drive. Request denied")
-                    return
-                if (self.state.driver_cid != cid) and (self.state.driver_cid is not None):
-                    logger.error(
-                        f"CID: {self.state.driver_cid} is already driving, {cid} is trying to drive. Request denied"
-                    )
+                cid, timestamp_str = values[2], values[3]
+                try:
+                    command_time = datetime.fromisoformat(timestamp_str).replace(tzinfo=timezone.utc)
+                except ValueError:
+                    logger.error(f"Invalid timestamp format: {timestamp_str}")
                     return
 
+                if self.state.timestamp and (abs(self.state.timestamp - command_time) > self.DRIVE_COMMAND_TOLERANCE):
+                    logger.warning(f"Drive command timestamp out of sync: {command_time}, current time: {self.state.timestamp}")
+                    self.client.publish(f"{self.root}/drive/warning", "Timestamp out of sync", 0)
+                    return
+
+                # Update state with new timestamp
+                self.state.last_drive_command_time = self.state.timestamp
+
+                # Process the drive command
                 left = float(values[0]) / 100
                 right = float(values[1]) / 100
-                self.state.last_driver_cid = cid
+
+                if cid not in self.state.connected_cids:
+                    logger.error(f"Unknown cid {cid} is trying to drive. Request denied")
+                    return
+
+                if self.state.driver_cid != cid and self.state.driver_cid is not None:
+                    logger.error(f"CID {self.state.driver_cid} is already driving, {cid} request denied")
+                    return
+
                 self.state.driver_cid = None if (left == 0 and right == 0) else cid
                 self.client.publish(f"{self.root}/drive/driver", self.state.driver_cid, 0)
-                self.client.publish(f"{self.root}/drive/last_driver", self.state.last_driver_cid, 0)
+                self.client.publish(f"{self.root}/drive/last_driver", cid, 0)
                 self.on_server_state_change()
 
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
-                    logger.error(
-                        f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}"
-                    )
+                    logger.error(f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}")
                     return
 
                 self.drive.drive_at_power(left, right)
@@ -197,7 +219,8 @@ class KevinbotServer:
         logger.info("Exiting...")
         self.client.disconnect()
         self.robot.disconnect()
-        self.radio.disconnect()
+        if self.radio:
+            self.radio.disconnect()
 
 
 def bringup(
@@ -215,7 +238,11 @@ def bringup(
     logger.info(f"New core connection: {config.core.port}@{config.core.baud}")
     logger.debug(f"Robot status is: {robot.get_state()}")
 
-    radio = WirelessRadio(robot, config.xbee.port, config.xbee.baud, config.xbee.api, config.xbee.timeout)
-    logger.info(f"Xbee connection: {config.xbee.port}@{config.xbee.baud}")
+    if config.server.enable_xbee:
+        radio = WirelessRadio(robot, config.xbee.port, config.xbee.baud, config.xbee.api, config.xbee.timeout)
+        logger.info(f"Xbee connection: {config.xbee.port}@{config.xbee.baud}")
+    else:
+        logger.info(f"Xbee connection: DISABLED")
+        radio = None
 
     KevinbotServer(config, robot, radio, root_topic)

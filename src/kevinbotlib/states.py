@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -294,3 +295,5 @@ class KevinbotServerState(BaseModel):
     connected_cids: list[str] = []
     last_driver_cid: str | None = None
     driver_cid: str | None = None
+    last_drive_command_time: datetime | None = None
+    timestamp: datetime | None = None

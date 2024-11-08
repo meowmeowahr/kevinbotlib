@@ -180,8 +180,17 @@ class _Server:
         self._config.save()
 
     @property
+    def enable_xbee(self) -> bool:
+        return self._data.get("enable_xbee", True)
+
+    @enable_xbee.setter
+    def enable_xbee(self, value: bool):
+        self._data["enable_xbee"] = value
+        self._config.save()
+
+    @property
     def data(self):
-        return {"root_topic": self.root_topic}
+        return {"root_topic": self.root_topic, "enable_xbee": self.enable_xbee}
 
 
 class KevinbotConfig:

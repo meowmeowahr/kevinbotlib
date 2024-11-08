@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
+from datetime import datetime, timedelta
 import json
 import re
 import time
@@ -17,7 +18,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTErrorCode, MQTTMess
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import BmsBatteryState, KevinbotState, LightingState, MotorDriveStatus
+from kevinbotlib.states import BmsBatteryState, KevinbotServerState, KevinbotState, LightingState, MotorDriveStatus
 
 
 class KevinbotConnectionType(Enum):
@@ -45,6 +46,7 @@ class BaseKevinbot:
 
     def __init__(self) -> None:
         self._state = KevinbotState()
+        self._server_state = KevinbotServerState()
         self.type = KevinbotConnectionType.BASE
         self._subsystems: list[BaseKevinbotSubsystem] = []
 
@@ -58,6 +60,10 @@ class BaseKevinbot:
             KevinbotState: State class
         """
         return self._state
+
+    @property
+    def server_state(self) -> KevinbotServerState:
+        return self._server_state
 
     def disconnect(self):
         """Basic robot disconnect"""
@@ -408,13 +414,15 @@ class MqttKevinbot(BaseKevinbot):
 
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
+        self.client.subscribe(f"{self.root_topic}/serverstate", 0)
         self.client.subscribe(f"{self.root_topic}/clients/connect/ack", 0)
-        self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
         self.client.loop_start()
 
-        while not self.connected:
+        while not self.server_state.mqtt_connected:
             time.sleep(0.01)
 
+        self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
+        
         return rc
 
     def send(self, data: str):
@@ -458,6 +466,16 @@ class MqttKevinbot(BaseKevinbot):
         """Attempt to send and E-Stop signal to the Core"""
         self.client.publish(f"{self.root_topic}/main/estop", 1)
 
+    @property
+    def ts(self) -> datetime:
+        """
+        Get a semi-accurate timestamp from the server. Used for drivebase timeouts.
+
+        Returns:
+            datetime: Server time or UNIX timestamp 0 if server hasn't broadcasted a timestamp yet
+        """
+        return self.server_state.timestamp if self.server_state.timestamp else datetime.fromtimestamp(0)
+
     def _on_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
 
@@ -473,6 +491,8 @@ class MqttKevinbot(BaseKevinbot):
         match subtopics:
             case ["state"]:
                 self._state = KevinbotState(**json.loads(value))
+            case ["serverstate"]:
+                self._server_state = KevinbotServerState(**json.loads(value))
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True
@@ -523,16 +543,14 @@ class Drivebase(BaseKevinbotSubsystem):
         if isinstance(self.robot, SerialKevinbot):
             self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
         elif isinstance(self.robot, MqttKevinbot):
+            print(self.robot.ts)
             self.robot.client.publish(
-                f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid}", 1
+                f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid},{self.robot.ts}", 1
             )
 
     def stop(self):
         """Set all wheel powers to 0"""
-        if isinstance(self.robot, SerialKevinbot):
-            self.robot.send("drive.power=0,0")
-        elif isinstance(self.robot, MqttKevinbot):
-            self.robot.client.publish(f"{self.robot.root_topic}/drive/power", "0,0,{self.robot.cid}", 1)
+        self.drive_at_power(0, 0)
 
 
 class Servo:
