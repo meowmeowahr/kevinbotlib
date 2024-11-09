@@ -77,6 +77,19 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/uptimes.py"
     ```
 
+### Robot Estimated Timestamp Retrieval
+
+=== "Serial"
+
+    !!! note
+        Serial mode does not support timestamps.
+
+=== "MQTT"
+
+    ```python title="examples/core/timestamp.py" linenums="1" 
+    --8<-- "examples/core/timestamp.py"
+    ```
+
 ## Battery
 
 ### Robot Battery Readings
