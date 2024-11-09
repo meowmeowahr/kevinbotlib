@@ -79,7 +79,7 @@ class KevinbotServer:
     def heartbeat_loop(self):
         while True:
             self.client.publish(f"{self.root}/server/heartbeat", json.dumps({"uptime": time.process_time()}), 0)
-            time.sleep(1)
+            time.sleep(self.config.server.heartbeat)
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
         logger.success(f"MQTT client connected: {self.client_id}, rc: {rc}, props: {props}")
