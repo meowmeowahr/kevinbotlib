@@ -62,6 +62,10 @@ class KevinbotServer:
         self.heartbeat_thread.name = f"KevinbotLib.Server.Heartbeat:{self.cid}"
         self.heartbeat_thread.start()
 
+        self.client_hb_thread = Thread(target=self.client_hb_loop, args=(self.config.server.client_heartbeat + self.config.server.client_heartbeat_tolerance,), daemon=True)
+        self.client_hb_thread.name = f"KevinbotLib.Server.ClientHeartbeat:{self.cid}"
+        self.client_hb_thread.start()
+
         self.client.loop_start()
 
         atexit.register(self.stop)
@@ -70,6 +74,21 @@ class KevinbotServer:
             self.state.timestamp = datetime.now(timezone.utc)
             self.on_server_state_change()
             time.sleep(1)
+
+    def client_hb_loop(self, heartbeat: float):
+        while True:
+            for key, value in self.state.cid_heartbeats.items():
+                if datetime.fromtimestamp(float(value), timezone.utc) < datetime.now(timezone.utc) - timedelta(seconds=heartbeat):
+                    # client is dead
+                    if key in self.state.connected_cids:
+                        self.state.connected_cids.remove(key)
+                        self.state.dead_cids.append(key)
+                else:
+                    if key in self.state.dead_cids:
+                        self.state.connected_cids.append(key)
+                        self.state.dead_cids.remove(key)
+
+            time.sleep(heartbeat)
 
     def heartbeat_loop(self):
         while True:

@@ -162,7 +162,7 @@ class _Server:
 
     @property
     def client_heartbeat_tolerance(self) -> float:
-        return self._data.get("client_heartbeat_tolerance", 1.0)
+        return self._data.get("client_heartbeat_tolerance", 0.5)
 
     @client_heartbeat_tolerance.setter
     def client_heartbeat_tolerance(self, value: float):
