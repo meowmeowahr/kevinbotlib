@@ -398,7 +398,8 @@ class MqttKevinbot(BaseKevinbot):
         self.connected = False
 
         self._callback: Callable[[list[str], str], Any] | None = None
-        self._on_reconnect: Callable[[], Any] | None = None
+        self._on_server_startup: Callable[[], Any] | None = None
+        self._on_server_disconnect: Callable[[], Any] | None = None
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
@@ -415,12 +416,20 @@ class MqttKevinbot(BaseKevinbot):
         self._callback = callback
 
     @property
-    def on_reconnect(self) -> Callable[[], Any] | None:
-        return self._on_reconnect
+    def on_server_startup(self) -> Callable[[], Any] | None:
+        return self._on_server_startup
 
-    @on_reconnect.setter
-    def on_reconnect(self, callback: Callable[[], Any] | None) -> None:
-        self._on_reconnect = callback
+    @on_server_startup.setter
+    def on_server_startup(self, callback: Callable[[], Any] | None) -> None:
+        self._on_server_startup = callback
+
+    @property
+    def on_server_disconnect(self) -> Callable[[], Any] | None:
+        return self._on_server_disconnect
+
+    @on_server_disconnect.setter
+    def on_server_disconnect(self, callback: Callable[[], Any] | None) -> None:
+        self._on_server_disconnect = callback
 
     @property
     def mqtt_connected(self) -> bool:
@@ -458,6 +467,7 @@ class MqttKevinbot(BaseKevinbot):
         self.client.subscribe(f"{self.root_topic}/state", 0)
         self.client.subscribe(f"{self.root_topic}/serverstate", 0)
         self.client.subscribe(f"{self.root_topic}/server/startup", 0)
+        self.client.subscribe(f"{self.root_topic}/server/shutdown", 0)
         self.client.subscribe(f"{self.root_topic}/clients/connect/ack", 0)
         self.client.loop_start()
 
@@ -565,9 +575,11 @@ class MqttKevinbot(BaseKevinbot):
                 self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
                 self.connected = True
 
-                if self.on_reconnect:
-                    self.on_reconnect()
-
+                if self.on_server_startup:
+                    self.on_server_startup()
+            case ["server", "shutdown"]:
+                if self.on_server_disconnect:
+                    self.on_server_disconnect()
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True

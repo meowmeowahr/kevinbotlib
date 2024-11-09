@@ -279,6 +279,7 @@ class KevinbotServer:
 
     def stop(self):
         logger.info("Exiting...")
+        self.client.publish(f"{self.root}/server/shutdown", datetime.now(timezone.utc).timestamp(), 0).wait_for_publish(1)
         self.client.disconnect()
         self.robot.disconnect()
 
