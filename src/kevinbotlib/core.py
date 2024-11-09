@@ -567,7 +567,6 @@ class Drivebase(BaseKevinbotSubsystem):
         if isinstance(self.robot, SerialKevinbot):
             self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
         elif isinstance(self.robot, MqttKevinbot):
-            print(self.robot.ts)
             self.robot.client.publish(
                 f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid},{self.robot.ts}", 1
             )
