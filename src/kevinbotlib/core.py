@@ -403,6 +403,10 @@ class MqttKevinbot(BaseKevinbot):
     def callback(self, callback: Callable[[list[str], str], Any] | None) -> None:
         self._callback = callback
 
+    @property
+    def mqtt_connected(self) -> bool:
+        return self.client.is_connected()
+
     def connect(
         self,
         root_topic: str = "kevinbot",
