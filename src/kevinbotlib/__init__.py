@@ -10,13 +10,13 @@ from kevinbotlib.states import (
     BMState,
     CoreErrors,
     DrivebaseState,
+    EyeMotion,
+    EyeSkin,
     IMUState,
     KevinbotState,
     MotorDriveStatus,
     ServoState,
     ThermometerState,
-    EyeSkin,
-    EyeMotion,
 )
 
 __all__ = [

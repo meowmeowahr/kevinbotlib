@@ -198,6 +198,7 @@ class EyeSkin(Enum):
     NEON = 3
     """Neon skin"""
 
+
 class EyeMotion(Enum):
     """
     Motion modes for the eye system
@@ -211,6 +212,7 @@ class EyeMotion(Enum):
     """Jumpy left to right and back"""
     MANUAL = 3
     """Allow manual control of pupil position"""
+
 
 class States(BaseModel):
     page: EyeSkin = EyeSkin.SIMPLE

@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
-from typing_extensions import deprecated
 
 import xbee
 from loguru import logger
 from serial import Serial
+from typing_extensions import deprecated
 
 from kevinbotlib.core import BaseKevinbotSubsystem, SerialKevinbot
 
@@ -11,7 +11,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-@deprecated("XBee radio support is deprecated. Please use WiFi or use a custom implementation. It will be removed in a future version")
+@deprecated(
+    "XBee radio support is deprecated. Please use WiFi or use a custom implementation. It will be removed in a future version"
+)
 class WirelessRadio(BaseKevinbotSubsystem):
     def __init__(self, robot: SerialKevinbot, port: str, baud: int, api: int, timeout: float) -> None:
         """Initialize Kevinbot Wireless Radio (XBee)

@@ -4,7 +4,7 @@
 
 import time
 
-from kevinbotlib import SerialEyes, EyeSkin
+from kevinbotlib import EyeSkin, SerialEyes
 
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)

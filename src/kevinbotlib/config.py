@@ -153,7 +153,11 @@ class _Server:
 
     @property
     def data(self):
-        return {"root_topic": self.root_topic, "heartbeat": self.heartbeat, "drive_ts_tolerance": self.drive_ts_tolerance}
+        return {
+            "root_topic": self.root_topic,
+            "heartbeat": self.heartbeat,
+            "drive_ts_tolerance": self.drive_ts_tolerance,
+        }
 
 
 class KevinbotConfig:

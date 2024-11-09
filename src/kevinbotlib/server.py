@@ -8,12 +8,12 @@ Allow accessing KevinbotLib APIs over MQTT
 """
 
 import atexit
-from datetime import datetime, timedelta, timezone
 import json
 import sys
+import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from threading import Thread
-import time
 
 import shortuuid
 from loguru import logger
@@ -25,9 +25,7 @@ from kevinbotlib.states import KevinbotServerState
 
 
 class KevinbotServer:
-    def __init__(
-        self, config: KevinbotConfig, robot: SerialKevinbot, root_topic: str | None
-    ) -> None:
+    def __init__(self, config: KevinbotConfig, robot: SerialKevinbot, root_topic: str | None) -> None:
         self.config = config
         self.robot = robot
         self.root: str = root_topic if root_topic else self.config.server.root_topic
@@ -140,7 +138,7 @@ class KevinbotServer:
                 self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
             case ["drive", "power"]:
                 values = value.strip().split(",")
-                if len(values) != 4:  # Expecting "left,right,cid,timestamp"
+                if len(values) != 4:  # Expecting "left,right,cid,timestamp" # noqa: PLR2004
                     logger.error(f"Invalid drive power format. Expected 'left,right,cid,timestamp', got: {value!r}")
                     return
 
@@ -155,8 +153,12 @@ class KevinbotServer:
                     logger.error(f"Invalid timestamp format: {timestamp_str}")
                     return
 
-                if self.state.timestamp and (abs(self.state.timestamp - command_time) > timedelta(seconds=self.config.server.drive_ts_tolerance)):
-                    logger.warning(f"Drive command timestamp out of sync: {command_time}, current time: {self.state.timestamp}")
+                if self.state.timestamp and (
+                    abs(self.state.timestamp - command_time) > timedelta(seconds=self.config.server.drive_ts_tolerance)
+                ):
+                    logger.warning(
+                        f"Drive command timestamp out of sync: {command_time}, current time: {self.state.timestamp}"
+                    )
                     self.client.publish(f"{self.root}/drive/warning", "Timestamp out of sync", 0)
                     return
 
@@ -181,7 +183,9 @@ class KevinbotServer:
                 self.on_server_state_change()
 
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
-                    logger.error(f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}")
+                    logger.error(
+                        f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}"
+                    )
                     return
 
                 self.drive.drive_at_power(left, right)

@@ -9,6 +9,6 @@ from kevinbotlib import SerialEyes
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
 
-for i in range(0, 100):
-    eyes.set_backlight(i/100)
+for i in range(100):
+    eyes.set_backlight(i / 100)
     time.sleep(0.05)

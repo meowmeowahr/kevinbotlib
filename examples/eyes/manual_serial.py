@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import time
 import random
+import time
 
-from kevinbotlib import SerialEyes, EyeSkin, EyeMotion
+from kevinbotlib import EyeMotion, EyeSkin, SerialEyes
 
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
@@ -14,6 +14,6 @@ eyes.set_skin(EyeSkin.SIMPLE)
 
 eyes.set_motion(EyeMotion.MANUAL)
 
-for i in range(10):
-    eyes.set_manual_pos(random.randint(0, 240), random.randint(0, 240))
+for _i in range(10):
+    eyes.set_manual_pos(random.randint(0, 240), random.randint(0, 240))  # noqa: S311
     time.sleep(1)

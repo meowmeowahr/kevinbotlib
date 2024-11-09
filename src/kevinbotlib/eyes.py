@@ -13,7 +13,7 @@ from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import EyeMotion, EyeSettings, KevinbotEyesState, EyeSkin
+from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState
 
 
 class BaseKevinbotEyes:

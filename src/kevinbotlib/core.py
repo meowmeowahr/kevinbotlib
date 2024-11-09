@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
-from datetime import datetime, timedelta, timezone
 import json
 import re
 import time
 from collections.abc import Callable
+from datetime import datetime, timezone
 from enum import Enum
 from threading import Thread
 from typing import Any
@@ -404,7 +404,12 @@ class MqttKevinbot(BaseKevinbot):
         self._callback = callback
 
     def connect(
-        self, root_topic: str = "kevinbot", host: str = "localhost", port: int = 1883, keepalive: int = 60, heartbeat: float = 1.0
+        self,
+        root_topic: str = "kevinbot",
+        host: str = "localhost",
+        port: int = 1883,
+        keepalive: int = 60,
+        heartbeat: float = 1.0,
     ) -> MQTTErrorCode:
         """Connect to MQTT Broker
 
@@ -424,7 +429,7 @@ class MqttKevinbot(BaseKevinbot):
         self.root_topic = root_topic
         self.connected = False
 
-        self._last_ts_update = datetime.utcfromtimestamp(0)
+        self._last_ts_update = datetime.fromtimestamp(0, timezone.utc)
 
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
@@ -506,7 +511,7 @@ class MqttKevinbot(BaseKevinbot):
         if ts:
             ts += datetime.now(timezone.utc) - self._last_ts_update
             return ts
-        return datetime.fromtimestamp(0)
+        return datetime.fromtimestamp(0, timezone.utc)
 
     def _on_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -584,7 +589,9 @@ class Drivebase(BaseKevinbotSubsystem):
             self.robot.send(f"drive.power={int(left*100)},{int(right*100)}")
         elif isinstance(self.robot, MqttKevinbot):
             self.robot.client.publish(
-                f"{self.robot.root_topic}/drive/power", f"{int(left*100)},{int(right*100)},{self.robot.cid},{self.robot.ts}", 1
+                f"{self.robot.root_topic}/drive/power",
+                f"{int(left*100)},{int(right*100)},{self.robot.cid},{self.robot.ts}",
+                1,
             )
 
     def stop(self):
