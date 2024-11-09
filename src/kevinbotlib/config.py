@@ -152,11 +152,31 @@ class _Server:
         self._config.save()
 
     @property
+    def client_heartbeat(self) -> float:
+        return self._data.get("client_heartbeat", 1.0)
+
+    @client_heartbeat.setter
+    def client_heartbeat(self, value: float):
+        self._data["client_heartbeat"] = value
+        self._config.save()
+
+    @property
+    def client_heartbeat_tolerance(self) -> float:
+        return self._data.get("client_heartbeat_tolerance", 1.0)
+
+    @client_heartbeat_tolerance.setter
+    def client_heartbeat_tolerance(self, value: float):
+        self._data["client_heartbeat_tolerance"] = value
+        self._config.save()
+
+    @property
     def data(self):
         return {
             "root_topic": self.root_topic,
             "heartbeat": self.heartbeat,
             "drive_ts_tolerance": self.drive_ts_tolerance,
+            "client_heartbeat": self.client_heartbeat,
+            "client_heartbeat_tolerance": self.client_heartbeat_tolerance,
         }
 
 
