@@ -230,11 +230,21 @@ class SerialKevinbot(BaseKevinbot):
             logger.warning("Already disconnected")
 
     @property
-    def callback(self) -> Callable[[str, str | None], Any] | None:
+    def on_data(self) -> Callable[[str, str | None], Any] | None:
+        """Return the data recieved callback function
+
+        Returns:
+            Callable[[str, str | None], Any] | None: Callback function
+        """
         return self._callback
 
-    @callback.setter
-    def callback(self, callback: Callable[[str, str | None], Any]) -> None:
+    @on_data.setter
+    def on_data(self, callback: Callable[[str, str | None], Any]) -> None:
+        """Set the data recieved callback function
+
+        Args:
+            callback (Callable[[str, str  |  None], Any]): Callback function
+        """
         self._callback = callback
 
     def tick_loop(self, interval: float = 1):
@@ -357,8 +367,8 @@ class SerialKevinbot(BaseKevinbot):
                 case _:
                     logger.warning(f"Got a command that isn't supported yet: {cmd} with value {val}")
 
-            if self.callback:
-                self.callback(cmd, val)
+            if self.on_data:
+                self.on_data(cmd, val)
 
     def _setup_serial(self, port: str, baud: int, timeout: float = 1):
         self.serial = Serial(port, baud, timeout=timeout)

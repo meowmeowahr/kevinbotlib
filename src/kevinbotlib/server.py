@@ -44,7 +44,7 @@ class KevinbotServer:
         self.cid = shortuuid.random()
         self.client_id = f"kevinbot-server-{self.cid}"
         self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
-        self.robot.callback = self.on_robot_state_change
+        self.robot.on_data = self.on_robot_state_change
         self.client.on_connect = self.on_mqtt_connect
         self.client.on_message = self.on_mqtt_message
 
