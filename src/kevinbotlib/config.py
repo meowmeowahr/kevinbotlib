@@ -125,7 +125,7 @@ class _Server:
         self._data = data
 
     @property
-    def root_topic(self):
+    def root_topic(self) -> str:
         return self._data.get("root_topic", "kevinbot")
 
     @root_topic.setter
@@ -134,8 +134,17 @@ class _Server:
         self._config.save()
 
     @property
+    def heartbeat(self) -> float:
+        return self._data.get("heartbeat", 1.0)
+
+    @heartbeat.setter
+    def heartbeat(self, value: float):
+        self._data["heartbeat"] = value
+        self._config.save()
+
+    @property
     def data(self):
-        return {"root_topic": self.root_topic}
+        return {"root_topic": self.root_topic, "heartbeat": self.heartbeat}
 
 
 class KevinbotConfig:
