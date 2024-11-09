@@ -74,6 +74,7 @@ class KevinbotServer:
 
         atexit.register(self.stop)
 
+        # timestamp updater
         while True:
             self.state.timestamp = datetime.now(timezone.utc)
             self.on_server_state_change()
@@ -81,17 +82,22 @@ class KevinbotServer:
 
     def client_hb_loop(self, heartbeat: float):
         while True:
-            for key, value in self.state.cid_heartbeats.items():
+            for cid, value in self.state.cid_heartbeats.items():
                 if datetime.fromtimestamp(float(value), timezone.utc) < datetime.now(timezone.utc) - timedelta(
                     seconds=heartbeat
                 ):
                     # client is dead
-                    if key in self.state.connected_cids:
-                        self.state.connected_cids.remove(key)
-                        self.state.dead_cids.append(key)
-                elif key in self.state.dead_cids:
-                    self.state.connected_cids.append(key)
-                    self.state.dead_cids.remove(key)
+                    if cid in self.state.connected_cids:
+                        self.state.connected_cids.remove(cid)
+                        self.state.dead_cids.append(cid)
+                        if cid == self.state.driver_cid:
+                            self.drive.stop()
+                            self.state.driver_cid = None
+                            self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+
+                elif cid in self.state.dead_cids:
+                    self.state.connected_cids.append(cid)
+                    self.state.dead_cids.remove(cid)
 
             time.sleep(heartbeat)
 
@@ -164,7 +170,6 @@ class KevinbotServer:
                 if len(values) != 2:  # noqa: PLR2004
                     return
                 self.state.cid_heartbeats[values[0]] = float(values[1])
-
             case ["main", "estop"]:
                 self.robot.e_stop()
                 self.state.driver_cid = None
@@ -209,6 +214,10 @@ class KevinbotServer:
 
                 if cid not in self.state.connected_cids:
                     logger.error(f"Unknown cid {cid} is trying to drive. Request denied")
+                    return
+
+                if cid not in self.state.cid_heartbeats:
+                    logger.error(f"CID {cid} is not publishing a heartbeat. Drive request denied.")
                     return
 
                 if self.state.driver_cid != cid and self.state.driver_cid is not None:
