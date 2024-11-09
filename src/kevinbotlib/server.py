@@ -62,7 +62,11 @@ class KevinbotServer:
         self.heartbeat_thread.name = f"KevinbotLib.Server.Heartbeat:{self.cid}"
         self.heartbeat_thread.start()
 
-        self.client_hb_thread = Thread(target=self.client_hb_loop, args=(self.config.server.client_heartbeat + self.config.server.client_heartbeat_tolerance,), daemon=True)
+        self.client_hb_thread = Thread(
+            target=self.client_hb_loop,
+            args=(self.config.server.client_heartbeat + self.config.server.client_heartbeat_tolerance,),
+            daemon=True,
+        )
         self.client_hb_thread.name = f"KevinbotLib.Server.ClientHeartbeat:{self.cid}"
         self.client_hb_thread.start()
 
@@ -78,15 +82,16 @@ class KevinbotServer:
     def client_hb_loop(self, heartbeat: float):
         while True:
             for key, value in self.state.cid_heartbeats.items():
-                if datetime.fromtimestamp(float(value), timezone.utc) < datetime.now(timezone.utc) - timedelta(seconds=heartbeat):
+                if datetime.fromtimestamp(float(value), timezone.utc) < datetime.now(timezone.utc) - timedelta(
+                    seconds=heartbeat
+                ):
                     # client is dead
                     if key in self.state.connected_cids:
                         self.state.connected_cids.remove(key)
                         self.state.dead_cids.append(key)
-                else:
-                    if key in self.state.dead_cids:
-                        self.state.connected_cids.append(key)
-                        self.state.dead_cids.remove(key)
+                elif key in self.state.dead_cids:
+                    self.state.connected_cids.append(key)
+                    self.state.dead_cids.remove(key)
 
             time.sleep(heartbeat)
 
@@ -156,7 +161,7 @@ class KevinbotServer:
                 self.on_server_state_change()
             case ["clients", "heartbeat"]:
                 values = value.split(":", 2)
-                if not len(values) == 2: # noqa: PLR2004
+                if len(values) != 2:  # noqa: PLR2004
                     return
                 self.state.cid_heartbeats[values[0]] = float(values[1])
 
@@ -285,6 +290,7 @@ def bringup(
     logger.debug(f"Robot status is: {robot.get_state()}")
 
     KevinbotServer(config, robot, root_topic)
+
 
 if __name__ == "__main__":
     bringup(None, None)

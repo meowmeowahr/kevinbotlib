@@ -438,6 +438,7 @@ class MqttKevinbot(BaseKevinbot):
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
         self.client.subscribe(f"{self.root_topic}/serverstate", 0)
+        self.client.subscribe(f"{self.root_topic}/server/startup", 0)
         self.client.subscribe(f"{self.root_topic}/clients/connect/ack", 0)
         self.client.loop_start()
 
@@ -540,6 +541,10 @@ class MqttKevinbot(BaseKevinbot):
                     self._last_ts_update = datetime.now(timezone.utc)
 
                 self._server_state = new_state
+            case ["server", "startup"]:
+                # we must reconnect
+                self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
+                self.connected = True
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True

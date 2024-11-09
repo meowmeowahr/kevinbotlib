@@ -4,7 +4,6 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Dict
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -114,6 +113,7 @@ class ServoState(BaseModel):
 
     angles: list[int] = Field(default_factory=lambda: [-1] * 32)
     """Servo angles"""
+
 
 class BMState(BaseModel):
     """The state of the BMS (Battery Management System)"""
@@ -297,7 +297,7 @@ class KevinbotServerState(BaseModel):
     clients: int = 0
     connected_cids: list[str] = []
     dead_cids: list[str] = []
-    cid_heartbeats: Dict[str, float] = {}
+    cid_heartbeats: dict[str, float] = {}
     last_driver_cid: str | None = None
     driver_cid: str | None = None
     last_drive_command_time: datetime | None = None
