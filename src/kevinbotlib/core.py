@@ -387,7 +387,7 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = 60
         self.connected = False
 
-        self._callback: Callable[[list[str], str | None], Any] | None = None
+        self._callback: Callable[[list[str], str], Any] | None = None
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
@@ -396,11 +396,11 @@ class MqttKevinbot(BaseKevinbot):
         atexit.register(self.disconnect)
 
     @property
-    def callback(self) -> Callable[[list[str], str | None], Any] | None:
+    def callback(self) -> Callable[[list[str], str], Any] | None:
         return self._callback
 
     @callback.setter
-    def callback(self, callback: Callable[[list[str], str | None], Any]) -> None:
+    def callback(self, callback: Callable[[list[str], str], Any]) -> None:
         self._callback = callback
 
     def connect(
