@@ -400,7 +400,7 @@ class MqttKevinbot(BaseKevinbot):
         return self._callback
 
     @callback.setter
-    def callback(self, callback: Callable[[list[str], str], Any]) -> None:
+    def callback(self, callback: Callable[[list[str], str], Any] | None) -> None:
         self._callback = callback
 
     def connect(
