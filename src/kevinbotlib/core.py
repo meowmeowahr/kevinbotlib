@@ -388,6 +388,7 @@ class MqttKevinbot(BaseKevinbot):
         self.connected = False
 
         self._callback: Callable[[list[str], str], Any] | None = None
+        self._on_reconnect: Callable[[], Any] | None = None
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
@@ -402,6 +403,14 @@ class MqttKevinbot(BaseKevinbot):
     @callback.setter
     def callback(self, callback: Callable[[list[str], str], Any] | None) -> None:
         self._callback = callback
+
+    @property
+    def on_reconnect(self) -> Callable[[], Any] | None:
+        return self._on_reconnect
+
+    @on_reconnect.setter
+    def on_reconnect(self, callback: Callable[[], Any] | None) -> None:
+        self._on_reconnect = callback
 
     @property
     def mqtt_connected(self) -> bool:
@@ -545,6 +554,10 @@ class MqttKevinbot(BaseKevinbot):
                 # we must reconnect
                 self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
                 self.connected = True
+
+                if self.on_reconnect:
+                    self.on_reconnect()
+
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True
