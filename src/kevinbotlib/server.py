@@ -106,6 +106,7 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/servo/set", 0)
         self.client.subscribe(self.root + "/servo/all", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
+        self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
         self.on_server_state_change()
 
