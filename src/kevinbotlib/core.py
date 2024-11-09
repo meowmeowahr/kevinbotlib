@@ -443,6 +443,9 @@ class MqttKevinbot(BaseKevinbot):
 
     def _hb_loop(self, heartbeat: float):
         while True:
+            if not self.connected:
+                break
+
             self.client.publish(f"{self.root_topic}/clients/heartbeat", f"{self.cid},{self.ts.timestamp()}", 0)
             time.sleep(heartbeat)
 
@@ -464,6 +467,8 @@ class MqttKevinbot(BaseKevinbot):
         """Disconnect from server"""
         super().disconnect()
         self.client.publish(f"{self.root_topic}/clients/disconnect", self.cid, 0).wait_for_publish(1)
+        self.client.loop_stop()
+        self.connected = False
 
     def request_enable(self) -> int:
         """Request the core to enable
