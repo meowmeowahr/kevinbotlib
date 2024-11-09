@@ -165,14 +165,18 @@ class KevinbotServer:
                 self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
             case ["drive", "power"]:
                 values = value.strip().split(",")
+
+                # check command format
                 if len(values) != 4:  # Expecting "left,right,cid,timestamp" # noqa: PLR2004
                     logger.error(f"Invalid drive power format. Expected 'left,right,cid,timestamp', got: {value!r}")
                     return
 
+                # check drive powers
                 if not all(v.replace(".", "", 1).replace("-", "", 1).isdigit() for v in values[:2]):
                     logger.error(f"Drive powers must be numbers, got: {value!r}")
                     return
 
+                # check timestamp format
                 cid, timestamp_str = values[2], values[3]
                 try:
                     command_time = datetime.fromisoformat(timestamp_str).replace(tzinfo=timezone.utc)
@@ -180,6 +184,7 @@ class KevinbotServer:
                     logger.error(f"Invalid timestamp format: {timestamp_str}")
                     return
 
+                # check timestamp
                 if self.state.timestamp and (
                     abs(self.state.timestamp - command_time) > timedelta(seconds=self.config.server.drive_ts_tolerance)
                 ):
@@ -204,17 +209,24 @@ class KevinbotServer:
                     logger.error(f"CID {self.state.driver_cid} is already driving, {cid} request denied")
                     return
 
+                if cid in self.state.dead_cids:
+                    logger.error(f"A dead CID, {cid} is trying to drive. Request denied")
+                    return
+
+                # state updates
                 self.state.driver_cid = None if (left == 0 and right == 0) else cid
                 self.client.publish(f"{self.root}/drive/driver", self.state.driver_cid, 0)
                 self.client.publish(f"{self.root}/drive/last_driver", cid, 0)
                 self.on_server_state_change()
 
+                # check drive power range
                 if not (-1 <= left <= 1 and -1 <= right <= 1):
                     logger.error(
                         f"Drive powers must be between -100 and 100: left={left*100:.1f}, right={right*100:.1f}"
                     )
                     return
 
+                # drive
                 self.drive.drive_at_power(left, right)
             case ["servo", "set"]:
                 values = value.strip().split(",")
