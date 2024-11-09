@@ -143,8 +143,17 @@ class _Server:
         self._config.save()
 
     @property
+    def drive_ts_tolerance(self) -> float:
+        return self._data.get("drive_ts_tolerance", 1.0)
+
+    @drive_ts_tolerance.setter
+    def drive_ts_tolerance(self, value: float):
+        self._data["drive_ts_tolerance"] = value
+        self._config.save()
+
+    @property
     def data(self):
-        return {"root_topic": self.root_topic, "heartbeat": self.heartbeat}
+        return {"root_topic": self.root_topic, "heartbeat": self.heartbeat, "drive_ts_tolerance": self.drive_ts_tolerance}
 
 
 class KevinbotConfig:
