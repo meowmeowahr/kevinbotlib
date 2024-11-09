@@ -440,6 +440,7 @@ class MqttKevinbot(BaseKevinbot):
         root_topic: str = "kevinbot",
         host: str = "localhost",
         port: int = 1883,
+        timeout: float = 5.0,
         keepalive: int = 60,
         heartbeat: float = 1.0,
     ) -> MQTTErrorCode:
@@ -449,6 +450,7 @@ class MqttKevinbot(BaseKevinbot):
             root_topic (str, optional): Root communication topic. Defaults to "kevinbot".
             host (str, optional): KevinbotLib server host. Defaults to "localhost".
             port (int, optional): Kevinbot MQTT Broker port. Defaults to 1883.
+            timeout (float, optional): KevinbotLib connection timeout in seconds. Defaults to 5.
             keepalive (int, optional): Maximum period in seconds between communications with the broker. Defaults to 60.
             heartbeat (float, optional): Heartbeat interval in seconds. Defaults to 1.0.
 
@@ -471,8 +473,13 @@ class MqttKevinbot(BaseKevinbot):
         self.client.subscribe(f"{self.root_topic}/clients/connect/ack", 0)
         self.client.loop_start()
 
+        connect_time = time.time()
         while not self.server_state.mqtt_connected:
             time.sleep(0.01)
+            if connect_time < time.time() - timeout:
+                msg = "KevinbotLib over MQTT handhsake timed out."
+                raise HandshakeTimeoutException(msg)
+
         self.connected = True
 
         self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
