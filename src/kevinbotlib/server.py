@@ -9,8 +9,10 @@ Allow accessing KevinbotLib APIs over MQTT
 
 import atexit
 from datetime import datetime, timedelta, timezone
+import json
 import sys
 from pathlib import Path
+from threading import Thread
 import time
 
 import shortuuid
@@ -44,7 +46,8 @@ class KevinbotServer:
         logger.info(f"Using MQTT root topic: {self.root}")
 
         # Create mqtt client
-        self.client_id = f"kevinbot-server-{shortuuid.random()}"
+        self.cid = shortuuid.random()
+        self.client_id = f"kevinbot-server-{self.cid}"
         self.client = Client(CallbackAPIVersion.VERSION2, client_id=self.client_id)
         self.robot.callback = self.on_robot_state_change
         self.client.on_connect = self.on_mqtt_connect
@@ -60,6 +63,10 @@ class KevinbotServer:
             logger.warning(f"MQTT topic: {self.root} has a leading/trailing slash. Removing it.")
             self.root = self.root.strip("/")
 
+        self.heartbeat_thread = Thread(target=self.heartbeat_loop, daemon=True)
+        self.heartbeat_thread.name = f"KevinbotLib.Server.Heartbeat:{self.cid}"
+        self.heartbeat_thread.start()
+
         self.client.loop_start()
 
         atexit.register(self.stop)
@@ -67,7 +74,11 @@ class KevinbotServer:
         while True:
             self.state.timestamp = datetime.now(timezone.utc)
             self.on_server_state_change()
+            time.sleep(1)
 
+    def heartbeat_loop(self):
+        while True:
+            self.client.publish(f"{self.root}/server/heartbeat", json.dumps({"uptime": time.process_time()}), 0)
             time.sleep(1)
 
     def on_mqtt_connect(self, _, __, ___, rc, props):
