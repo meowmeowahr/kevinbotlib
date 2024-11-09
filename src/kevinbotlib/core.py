@@ -439,6 +439,7 @@ class MqttKevinbot(BaseKevinbot):
 
         while not self.server_state.mqtt_connected:
             time.sleep(0.01)
+        self.connected = True
 
         self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
 
@@ -453,7 +454,7 @@ class MqttKevinbot(BaseKevinbot):
             if not self.connected:
                 break
 
-            self.client.publish(f"{self.root_topic}/clients/heartbeat", f"{self.cid},{self.ts.timestamp()}", 0)
+            self.client.publish(f"{self.root_topic}/clients/heartbeat", f"{self.cid}:{self.ts.timestamp()}", 0)
             time.sleep(heartbeat)
 
     def send(self, data: str):

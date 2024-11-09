@@ -129,9 +129,17 @@ class KevinbotServer:
                 if self.state.driver_cid == value:
                     self.state.driver_cid = None
                     self.client.publish(f"{self.root}/drive/driver", "NULL", 0)
+                if value in self.state.cid_heartbeats:
+                    self.state.cid_heartbeats.pop(value)
                 self.client.publish(f"{self.root}/clients/disconnect/ack", f"ack:{value}")
                 logger.info(f"Client disconnected with cid:{value}")
                 self.on_server_state_change()
+            case ["clients", "heartbeat"]:
+                values = value.split(":", 2)
+                if not len(values) == 2: # noqa: PLR2004
+                    return
+                self.state.cid_heartbeats[values[0]] = float(values[1])
+
             case ["main", "estop"]:
                 self.robot.e_stop()
                 self.state.driver_cid = None
@@ -245,3 +253,6 @@ def bringup(
     logger.debug(f"Robot status is: {robot.get_state()}")
 
     KevinbotServer(config, robot, root_topic)
+
+if __name__ == "__main__":
+    bringup(None, None)
