@@ -25,9 +25,6 @@ from kevinbotlib.states import KevinbotServerState
 
 
 class KevinbotServer:
-    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=1)
-
-    
     def __init__(
         self, config: KevinbotConfig, robot: SerialKevinbot, root_topic: str | None
     ) -> None:
@@ -158,7 +155,7 @@ class KevinbotServer:
                     logger.error(f"Invalid timestamp format: {timestamp_str}")
                     return
 
-                if self.state.timestamp and (abs(self.state.timestamp - command_time) > self.DRIVE_COMMAND_TOLERANCE):
+                if self.state.timestamp and (abs(self.state.timestamp - command_time) > timedelta(seconds=self.config.server.drive_ts_tolerance)):
                     logger.warning(f"Drive command timestamp out of sync: {command_time}, current time: {self.state.timestamp}")
                     self.client.publish(f"{self.root}/drive/warning", "Timestamp out of sync", 0)
                     return
