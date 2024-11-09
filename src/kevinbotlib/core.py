@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import re
 import time
@@ -424,6 +424,8 @@ class MqttKevinbot(BaseKevinbot):
         self.root_topic = root_topic
         self.connected = False
 
+        self._last_ts_update = datetime.utcfromtimestamp(0)
+
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
         self.client.subscribe(f"{self.root_topic}/serverstate", 0)
@@ -500,7 +502,11 @@ class MqttKevinbot(BaseKevinbot):
         Returns:
             datetime: Server time or UNIX timestamp 0 if server hasn't broadcasted a timestamp yet
         """
-        return self.server_state.timestamp if self.server_state.timestamp else datetime.fromtimestamp(0)
+        ts = self.server_state.timestamp
+        if ts:
+            ts += datetime.now(timezone.utc) - self._last_ts_update
+            return ts
+        return datetime.fromtimestamp(0)
 
     def _on_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -518,7 +524,12 @@ class MqttKevinbot(BaseKevinbot):
             case ["state"]:
                 self._state = KevinbotState(**json.loads(value))
             case ["serverstate"]:
-                self._server_state = KevinbotServerState(**json.loads(value))
+                new_state = KevinbotServerState(**json.loads(value))
+
+                if self._server_state.timestamp != new_state.timestamp:
+                    self._last_ts_update = datetime.now(timezone.utc)
+
+                self._server_state = new_state
             case ["clients", "connect", "ack"]:
                 if value == f"ack:{self.cid}":
                     self.connected = True

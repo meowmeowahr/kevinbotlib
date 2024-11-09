@@ -25,7 +25,7 @@ from kevinbotlib.states import KevinbotServerState
 
 
 class KevinbotServer:
-    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=3)
+    DRIVE_COMMAND_TOLERANCE = timedelta(seconds=1)
 
     
     def __init__(
