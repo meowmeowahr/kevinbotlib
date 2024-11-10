@@ -480,6 +480,8 @@ class MqttKevinbot(BaseKevinbot):
             time.sleep(0.01)
             if connect_time < time.time() - timeout:
                 msg = "KevinbotLib over MQTT handhsake timed out."
+                self.client.loop_stop()
+                self.client.disconnect()
                 raise HandshakeTimeoutException(msg)
 
         self.connected = True
