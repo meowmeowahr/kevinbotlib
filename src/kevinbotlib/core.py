@@ -517,6 +517,7 @@ class MqttKevinbot(BaseKevinbot):
         super().disconnect()
         self.client.publish(f"{self.root_topic}/clients/disconnect", self.cid, 0).wait_for_publish(1)
         self.client.loop_stop()
+        self.client.disconnect()
         self.connected = False
 
     def request_enable(self) -> int:
