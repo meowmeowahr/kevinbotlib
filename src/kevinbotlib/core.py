@@ -7,7 +7,7 @@ import json
 import re
 import time
 from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from threading import Thread
 from typing import Any
@@ -397,13 +397,14 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = 60
         self.connected = False
 
-        self.hb_thread: Thread | None = None
+        self._hb_thread: Thread | None = None # thread to produce client's heartbeat
+        self._server_hb_thread: Thread | None = None # thread to check in server heartbeat is slow/stopped
 
-        self._callback: Callable[[list[str], str], Any] | None = None
+        self._callback: Callable[[list[str], str], Any] | None = None # message callback
         self._on_server_startup: Callable[[], Any] | None = None
         self._on_server_disconnect: Callable[[], Any] | None = None
 
-        self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"
+        self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}" # client id
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
         self.client.on_message = self._on_message
 
@@ -466,6 +467,7 @@ class MqttKevinbot(BaseKevinbot):
         self.connected = False
 
         self._last_ts_update = datetime.fromtimestamp(0, timezone.utc)
+        self._last_server_hb = datetime.fromtimestamp(0, timezone.utc)
 
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
@@ -488,11 +490,32 @@ class MqttKevinbot(BaseKevinbot):
 
         self.client.publish(f"{self.root_topic}/clients/connect", self.cid, 0)
 
-        self.hb_thread = Thread(target=self._hb_loop, args=(heartbeat,), daemon=True)
-        self.hb_thread.name = f"KevinbotLib.Mqtt.Heartbeat:{self.cid}"
-        self.hb_thread.start()
+        self._hb_thread = Thread(target=self._hb_loop, args=(heartbeat,), daemon=True)
+        self._hb_thread.name = f"KevinbotLib.Mqtt.Heartbeat:{self.cid}"
+        self._hb_thread.start()
+
+        self._server_hb_thread = Thread(target=self._server_hb_loop, daemon=True)
+        self._server_hb_thread.name = f"KevinbotLib.Mqtt.ServerHeartbeat:{self.cid}"
+        self._server_hb_thread.start()
 
         return rc
+
+    def _server_hb_loop(self):
+        while True:
+            if not self.connected:
+                break
+
+            if self.server_state.heartbeat_freq == -1:
+                time.sleep(1)
+                continue
+
+            if self._last_server_hb < datetime.fromtimestamp(0, timezone.utc) - timedelta(seconds=self.server_state.heartbeat_freq):
+                # server heartbeat is slow or stopped
+                self.connected = False
+                if self.on_server_disconnect:
+                    self.on_server_disconnect()
+
+            time.sleep(self.server_state.heartbeat_freq)
 
     def _hb_loop(self, heartbeat: float):
         while True:
@@ -590,6 +613,7 @@ class MqttKevinbot(BaseKevinbot):
                 if self.on_server_startup:
                     self.on_server_startup()
             case ["server", "shutdown"]:
+                self.connected = False
                 if self.on_server_disconnect:
                     self.on_server_disconnect()
             case ["clients", "connect", "ack"]:
