@@ -295,6 +295,7 @@ class KevinbotServerState(BaseModel):
 
     mqtt_connected: bool = False
     clients: int = 0
+    heartbeat_freq: float = -1
     connected_cids: list[str] = []
     dead_cids: list[str] = []
     cid_heartbeats: dict[str, float] = {}

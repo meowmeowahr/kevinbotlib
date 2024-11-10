@@ -32,6 +32,7 @@ class KevinbotServer:
 
         self.state: KevinbotServerState = KevinbotServerState()
         self.state.timestamp = datetime.now(timezone.utc)
+        self.state.heartbeat_freq = self.config.server.heartbeat
 
         self.robot.request_disable()
         self.drive = Drivebase(robot)

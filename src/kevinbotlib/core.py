@@ -397,6 +397,8 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = 60
         self.connected = False
 
+        self.hb_thread: Thread | None = None
+
         self._callback: Callable[[list[str], str], Any] | None = None
         self._on_server_startup: Callable[[], Any] | None = None
         self._on_server_disconnect: Callable[[], Any] | None = None
@@ -474,7 +476,7 @@ class MqttKevinbot(BaseKevinbot):
         self.client.loop_start()
 
         connect_time = time.time()
-        while not self.server_state.mqtt_connected:
+        while (not self.server_state.mqtt_connected) or (self.server_state.heartbeat_freq == -1):
             time.sleep(0.01)
             if connect_time < time.time() - timeout:
                 msg = "KevinbotLib over MQTT handhsake timed out."
