@@ -317,14 +317,41 @@ class SerialKevinbot(BaseKevinbot):
                     serial.write(b"connection.ok\n")
                     logger.warning("A handshake was re-requested. This could indicate a core power fault or reset")
                 case "motors.amps":
-                    if val:
-                        self._state.motion.amps = list(map(float, val.split(",")))
+                    if not val:
+                        logger.error(f"No value given for motors.amps")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of motion.amps are not ints: {val}")
+                        continue
+
+                    self._state.motion.amps = list(map(float, val.split(",")))
                 case "motors.watts":
-                    if val:
-                        self._state.motion.watts = list(map(float, val.split(",")))
+                    if not val:
+                        logger.error(f"No value given for motors.watts")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of motion.watts are not ints: {val}")
+                        continue
+
+                    self._state.motion.watts = list(map(float, val.split(",")))
                 case "motors.status":
-                    if val:
-                        self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
+                    if not val:
+                        logger.error(f"No value given for motors.status")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of motion.status are not ints: {val}")
+                        continue
+
+                    self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
                 case "bms.voltages":
                     if val:
                         self._state.battery.voltages = [float(x) / 10 for x in val.split(",")]
