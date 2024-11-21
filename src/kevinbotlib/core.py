@@ -353,8 +353,17 @@ class SerialKevinbot(BaseKevinbot):
 
                     self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
                 case "bms.voltages":
-                    if val:
-                        self._state.battery.voltages = [float(x) / 10 for x in val.split(",")]
+                    if not val:
+                        logger.error(f"No value given for bms.voltages")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of bms.voltages are not ints: {val}")
+                        continue
+
+                    self._state.battery.voltages = [float(x) / 10 for x in val.split(",")]
                 case "bms.raw_voltages":
                     if val:
                         self._state.battery.raw_voltages = [float(x) / 10 for x in val.split(",")]
@@ -362,11 +371,29 @@ class SerialKevinbot(BaseKevinbot):
                     if val:
                         self._state.battery.states = [BmsBatteryState(int(x)) for x in val.split(",")]
                 case "sensors.gyro":
-                    if val:
-                        self._state.imu.gyro = [int(x) for x in val.split(",")]
+                    if not val:
+                        logger.error(f"No value given for sensors.gyro")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of sensors.gyro are not ints: {val}")
+                        continue
+
+                    self._state.imu.gyro = [int(x) for x in val.split(",")]
                 case "sensors.accel":
-                    if val:
-                        self._state.imu.accel = [int(x) for x in val.split(",")]
+                    if not val:
+                        logger.error(f"No value given for sensors.accel")
+                        continue
+                    
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of sensors.accel are not ints: {val}")
+                        continue
+                    
+                    self._state.imu.accel = [int(x) for x in val.split(",")]
                 case "sensors.temps":
                     if val:
                         temps = val.split(",")
