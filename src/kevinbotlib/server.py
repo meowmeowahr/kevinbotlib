@@ -21,7 +21,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
-from kevinbotlib.eyes import SerialEyes
+from kevinbotlib.eyes import SerialEyes, EyeSkin, EyeMotion, EyeSettings
 from kevinbotlib.states import KevinbotServerState
 
 
@@ -124,6 +124,10 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/drive/power", 1)
         self.client.subscribe(self.root + "/servo/set", 0)
         self.client.subscribe(self.root + "/servo/all", 0)
+        self.client.subscribe(self.root + "/eyes/skin", 0)
+        self.client.subscribe(self.root + "/eyes/backlight", 0)
+        self.client.subscribe(self.root + "/eyes/motion", 0)
+        self.client.subscribe(self.root + "/eyes/pos", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
@@ -275,6 +279,16 @@ class KevinbotServer:
                     return
 
                 self.servos.all = int(value)
+            case ["eyes", "skin"]:
+                if not value.isdigit():
+                    logger.error(f"Eye skin value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_skin(EyeSkin(int(value)))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
