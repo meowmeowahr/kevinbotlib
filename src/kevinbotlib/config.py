@@ -143,6 +143,15 @@ class _Eyes:
         self._config.save()
 
     @property
+    def handshake_timeout(self) -> float:
+        return self._data.get("handshake_timeout", 5.0)
+
+    @handshake_timeout.setter
+    def handshake_timeout(self, value: int):
+        self._data["handshake_timeout"] = value
+        self._config.save()
+
+    @property
     def timeout(self) -> float:
         return self._data.get("timeout", 5.0)
 
@@ -156,6 +165,7 @@ class _Eyes:
         return {
             "port": self.port,
             "baud": self.baud,
+            "handshake_timeout": self.handshake_timeout,
             "timeout": self.timeout,
         }
 

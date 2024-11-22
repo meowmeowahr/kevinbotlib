@@ -21,6 +21,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
+from kevinbotlib.eyes import SerialEyes
 from kevinbotlib.states import KevinbotServerState
 
 
@@ -37,6 +38,12 @@ class KevinbotServer:
         self.robot.request_disable()
         self.drive = Drivebase(robot)
         self.servos = Servos(robot)
+
+        if config.server.enable_eyes:
+            self.eyes = SerialEyes()
+            self.eyes.connect(self.config.eyes.port, self.config.eyes.baud, self.config.eyes.handshake_timeout, self.config.eyes.handshake_timeout)
+        else:
+            self.eyes = None
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
