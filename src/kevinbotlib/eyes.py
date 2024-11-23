@@ -11,7 +11,7 @@ from typing import Any
 from loguru import logger
 from serial import Serial
 
-from kevinbotlib.core import KevinbotConnectionType
+from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState
 
@@ -27,6 +27,8 @@ class BaseKevinbotEyes:
         self.type = KevinbotConnectionType.BASE
 
         self._auto_disconnect = True
+
+        self._robot: MqttKevinbot = MqttKevinbot()
 
     def get_state(self) -> KevinbotEyesState:
         """Gets the current state of the eyes
@@ -73,6 +75,49 @@ class BaseKevinbotEyes:
         """
         msg = f"Function not implemented, attempting to send {data}"
         raise NotImplementedError(msg)
+
+    def set_skin(self, skin: EyeSkin):
+        """Set the current skin
+
+        Args:
+            skin (EyeSkin): Skin index
+        """
+        if self.type == KevinbotConnectionType.SERIAL:
+            self._state.settings.states.page = skin
+            self.send(f"setState={skin.value}")
+
+    def set_backlight(self, bl: float):
+        """Set the current backlight brightness
+
+        Args:
+            bl (float): Brightness from 0 to 1
+        """
+        if self.type == KevinbotConnectionType.SERIAL:
+            self._state.settings.display.backlight = min(int(bl * 100), 100)
+            self.send(f"setBacklight={self._state.settings.display.backlight}")
+        elif isinstance(self, MqttEyes):
+            self._robot.client.publish(f"{self._robot.root_topic}/eyes/backlight", int(255 * bl), 0)
+
+    def set_motion(self, motion: EyeMotion):
+        """Set the current backlight brightness
+
+        Args:
+            motion (EyeMotion): Motion mode
+        """
+        if self.type == KevinbotConnectionType.SERIAL:
+            self._state.settings.states.motion = motion
+            self.send(f"setMotion={motion.value}")
+
+    def set_manual_pos(self, x: int, y: int):
+        """Set the on-screen position of pupil
+
+        Args:
+            x (int): X Position of pupil
+            y (int): Y Position of pupil
+        """
+        if self.type == KevinbotConnectionType.SERIAL:
+            self._state.settings.motions.pos = x, y
+            self.send(f"setPosition={x},{y}")
 
 
 class SerialEyes(BaseKevinbotEyes):
@@ -244,39 +289,42 @@ class SerialEyes(BaseKevinbotEyes):
             if self.callback:
                 self.callback(cmd, val)
 
-    def set_skin(self, skin: EyeSkin):
-        """Set the current skin
+
+class MqttEyes(BaseKevinbotEyes):
+    """The main serial Kevinbot Eyes class"""
+
+    def __init__(self, robot: MqttKevinbot) -> None:
+        super().__init__()
+        self.type = KevinbotConnectionType.MQTT
+
+        self.serial: Serial | None = None
+        self.rx_thread: Thread | None = None
+
+        self._callback: Callable[[str, str | None], Any] | None = None
+
+        self._robot: MqttKevinbot = robot
+
+        atexit.register(self.disconnect)
+
+    def send(self, data: str):
+        """Send a string through serial.
+
+        Automatically adds a newline.
 
         Args:
-            skin (EyeSkin): Skin index
+            data (str): Data to send
         """
-        self._state.settings.states.page = skin
-        self.send(f"setState={skin.value}")
+        self.raw_tx((data + "\n").encode("utf-8"))
 
-    def set_backlight(self, bl: float):
-        """Set the current backlight brightness
+    def raw_tx(self, data: bytes):
+        """Send raw bytes over serial.
 
         Args:
-            bl (float): Brightness from 0 to 1
+            data (bytes): Raw data
         """
-        self._state.settings.display.backlight = min(int(bl * 100), 100)
-        self.send(f"setBacklight={self._state.settings.display.backlight}")
+        if self.serial:
+            self.serial.write(data)
+        else:
+            logger.warning(f"Couldn't transmit data: {data!r}, Eyes aren't connected")
 
-    def set_motion(self, motion: EyeMotion):
-        """Set the current backlight brightness
 
-        Args:
-            motion (EyeMotion): Motion mode
-        """
-        self._state.settings.states.motion = motion
-        self.send(f"setMotion={motion.value}")
-
-    def set_manual_pos(self, x: int, y: int):
-        """Set the on-screen position of pupil
-
-        Args:
-            x (int): X Position of pupil
-            y (int): Y Position of pupil
-        """
-        self._state.settings.motions.pos = x, y
-        self.send(f"setPosition={x},{y}")

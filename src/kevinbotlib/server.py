@@ -288,6 +288,25 @@ class KevinbotServer:
                     self.eyes.set_skin(EyeSkin(int(value)))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "motion"]:
+                if not value.isdigit():
+                    logger.error(f"Eye skin value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_motion(EyeMotion(int(value)))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "backlight"]:
+                if not value.isdigit():
+                    logger.error(f"Eye backlight value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_backlight(max(0, min(1, int(value)/255)))
+                    print(max(0, min(255, int(value))))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
 
 
     def on_robot_state_change(self, _: str, __: str | None):
