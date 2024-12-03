@@ -85,19 +85,6 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/uptimes.py"
     ```
 
-### Robot Estimated Timestamp Retrieval
-
-=== "Serial"
-
-    !!! note
-        Serial mode does not support timestamps.
-
-=== "MQTT"
-
-    ```python title="examples/core/timestamp.py" linenums="1" 
-    --8<-- "examples/core/timestamp.py"
-    ```
-
 ## Battery
 
 ### Robot Battery Readings
@@ -112,4 +99,34 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 
     ```python title="examples/battery/readings.py" linenums="1" 
     --8<-- "examples/battery/readings.py"
+    ```
+
+## Environment
+
+### BME280
+
+=== "Serial"
+
+    ```python title="examples/environment/bme280_serial.py" linenums="1" 
+    --8<-- "examples/environment/bme280_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/environment/bme280.py" linenums="1" 
+    --8<-- "examples/environment/bme280.py"
+    ```
+
+### DS18B20
+
+=== "Serial"
+
+    ```python title="examples/environment/ds18b20_serial.py" linenums="1" 
+    --8<-- "examples/environment/ds18b20_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/environment/ds18b20.py" linenums="1" 
+    --8<-- "examples/environment/ds18b20.py"
     ```
