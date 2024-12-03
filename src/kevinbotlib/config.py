@@ -147,7 +147,7 @@ class _Eyes:
         return self._data.get("handshake_timeout", 5.0)
 
     @handshake_timeout.setter
-    def handshake_timeout(self, value: int):
+    def handshake_timeout(self, value: float):
         self._data["handshake_timeout"] = value
         self._config.save()
 
@@ -156,8 +156,26 @@ class _Eyes:
         return self._data.get("timeout", 5.0)
 
     @timeout.setter
-    def timeout(self, value: int):
+    def timeout(self, value: float):
         self._data["timeout"] = value
+        self._config.save()
+
+    @property
+    def resolution_x(self) -> int:
+        return self._data.get("resolution_x", 240)
+
+    @resolution_x.setter
+    def resolution_x(self, value: int):
+        self._data["resolution_x"] = value
+        self._config.save()
+
+    @property
+    def resolution_y(self) -> int:
+        return self._data.get("resolution_y", 240)
+
+    @resolution_y.setter
+    def resolution_y(self, value: int):
+        self._data["resolution_y"] = value
         self._config.save()
 
     @property
@@ -167,6 +185,8 @@ class _Eyes:
             "baud": self.baud,
             "handshake_timeout": self.handshake_timeout,
             "timeout": self.timeout,
+            "resolution_x": self.resolution_x,
+            "resolution_y": self.resolution_y
         }
 
 

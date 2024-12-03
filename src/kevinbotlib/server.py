@@ -307,6 +307,30 @@ class KevinbotServer:
                     print(max(0, min(255, int(value))))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "pos"]:
+                values = value.strip().split(",")
+                if len(values) != 2:  # noqa: PLR2004
+                    logger.error(f"Invalid eye position format. Expected 'x,y', got: {value!r}")
+                    return
+
+                if not all(v.isdigit() for v in values):
+                    logger.error(f"Eye position values must be numbers, got: {value!r}")
+                    return
+
+                x = int(values[0])
+                y = int(values[1])
+
+                if not (0 <= x <= self.config.eyes.resolution_x):
+                    logger.error(f"X must be 0~{self.config.eyes.resolution_x}, if your screen is larger, use the `kevinbot config set eyes.resolution_x <NEW_VALUE> --int`")
+                    return
+                if not (0 <= y <= self.config.eyes.resolution_y):
+                    logger.error(f"X must be 0~{self.config.eyes.resolution_y}, if your screen is larger, use the `kevinbot config set eyes.resolution_y <NEW_VALUE> --int`")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_manual_pos(x, y)
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
 
 
     def on_robot_state_change(self, _: str, __: str | None):
