@@ -21,6 +21,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
+from kevinbotlib.eyes import SerialEyes, EyeSkin, EyeMotion, EyeSettings
 from kevinbotlib.states import KevinbotServerState
 
 
@@ -37,6 +38,12 @@ class KevinbotServer:
         self.robot.request_disable()
         self.drive = Drivebase(robot)
         self.servos = Servos(robot)
+
+        if config.server.enable_eyes:
+            self.eyes = SerialEyes()
+            self.eyes.connect(self.config.eyes.port, self.config.eyes.baud, self.config.eyes.handshake_timeout, self.config.eyes.handshake_timeout)
+        else:
+            self.eyes = None
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
@@ -117,6 +124,10 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/drive/power", 1)
         self.client.subscribe(self.root + "/servo/set", 0)
         self.client.subscribe(self.root + "/servo/all", 0)
+        self.client.subscribe(self.root + "/eyes/skin", 0)
+        self.client.subscribe(self.root + "/eyes/backlight", 0)
+        self.client.subscribe(self.root + "/eyes/motion", 0)
+        self.client.subscribe(self.root + "/eyes/pos", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
@@ -268,6 +279,59 @@ class KevinbotServer:
                     return
 
                 self.servos.all = int(value)
+            case ["eyes", "skin"]:
+                if not value.isdigit():
+                    logger.error(f"Eye skin value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_skin(EyeSkin(int(value)))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "motion"]:
+                if not value.isdigit():
+                    logger.error(f"Eye skin value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_motion(EyeMotion(int(value)))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "backlight"]:
+                if not value.isdigit():
+                    logger.error(f"Eye backlight value must be numbers, got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_backlight(max(0, min(1, int(value)/255)))
+                    print(max(0, min(255, int(value))))
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+            case ["eyes", "pos"]:
+                values = value.strip().split(",")
+                if len(values) != 2:  # noqa: PLR2004
+                    logger.error(f"Invalid eye position format. Expected 'x,y', got: {value!r}")
+                    return
+
+                if not all(v.isdigit() for v in values):
+                    logger.error(f"Eye position values must be numbers, got: {value!r}")
+                    return
+
+                x = int(values[0])
+                y = int(values[1])
+
+                if not (0 <= x <= self.config.eyes.resolution_x):
+                    logger.error(f"X must be 0~{self.config.eyes.resolution_x}, if your screen is larger, use the `kevinbot config set eyes.resolution_x <NEW_VALUE> --int`")
+                    return
+                if not (0 <= y <= self.config.eyes.resolution_y):
+                    logger.error(f"X must be 0~{self.config.eyes.resolution_y}, if your screen is larger, use the `kevinbot config set eyes.resolution_y <NEW_VALUE> --int`")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_manual_pos(x, y)
+                else:
+                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())

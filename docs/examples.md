@@ -63,6 +63,14 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     --8<-- "examples/core/state.py"
     ```
 
+### Robot Timestamp Retrieval <code class="doc-symbol doc-symbol-heading doc-symbol-mqtt">MQTT Only</code>
+
+=== "MQTT"
+
+    ```python title="examples/core/timestamp.py" linenums="1" 
+    --8<-- "examples/core/timestamp.py"
+    ```
+
 ### Robot Uptime Retrieval
 
 === "Serial"

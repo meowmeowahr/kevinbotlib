@@ -6,7 +6,7 @@ from typing import Final
 from kevinbotlib import __about__
 from kevinbotlib.core import Drivebase, Lighting, MqttKevinbot, SerialKevinbot, Servo, Servos
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.eyes import KevinbotEyesState, SerialEyes
+from kevinbotlib.eyes import KevinbotEyesState, SerialEyes, MqttEyes
 from kevinbotlib.states import (
     BmsBatteryState,
     BMState,
@@ -33,6 +33,7 @@ __all__ = [
     "KevinbotState",
     "DrivebaseState",
     "SerialEyes",
+    "MqttEyes",
     "KevinbotEyesState",
     "EyeSkin",
     "EyeMotion",

@@ -119,6 +119,77 @@ class _Core:
         }
 
 
+class _Eyes:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
+
+    @property
+    def port(self) -> str:
+        return self._data.get("port", "/dev/ttyUSB0")
+
+    @port.setter
+    def port(self, value: str):
+        self._data["port"] = value
+        self._config.save()
+
+    @property
+    def baud(self) -> int:
+        return self._data.get("baud", 115200)
+
+    @baud.setter
+    def baud(self, value: int):
+        self._data["baud"] = value
+        self._config.save()
+
+    @property
+    def handshake_timeout(self) -> float:
+        return self._data.get("handshake_timeout", 5.0)
+
+    @handshake_timeout.setter
+    def handshake_timeout(self, value: float):
+        self._data["handshake_timeout"] = value
+        self._config.save()
+
+    @property
+    def timeout(self) -> float:
+        return self._data.get("timeout", 5.0)
+
+    @timeout.setter
+    def timeout(self, value: float):
+        self._data["timeout"] = value
+        self._config.save()
+
+    @property
+    def resolution_x(self) -> int:
+        return self._data.get("resolution_x", 240)
+
+    @resolution_x.setter
+    def resolution_x(self, value: int):
+        self._data["resolution_x"] = value
+        self._config.save()
+
+    @property
+    def resolution_y(self) -> int:
+        return self._data.get("resolution_y", 240)
+
+    @resolution_y.setter
+    def resolution_y(self, value: int):
+        self._data["resolution_y"] = value
+        self._config.save()
+
+    @property
+    def data(self):
+        return {
+            "port": self.port,
+            "baud": self.baud,
+            "handshake_timeout": self.handshake_timeout,
+            "timeout": self.timeout,
+            "resolution_x": self.resolution_x,
+            "resolution_y": self.resolution_y
+        }
+
+
 class _Server:
     def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
         self._config = config
@@ -170,6 +241,15 @@ class _Server:
         self._config.save()
 
     @property
+    def enable_eyes(self) -> bool:
+        return self._data.get("enable_eyes", True)
+
+    @enable_eyes.setter
+    def enable_eyes(self, value: bool):
+        self._data["enable_eyes"] = value
+        self._config.save()
+
+    @property
     def data(self):
         return {
             "root_topic": self.root_topic,
@@ -177,6 +257,7 @@ class _Server:
             "drive_ts_tolerance": self.drive_ts_tolerance,
             "client_heartbeat": self.client_heartbeat,
             "client_heartbeat_tolerance": self.client_heartbeat_tolerance,
+            "enable_eyes": self.enable_eyes,
         }
 
 
@@ -198,6 +279,7 @@ class KevinbotConfig:
         self.mqtt: _MQTT = _MQTT({}, self)
         self.core: _Core = _Core({}, self)
         self.server: _Server = _Server({}, self)
+        self.eyes: _Eyes = _Eyes({}, self)
 
         self.load()
 
@@ -233,6 +315,7 @@ class KevinbotConfig:
         self.mqtt = _MQTT(self.config.get("mqtt", {}), self)
         self.core = _Core(self.config.get("core", {}), self)
         self.server = _Server(self.config.get("server", {}), self)
+        self.eyes = _Eyes(self.config.get("eyes", {}), self)
 
     def save(self) -> None:
         if self.config_path:
@@ -253,6 +336,7 @@ class KevinbotConfig:
         return {
             "mqtt": self.mqtt.data,
             "core": self.core.data,
+            "eyes": self.eyes.data,
             "server": self.server.data,
         }
 
