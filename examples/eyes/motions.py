@@ -4,7 +4,7 @@
 
 import time
 
-from kevinbotlib import MqttEyes, MqttKevinbot, EyeSkin, EyeMotion
+from kevinbotlib import EyeMotion, EyeSkin, MqttEyes, MqttKevinbot
 
 robot = MqttKevinbot()
 robot.connect()

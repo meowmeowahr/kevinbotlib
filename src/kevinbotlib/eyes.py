@@ -332,5 +332,3 @@ class MqttEyes(BaseKevinbotEyes):
             self.serial.write(data)
         else:
             logger.warning(f"Couldn't transmit data: {data!r}, Eyes aren't connected")
-
-
