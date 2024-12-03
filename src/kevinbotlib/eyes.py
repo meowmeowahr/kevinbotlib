@@ -82,9 +82,11 @@ class BaseKevinbotEyes:
         Args:
             skin (EyeSkin): Skin index
         """
-        if self.type == KevinbotConnectionType.SERIAL:
+        if isinstance(self, SerialEyes):
             self._state.settings.states.page = skin
             self.send(f"setState={skin.value}")
+        elif isinstance(self, MqttEyes):
+            self._robot.client.publish(f"{self._robot.root_topic}/eyes/skin", skin.value, 0)
 
     def set_backlight(self, bl: float):
         """Set the current backlight brightness
@@ -92,7 +94,7 @@ class BaseKevinbotEyes:
         Args:
             bl (float): Brightness from 0 to 1
         """
-        if self.type == KevinbotConnectionType.SERIAL:
+        if isinstance(self, SerialEyes):
             self._state.settings.display.backlight = min(int(bl * 100), 100)
             self.send(f"setBacklight={self._state.settings.display.backlight}")
         elif isinstance(self, MqttEyes):
@@ -104,9 +106,11 @@ class BaseKevinbotEyes:
         Args:
             motion (EyeMotion): Motion mode
         """
-        if self.type == KevinbotConnectionType.SERIAL:
+        if isinstance(self, SerialEyes):
             self._state.settings.states.motion = motion
             self.send(f"setMotion={motion.value}")
+        elif isinstance(self, MqttEyes):
+            self._robot.client.publish(f"{self._robot.root_topic}/eyes/motion", motion.value, 0)
 
     def set_manual_pos(self, x: int, y: int):
         """Set the on-screen position of pupil
@@ -115,9 +119,11 @@ class BaseKevinbotEyes:
             x (int): X Position of pupil
             y (int): Y Position of pupil
         """
-        if self.type == KevinbotConnectionType.SERIAL:
+        if isinstance(self, SerialEyes):
             self._state.settings.motions.pos = x, y
             self.send(f"setPosition={x},{y}")
+        elif isinstance(self, MqttEyes):
+            self._robot.client.publish(f"{self._robot.root_topic}/eyes/pos", f"{x},{y}", 0)
 
 
 class SerialEyes(BaseKevinbotEyes):
@@ -306,15 +312,15 @@ class MqttEyes(BaseKevinbotEyes):
 
         atexit.register(self.disconnect)
 
-    def send(self, data: str):
-        """Send a string through serial.
+        def send(self, data: str):
+            """Send a string through serial.
 
-        Automatically adds a newline.
+            Automatically adds a newline.
 
-        Args:
-            data (str): Data to send
-        """
-        self.raw_tx((data + "\n").encode("utf-8"))
+            Args:
+                data (str): Data to send
+            """
+            self.raw_tx((data + "\n").encode("utf-8"))
 
     def raw_tx(self, data: bytes):
         """Send raw bytes over serial.
