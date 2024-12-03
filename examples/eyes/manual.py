@@ -8,7 +8,7 @@ import time
 from kevinbotlib import MqttEyes, MqttKevinbot, EyeSkin, EyeMotion
 
 robot = MqttKevinbot()
-robot.connect("kevinbot", "localhost", 1883)
+robot.connect()
 
 eyes = MqttEyes(robot)
 

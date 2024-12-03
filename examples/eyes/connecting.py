@@ -7,7 +7,7 @@ import time
 from kevinbotlib import MqttEyes, MqttKevinbot
 
 robot = MqttKevinbot()
-robot.connect("kevinbot", "localhost", 1883)
+robot.connect()
 
 eyes = MqttEyes(robot)
 
