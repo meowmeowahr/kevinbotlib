@@ -85,3 +85,6 @@ nav:
   - reference.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
+
+extra_css:
+  - static/style.css
