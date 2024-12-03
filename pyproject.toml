@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "kevinbotlib"
 dynamic = ["version"]
-description = ''
+description = 'Communicate with Kevinbot v3 Hardware'
 readme = "README.md"
 requires-python = ">=3.10"
 license = "GPL-3.0-or-later"
