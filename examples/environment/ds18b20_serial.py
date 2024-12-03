@@ -4,10 +4,10 @@
 
 import time
 
-from kevinbotlib import MqttKevinbot
+from kevinbotlib import SerialKevinbot
 
-robot = MqttKevinbot()
-robot.connect()
+robot = SerialKevinbot()
+robot.connect("/dev/ttyAMA2", 921600, 5, 1)
 
 while True:
     print(f"Left Motor : {robot.get_state().thermal.left_motor} *C")  # noqa: T201
