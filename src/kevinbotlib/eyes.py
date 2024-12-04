@@ -21,7 +21,58 @@ class _Simple:
 
     @property
     def name(self) -> str:
+        """Get internal name of skin
+
+        Returns:
+            str: Internal name
+        """
         return "simple"
+
+    @property
+    def bg_color(self) -> str:
+        """Get background color of skin
+
+        Returns:
+            str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.simple.bg_color
+
+    @property
+    def iris_color(self) -> str:
+        """Get iris color of skin
+
+        Returns:
+            str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.simple.iris_color
+
+    @property
+    def pupil_color(self) -> str:
+        """Get pupil color of skin
+
+        Returns:
+            str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.simple.pupil_color
+
+    @property
+    def iris_size(self) -> int:
+        """Get iris size of skin
+
+        Returns:
+            int: Iris size in pixels
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.simple.iris_size
+
+    @property
+    def pupil_size(self) -> int:
+        """Get pupil size of skin
+
+        Returns:
+            int: Pupil size in pixels
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.simple.pupil_size
+    
 
 class _Metal:
     def __init__(self, skinmgr: '_EyeSkinManager') -> None:
@@ -29,6 +80,11 @@ class _Metal:
 
     @property
     def name(self) -> str:
+        """Get internal name of skin
+
+        Returns:
+            str: Internal name
+        """
         return "metal"
 
 class _Neon:
@@ -37,6 +93,11 @@ class _Neon:
 
     @property
     def name(self) -> str:
+        """Get internal name of skin
+
+        Returns:
+            str: Internal name
+        """
         return "neon"
 
 
