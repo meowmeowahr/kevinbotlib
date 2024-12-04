@@ -4,4 +4,4 @@ The eyes system is designed to interface with [Kevinbot v3's Eyes](https://githu
 
 It can use a serial link, or be used with the KevinbotLib Server over MQTT (reusing the same client as the [Kevinbot system](kevinbot.md)).
 
-It does not contain any sbmsystems.
+It does not contain any subsystems.
