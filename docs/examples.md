@@ -169,3 +169,33 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 === "MQTT"
 
     [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep.py)
+
+## Drive
+
+### Status
+
+=== "Serial"
+
+    ```python title="examples/drive/status_serial.py" linenums="1" 
+    --8<-- "examples/drive/status_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/drive/status.py" linenums="1" 
+    --8<-- "examples/drive/status.py"
+    ```
+
+### Drive at Power
+
+=== "Serial"
+
+    ```python title="examples/drive/drive_serial.py" linenums="1" 
+    --8<-- "examples/drive/drive_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/drive/drive.py" linenums="1" 
+    --8<-- "examples/drive/drive.py"
+    ```
