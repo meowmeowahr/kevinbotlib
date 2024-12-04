@@ -133,6 +133,7 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/eyes/backlight", 0)
         self.client.subscribe(self.root + "/eyes/motion", 0)
         self.client.subscribe(self.root + "/eyes/pos", 0)
+        self.client.subscribe(self.root + "/eyes/skinopt", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
@@ -293,7 +294,7 @@ class KevinbotServer:
                 if self.eyes:
                     self.eyes.set_skin(EyeSkin(int(value)))
                 else:
-                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                    logger.warning(f"Attempted to set eye skin value, {subtopics}, eyes are disabled")
                 self.on_eye_state_change()
             case ["eyes", "motion"]:
                 if not value.isdigit():
@@ -303,7 +304,7 @@ class KevinbotServer:
                 if self.eyes:
                     self.eyes.set_motion(EyeMotion(int(value)))
                 else:
-                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                    logger.warning(f"Attempted to set eye motion value, {subtopics}, eyes are disabled")
                 self.on_eye_state_change()
             case ["eyes", "backlight"]:
                 if not value.isdigit():
@@ -313,7 +314,7 @@ class KevinbotServer:
                 if self.eyes:
                     self.eyes.set_backlight(max(0, min(1, int(value) / 255)))
                 else:
-                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                    logger.warning(f"Attempted to set eye backlight value, {subtopics}, eyes are disabled")
                 self.on_eye_state_change()
             case ["eyes", "pos"]:
                 values = value.strip().split(",")
@@ -342,8 +343,18 @@ class KevinbotServer:
                 if self.eyes:
                     self.eyes.set_manual_pos(x, y)
                 else:
-                    logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                    logger.warning(f"Attempted to set eye pos value, {subtopics}, eyes are disabled")
                 self.on_eye_state_change()
+            case ["eyes", "skinopt"]:
+                values = value.strip().split(":")
+                if len(values) < 3:  # noqa: PLR2004
+                    logger.error(f"Invalid eye position format. Expected 'skin:arg0:[...]:value' or 'skin:arg0:value', got: {value!r}")
+                    return
+
+                if self.eyes:
+                    self.eyes.set_skin_option(values)
+                else:
+                    logger.warning(f"Attempted to set eye skinopt value, {subtopics}, eyes are disabled")
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
