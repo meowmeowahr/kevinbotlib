@@ -13,7 +13,7 @@ from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState
+from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, SimpleSkin
 
 
 class _Simple:
@@ -93,6 +93,15 @@ class _Simple:
     @pupil_size.setter
     def pupil_size(self, value: int):
         self.skinmgr.eyes.set_skin_option([self.name, "pupil_size", value])
+
+    def restore(self):
+        """Restore simple skin settings"""
+
+        self.bg_color = SimpleSkin.bg_color
+        self.iris_color = SimpleSkin.iris_color
+        self.pupil_color = SimpleSkin.pupil_color
+        self.iris_size = SimpleSkin.iris_size
+        self.pupil_size = SimpleSkin.pupil_size
 
 
 class _Metal:

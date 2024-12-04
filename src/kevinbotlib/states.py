@@ -243,8 +243,8 @@ class SimpleSkin(BaseModel):
     bg_color: str = "#0022FF"
     iris_color: str = "#FFFFFF"
     pupil_color: str = "#000000"
-    iris_size: int = 0
-    pupil_size: int = 0
+    iris_size: int = 105
+    pupil_size: int = 86
 
 
 class MetalSkin(BaseModel):
