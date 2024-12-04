@@ -318,9 +318,9 @@ class SerialKevinbot(BaseKevinbot):
                     logger.warning("A handshake was re-requested. This could indicate a core power fault or reset")
                 case "motors.amps":
                     if not val:
-                        logger.error(f"No value given for motors.amps")
+                        logger.error("No value given for motors.amps")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
@@ -330,9 +330,9 @@ class SerialKevinbot(BaseKevinbot):
                     self._state.motion.amps = list(map(float, val.split(",")))
                 case "motors.watts":
                     if not val:
-                        logger.error(f"No value given for motors.watts")
+                        logger.error("No value given for motors.watts")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
@@ -342,9 +342,9 @@ class SerialKevinbot(BaseKevinbot):
                     self._state.motion.watts = list(map(float, val.split(",")))
                 case "motors.status":
                     if not val:
-                        logger.error(f"No value given for motors.status")
+                        logger.error("No value given for motors.status")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
@@ -354,9 +354,9 @@ class SerialKevinbot(BaseKevinbot):
                     self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
                 case "bms.voltages":
                     if not val:
-                        logger.error(f"No value given for bms.voltages")
+                        logger.error("No value given for bms.voltages")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
@@ -372,9 +372,9 @@ class SerialKevinbot(BaseKevinbot):
                         self._state.battery.states = [BmsBatteryState(int(x)) for x in val.split(",")]
                 case "sensors.gyro":
                     if not val:
-                        logger.error(f"No value given for sensors.gyro")
+                        logger.error("No value given for sensors.gyro")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
@@ -384,15 +384,15 @@ class SerialKevinbot(BaseKevinbot):
                     self._state.imu.gyro = [int(x) for x in val.split(",")]
                 case "sensors.accel":
                     if not val:
-                        logger.error(f"No value given for sensors.accel")
+                        logger.error("No value given for sensors.accel")
                         continue
-                    
+
                     try:
                         [int(sv) for sv in val.split(",")]
                     except ValueError:
                         logger.error(f"Values of sensors.accel are not ints: {val}")
                         continue
-                    
+
                     self._state.imu.accel = [int(x) for x in val.split(",")]
                 case "sensors.temps":
                     if val:
@@ -451,14 +451,14 @@ class MqttKevinbot(BaseKevinbot):
         self.keepalive = 60
         self.connected = False
 
-        self._hb_thread: Thread | None = None # thread to produce client's heartbeat
-        self._server_hb_thread: Thread | None = None # thread to check in server heartbeat is slow/stopped
+        self._hb_thread: Thread | None = None  # thread to produce client's heartbeat
+        self._server_hb_thread: Thread | None = None  # thread to check in server heartbeat is slow/stopped
 
-        self._callback: Callable[[list[str], str], Any] | None = None # message callback
+        self._callback: Callable[[list[str], str], Any] | None = None  # message callback
         self._on_server_startup: Callable[[], Any] | None = None
         self._on_server_disconnect: Callable[[], Any] | None = None
 
-        self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}" # client id
+        self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"  # client id
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
         self.client.on_message = self._on_message
 
@@ -563,7 +563,9 @@ class MqttKevinbot(BaseKevinbot):
                 time.sleep(1)
                 continue
 
-            if self._last_server_hb < datetime.fromtimestamp(0, timezone.utc) - timedelta(seconds=self.server_state.heartbeat_freq):
+            if self._last_server_hb < datetime.fromtimestamp(0, timezone.utc) - timedelta(
+                seconds=self.server_state.heartbeat_freq
+            ):
                 # server heartbeat is slow or stopped
                 self.connected = False
                 if self.on_server_disconnect:
@@ -596,7 +598,7 @@ class MqttKevinbot(BaseKevinbot):
     def disconnect(self):
         """Disconnect from server"""
         super().disconnect()
-        
+
         if self.mqtt_connected:
             self.client.publish(f"{self.root_topic}/clients/disconnect", self.cid, 0).wait_for_publish(1)
             self.client.loop_stop()

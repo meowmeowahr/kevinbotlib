@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Final
+
 from kevinbotlib import __about__
 from kevinbotlib.core import Drivebase, Lighting, MqttKevinbot, SerialKevinbot, Servo, Servos
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.eyes import KevinbotEyesState, SerialEyes, MqttEyes
+from kevinbotlib.eyes import KevinbotEyesState, MqttEyes, SerialEyes
 from kevinbotlib.states import (
     BmsBatteryState,
     BMState,

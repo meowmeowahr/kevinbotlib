@@ -21,7 +21,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
-from kevinbotlib.eyes import SerialEyes, EyeSkin, EyeMotion, EyeSettings
+from kevinbotlib.eyes import EyeMotion, EyeSkin, SerialEyes
 from kevinbotlib.states import KevinbotServerState
 
 
@@ -41,7 +41,12 @@ class KevinbotServer:
 
         if config.server.enable_eyes:
             self.eyes = SerialEyes()
-            self.eyes.connect(self.config.eyes.port, self.config.eyes.baud, self.config.eyes.handshake_timeout, self.config.eyes.handshake_timeout)
+            self.eyes.connect(
+                self.config.eyes.port,
+                self.config.eyes.baud,
+                self.config.eyes.handshake_timeout,
+                self.config.eyes.handshake_timeout,
+            )
         else:
             self.eyes = None
 
@@ -303,8 +308,7 @@ class KevinbotServer:
                     return
 
                 if self.eyes:
-                    self.eyes.set_backlight(max(0, min(1, int(value)/255)))
-                    print(max(0, min(255, int(value))))
+                    self.eyes.set_backlight(max(0, min(1, int(value) / 255)))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
             case ["eyes", "pos"]:
@@ -321,17 +325,20 @@ class KevinbotServer:
                 y = int(values[1])
 
                 if not (0 <= x <= self.config.eyes.resolution_x):
-                    logger.error(f"X must be 0~{self.config.eyes.resolution_x}, if your screen is larger, use the `kevinbot config set eyes.resolution_x <NEW_VALUE> --int`")
+                    logger.error(
+                        f"X must be 0~{self.config.eyes.resolution_x}, if your screen is larger, use the `kevinbot config set eyes.resolution_x <NEW_VALUE> --int`"
+                    )
                     return
                 if not (0 <= y <= self.config.eyes.resolution_y):
-                    logger.error(f"X must be 0~{self.config.eyes.resolution_y}, if your screen is larger, use the `kevinbot config set eyes.resolution_y <NEW_VALUE> --int`")
+                    logger.error(
+                        f"X must be 0~{self.config.eyes.resolution_y}, if your screen is larger, use the `kevinbot config set eyes.resolution_y <NEW_VALUE> --int`"
+                    )
                     return
 
                 if self.eyes:
                     self.eyes.set_manual_pos(x, y)
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
-
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
@@ -344,7 +351,9 @@ class KevinbotServer:
 
     def stop(self):
         logger.info("Exiting...")
-        self.client.publish(f"{self.root}/server/shutdown", datetime.now(timezone.utc).timestamp(), 0).wait_for_publish(1)
+        self.client.publish(f"{self.root}/server/shutdown", datetime.now(timezone.utc).timestamp(), 0).wait_for_publish(
+            1
+        )
         self.client.disconnect()
         self.robot.disconnect()
 

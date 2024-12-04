@@ -21,7 +21,7 @@ pupil = eyes.skins.simple.pupil_color
 iris_size = eyes.skins.simple.iris_size
 pupil_size = eyes.skins.simple.pupil_size
 
-print(f"Bg Color: {bg}, Iris Color: {iris}, Pupil Color: {pupil}")
-print(f"Iris size: {iris_size}, Pupil size: {pupil_size}")
+print(f"Bg Color: {bg}, Iris Color: {iris}, Pupil Color: {pupil}")  # noqa: T201
+print(f"Iris size: {iris_size}, Pupil size: {pupil_size}")  # noqa: T201
 
 time.sleep(2)

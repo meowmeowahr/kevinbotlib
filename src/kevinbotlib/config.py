@@ -186,7 +186,7 @@ class _Eyes:
             "handshake_timeout": self.handshake_timeout,
             "timeout": self.timeout,
             "resolution_x": self.resolution_x,
-            "resolution_y": self.resolution_y
+            "resolution_y": self.resolution_y,
         }
 
 

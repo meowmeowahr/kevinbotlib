@@ -15,8 +15,9 @@ from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState
 
+
 class _Simple:
-    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+    def __init__(self, skinmgr: "_EyeSkinManager") -> None:
         self.skinmgr = skinmgr
 
     @property
@@ -72,10 +73,10 @@ class _Simple:
             int: Pupil size in pixels
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.pupil_size
-    
+
 
 class _Metal:
-    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+    def __init__(self, skinmgr: "_EyeSkinManager") -> None:
         self.skinmgr = skinmgr
 
     @property
@@ -87,8 +88,9 @@ class _Metal:
         """
         return "metal"
 
+
 class _Neon:
-    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+    def __init__(self, skinmgr: "_EyeSkinManager") -> None:
         self.skinmgr = skinmgr
 
     @property
@@ -102,20 +104,21 @@ class _Neon:
 
 
 class _EyeSkinManager:
-    def __init__(self, eyes: 'BaseKevinbotEyes') -> None:
+    def __init__(self, eyes: "BaseKevinbotEyes") -> None:
         self.eyes = eyes
 
     @property
     def simple(self) -> _Simple:
         return _Simple(self)
-    
+
     @property
     def metal(self) -> _Metal:
         return _Metal(self)
-    
+
     @property
     def neon(self) -> _Neon:
         return _Neon(self)
+
 
 class BaseKevinbotEyes:
     """The base Kevinbot Eyes class.
