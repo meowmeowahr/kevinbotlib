@@ -269,15 +269,78 @@ class SerialEyes(BaseKevinbotEyes):
         serial = self._setup_serial(port, baud, ser_timeout)
 
         start_time = time.monotonic()
+        hs_started = False
         while True:
-            serial.write(b"connectionReady\n")
+            if not hs_started:
+                serial.write(b"connectionReady\n")
 
             line = serial.readline().decode("utf-8", errors="ignore").strip("\n")
 
             if line == "handshake.request":
+                hs_started = True
                 serial.write(b"getSettings=true\n")
+
+            if line == "settTx.done":
                 serial.write(b"handshake.complete\n")
                 break
+
+            data = line.split("=", 2)
+            cmd = line.split("=", 2)[0]
+            if len(data) > 1:
+                val = line.split("=", 2)[1]
+            else:
+                val = None
+            
+            if cmd.startswith("eyeSettings."):
+                # Remove prefix and split into path and value
+                setting = cmd[len("eyeSettings.") :]
+
+                path = setting.split(".")
+
+                if not val:
+                    logger.error(f"Got eyeSettings command without a value: {cmd} :: {val}")
+                    continue
+
+                # Handle array values [x, y]
+                if val.startswith("[") and val.endswith("]"):
+                    value_str = val.strip("[]")
+                    value = tuple(int(x.strip()) for x in value_str.split(","))
+                # Handle hex colors
+                elif val.startswith("#"):
+                    value = val
+                # Handle quoted strings
+                elif val.startswith('"') and val.endswith('"'):
+                    value = val.strip('"')
+                # Handle numbers
+                else:
+                    try:
+                        value = int(val)
+                    except ValueError:
+                        value = val
+
+                # Create a dict representation of the settings
+                settings_dict = self._state.settings.model_dump()
+
+                # Navigate to the correct nested dictionary
+                current_dict = settings_dict
+                for i, key in enumerate(path[:-1]):
+                    if key not in current_dict:
+                        logger.error(f"Invalid path: {'.'.join(path[:i+1])}")
+                        continue
+                    if not isinstance(current_dict[key], dict):
+                        logger.error(f"Cannot navigate through non-dict value at {'.'.join(path[:i+1])}")
+                        continue
+                    current_dict = current_dict[key]
+
+                # Update the value
+                if path[-1] not in current_dict:
+                    logger.error(f"Invalid setting: {'.'.join(path)}")
+                    continue
+                current_dict[path[-1]] = value
+
+                # Create new settings instance with updated values
+                self._state.settings = EyeSettings.model_validate(settings_dict)
+
 
             if time.monotonic() - start_time > timeout:
                 msg = "Handshake timed out"

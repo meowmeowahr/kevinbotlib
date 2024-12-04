@@ -168,9 +168,9 @@ class KevinbotServer:
                     self.on_server_state_change()
             case ["clients", "connect"]:
                 self.state.connected_cids.append(value)
-                self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
                 logger.info(f"Client connected with cid:{value}")
                 self.on_server_state_change()
+                self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
             case ["clients", "disconnect"]:
                 if value in self.state.connected_cids:
                     self.state.connected_cids.remove(value)
@@ -293,6 +293,7 @@ class KevinbotServer:
                     self.eyes.set_skin(EyeSkin(int(value)))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                self.on_eye_state_change()
             case ["eyes", "motion"]:
                 if not value.isdigit():
                     logger.error(f"Eye skin value must be numbers, got: {value!r}")
@@ -302,6 +303,7 @@ class KevinbotServer:
                     self.eyes.set_motion(EyeMotion(int(value)))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                self.on_eye_state_change()
             case ["eyes", "backlight"]:
                 if not value.isdigit():
                     logger.error(f"Eye backlight value must be numbers, got: {value!r}")
@@ -311,6 +313,7 @@ class KevinbotServer:
                     self.eyes.set_backlight(max(0, min(1, int(value) / 255)))
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                self.on_eye_state_change()
             case ["eyes", "pos"]:
                 values = value.strip().split(",")
                 if len(values) != 2:  # noqa: PLR2004
@@ -339,12 +342,17 @@ class KevinbotServer:
                     self.eyes.set_manual_pos(x, y)
                 else:
                     logger.warning(f"Attempted to set eye value, {subtopics}, eyes are disabled")
+                self.on_eye_state_change()
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
 
     def on_server_state_change(self):
         self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
+        
+    def on_eye_state_change(self):
+        if self.eyes:
+            self.client.publish(f"{self.root}/eyes/state", self.eyes.get_state().model_dump_json())
 
     def radio_callback(self, rf_data: dict):
         logger.trace(f"Got rf packet: {rf_data}")
