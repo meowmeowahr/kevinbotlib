@@ -15,6 +15,46 @@ from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState
 
+class _Simple:
+    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+        self.skinmgr = skinmgr
+
+    @property
+    def name(self) -> str:
+        return "simple"
+
+class _Metal:
+    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+        self.skinmgr = skinmgr
+
+    @property
+    def name(self) -> str:
+        return "metal"
+
+class _Neon:
+    def __init__(self, skinmgr: '_EyeSkinManager') -> None:
+        self.skinmgr = skinmgr
+
+    @property
+    def name(self) -> str:
+        return "neon"
+
+
+class _EyeSkinManager:
+    def __init__(self, eyes: 'BaseKevinbotEyes') -> None:
+        self.eyes = eyes
+
+    @property
+    def simple(self) -> _Simple:
+        return _Simple(self)
+    
+    @property
+    def metal(self) -> _Metal:
+        return _Metal(self)
+    
+    @property
+    def neon(self) -> _Neon:
+        return _Neon(self)
 
 class BaseKevinbotEyes:
     """The base Kevinbot Eyes class.
@@ -124,6 +164,10 @@ class BaseKevinbotEyes:
             self.send(f"setPosition={x},{y}")
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/pos", f"{x},{y}", 0)
+
+    @property
+    def skins(self) -> _EyeSkinManager:
+        return _EyeSkinManager(self)
 
 
 class SerialEyes(BaseKevinbotEyes):
