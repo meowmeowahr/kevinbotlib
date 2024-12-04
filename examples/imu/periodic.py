@@ -4,10 +4,10 @@
 
 import time
 
-from kevinbotlib import SerialKevinbot
+from kevinbotlib import MqttKevinbot
 
-robot = SerialKevinbot()
-robot.connect("/dev/ttyAMA2", 921600, 5, 1)
+robot = MqttKevinbot()
+robot.connect()
 
 while True:
     print(f"Gyro : {robot.get_state().imu.gyro}")  # noqa: T201

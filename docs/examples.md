@@ -130,3 +130,20 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```python title="examples/environment/ds18b20.py" linenums="1" 
     --8<-- "examples/environment/ds18b20.py"
     ```
+
+
+## IMU
+
+### Periodic Polling
+
+=== "Serial"
+
+    ```python title="examples/imu/periodic_serial.py" linenums="1" 
+    --8<-- "examples/imu/periodic_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/imu/periodic.py" linenums="1" 
+    --8<-- "examples/imu/periodic.py"
+    ```
