@@ -38,6 +38,10 @@ class _Simple:
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.bg_color
 
+    @bg_color.setter
+    def bg_color(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "bg_color", value])
+
     @property
     def iris_color(self) -> str:
         """Get iris color of skin
@@ -46,6 +50,10 @@ class _Simple:
             str: Hex-formatted color code
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.iris_color
+
+    @iris_color.setter
+    def iris_color(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "iris_color", value])
 
     @property
     def pupil_color(self) -> str:
@@ -56,6 +64,10 @@ class _Simple:
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.pupil_color
 
+    @pupil_color.setter
+    def pupil_color(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "pupil_color", value])
+
     @property
     def iris_size(self) -> int:
         """Get iris size of skin
@@ -65,6 +77,10 @@ class _Simple:
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.iris_size
 
+    @iris_size.setter
+    def iris_size(self, value: int):
+        self.skinmgr.eyes.set_skin_option([self.name, "iris_size", value])
+
     @property
     def pupil_size(self) -> int:
         """Get pupil size of skin
@@ -73,6 +89,10 @@ class _Simple:
             int: Pupil size in pixels
         """
         return self.skinmgr.eyes.get_state().settings.skins.simple.pupil_size
+
+    @pupil_size.setter
+    def pupil_size(self, value: int):
+        self.skinmgr.eyes.set_skin_option([self.name, "pupil_size", value])
 
 
 class _Metal:
@@ -229,6 +249,39 @@ class BaseKevinbotEyes:
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/pos", f"{x},{y}", 0)
 
+    def set_skin_option(self, data: list):
+        """Set a raw skin option.
+
+        Args:
+            data (list): list of keys, last item is the value
+        """
+        if len(data) < 3:  # noqa: PLR2004
+            logger.error("Data must have at least 2 keys and one value.")
+            return
+
+        keys = data[:-1]
+        value = data[-1]
+
+        skin_key = keys[0]
+        if skin_key not in self._state.settings.skins.model_dump():
+            logger.error(f"Invalid skin key: {skin_key}")
+            return
+
+        skin = getattr(self._state.settings.skins, skin_key)
+        for key in keys[1:]:
+            if not hasattr(skin, key):
+                logger.error(f"Invalid key '{key}' for skin '{skin_key}'")
+                return
+            if keys.index(key) == len(keys[1:]) - 1:  # Final attribute to set
+                setattr(skin, key, value)
+            else:
+                skin = getattr(skin, key)
+
+        if isinstance(self, SerialEyes):
+            self.send(f"setSkinOption={':'.join(map(str, data))}")
+        elif isinstance(self, MqttEyes):
+            self._robot.client.publish(f"{self._robot.root_topic}/eyes/skinopt", ":".join(map(str, data)), 0)
+
     @property
     def skins(self) -> _EyeSkinManager:
         return _EyeSkinManager(self)
@@ -286,11 +339,8 @@ class SerialEyes(BaseKevinbotEyes):
 
             data = line.split("=", 2)
             cmd = line.split("=", 2)[0]
-            if len(data) > 1:
-                val = line.split("=", 2)[1]
-            else:
-                val = None
-            
+            val = line.split("=", 2)[1] if len(data) > 1 else None
+
             if cmd.startswith("eyeSettings."):
                 # Remove prefix and split into path and value
                 setting = cmd[len("eyeSettings.") :]
@@ -340,7 +390,6 @@ class SerialEyes(BaseKevinbotEyes):
 
                 # Create new settings instance with updated values
                 self._state.settings = EyeSettings.model_validate(settings_dict)
-
 
             if time.monotonic() - start_time > timeout:
                 msg = "Handshake timed out"

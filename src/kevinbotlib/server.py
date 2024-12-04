@@ -137,6 +137,7 @@ class KevinbotServer:
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
         self.on_server_state_change()
+        self.on_eye_state_change()
 
     def on_mqtt_message(self, _, __, msg: MQTTMessage):
         logger.trace(f"Got MQTT message at: {msg.topic} payload={msg.payload!r} with qos={msg.qos}")
@@ -349,7 +350,7 @@ class KevinbotServer:
 
     def on_server_state_change(self):
         self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
-        
+
     def on_eye_state_change(self):
         if self.eyes:
             self.client.publish(f"{self.root}/eyes/state", self.eyes.get_state().model_dump_json())
