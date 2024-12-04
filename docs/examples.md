@@ -147,3 +147,13 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```python title="examples/imu/periodic.py" linenums="1" 
     --8<-- "examples/imu/periodic.py"
     ```
+
+### Plotting with matplotlib
+
+=== "Serial"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot_serial.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot_serial.py)
+
+=== "MQTT"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot.py)
