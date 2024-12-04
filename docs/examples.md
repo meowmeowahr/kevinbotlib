@@ -157,3 +157,15 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 === "MQTT"
 
     [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/imu/plot.py)
+
+## Servo
+
+### Sweep demo
+
+=== "Serial"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep_serial.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep_serial.py)
+
+=== "MQTT"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/servo/sweep.py)
