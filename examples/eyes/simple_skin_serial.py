@@ -57,4 +57,7 @@ eyes.skins.simple.pupil_color = pupil
 eyes.skins.simple.iris_size = iris_size
 eyes.skins.simple.pupil_size = pupil_size
 
+# or, use the restore function
+# eyes.skins.simple.restore()
+
 time.sleep(2)
