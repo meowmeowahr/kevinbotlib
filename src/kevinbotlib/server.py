@@ -41,6 +41,7 @@ class KevinbotServer:
 
         if config.server.enable_eyes:
             self.eyes = SerialEyes()
+            self.eyes.on_state_updated = self.on_eye_state_change
             self.eyes.connect(
                 self.config.eyes.port,
                 self.config.eyes.baud,
@@ -134,6 +135,7 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/eyes/motion", 0)
         self.client.subscribe(self.root + "/eyes/pos", 0)
         self.client.subscribe(self.root + "/eyes/skinopt", 0)
+        self.client.subscribe(self.root + "/eyes/get", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.state.mqtt_connected = True
@@ -355,6 +357,11 @@ class KevinbotServer:
                     self.eyes.set_skin_option(values)
                 else:
                     logger.warning(f"Attempted to set eye skinopt value, {subtopics}, eyes are disabled")
+            case ["eyes", "get"]:
+                if self.eyes:
+                    self.eyes.update()
+                else:
+                    logger.warning(f"Attempted to get eye settings, {subtopics}, eyes are disabled")
 
     def on_robot_state_change(self, _: str, __: str | None):
         self.client.publish(f"{self.root}/state", self.robot.get_state().model_dump_json())
@@ -362,7 +369,7 @@ class KevinbotServer:
     def on_server_state_change(self):
         self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
 
-    def on_eye_state_change(self):
+    def on_eye_state_change(self, *args):
         if self.eyes:
             self.client.publish(f"{self.root}/eyes/state", self.eyes.get_state().model_dump_json())
 

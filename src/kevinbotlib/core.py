@@ -458,6 +458,8 @@ class MqttKevinbot(BaseKevinbot):
         self._on_server_startup: Callable[[], Any] | None = None
         self._on_server_disconnect: Callable[[], Any] | None = None
 
+        self._eyes: 'MqttEyes | None' = None
+
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"  # client id
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
         self.client.on_message = self._on_message
@@ -525,6 +527,7 @@ class MqttKevinbot(BaseKevinbot):
 
         rc = self.client.connect(self.host, self.port, self.keepalive)
         self.client.subscribe(f"{self.root_topic}/state", 0)
+        self.client.subscribe(f"{self.root_topic}/eyes/state", 0)
         self.client.subscribe(f"{self.root_topic}/serverstate", 0)
         self.client.subscribe(f"{self.root_topic}/server/startup", 0)
         self.client.subscribe(f"{self.root_topic}/server/shutdown", 0)
@@ -656,6 +659,9 @@ class MqttKevinbot(BaseKevinbot):
         match subtopics:
             case ["state"]:
                 self._state = KevinbotState(**json.loads(value))
+            case ["eyes", "state"]:
+                if self._eyes:
+                    self._eyes._load_data(value)
             case ["serverstate"]:
                 new_state = KevinbotServerState(**json.loads(value))
 

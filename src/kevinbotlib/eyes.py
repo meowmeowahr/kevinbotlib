@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import atexit
+import json
 import time
 from collections.abc import Callable
 from threading import Thread
@@ -307,6 +308,7 @@ class SerialEyes(BaseKevinbotEyes):
         self.rx_thread: Thread | None = None
 
         self._callback: Callable[[str, str | None], Any] | None = None
+        self._state_callback: Callable[[KevinbotEyesState], Any] | None = None
 
         atexit.register(self.disconnect)
 
@@ -422,6 +424,21 @@ class SerialEyes(BaseKevinbotEyes):
         else:
             logger.warning("Already disconnected")
 
+    
+    def update(self):
+        """Retrive updated settings from eyes
+        """
+
+        self.send("getSettings=true")
+
+    @property
+    def on_state_updated(self) -> Callable[[KevinbotEyesState], Any] | None:
+        return self._state_callback
+
+    @on_state_updated.setter
+    def on_state_updated(self, callback: Callable[[KevinbotEyesState], Any] | None):
+        self._state_callback = callback
+
     def send(self, data: str):
         """Send a string through serial.
 
@@ -520,6 +537,11 @@ class SerialEyes(BaseKevinbotEyes):
 
                 # Create new settings instance with updated values
                 self._state.settings = EyeSettings.model_validate(settings_dict)
+            else:
+                match cmd:
+                    case "settTx.done":
+                        if self.on_state_updated:
+                            self.on_state_updated(self._state)
 
             if self.callback:
                 self.callback(cmd, val)
@@ -538,26 +560,23 @@ class MqttEyes(BaseKevinbotEyes):
         self._callback: Callable[[str, str | None], Any] | None = None
 
         self._robot: MqttKevinbot = robot
+        self._robot._eyes = self
+
+        self._state_loaded = False
+        robot.client.publish(f"{robot.root_topic}/eyes/get", "request_settings", 0)
+
+        while not self._state_loaded:
+            time.sleep(0.01)
 
         atexit.register(self.disconnect)
 
-        def send(self, data: str):
-            """Send a string through serial.
-
-            Automatically adds a newline.
-
-            Args:
-                data (str): Data to send
-            """
-            self.raw_tx((data + "\n").encode("utf-8"))
-
-    def raw_tx(self, data: bytes):
-        """Send raw bytes over serial.
-
-        Args:
-            data (bytes): Raw data
+    def update(self):
+        """Retrive updated settings from eyes
         """
-        if self.serial:
-            self.serial.write(data)
-        else:
-            logger.warning(f"Couldn't transmit data: {data!r}, Eyes aren't connected")
+
+        self._robot.client.publish(f"{self._robot.root_topic}/eyes/get", "request_settings", 0)
+
+    def _load_data(self, data: str):
+        self._state_loaded = True
+        self._state = KevinbotEyesState(**json.loads(data))
+
