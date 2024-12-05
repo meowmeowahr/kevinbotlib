@@ -350,7 +350,9 @@ class KevinbotServer:
             case ["eyes", "skinopt"]:
                 values = value.strip().split(":")
                 if len(values) < 3:  # noqa: PLR2004
-                    logger.error(f"Invalid eye position format. Expected 'skin:arg0:[...]:value' or 'skin:arg0:value', got: {value!r}")
+                    logger.error(
+                        f"Invalid eye position format. Expected 'skin:arg0:[...]:value' or 'skin:arg0:value', got: {value!r}"
+                    )
                     return
 
                 if self.eyes:
@@ -369,7 +371,7 @@ class KevinbotServer:
     def on_server_state_change(self):
         self.client.publish(f"{self.root}/serverstate", self.state.model_dump_json())
 
-    def on_eye_state_change(self, *args):
+    def on_eye_state_change(self, *_):
         if self.eyes:
             self.client.publish(f"{self.root}/eyes/state", self.eyes.get_state().model_dump_json())
 

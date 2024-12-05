@@ -424,10 +424,8 @@ class SerialEyes(BaseKevinbotEyes):
         else:
             logger.warning("Already disconnected")
 
-    
     def update(self):
-        """Retrive updated settings from eyes
-        """
+        """Retrive updated settings from eyes"""
 
         self.send("getSettings=true")
 
@@ -560,7 +558,7 @@ class MqttEyes(BaseKevinbotEyes):
         self._callback: Callable[[str, str | None], Any] | None = None
 
         self._robot: MqttKevinbot = robot
-        self._robot._eyes = self
+        self._robot._eyes = self  # noqa: SLF001
 
         self._state_loaded = False
         robot.client.publish(f"{robot.root_topic}/eyes/get", "request_settings", 0)
@@ -571,12 +569,10 @@ class MqttEyes(BaseKevinbotEyes):
         atexit.register(self.disconnect)
 
     def update(self):
-        """Retrive updated settings from eyes
-        """
+        """Retrive updated settings from eyes"""
 
         self._robot.client.publish(f"{self._robot.root_topic}/eyes/get", "request_settings", 0)
 
     def _load_data(self, data: str):
         self._state_loaded = True
         self._state = KevinbotEyesState(**json.loads(data))
-

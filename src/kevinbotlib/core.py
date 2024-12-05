@@ -10,7 +10,7 @@ from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from threading import Thread
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import shortuuid
 from loguru import logger
@@ -19,6 +19,9 @@ from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import BmsBatteryState, KevinbotServerState, KevinbotState, LightingState, MotorDriveStatus
+
+if TYPE_CHECKING:
+    from kevinbotlib.eyes import MqttEyes
 
 
 class KevinbotConnectionType(Enum):
@@ -458,7 +461,7 @@ class MqttKevinbot(BaseKevinbot):
         self._on_server_startup: Callable[[], Any] | None = None
         self._on_server_disconnect: Callable[[], Any] | None = None
 
-        self._eyes: 'MqttEyes | None' = None
+        self._eyes: MqttEyes | None = None
 
         self.cid = cid if cid else f"kevinbotlib-{shortuuid.random()}"  # client id
         self.client = Client(CallbackAPIVersion.VERSION2, self.cid)
@@ -661,7 +664,7 @@ class MqttKevinbot(BaseKevinbot):
                 self._state = KevinbotState(**json.loads(value))
             case ["eyes", "state"]:
                 if self._eyes:
-                    self._eyes._load_data(value)
+                    self._eyes._load_data(value)  # noqa: SLF001
             case ["serverstate"]:
                 new_state = KevinbotServerState(**json.loads(value))
 
