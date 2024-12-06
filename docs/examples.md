@@ -1,6 +1,6 @@
 # Examples
 
-All examples include two variants for serial, and MQTT.
+Most examples include two variants for serial, and MQTT.
 Source code can be found [here](https://github.com/meowmeowahr/kevinbotlib/tree/main/examples)
 
 For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
@@ -199,3 +199,100 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
     ```python title="examples/drive/drive.py" linenums="1" 
     --8<-- "examples/drive/drive.py"
     ```
+
+## Eyes
+
+### Connecting
+
+=== "Serial"
+
+    ```python title="examples/eyes/connecting_serial.py" linenums="1" 
+    --8<-- "examples/eyes/connecting_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/connecting.py" linenums="1" 
+    --8<-- "examples/eyes/connecting.py"
+    ```
+
+### State
+
+=== "Serial"
+
+    ```python title="examples/eyes/state_serial.py" linenums="1" 
+    --8<-- "examples/eyes/state_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/state.py" linenums="1" 
+    --8<-- "examples/eyes/state.py"
+    ```
+
+
+### Backlight
+
+=== "Serial"
+
+    ```python title="examples/eyes/backlight_serial.py" linenums="1" 
+    --8<-- "examples/eyes/backlight_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/backlight.py" linenums="1" 
+    --8<-- "examples/eyes/backlight.py"
+    ```
+
+### Motion Mode Control
+
+=== "Serial"
+
+    ```python title="examples/eyes/motions_serial.py" linenums="1" 
+    --8<-- "examples/eyes/motions_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/motions.py" linenums="1" 
+    --8<-- "examples/eyes/motions.py"
+    ```
+
+### Skin Setting Control
+
+=== "Serial"
+
+    ```python title="examples/eyes/skins_serial.py" linenums="1" 
+    --8<-- "examples/eyes/skins_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/skins.py" linenums="1" 
+    --8<-- "examples/eyes/skins.py"
+    ```
+
+### Manual Motions Demo
+
+=== "Serial"
+
+    ```python title="examples/eyes/manual_serial.py" linenums="1" 
+    --8<-- "examples/eyes/manual_serial.py"
+    ```
+
+=== "MQTT"
+
+    ```python title="examples/eyes/manual.py" linenums="1" 
+    --8<-- "examples/eyes/manual.py"
+    ```
+
+### Simple Skin Full Options Demo
+
+=== "Serial"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/simple_skin_serial.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/simple_skin_serial.py)
+
+=== "MQTT"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/simple_skin.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/simple_skin.py)
