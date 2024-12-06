@@ -14,7 +14,7 @@ from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, SimpleSkin
+from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, MetalSkin, NeonSkin, SimpleSkin
 
 
 class _Simple:
@@ -112,12 +112,52 @@ class _Metal:
     @property
     def name(self) -> str:
         """Get internal name of skin
-
         Returns:
-            str: Internal name
+        str: Internal name
         """
         return "metal"
 
+    @property
+    def bg_color(self) -> str:
+        """Get background color of skin
+        Returns:
+        str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.metal.bg_color
+
+    @bg_color.setter
+    def bg_color(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "bg_color", value])
+
+    @property
+    def iris_size(self) -> int:
+        """Get iris size of skin
+        Returns:
+        int: Iris size in pixels
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.metal.iris_size
+
+    @iris_size.setter
+    def iris_size(self, value: int):
+        self.skinmgr.eyes.set_skin_option([self.name, "iris_size", value])
+
+    @property
+    def tint(self) -> int:
+        """Get tint value of metal skin
+        Returns:
+        int: Tint value
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.metal.tint
+
+    @tint.setter
+    def tint(self, value: int):
+        self.skinmgr.eyes.set_skin_option([self.name, "tint", value])
+
+    def restore(self):
+        """Restore metal skin settings to their defaults"""
+        self.bg_color = MetalSkin.bg_color
+        self.iris_size = MetalSkin.iris_size
+        self.tint = MetalSkin.tint
 
 class _Neon:
     def __init__(self, skinmgr: "_EyeSkinManager") -> None:
@@ -126,11 +166,78 @@ class _Neon:
     @property
     def name(self) -> str:
         """Get internal name of skin
-
         Returns:
-            str: Internal name
+        str: Internal name
         """
         return "neon"
+
+    @property
+    def bg_color(self) -> str:
+        """Get background color of skin
+        Returns:
+        str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.neon.bg_color
+
+    @bg_color.setter
+    def bg_color(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "bg_color", value])
+
+    @property
+    def iris_size(self) -> int:
+        """Get iris size of skin
+        Returns:
+        int: Iris size in pixels
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.neon.iris_size
+
+    @iris_size.setter
+    def iris_size(self, value: int):
+        self.skinmgr.eyes.set_skin_option([self.name, "iris_size", value])
+
+    @property
+    def fg_color_start(self) -> str:
+        """Get foreground start color of neon skin
+        Returns:
+        str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.neon.fg_color_start
+
+    @fg_color_start.setter
+    def fg_color_start(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "fg_color_start", value])
+
+    @property
+    def fg_color_end(self) -> str:
+        """Get foreground end color of neon skin
+        Returns:
+        str: Hex-formatted color code
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.neon.fg_color_end
+
+    @fg_color_end.setter
+    def fg_color_end(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "fg_color_end", value])
+
+    @property
+    def style(self) -> str:
+        """Get style of neon skin
+        Returns:
+        str: Style filename
+        """
+        return self.skinmgr.eyes.get_state().settings.skins.neon.style
+
+    @style.setter
+    def style(self, value: str):
+        self.skinmgr.eyes.set_skin_option([self.name, "style", value])
+
+    def restore(self):
+        """Restore neon skin settings to their defaults"""
+        self.bg_color = NeonSkin.bg_color
+        self.iris_size = NeonSkin.iris_size
+        self.fg_color_start = NeonSkin.fg_color_start
+        self.fg_color_end = NeonSkin.fg_color_end
+        self.style = NeonSkin.style
 
 
 class _EyeSkinManager:
