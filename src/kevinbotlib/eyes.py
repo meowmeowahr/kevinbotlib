@@ -96,7 +96,7 @@ class _Simple:
         self.skinmgr.eyes.set_skin_option([self.name, "pupil_size", value])
 
     def restore(self):
-        """Restore simple skin settings"""
+        """Restore simple skin settings to their defaults"""
 
         self.bg_color = SimpleSkin.bg_color
         self.iris_color = SimpleSkin.iris_color
@@ -139,14 +139,29 @@ class _EyeSkinManager:
 
     @property
     def simple(self) -> _Simple:
+        """Get settings for simple eye skin
+
+        Returns:
+            _Simple: Settings manager
+        """
         return _Simple(self)
 
     @property
     def metal(self) -> _Metal:
+        """Get settings for metal eye skin
+
+        Returns:
+            _Metal: Settings manager
+        """
         return _Metal(self)
 
     @property
     def neon(self) -> _Neon:
+        """Get settings for neon eye skin
+
+        Returns:
+            _Neon: Settings manager
+        """
         return _Neon(self)
 
 
