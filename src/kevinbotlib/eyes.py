@@ -223,7 +223,7 @@ class _Neon:
     def style(self) -> str:
         """Get style of neon skin
         Returns:
-        str: Style filename
+        str: Filename of internal iris/pupil image
         """
         return self.skinmgr.eyes.get_state().settings.skins.neon.style
 

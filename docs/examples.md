@@ -306,3 +306,13 @@ For more information, see [Serial vs. MQTT](architecture.md#serial-vs-mqtt)
 === "MQTT"
 
     [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/metal_skin.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/metal_skin.py)
+
+### Neon Skin Full Options Demo
+
+=== "Serial"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/neon_skin_serial.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/neon_skin_serial.py)
+
+=== "MQTT"
+
+    [https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/neon_skin.py](https://github.com/meowmeowahr/kevinbotlib/blob/main/examples/eyes/neon_skin.py)

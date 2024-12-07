@@ -7,7 +7,7 @@ import time
 from kevinbotlib import EyeMotion, EyeSkin, SerialEyes, MqttKevinbot
 
 eyes = SerialEyes()
-eyes.connect("/dev/ttyUSB0", 15200, 5)
+eyes.connect("/dev/ttyUSB0", 115200, 5)
 
 eyes.set_skin(EyeSkin.METAL)
 eyes.set_motion(EyeMotion.LEFT_RIGHT)
