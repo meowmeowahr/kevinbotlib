@@ -356,6 +356,15 @@ class BaseKevinbotEyes:
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/backlight", int(255 * bl), 0)
 
+    def get_backlight(self):
+        """Get the current backlight setting
+
+        Returns:
+            float: Value from 0 to 1
+        """
+        return self._state.settings.display.backlight / 255
+
+
     def set_motion(self, motion: EyeMotion):
         """Set the current backlight brightness
 
