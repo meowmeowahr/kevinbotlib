@@ -50,6 +50,8 @@
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
+      <link rel="stylesheet" href="../static/style.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -766,7 +768,7 @@
 <h2 id="what-is-a-system">What is a System?</h2>
 <p>A system is a root component that is used in KevinbotLib. </p>
 <p>In the case of serial communication, KevinbotLib will have to connect to it separately from another system.</p>
-<p>When using MQTT communication, you will need to pass in the <a href="kevinbot/">Kevinbot system</a>.</p>
+<p>When using MQTT communication, you will need to pass in the <a href="kevinbot/">Kevinbot system</a> (with a non-Kevinbot system), or spin up an MQTT client (with a Kevinbot system).</p>
 <p>A system will contain it's own state management, connection system, and <a href="/subsystems">subsystems</a>.</p>
 
 
