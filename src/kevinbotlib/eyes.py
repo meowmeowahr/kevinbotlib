@@ -753,7 +753,9 @@ class MqttEyes(BaseKevinbotEyes):
         self._state_loaded = False
         robot.client.publish(f"{robot.root_topic}/eyes/get", "request_settings", 0)
         self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/skinopt")
+        self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/backlight")
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/skinopt", self._process_skinopt_update)
+        self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/backlight", self._process_backlight_update)
 
         while not self._state_loaded:
             time.sleep(0.01)
@@ -774,6 +776,12 @@ class MqttEyes(BaseKevinbotEyes):
         if old_value != value:
             setattr(getattr(self._state.settings.skins, skin_name), prop_path, _safe_cast(old_value, value))
             self._trigger_callback(EyeCallbackType(f"skins.{skin_name}.{prop_path}"), value)  # noqa: SLF001
+
+    def _process_backlight_update(self, _client: Client, _obj, msg: MQTTMessage):
+        new_value = int(msg.payload.decode("utf-8"))
+        if new_value != self._state.settings.display.backlight:
+            self._state.settings.display.backlight = new_value
+            self._trigger_callback(EyeCallbackType.Backlight, new_value / 255)  # noqa: SLF001
 
     def _load_data(self, data: str):
         new_state = KevinbotEyesState(**json.loads(data))
