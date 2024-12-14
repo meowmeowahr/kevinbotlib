@@ -7,9 +7,9 @@ from typing import Final
 from kevinbotlib import __about__
 from kevinbotlib.core import Drivebase, Lighting, MqttKevinbot, SerialKevinbot, Servo, Servos
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.eyes import KevinbotEyesState, MqttEyes, SerialEyes
-from kevinbotlib.states import (
-    BmsBatteryState,
+from kevinbotlib.eyes import EyeCallbackType, KevinbotEyesState, MqttEyes, SerialEyes
+from kevinbotlib.models import (
+    BmsBatteryStatus,
     BMState,
     CoreErrors,
     DrivebaseState,
@@ -38,12 +38,13 @@ __all__ = [
     "KevinbotEyesState",
     "EyeSkin",
     "EyeMotion",
+    "EyeCallbackType",
     "ServoState",
     "BMState",
     "IMUState",
     "ThermometerState",
     "MotorDriveStatus",
-    "BmsBatteryState",
+    "BmsBatteryStatus",
     "CoreErrors",
     "HandshakeTimeoutException",
 ]

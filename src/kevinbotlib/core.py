@@ -18,7 +18,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTErrorCode, MQTTMess
 from serial import Serial
 
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import BmsBatteryState, KevinbotServerState, KevinbotState, LightingState, MotorDriveStatus
+from kevinbotlib.models import BmsBatteryStatus, KevinbotServerState, KevinbotState, LightingState, MotorDriveStatus
 
 if TYPE_CHECKING:
     from kevinbotlib.eyes import MqttEyes
@@ -372,7 +372,7 @@ class SerialKevinbot(BaseKevinbot):
                         self._state.battery.raw_voltages = [float(x) / 10 for x in val.split(",")]
                 case "bms.status":
                     if val:
-                        self._state.battery.states = [BmsBatteryState(int(x)) for x in val.split(",")]
+                        self._state.battery.states = [BmsBatteryStatus(int(x)) for x in val.split(",")]
                 case "sensors.gyro":
                     if not val:
                         logger.error("No value given for sensors.gyro")

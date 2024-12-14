@@ -14,8 +14,9 @@ from paho.mqtt.client import Client, MQTTMessage
 from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
+from kevinbotlib.enums import EyeCallbackType, EyeMotion, EyeSkin
 from kevinbotlib.exceptions import HandshakeTimeoutException
-from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, MetalSkin, NeonSkin, SimpleSkin
+from kevinbotlib.models import EyeSettings, KevinbotEyesState, MetalSkin, NeonSkin, SimpleSkin
 
 
 def _safe_cast(old_value, value):
@@ -280,38 +281,38 @@ class _EyeSkinManager:
         """
         return _Neon(self)
 
-    def register_callback(self, property_name: str, callback: Callable[[Any], Any]):
+    def register_callback(self, callback_type: EyeCallbackType, callback: Callable[[Any], Any]):
         """Register a callback for a specific property."""
-        if property_name not in self._callbacks:
-            self._callbacks[property_name] = []
-        self._callbacks[property_name].append(callback)
+        if callback_type not in self._callbacks:
+            self._callbacks[callback_type] = []
+        self._callbacks[callback_type].append(callback)
 
-    def unregister_callback(self, property_name: str, callback: Callable):
+    def unregister_callback(self, callback_type: EyeCallbackType, callback: Callable):
         """Unregister a callback for a specific property."""
-        if property_name in self._callbacks:
+        if callback_type in self._callbacks:
             try:
-                self._callbacks[property_name].remove(callback)
+                self._callbacks[callback_type].remove(callback)
                 # Clean up the property if no callbacks remain
-                if not self._callbacks[property_name]:
-                    del self._callbacks[property_name]
+                if not self._callbacks[callback_type]:
+                    del self._callbacks[callback_type]
             except ValueError:
-                logger.warning(f"Callback not found for property: {property_name}")
+                logger.warning(f"Callback not found for property: {callback_type}")
 
-    def unregister_callbacks(self, property_name: str):
+    def unregister_callbacks(self, callback_type: EyeCallbackType):
         """Unregister all callbacks for a specific property."""
-        if property_name in self._callbacks:
+        if callback_type in self._callbacks:
             try:
-                self._callbacks[property_name].clear()
+                self._callbacks[callback_type].clear()
                 # Clean up the property if no callbacks remain
-                if not self._callbacks[property_name]:
-                    del self._callbacks[property_name]
+                if not self._callbacks[callback_type]:
+                    del self._callbacks[callback_type]
             except ValueError:
-                logger.warning(f"Callback not found for property: {property_name}")
+                logger.warning(f"Callback not found for property: {callback_type}")
 
-    def _trigger_callback(self, property_name: str, value: Any):
+    def _trigger_callback(self, callback_type: EyeCallbackType, value: Any):
         """Trigger all registered callbacks for a property."""
-        if property_name in self._callbacks:
-            for callback in self._callbacks[property_name]:
+        if callback_type in self._callbacks:
+            for callback in self._callbacks[callback_type]:
                 callback(value)
 
 
@@ -467,7 +468,7 @@ class BaseKevinbotEyes:
             prop_path = ".".join(keys[1:])
             current_value = getattr(getattr(self._state.settings.skins, skin_key), prop_path, None)
             if current_value != value:
-                self.skins._trigger_callback(f"{skin_key}.{prop_path}", value)  # noqa: SLF001
+                self.skins._trigger_callback(EyeCallbackType(f"{skin_key}.{prop_path}"), value)  # noqa: SLF001
 
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/skinopt", ":".join(map(str, data)), 0)
@@ -763,7 +764,7 @@ class MqttEyes(BaseKevinbotEyes):
 
         if old_value != value:
             setattr(getattr(self._state.settings.skins, skin_name), prop_path, _safe_cast(old_value, value))
-            self.skins._trigger_callback(f"{skin_name}.{prop_path}", value)  # noqa: SLF001
+            self.skins._trigger_callback(EyeCallbackType(f"{skin_name}.{prop_path}"), value)  # noqa: SLF001
 
     def _load_data(self, data: str):
         new_state = KevinbotEyesState(**json.loads(data))
@@ -771,6 +772,6 @@ class MqttEyes(BaseKevinbotEyes):
             for prop, new_value in vars(skin_data).items():
                 old_value = getattr(getattr(self._state.settings.skins, skin_name), prop, None)
                 if old_value != new_value:
-                    self.skins._trigger_callback(f"{skin_name}.{prop}", new_value)  # noqa: SLF001
+                    self.skins._trigger_callback(EyeCallbackType(f"{skin_name}.{prop}"), new_value)  # noqa: SLF001
         self._state = new_state
         self._state_loaded = True

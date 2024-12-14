@@ -3,94 +3,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from datetime import datetime
-from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
-class CoreErrors(Enum):
-    """
-    Kevinbot Core Error States
-    """
-
-    OK = 0
-    """No errors are present"""
-    UNKNOWN = 1
-    """Error state unknown"""
-    OW_SHORT = 2
-    """One-Wire bus is shorted"""
-    OW_ERROR = 3
-    """One-Wire bus error"""
-    OW_DNF = 4
-    """One-Wire device not found"""
-    LCD_INIT_FAIL = 5
-    """LCD Init failed"""
-    PCA_INIT_FAIL = 6
-    """PCA9685 (servos) init fail"""
-    TICK_FAIL = 7
-    """Failure to recieve core tick"""
-    QUEUE_OVERRUN = 8
-    """Serial queue overrun"""
-    ESTOP = 9
-    """Core is in E-Stop state"""
-    BME_CHIP_ID = 10
-    """Error getting environment sensor chip id"""
-    BME_CALIB_NVM = 11
-    """Error with environment sensor calibration"""
-    BME_CALIB_TP = 12
-    """Error with environment sensor calibration"""
-    BME_CALIB_HUM = 13
-    """Error with environment sensor calibration"""
-    BME_THP = 14
-    """Error with environment sensor"""
-    BME_MEAS_TIMEOUT = 15
-    """Timeout with environment sensor measurement"""
-    BME_NOT_NORMAL_MODE = 16
-    """Environemnt sensor is not in normal mode"""
-    BATT1_UV = 17
-    """Battery #1 Undervoltage"""
-    BATT1_OV = 18
-    """Battery #1 Overvoltage"""
-    BATT2_UV = 19
-    """Battery #2 Undervoltage"""
-    BATT2_OV = 20
-    """Battery #2 Overvoltage"""
-    BATT_UV = 21
-    """Battery Undervoltage (single battery mode)"""
-    BATT_OV = 22
-    """Battery Overvoltage (single battery mode)"""
-
-
-class MotorDriveStatus(Enum):
-    """
-    The status of each motor in the drivebase
-    """
-
-    UNKNOWN = 10
-    """Motor status is unknown"""
-    MOVING = 11
-    """Motor is rotating"""
-    HOLDING = 12
-    """Motor is holding at position"""
-    OFF = 13
-    """Motor is off"""
-
-
-class BmsBatteryState(Enum):
-    """
-    The status of a single battery attached to the BMS
-    """
-
-    UNKNOWN = 0
-    """State is unknown (usually at bootup)"""
-    NORMAL = 1
-    """Battery is normal"""
-    UNDER = 2
-    """Battery is undervoltage"""
-    OVER = 3
-    """Battery is overvoltage"""
-    STOPPED = 4  # Stopped state if BMS driver crashed
-    """BMS has crashed or stopped"""
+from kevinbotlib.enums import BmsBatteryStatus, CoreErrors, EyeMotion, EyeSkin, MotorDriveStatus
 
 
 class DrivebaseState(BaseModel):
@@ -120,7 +36,7 @@ class BMState(BaseModel):
 
     voltages: list[float] = Field(default_factory=lambda: [0.0, 0.0])
     raw_voltages: list[float] = Field(default_factory=lambda: [0.0, 0.0])
-    states: list[BmsBatteryState] = Field(default_factory=lambda: [BmsBatteryState.UNKNOWN, BmsBatteryState.UNKNOWN])
+    states: list[BmsBatteryStatus] = Field(default_factory=lambda: [BmsBatteryStatus.UNKNOWN, BmsBatteryStatus.UNKNOWN])
 
 
 class IMUState(BaseModel):
@@ -185,53 +101,23 @@ class KevinbotState(BaseModel):
     lighting: LightingState = Field(default_factory=LightingState)
 
 
-class EyeSkin(Enum):
-    """
-    Eye Skins for the eye system
-    """
-
-    TV_STATIC = 0
-    """TV Static-style random colors"""
-    SIMPLE = 1
-    """Simple skin with variable pupil, iris, and background"""
-    METAL = 2
-    """Skin with fancy pupil and iris over an aluminum background"""
-    NEON = 3
-    """Neon skin"""
-
-
-class EyeMotion(Enum):
-    """
-    Motion modes for the eye system
-    """
-
-    DISABLE = 0
-    """No motion"""
-    LEFT_RIGHT = 1
-    """Smooth left to right and back"""
-    JUMP = 2
-    """Jumpy left to right and back"""
-    MANUAL = 3
-    """Allow manual control of pupil position"""
-
-
-class States(BaseModel):
+class EyeStates(BaseModel):
     page: EyeSkin = EyeSkin.SIMPLE
     motion: EyeMotion = EyeMotion.LEFT_RIGHT
     error: int = 0
 
 
-class LogoFormat(BaseModel):
+class EyeLogoFormat(BaseModel):
     logo_time: int = 2
 
 
-class Display(BaseModel):
+class EyeDisplay(BaseModel):
     speed: int = 82000000
     backlight: int = 100
     backlight_pin: int = 16
 
 
-class Motions(BaseModel):
+class EyeMotions(BaseModel):
     speed: int = 78
     left_point: tuple[int, int] = (80, 120)
     center_point: tuple[int, int] = (120, 120)
@@ -261,13 +147,13 @@ class NeonSkin(BaseModel):
     style: str = "neon1.png"
 
 
-class Skins(BaseModel):
+class EyeSkins(BaseModel):
     simple: SimpleSkin = SimpleSkin()
     metal: MetalSkin = MetalSkin()
     neon: NeonSkin = NeonSkin()
 
 
-class Comms(BaseModel):
+class EyeCommSettings(BaseModel):
     port: str = "/dev/ttyS0"
     baud: int = 115200
 
@@ -275,12 +161,12 @@ class Comms(BaseModel):
 class EyeSettings(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, str_min_length=1)
 
-    states: States = States()
-    logo_format: LogoFormat = LogoFormat()
-    display: Display = Display()
-    motions: Motions = Motions()
-    skins: Skins = Skins()
-    comms: Comms = Comms()
+    states: EyeStates = EyeStates()
+    logo_format: EyeLogoFormat = EyeLogoFormat()
+    display: EyeDisplay = EyeDisplay()
+    motions: EyeMotions = EyeMotions()
+    skins: EyeSkins = EyeSkins()
+    comms: EyeCommSettings = EyeCommSettings()
 
 
 class KevinbotEyesState(BaseModel):

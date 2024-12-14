@@ -22,7 +22,7 @@ from paho.mqtt.client import CallbackAPIVersion, Client, MQTTMessage  # type: ig
 from kevinbotlib.config import ConfigLocation, KevinbotConfig
 from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
 from kevinbotlib.eyes import EyeMotion, EyeSkin, SerialEyes
-from kevinbotlib.states import KevinbotServerState
+from kevinbotlib.models import KevinbotServerState
 
 
 class KevinbotServer:

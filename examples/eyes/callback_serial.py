@@ -4,7 +4,7 @@
 
 import time
 
-from kevinbotlib import EyeSkin, SerialEyes
+from kevinbotlib import EyeCallbackType, EyeSkin, SerialEyes
 
 eyes = SerialEyes()
 eyes.connect("/dev/ttyUSB0", 115200, 5)
@@ -12,7 +12,7 @@ eyes.connect("/dev/ttyUSB0", 115200, 5)
 eyes.set_skin(EyeSkin.SIMPLE)
 eyes.skins.simple.restore()
 
-eyes.skins.register_callback("simple.bg_color", print)
+eyes.skins.register_callback(EyeCallbackType.SimpleBgColor, print)
 
 eyes.skins.simple.bg_color = "#ffffff"
 time.sleep(1)
@@ -23,7 +23,7 @@ time.sleep(1)
 eyes.skins.simple.bg_color = "#00ffff"
 time.sleep(1)
 
-eyes.skins.unregister_callbacks("simple.bg_color")
+eyes.skins.unregister_callbacks(EyeCallbackType.SimpleBgColor)
 eyes.skins.simple.restore()
 
 time.sleep(2)
