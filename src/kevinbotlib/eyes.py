@@ -12,9 +12,17 @@ from typing import Any
 from loguru import logger
 from serial import Serial
 
+from paho.mqtt.client import Client, MQTTMessage
+
 from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, MetalSkin, NeonSkin, SimpleSkin
+
+def safe_cast(old_value, value):
+    if old_value is None:
+        return None
+    else:
+        return type(old_value)(value)
 
 
 class _Simple:
@@ -98,11 +106,11 @@ class _Simple:
     def restore(self):
         """Restore simple skin settings to their defaults"""
 
-        self.bg_color = SimpleSkin.bg_color
-        self.iris_color = SimpleSkin.iris_color
-        self.pupil_color = SimpleSkin.pupil_color
-        self.iris_size = SimpleSkin.iris_size
-        self.pupil_size = SimpleSkin.pupil_size
+        self.bg_color = SimpleSkin().bg_color
+        self.iris_color = SimpleSkin().iris_color
+        self.pupil_color = SimpleSkin().pupil_color
+        self.iris_size = SimpleSkin().iris_size
+        self.pupil_size = SimpleSkin().pupil_size
 
 
 class _Metal:
@@ -155,9 +163,10 @@ class _Metal:
 
     def restore(self):
         """Restore metal skin settings to their defaults"""
-        self.bg_color = MetalSkin.bg_color
-        self.iris_size = MetalSkin.iris_size
-        self.tint = MetalSkin.tint
+        self.bg_color = MetalSkin().bg_color
+        self.iris_size = MetalSkin().iris_size
+        self.tint = MetalSkin().tint
+
 
 class _Neon:
     def __init__(self, skinmgr: "_EyeSkinManager") -> None:
@@ -233,16 +242,17 @@ class _Neon:
 
     def restore(self):
         """Restore neon skin settings to their defaults"""
-        self.bg_color = NeonSkin.bg_color
-        self.iris_size = NeonSkin.iris_size
-        self.fg_color_start = NeonSkin.fg_color_start
-        self.fg_color_end = NeonSkin.fg_color_end
-        self.style = NeonSkin.style
+        self.bg_color = NeonSkin().bg_color
+        self.iris_size = NeonSkin().iris_size
+        self.fg_color_start = NeonSkin().fg_color_start
+        self.fg_color_end = NeonSkin().fg_color_end
+        self.style = NeonSkin().style
 
 
 class _EyeSkinManager:
     def __init__(self, eyes: "BaseKevinbotEyes") -> None:
         self.eyes = eyes
+        self._callbacks = {}
 
     @property
     def simple(self) -> _Simple:
@@ -271,6 +281,40 @@ class _EyeSkinManager:
         """
         return _Neon(self)
 
+    def register_callback(self, property_name: str, callback: Callable[[Any], Any]):
+        """Register a callback for a specific property."""
+        if property_name not in self._callbacks:
+            self._callbacks[property_name] = []
+        self._callbacks[property_name].append(callback)
+
+    def unregister_callback(self, property_name: str, callback: Callable):
+        """Unregister a callback for a specific property."""
+        if property_name in self._callbacks:
+            try:
+                self._callbacks[property_name].remove(callback)
+                # Clean up the property if no callbacks remain
+                if not self._callbacks[property_name]:
+                    del self._callbacks[property_name]
+            except ValueError:
+                logger.warning(f"Callback not found for property: {property_name}")
+
+    def unregister_callbacks(self, property_name: str):
+        """Unregister all callbacks for a specific property."""
+        if property_name in self._callbacks:
+            try:
+                self._callbacks[property_name].clear()
+                # Clean up the property if no callbacks remain
+                if not self._callbacks[property_name]:
+                    del self._callbacks[property_name]
+            except ValueError:
+                logger.warning(f"Callback not found for property: {property_name}")
+
+    def _trigger_callback(self, property_name: str, value: Any):
+        """Trigger all registered callbacks for a property."""
+        if property_name in self._callbacks:
+            for callback in self._callbacks[property_name]:
+                callback(value)
+
 
 class BaseKevinbotEyes:
     """The base Kevinbot Eyes class.
@@ -281,6 +325,8 @@ class BaseKevinbotEyes:
     def __init__(self) -> None:
         self._state = KevinbotEyesState()
         self.type = KevinbotConnectionType.BASE
+
+        self._skin_manager = _EyeSkinManager(self)
 
         self._auto_disconnect = True
 
@@ -420,12 +466,17 @@ class BaseKevinbotEyes:
 
         if isinstance(self, SerialEyes):
             self.send(f"setSkinOption={':'.join(map(str, data))}")
+            prop_path = ".".join(keys[1:])
+            current_value = getattr(getattr(self._state.settings.skins, skin_key), prop_path, None)
+            if current_value != value:
+                self.skins._trigger_callback(f"{skin_key}.{prop_path}", value)
+
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/skinopt", ":".join(map(str, data)), 0)
 
     @property
     def skins(self) -> _EyeSkinManager:
-        return _EyeSkinManager(self)
+        return self._skin_manager
 
 
 class SerialEyes(BaseKevinbotEyes):
@@ -693,6 +744,8 @@ class MqttEyes(BaseKevinbotEyes):
 
         self._state_loaded = False
         robot.client.publish(f"{robot.root_topic}/eyes/get", "request_settings", 0)
+        self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/skinopt")
+        self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/skinopt", self._process_skinopt_update)
 
         while not self._state_loaded:
             time.sleep(0.01)
@@ -701,9 +754,27 @@ class MqttEyes(BaseKevinbotEyes):
 
     def update(self):
         """Retrive updated settings from eyes"""
-
         self._robot.client.publish(f"{self._robot.root_topic}/eyes/get", "request_settings", 0)
 
+    def _process_skinopt_update(self, _client: Client, _obj, msg: MQTTMessage):
+        keys = msg.payload.decode("utf-8").split(":")
+        value = keys.pop()
+        skin_name = keys[0]
+        prop_path = ".".join(keys[1:])
+        old_value = getattr(getattr(self._state.settings.skins, skin_name), prop_path, None)
+
+        if old_value != value:
+            setattr(getattr(self._state.settings.skins, skin_name), prop_path, safe_cast(old_value, value))
+            self.skins._trigger_callback(f"{skin_name}.{prop_path}", value)
+
+
     def _load_data(self, data: str):
+        new_state = KevinbotEyesState(**json.loads(data))
+        for skin_name, skin_data in vars(new_state.settings.skins).items():
+            for prop, new_value in vars(skin_data).items():
+                old_value = getattr(getattr(self._state.settings.skins, skin_name), prop, None)
+                if old_value != new_value:
+                    self.skins._trigger_callback(f"{skin_name}.{prop}", new_value)
+        self._state = new_state
         self._state_loaded = True
-        self._state = KevinbotEyesState(**json.loads(data))
+
