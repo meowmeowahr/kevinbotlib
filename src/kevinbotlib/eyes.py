@@ -10,19 +10,18 @@ from threading import Thread
 from typing import Any
 
 from loguru import logger
-from serial import Serial
-
 from paho.mqtt.client import Client, MQTTMessage
+from serial import Serial
 
 from kevinbotlib.core import KevinbotConnectionType, MqttKevinbot
 from kevinbotlib.exceptions import HandshakeTimeoutException
 from kevinbotlib.states import EyeMotion, EyeSettings, EyeSkin, KevinbotEyesState, MetalSkin, NeonSkin, SimpleSkin
 
-def safe_cast(old_value, value):
+
+def _safe_cast(old_value, value):
     if old_value is None:
         return None
-    else:
-        return type(old_value)(value)
+    return type(old_value)(value)
 
 
 class _Simple:
@@ -410,7 +409,6 @@ class BaseKevinbotEyes:
         """
         return self._state.settings.display.backlight / 255
 
-
     def set_motion(self, motion: EyeMotion):
         """Set the current backlight brightness
 
@@ -469,7 +467,7 @@ class BaseKevinbotEyes:
             prop_path = ".".join(keys[1:])
             current_value = getattr(getattr(self._state.settings.skins, skin_key), prop_path, None)
             if current_value != value:
-                self.skins._trigger_callback(f"{skin_key}.{prop_path}", value)
+                self.skins._trigger_callback(f"{skin_key}.{prop_path}", value)  # noqa: SLF001
 
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/skinopt", ":".join(map(str, data)), 0)
@@ -764,9 +762,8 @@ class MqttEyes(BaseKevinbotEyes):
         old_value = getattr(getattr(self._state.settings.skins, skin_name), prop_path, None)
 
         if old_value != value:
-            setattr(getattr(self._state.settings.skins, skin_name), prop_path, safe_cast(old_value, value))
-            self.skins._trigger_callback(f"{skin_name}.{prop_path}", value)
-
+            setattr(getattr(self._state.settings.skins, skin_name), prop_path, _safe_cast(old_value, value))
+            self.skins._trigger_callback(f"{skin_name}.{prop_path}", value)  # noqa: SLF001
 
     def _load_data(self, data: str):
         new_state = KevinbotEyesState(**json.loads(data))
@@ -774,7 +771,6 @@ class MqttEyes(BaseKevinbotEyes):
             for prop, new_value in vars(skin_data).items():
                 old_value = getattr(getattr(self._state.settings.skins, skin_name), prop, None)
                 if old_value != new_value:
-                    self.skins._trigger_callback(f"{skin_name}.{prop}", new_value)
+                    self.skins._trigger_callback(f"{skin_name}.{prop}", new_value)  # noqa: SLF001
         self._state = new_state
         self._state_loaded = True
-

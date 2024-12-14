@@ -26,7 +26,7 @@ iris_size = eyes.skins.neon.iris_size
 style = eyes.skins.neon.style
 
 print(f"Bg Color: {bg}, Start Color: {start}, End Color: {end}")  # noqa: T201
-print(f"Iris size: {iris_size}") # noqa: T201
+print(f"Iris size: {iris_size}")  # noqa: T201
 print(f"Style: {style}")  # noqa: T201
 
 time.sleep(1)
