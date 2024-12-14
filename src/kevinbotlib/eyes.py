@@ -754,6 +754,7 @@ class MqttEyes(BaseKevinbotEyes):
         robot.client.publish(f"{robot.root_topic}/eyes/get", "request_settings", 0)
         self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/skinopt")
         self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/backlight")
+        self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/motion")
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/skinopt", self._process_skinopt_update)
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/backlight", self._process_backlight_update)
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/motion", self._process_motion_update)
