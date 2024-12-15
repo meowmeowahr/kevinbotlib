@@ -33,18 +33,20 @@ def get_system_piper_model_dir():
     return os.path.join(platformdirs.site_config_dir("kevinbotlib", "meowmeowahr"), "piper")
 
 
-def get_models_paths(user: bool = True, system: bool = True):
+def get_models_paths(user=True, system=True):  # noqa: FBT002
     if user and system:
-        return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir()))) + list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir())))
-    elif user:
+        return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir()))) + list(
+            filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir()))
+        )
+    if user:
         return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir())))
-    elif system:
+    if system:
         return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir())))
-    else:
-        raise ValueError("At least one of user or system must be True")
+    msg = "At least one of user or system must be True"
+    raise ValueError(msg)
 
 
-def get_models(user: bool = True, system: bool = True) -> dict[str, str]:
+def get_models(user=True, system=True) -> dict[str, str]:  # noqa: FBT002
     """Get the name and directory of all installed models
 
     Returns:
@@ -89,7 +91,7 @@ class PiperTTSEngine(BaseTTSEngine):
         if executable is None:
             conf = KevinbotConfig()
             executable = conf.piper_tts.executable
-            
+
         self.executable = executable
         self._model: str = model
         self._debug = False
