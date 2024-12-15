@@ -7,7 +7,7 @@ import time
 from kevinbotlib import Drivebase, MqttKevinbot
 
 robot = MqttKevinbot()
-robot.connect()
+robot.connect("kevinbot", "10.0.0.10", 1883)
 
 drive = Drivebase(robot)
 

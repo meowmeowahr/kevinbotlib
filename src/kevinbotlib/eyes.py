@@ -388,7 +388,7 @@ class BaseKevinbotEyes:
         if isinstance(self, SerialEyes):
             self._state.settings.states.page = skin
             if self._state.settings.states.page != skin:
-                self._trigger_callback(EyeCallbackType("states.page"), skin)  # noqa: SLF001
+                self._trigger_callback(EyeCallbackType("states.page"), skin)
             self.send(f"setState={skin.value}")
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/skin", skin.value, 0)
@@ -403,7 +403,7 @@ class BaseKevinbotEyes:
             self._state.settings.display.backlight = min(int(bl * 100), 100)
             self.send(f"setBacklight={self._state.settings.display.backlight}")
             if self._state.settings.display.backlight != bl:
-                self._trigger_callback(EyeCallbackType("settings.display.backlight"), bl)  # noqa: SLF001
+                self._trigger_callback(EyeCallbackType("settings.display.backlight"), bl)
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/backlight", int(255 * bl), 0)
 
@@ -423,7 +423,7 @@ class BaseKevinbotEyes:
         """
         if isinstance(self, SerialEyes):
             if self._state.settings.states.motion != motion:
-                self._trigger_callback(EyeCallbackType("states.motion"), motion)  # noqa: SLF001
+                self._trigger_callback(EyeCallbackType("states.motion"), motion)
             self._state.settings.states.motion = motion
             self.send(f"setMotion={motion.value}")
         elif isinstance(self, MqttEyes):
@@ -438,7 +438,7 @@ class BaseKevinbotEyes:
         """
         if isinstance(self, SerialEyes):
             if self._state.settings.motions.pos != (x, y):
-                self._trigger_callback(EyeCallbackType("motions.pos"), (x, y))  # noqa: SLF001
+                self._trigger_callback(EyeCallbackType("motions.pos"), (x, y))
             self._state.settings.motions.pos = x, y
             self.send(f"setPosition={x},{y}")
         elif isinstance(self, MqttEyes):
@@ -477,7 +477,7 @@ class BaseKevinbotEyes:
             prop_path = ".".join(keys[1:])
             current_value = getattr(getattr(self._state.settings.skins, skin_key), prop_path, None)
             if current_value != value:
-                self._trigger_callback(EyeCallbackType(f"skins.{skin_key}.{prop_path}"), value)  # noqa: SLF001
+                self._trigger_callback(EyeCallbackType(f"skins.{skin_key}.{prop_path}"), value)
 
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/skinopt", ":".join(map(str, data)), 0)
@@ -757,7 +757,9 @@ class MqttEyes(BaseKevinbotEyes):
         self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/motion")
         self._robot.client.subscribe(f"{self._robot.root_topic}/eyes/skin")
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/skinopt", self._process_skinopt_update)
-        self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/backlight", self._process_backlight_update)
+        self._robot.client.message_callback_add(
+            f"{self._robot.root_topic}/eyes/backlight", self._process_backlight_update
+        )
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/motion", self._process_motion_update)
         self._robot.client.message_callback_add(f"{self._robot.root_topic}/eyes/skin", self._process_skin_update)
 
@@ -779,25 +781,25 @@ class MqttEyes(BaseKevinbotEyes):
 
         if old_value != value:
             setattr(getattr(self._state.settings.skins, skin_name), prop_path, _safe_cast(old_value, value))
-            self._trigger_callback(EyeCallbackType(f"skins.{skin_name}.{prop_path}"), value)  # noqa: SLF001
+            self._trigger_callback(EyeCallbackType(f"skins.{skin_name}.{prop_path}"), value)
 
     def _process_backlight_update(self, _client: Client, _obj, msg: MQTTMessage):
         new_value = int(msg.payload.decode("utf-8"))
         if new_value != self._state.settings.display.backlight:
             self._state.settings.display.backlight = new_value
-            self._trigger_callback(EyeCallbackType.Backlight, new_value / 255)  # noqa: SLF001
+            self._trigger_callback(EyeCallbackType.Backlight, new_value / 255)
 
     def _process_motion_update(self, _client: Client, _obj, msg: MQTTMessage):
         new_value = EyeMotion(int(msg.payload.decode("utf-8")))
         if new_value != self._state.settings.states.motion:
             self._state.settings.states.motion = new_value
-            self._trigger_callback(EyeCallbackType.Motion, new_value)  # noqa: SLF001
+            self._trigger_callback(EyeCallbackType.Motion, new_value)
 
     def _process_skin_update(self, _client: Client, _obj, msg: MQTTMessage):
         new_value = EyeSkin(int(msg.payload.decode("utf-8")))
         if new_value != self._state.settings.states.page:
             self._state.settings.states.page = new_value
-            self._trigger_callback(EyeCallbackType.Skin, new_value)  # noqa: SLF001
+            self._trigger_callback(EyeCallbackType.Skin, new_value)
 
     def _load_data(self, data: str):
         new_state = KevinbotEyesState(**json.loads(data))
@@ -805,6 +807,6 @@ class MqttEyes(BaseKevinbotEyes):
             for prop, new_value in vars(skin_data).items():
                 old_value = getattr(getattr(self._state.settings.skins, skin_name), prop, None)
                 if old_value != new_value:
-                    self._trigger_callback(EyeCallbackType(f"skins.{skin_name}.{prop}"), new_value)  # noqa: SLF001
+                    self._trigger_callback(EyeCallbackType(f"skins.{skin_name}.{prop}"), new_value)
         self._state = new_state
         self._state_loaded = True
