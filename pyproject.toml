@@ -37,6 +37,11 @@ dependencies = [
   "command_queue~=0.2.0"
 ]
 
+[project.optional-dependencies]
+tts = [
+  "PyAudio~=0.2.14",
+]
+
 [project.scripts]
 kevinbot = "kevinbotlib.cli:main"
 

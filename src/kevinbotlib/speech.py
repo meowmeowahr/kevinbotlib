@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import json
-import platform
+import os
 import subprocess
 from abc import ABC, abstractmethod
 from multiprocessing import Process as _Process
@@ -13,6 +13,67 @@ from command_queue import CommandQueue as _CommandQueue
 from command_queue.commands import BaseCommand as _BaseCommand
 from loguru import logger
 
+from pyaudio import PyAudio, paInt16
+
+# https://stackoverflow.com/a/67962563
+class _shutup_pyaudio:
+    """
+    PyAudio is noisy af every time you initialise it, which makes reading the
+    log output rather difficult.  The output appears to be being made by the
+    C internals, so I can't even redirect the logs with Python's logging
+    facility. Therefore, the nuclear option was selected: swallow all stderr
+    and stdout for the duration of PyAudio's use.
+
+    Lifted and adapted from StackOverflow:
+      https://stackoverflow.com/questions/11130156/
+    """
+
+    def __init__(self):
+        # Open a pair of null files
+        self.null_fds = [os.open(os.devnull, os.O_RDWR) for _ in range(2)]
+
+        # Save the actual stdout (1) and stderr (2) file descriptors.
+        self.save_fds = [os.dup(1), os.dup(2)]
+
+        self.pyaudio = None
+
+    def __enter__(self) -> PyAudio:
+        # Assign the null pointers to stdout and stderr.
+        os.dup2(self.null_fds[0], 1)
+        os.dup2(self.null_fds[1], 2)
+
+        self.pyaudio = PyAudio()
+
+        return self.pyaudio
+
+    def __exit__(self, *_):
+        if self.pyaudio:
+            self.pyaudio.terminate()
+
+        # Re-assign the real stdout/stderr back to (1) and (2)
+        os.dup2(self.save_fds[0], 1)
+        os.dup2(self.save_fds[1], 2)
+
+        # Close all file descriptors
+        for fd in self.null_fds + self.save_fds:
+            os.close(fd)
+
+class _debug_pyaudio:
+    """
+    Context manager for PyAudio
+    """
+
+    def __init__(self):
+        self.pyaudio = None
+
+    def __enter__(self) -> PyAudio:
+        self.pyaudio = PyAudio()
+
+        return self.pyaudio
+
+    def __exit__(self, *_):
+        if self.pyaudio:
+            self.pyaudio.terminate()
 
 class BaseTTSEngine(ABC):
     @abstractmethod
@@ -64,6 +125,7 @@ class PiperTTSEngine(BaseTTSEngine):
     @debug.setter
     def debug(self, value: bool):
         """Setter for debug mode.
+        Enables ALSA output from PyAudio and stderr output from Piper
 
         Args:
             value (bool): whether debug mode is enabled
@@ -85,38 +147,40 @@ class PiperTTSEngine(BaseTTSEngine):
             bitrate = 22050
             logger.warning("Bitrate config data parsing failure. Assuming bitrate for `medium` quality (22050)")
 
-        if platform.system() == "Linux":
-            playback_command = ["aplay", "-r", str(bitrate), "-f", "S16_LE", "-t", "raw"]
-        else:
-            msg = "Unsupported platform for streaming playback. Currently, only Linux is supported"
-            raise OSError(msg)
+        with (_shutup_pyaudio() if not self.debug else _debug_pyaudio()) as audio:
+            stream = audio.open(
+                format=paInt16,
+                channels=1,
+                rate=bitrate,
+                output=True
+            )
 
-        # Set up Piper synthesis command
-        piper_command = [
-            self.executable,
-            "--model",
-            self._model,
-            "--config",
-            self._model + ".json",
-            "--output-raw",
-        ]
+            # Set up Piper synthesis command
+            piper_command = [
+                self.executable,
+                "--model",
+                self._model,
+                "--config",
+                self._model + ".json",
+                "--output-raw",
+            ]
 
-        # Use subprocess to pipe synthesis to playback
-        with (
-            subprocess.Popen(
-                piper_command,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL if not self.debug else None,
-            ) as piper_process,
-            subprocess.Popen(
-                playback_command, stdin=piper_process.stdout, stderr=subprocess.DEVNULL if not self.debug else None
-            ),
-        ):
-            if piper_process.stdin:  # will always be true
-                piper_process.stdin.write(text.encode("utf-8"))
-                piper_process.stdin.close()
-            piper_process.wait()
+            # Use subprocess to pipe synthesis to playback
+            with subprocess.Popen(piper_command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL if not self.debug else None) as piper_process:
+                if piper_process.stdin and piper_process.stdout:
+                    piper_process.stdin.write(text.encode("utf-8"))
+                    piper_process.stdin.close()
+
+                    while True:
+                        data = piper_process.stdout.read(1024)
+                        if not data:
+                            break
+                        stream.write(data)
+
+                piper_process.wait()
+
+            stream.stop_stream()
+            stream.close()
 
 
 class SpeechCommand(_BaseCommand):
