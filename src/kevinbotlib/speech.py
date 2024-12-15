@@ -9,23 +9,18 @@ from abc import ABC, abstractmethod
 from multiprocessing import Process as _Process
 from os import PathLike
 
-from command_queue import CommandQueue as _CommandQueue
 from command_queue.commands import BaseCommand as _BaseCommand
 from loguru import logger
 
 from pyaudio import PyAudio, paInt16
 
-# https://stackoverflow.com/a/67962563
+
 class _shutup_pyaudio:
     """
-    PyAudio is noisy af every time you initialise it, which makes reading the
-    log output rather difficult.  The output appears to be being made by the
-    C internals, so I can't even redirect the logs with Python's logging
-    facility. Therefore, the nuclear option was selected: swallow all stderr
-    and stdout for the duration of PyAudio's use.
+    Context manager for PyAudio that redirects all output from C internals to os.devnull.
 
-    Lifted and adapted from StackOverflow:
-      https://stackoverflow.com/questions/11130156/
+    Lifted and adapted from StackOverflow Answers:
+      https://stackoverflow.com/a/67962563, https://stackoverflow.com/questions/11130156/
     """
 
     def __init__(self):
@@ -60,7 +55,7 @@ class _shutup_pyaudio:
 
 class _debug_pyaudio:
     """
-    Context manager for PyAudio
+    Context manager for PyAudio that does not block output from C internals.
     """
 
     def __init__(self):
@@ -78,6 +73,11 @@ class _debug_pyaudio:
 class BaseTTSEngine(ABC):
     @abstractmethod
     def speak(self, text: str):
+        """Abstract speak method.
+
+        Args:
+            text (str): text to synthesize
+        """
         pass
 
     def speak_in_background(self, text: str):
@@ -86,7 +86,18 @@ class BaseTTSEngine(ABC):
 
 
 class PiperTTSEngine(BaseTTSEngine):
+    """
+    Text to Speech Engine using rhasspy/Piper.
+    You will need to provide your own executable for this to work.
+    """
+    
     def __init__(self, executable: PathLike | str | None, model: str) -> None:
+        """Constructor for PiperTTSEngine
+
+        Args:
+            executable (PathLike | str | None): Piper executable location. Use `piper` if on path.
+            model (str): Pre-downloaded Piper model
+        """
         super().__init__()
 
         if executable is None:
@@ -97,7 +108,7 @@ class PiperTTSEngine(BaseTTSEngine):
 
     @property
     def model(self):
-        """Getter for the current loaded model.
+        """Getter for the currently loaded model.
 
         Returns:
             str: model name
@@ -106,7 +117,7 @@ class PiperTTSEngine(BaseTTSEngine):
 
     @model.setter
     def model(self, value: str):
-        """Setter for the current loaded model.
+        """Setter for the currently loaded model.
 
         Args:
             value (str): model name
@@ -183,8 +194,44 @@ class PiperTTSEngine(BaseTTSEngine):
             stream.close()
 
 
+class ManagedSpeaker:
+    """
+    Manage speech so that only one string is played. Playing a new string will cancel the previous one.
+    """
+    def __init__(self, engine: BaseTTSEngine) -> None:
+        self.engine = engine
+        self.process: _Process | None = None
+
+    def speak(self, text: str):
+        """
+        Stop any current speech and start a new one.
+
+        Args:
+            text (str): Text to synthesize
+        """
+        self.cancel()
+        self.process = _Process(target=self.engine.speak, args=(text,), daemon=True)
+        self.process.start()
+
+    def cancel(self):
+        """Attempt to cancel the current speech.
+        """
+        if self.process and self.process.is_alive():
+            self.process.terminate()
+
 class SpeechCommand(_BaseCommand):
+    """
+    Command queue command for speech. Will hold up to queue during speech processing.
+    """
     def __init__(self, engine: BaseTTSEngine, text: str):
+        """
+        Constructor for SpeechCommand
+
+        Args:
+            engine (BaseTTSEngine): Text to Speech engine to use
+            text (str): Text to synthesize
+        """
+        super().__init__()
         self.text = text
         self.engine = engine
         self.command = self.execute
@@ -194,9 +241,8 @@ class SpeechCommand(_BaseCommand):
 
 
 class MultiprocessingSpeechCommand(SpeechCommand):
+    """
+    Speech command for command queue that synthesizes speech in a background process.
+    """
     def launch(self):
         _Process(target=self._command, daemon=True).start()
-
-
-class SpeechQueue(_CommandQueue):
-    pass
