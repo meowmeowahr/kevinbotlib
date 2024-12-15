@@ -407,7 +407,7 @@ class BaseKevinbotEyes:
         elif isinstance(self, MqttEyes):
             self._robot.client.publish(f"{self._robot.root_topic}/eyes/backlight", int(255 * bl), 0)
 
-    def get_backlight(self):
+    def get_backlight(self) -> float:
         """Get the current backlight setting
 
         Returns:

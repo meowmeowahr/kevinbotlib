@@ -3,7 +3,8 @@
 ::: kevinbotlib.core
 ::: kevinbotlib.eyes
 ::: kevinbotlib.xbee
-::: kevinbotlib.states
+::: kevinbotlib.enums
+::: kevinbotlib.models
 ::: kevinbotlib.exceptions
 ::: kevinbotlib.config
 ::: kevinbotlib.server
