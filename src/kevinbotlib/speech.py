@@ -8,67 +8,54 @@ import subprocess
 from abc import ABC, abstractmethod
 from multiprocessing import Process as _Process
 from os import PathLike
+from pathlib import Path
 
+import platformdirs
 from command_queue.commands import BaseCommand as _BaseCommand
 from loguru import logger
+from pyaudio import paInt16
 
-from pyaudio import PyAudio, paInt16
+from kevinbotlib.audioutils import DebugPyAudio, ShutupPyAudio
+from kevinbotlib.config import KevinbotConfig
 
 
-class _shutup_pyaudio:
-    """
-    Context manager for PyAudio that redirects all output from C internals to os.devnull.
+def _abslistdir(directory):
+    for dirpath, _, filenames in os.walk(directory):
+        for f in filenames:
+            yield os.path.abspath(os.path.join(dirpath, f))
 
-    Lifted and adapted from StackOverflow Answers:
-      https://stackoverflow.com/a/67962563, https://stackoverflow.com/questions/11130156/
-    """
 
-    def __init__(self):
-        # Open a pair of null files
-        self.null_fds = [os.open(os.devnull, os.O_RDWR) for _ in range(2)]
+def get_user_piper_model_dir():
+    return os.path.join(platformdirs.user_data_dir("kevinbotlib", "meowmeowahr"), "piper")
 
-        # Save the actual stdout (1) and stderr (2) file descriptors.
-        self.save_fds = [os.dup(1), os.dup(2)]
 
-        self.pyaudio = None
+def get_system_piper_model_dir():
+    return os.path.join(platformdirs.site_config_dir("kevinbotlib", "meowmeowahr"), "piper")
 
-    def __enter__(self) -> PyAudio:
-        # Assign the null pointers to stdout and stderr.
-        os.dup2(self.null_fds[0], 1)
-        os.dup2(self.null_fds[1], 2)
 
-        self.pyaudio = PyAudio()
+def get_models_paths(user: bool = True, system: bool = True):
+    if user and system:
+        return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir()))) + list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir())))
+    elif user:
+        return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir())))
+    elif system:
+        return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir())))
+    else:
+        raise ValueError("At least one of user or system must be True")
 
-        return self.pyaudio
 
-    def __exit__(self, *_):
-        if self.pyaudio:
-            self.pyaudio.terminate()
+def get_models(user: bool = True, system: bool = True) -> dict[str, str]:
+    """Get the name and directory of all installed models
 
-        # Re-assign the real stdout/stderr back to (1) and (2)
-        os.dup2(self.save_fds[0], 1)
-        os.dup2(self.save_fds[1], 2)
-
-        # Close all file descriptors
-        for fd in self.null_fds + self.save_fds:
-            os.close(fd)
-
-class _debug_pyaudio:
-    """
-    Context manager for PyAudio that does not block output from C internals.
+    Returns:
+        dict[str, str]: Name and directory pair
     """
 
-    def __init__(self):
-        self.pyaudio = None
+    models = {}
+    for model_path in get_models_paths(user, system):
+        models[Path(model_path).name.split(".")[0]] = model_path
+    return models
 
-    def __enter__(self) -> PyAudio:
-        self.pyaudio = PyAudio()
-
-        return self.pyaudio
-
-    def __exit__(self, *_):
-        if self.pyaudio:
-            self.pyaudio.terminate()
 
 class BaseTTSEngine(ABC):
     @abstractmethod
@@ -78,7 +65,6 @@ class BaseTTSEngine(ABC):
         Args:
             text (str): text to synthesize
         """
-        pass
 
     def speak_in_background(self, text: str):
         p = _Process(target=self.speak, args=(text,))
@@ -90,18 +76,20 @@ class PiperTTSEngine(BaseTTSEngine):
     Text to Speech Engine using rhasspy/Piper.
     You will need to provide your own executable for this to work.
     """
-    
-    def __init__(self, executable: PathLike | str | None, model: str) -> None:
+
+    def __init__(self, model: str, executable: PathLike | str | None = None) -> None:
         """Constructor for PiperTTSEngine
 
         Args:
-            executable (PathLike | str | None): Piper executable location. Use `piper` if on path.
+            executable (PathLike | str | None): Piper executable location. If None, uses executable defined in config
             model (str): Pre-downloaded Piper model
         """
         super().__init__()
 
         if executable is None:
-            executable = "piper"
+            conf = KevinbotConfig()
+            executable = conf.piper_tts.executable
+            
         self.executable = executable
         self._model: str = model
         self._debug = False
@@ -150,34 +138,36 @@ class PiperTTSEngine(BaseTTSEngine):
             text (str): Text to synthesize
         """
 
+        modelfile = get_models()[self._model]
+
         # Attempt to retrive the bitrate
         try:
-            with open(self._model + ".json") as config:
+            with open(modelfile + ".json") as config:
                 bitrate = int(json.loads(config.read())["audio"]["sample_rate"])
         except (KeyError, json.JSONDecodeError, FileNotFoundError):
             bitrate = 22050
             logger.warning("Bitrate config data parsing failure. Assuming bitrate for `medium` quality (22050)")
 
-        with (_shutup_pyaudio() if not self.debug else _debug_pyaudio()) as audio:
-            stream = audio.open(
-                format=paInt16,
-                channels=1,
-                rate=bitrate,
-                output=True
-            )
+        with ShutupPyAudio() if not self.debug else DebugPyAudio() as audio:
+            stream = audio.open(format=paInt16, channels=1, rate=bitrate, output=True)
 
             # Set up Piper synthesis command
             piper_command = [
                 self.executable,
                 "--model",
-                self._model,
+                modelfile,
                 "--config",
-                self._model + ".json",
+                modelfile + ".json",
                 "--output-raw",
             ]
 
             # Use subprocess to pipe synthesis to playback
-            with subprocess.Popen(piper_command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL if not self.debug else None) as piper_process:
+            with subprocess.Popen(
+                piper_command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL if not self.debug else None,
+            ) as piper_process:
                 if piper_process.stdin and piper_process.stdout:
                     piper_process.stdin.write(text.encode("utf-8"))
                     piper_process.stdin.close()
@@ -198,6 +188,7 @@ class ManagedSpeaker:
     """
     Manage speech so that only one string is played. Playing a new string will cancel the previous one.
     """
+
     def __init__(self, engine: BaseTTSEngine) -> None:
         self.engine = engine
         self.process: _Process | None = None
@@ -214,15 +205,16 @@ class ManagedSpeaker:
         self.process.start()
 
     def cancel(self):
-        """Attempt to cancel the current speech.
-        """
+        """Attempt to cancel the current speech."""
         if self.process and self.process.is_alive():
             self.process.terminate()
+
 
 class SpeechCommand(_BaseCommand):
     """
     Command queue command for speech. Will hold up to queue during speech processing.
     """
+
     def __init__(self, engine: BaseTTSEngine, text: str):
         """
         Constructor for SpeechCommand
@@ -244,5 +236,6 @@ class MultiprocessingSpeechCommand(SpeechCommand):
     """
     Speech command for command queue that synthesizes speech in a background process.
     """
+
     def launch(self):
         _Process(target=self._command, daemon=True).start()

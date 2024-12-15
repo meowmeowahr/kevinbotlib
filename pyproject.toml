@@ -40,6 +40,9 @@ dependencies = [
 [project.optional-dependencies]
 tts = [
   "PyAudio~=0.2.14",
+  "huggingface-hub~=0.26.5",
+  "tqdm~=4.67.1",
+  "requests~=2.32.3",
 ]
 
 [project.scripts]

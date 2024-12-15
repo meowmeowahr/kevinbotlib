@@ -13,6 +13,7 @@ from kevinbotlib.cli.config import config
 from kevinbotlib.cli.listen import listen
 from kevinbotlib.cli.pub import pub
 from kevinbotlib.cli.server import server
+from kevinbotlib.cli.tts import piper
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
@@ -34,7 +35,7 @@ cli.add_command(server)
 cli.add_command(listen)
 cli.add_command(pub)
 cli.add_command(config)
-cli.add_command(config)
+cli.add_command(piper)
 
 
 def main():  # no cov
