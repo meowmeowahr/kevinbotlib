@@ -33,7 +33,7 @@ def get_system_piper_model_dir():
     return os.path.join(platformdirs.site_config_dir("kevinbotlib", "meowmeowahr"), "piper")
 
 
-def get_models_paths(user=True, system=True):  # noqa: FBT002
+def get_piper_models_paths(user=True, system=True):  # noqa: FBT002
     if user and system:
         return list(filter(lambda x: x.endswith(".onnx"), _abslistdir(get_user_piper_model_dir()))) + list(
             filter(lambda x: x.endswith(".onnx"), _abslistdir(get_system_piper_model_dir()))
@@ -46,7 +46,7 @@ def get_models_paths(user=True, system=True):  # noqa: FBT002
     raise ValueError(msg)
 
 
-def get_models(user=True, system=True) -> dict[str, str]:  # noqa: FBT002
+def get_piper_models(user=True, system=True) -> dict[str, str]:  # noqa: FBT002
     """Get the name and directory of all installed models
 
     Returns:
@@ -54,7 +54,7 @@ def get_models(user=True, system=True) -> dict[str, str]:  # noqa: FBT002
     """
 
     models = {}
-    for model_path in get_models_paths(user, system):
+    for model_path in get_piper_models_paths(user, system):
         models[Path(model_path).name.split(".")[0]] = model_path
     return models
 
@@ -79,18 +79,22 @@ class PiperTTSEngine(BaseTTSEngine):
     You will need to provide your own executable for this to work.
     """
 
-    def __init__(self, model: str, executable: PathLike | str | None = None) -> None:
+    def __init__(self, model: str | None = None, executable: PathLike | str | None = None) -> None:
         """Constructor for PiperTTSEngine
 
         Args:
             executable (PathLike | str | None): Piper executable location. If None, uses executable defined in config
-            model (str): Pre-downloaded Piper model
+            model (str): Pre-downloaded Piper model. If None, uses model defined in config
         """
         super().__init__()
 
         if executable is None:
             conf = KevinbotConfig()
             executable = conf.piper_tts.executable
+
+        if model is None:
+            conf = KevinbotConfig()
+            model = conf.piper_tts.default_model
 
         self.executable = executable
         self._model: str = model
@@ -113,6 +117,16 @@ class PiperTTSEngine(BaseTTSEngine):
             value (str): model name
         """
         self._model = value
+
+    @property
+    def models(self) -> list[str]:
+        """Get all usable models
+
+        Returns:
+            list[str]: List of model names
+        """
+
+        return list(get_piper_models().keys())
 
     @property
     def debug(self) -> bool:
@@ -140,7 +154,7 @@ class PiperTTSEngine(BaseTTSEngine):
             text (str): Text to synthesize
         """
 
-        modelfile = get_models()[self._model]
+        modelfile = get_piper_models()[self._model]
 
         # Attempt to retrive the bitrate
         try:

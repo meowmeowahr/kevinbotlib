@@ -20,7 +20,7 @@ from huggingface_hub import HfApi, hf_hub_url
 from loguru import logger
 from tqdm import tqdm
 
-from kevinbotlib.speech import PiperTTSEngine, get_models, get_system_piper_model_dir, get_user_piper_model_dir
+from kevinbotlib.speech import PiperTTSEngine, get_piper_models, get_system_piper_model_dir, get_user_piper_model_dir
 
 
 def download(url: str, output_path: str, desc="Downloading", timeout: float = 5):
@@ -55,9 +55,9 @@ def models_list(*, system: bool = False, user: bool = True, raw: bool = False):
     if not user and not system:
         user, system = True, True
 
-    installed_models_user = get_models(user, False)
-    installed_models_system = get_models(False, system)
-    installed_models = get_models(user, system)
+    installed_models_user = get_piper_models(user, False)
+    installed_models_system = get_piper_models(False, system)
+    installed_models = get_piper_models(user, system)
 
     if raw:
         click.echo(json.dumps(installed_models, indent=4))

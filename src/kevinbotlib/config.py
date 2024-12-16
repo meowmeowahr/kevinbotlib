@@ -250,6 +250,15 @@ class _Server:
         self._config.save()
 
     @property
+    def enable_tts(self) -> bool:
+        return self._data.get("enable_tts", True)
+
+    @enable_tts.setter
+    def enable_tts(self, value: bool):
+        self._data["enable_tts"] = value
+        self._config.save()
+
+    @property
     def data(self):
         return {
             "root_topic": self.root_topic,
@@ -258,6 +267,7 @@ class _Server:
             "client_heartbeat": self.client_heartbeat,
             "client_heartbeat_tolerance": self.client_heartbeat_tolerance,
             "enable_eyes": self.enable_eyes,
+            "enable_tts": self.enable_tts,
         }
 
 
@@ -276,8 +286,17 @@ class _PiperTTS:
         self._config.save()
 
     @property
+    def default_model(self) -> str:
+        return self._data.get("default_model", "en_US-ryan-low")
+
+    @default_model.setter
+    def default_model(self, value: str):
+        self._data["default_model"] = value
+        self._config.save()
+
+    @property
     def data(self):
-        return {"executable": self.executable}
+        return {"executable": self.executable, "default_model": self.default_model}
 
 
 class KevinbotConfig:
