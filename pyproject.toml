@@ -43,6 +43,7 @@ tts = [
   "huggingface-hub~=0.26.5",
   "tqdm~=4.67.1",
   "requests~=2.32.3",
+  "halo~=0.0.31",
 ]
 
 [project.scripts]
