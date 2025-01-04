@@ -359,6 +359,8 @@ class KevinbotConfig:
 
     def save(self) -> None:
         if self.config_path:
+            if not self.config_path.parent.exists():
+                self.config_path.parent.mkdir(parents=True)
             with open(self.config_path, "w") as file:
                 yaml.dump(self._get_data(), file, default_flow_style=False)
         else:
