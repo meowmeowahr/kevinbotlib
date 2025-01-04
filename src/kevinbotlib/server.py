@@ -24,6 +24,11 @@ from kevinbotlib.core import Drivebase, SerialKevinbot, Servos
 from kevinbotlib.eyes import EyeMotion, EyeSkin, SerialEyes
 from kevinbotlib.models import KevinbotServerState
 
+try:
+    import kevinbotlib.speech as tts
+except ModuleNotFoundError:
+    tts = None
+
 
 class KevinbotServer:
     def __init__(self, config: KevinbotConfig, robot: SerialKevinbot, root_topic: str | None) -> None:
@@ -50,6 +55,21 @@ class KevinbotServer:
             )
         else:
             self.eyes = None
+
+        self.available_engines = {}
+        self.available_voices = {}
+
+        if self.config.server.enable_tts:
+            if tts:
+                self.piper_engine = tts.PiperTTSEngine()
+                self.piper = tts.ManagedSpeaker(self.piper_engine)
+                self.available_voices["piper"] = self.piper_engine.models
+                self.available_engines["piper"] = self.piper
+            else:
+                logger.error("Failed to load TTS, a required module is not installed")
+        else:
+            self.piper = None
+
 
         logger.info(f"Connecting to MQTT borker at: mqtt://{self.config.mqtt.host}:{self.config.mqtt.port}")
         logger.info(f"Using MQTT root topic: {self.root}")
@@ -136,8 +156,14 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/eyes/pos", 0)
         self.client.subscribe(self.root + "/eyes/skinopt", 0)
         self.client.subscribe(self.root + "/eyes/get", 0)
+        self.client.subscribe(self.root + "/speech/text", 0)
+        self.client.subscribe(self.root + "/speech/voice", 0)
+        self.client.subscribe(self.root + "/speech/engine", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
+        self.client.publish(f"{self.root}/speech/engines", ",".join(list(self.available_engines.keys())), 0)
+        self.client.publish(f"{self.root}/speech/voices", json.dumps(self.available_voices), 0)
+
         self.state.mqtt_connected = True
         self.on_server_state_change()
         self.on_eye_state_change()
@@ -175,6 +201,8 @@ class KevinbotServer:
                 logger.info(f"Client connected with cid:{value}")
                 self.on_server_state_change()
                 self.client.publish(f"{self.root}/clients/connect/ack", f"ack:{value}")
+                self.client.publish(f"{self.root}/speech/engines", ",".join(list(self.available_engines.keys())), 0)
+                self.client.publish(f"{self.root}/speech/voices", json.dumps(self.available_voices), 0)
             case ["clients", "disconnect"]:
                 if value in self.state.connected_cids:
                     self.state.connected_cids.remove(value)

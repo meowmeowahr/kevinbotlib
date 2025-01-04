@@ -33,7 +33,17 @@ dependencies = [
   "platformdirs~=4.3.6",
   "pyyaml~=6.0.2",
   "xbee~=2.3.2",
-  "shortuuid~=1.0.13"
+  "shortuuid~=1.0.13",
+  "command_queue~=0.2.0"
+]
+
+[project.optional-dependencies]
+tts = [
+  "PyAudio~=0.2.14",
+  "huggingface-hub~=0.26.5",
+  "tqdm~=4.67.1",
+  "requests~=2.32.3",
+  "halo~=0.0.31",
 ]
 
 [project.scripts]

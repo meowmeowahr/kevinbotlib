@@ -14,6 +14,11 @@ from kevinbotlib.cli.listen import listen
 from kevinbotlib.cli.pub import pub
 from kevinbotlib.cli.server import server
 
+try:
+    from kevinbotlib.cli.tts import piper
+except ModuleNotFoundError:
+    piper = None
+
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
 @click.version_option(version=__version__, prog_name="KevinbotLib")
@@ -34,7 +39,8 @@ cli.add_command(server)
 cli.add_command(listen)
 cli.add_command(pub)
 cli.add_command(config)
-cli.add_command(config)
+if piper:
+    cli.add_command(piper)
 
 
 def main():  # no cov

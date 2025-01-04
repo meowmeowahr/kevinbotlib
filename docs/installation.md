@@ -3,11 +3,26 @@
 !!! info
     KevinbotLib requires Python 3.10 or newer.
 
+## System Dependencies
+
+If you want to use the TTS (Text-to-Speech) extra on Linux, you must install PortAudio
+
+* Debian/Ubuntu/RpiOS
+
+```console
+sudo apt install portaudio19-dev
+```
+
 ## Install with pip
 
-Run the following in a virtual environment.
+Run the following in a virtual environment for the base version.
 ```console
 pip install kevinbotlib
+```
+
+Run the following if you want to install the TTS (Text-to-Speech) extra.
+```console
+pip install kevinbotlib[tts]
 ```
 
 ## Install with pipx

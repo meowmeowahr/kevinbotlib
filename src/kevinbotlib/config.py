@@ -250,6 +250,15 @@ class _Server:
         self._config.save()
 
     @property
+    def enable_tts(self) -> bool:
+        return self._data.get("enable_tts", True)
+
+    @enable_tts.setter
+    def enable_tts(self, value: bool):
+        self._data["enable_tts"] = value
+        self._config.save()
+
+    @property
     def data(self):
         return {
             "root_topic": self.root_topic,
@@ -258,7 +267,36 @@ class _Server:
             "client_heartbeat": self.client_heartbeat,
             "client_heartbeat_tolerance": self.client_heartbeat_tolerance,
             "enable_eyes": self.enable_eyes,
+            "enable_tts": self.enable_tts,
         }
+
+
+class _PiperTTS:
+    def __init__(self, data: dict[str, Any], config: "KevinbotConfig"):
+        self._config = config
+        self._data = data
+
+    @property
+    def executable(self):
+        return self._data.get("executable", "piper")
+
+    @executable.setter
+    def executable(self, value: str):
+        self._data["executable"] = value
+        self._config.save()
+
+    @property
+    def default_model(self) -> str:
+        return self._data.get("default_model", "en_US-ryan-low")
+
+    @default_model.setter
+    def default_model(self, value: str):
+        self._data["default_model"] = value
+        self._config.save()
+
+    @property
+    def data(self):
+        return {"executable": self.executable, "default_model": self.default_model}
 
 
 class KevinbotConfig:
@@ -280,6 +318,7 @@ class KevinbotConfig:
         self.core: _Core = _Core({}, self)
         self.server: _Server = _Server({}, self)
         self.eyes: _Eyes = _Eyes({}, self)
+        self.piper_tts: _PiperTTS = _PiperTTS({}, self)
 
         self.load()
 
@@ -316,6 +355,7 @@ class KevinbotConfig:
         self.core = _Core(self.config.get("core", {}), self)
         self.server = _Server(self.config.get("server", {}), self)
         self.eyes = _Eyes(self.config.get("eyes", {}), self)
+        self.piper_tts = _PiperTTS(self.config.get("piper_tts", {}), self)
 
     def save(self) -> None:
         if self.config_path:
@@ -338,6 +378,7 @@ class KevinbotConfig:
             "core": self.core.data,
             "eyes": self.eyes.data,
             "server": self.server.data,
+            "piper_tts": self.piper_tts.data,
         }
 
     def __repr__(self):
