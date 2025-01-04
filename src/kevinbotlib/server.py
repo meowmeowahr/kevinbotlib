@@ -391,6 +391,7 @@ class KevinbotServer:
                 if self.eyes:
                     self.eyes.update()
                 else:
+                    self.client.publish(f"{self.root}/eyes/state", "{}", 0)
                     logger.warning(f"Attempted to get eye settings, {subtopics}, eyes are disabled")
 
     def on_robot_state_change(self, _: str, __: str | None):
