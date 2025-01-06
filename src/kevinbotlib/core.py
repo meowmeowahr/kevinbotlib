@@ -199,9 +199,9 @@ class SerialKevinbot(BaseKevinbot):
             line = serial.readline().decode("utf-8", errors="ignore").strip("\n")
 
             if line == "ready":
-                serial.write(b"connection.start\n")
-                serial.write(b"core.errors.clear\n")
-                serial.write(b"connection.ok\n")
+                serial.write(b"connection.start\r\n")
+                serial.write(b"core.errors.clear\r\n")
+                serial.write(b"connection.ok\r\n")
                 break
 
             if time.monotonic() - start_time > timeout:
@@ -268,7 +268,7 @@ class SerialKevinbot(BaseKevinbot):
         Args:
             data (str): Data to send
         """
-        self.raw_tx((data + "\n").encode("utf-8"))
+        self.raw_tx((data + "\r\n").encode("utf-8"))
 
     def raw_tx(self, data: bytes):
         """Send raw bytes over serial.
@@ -355,6 +355,18 @@ class SerialKevinbot(BaseKevinbot):
                         continue
 
                     self._state.motion.status = [MotorDriveStatus(int(x)) for x in val.split(",")]
+                case "motors.powers":
+                    if not val:
+                        logger.error("No value given for motors.powers")
+                        continue
+
+                    try:
+                        [int(sv) for sv in val.split(",")]
+                    except ValueError:
+                        logger.error(f"Values of motion.powers are not ints: {val}")
+                        continue
+
+                    self._state.motion.powers = [int(x)/100 for x in val.split(",")]
                 case "bms.voltages":
                     if not val:
                         logger.error("No value given for bms.voltages")

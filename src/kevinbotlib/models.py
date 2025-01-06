@@ -12,10 +12,8 @@ from kevinbotlib.enums import BmsBatteryStatus, CoreErrors, EyeMotion, EyeSkin, 
 class DrivebaseState(BaseModel):
     """The state of the drivebase as a whole"""
 
-    left_power: int = 0
-    """Current power of the left motor"""
-    right_power: int = 0
-    """Current power of the right motor"""
+    powers: list[float] = Field(default_factory=lambda: [0.0, 0.0])
+    """Current power of the motors"""
     amps: list[float] = Field(default_factory=lambda: [0, 0])
     """Current amps for both motors"""
     watts: list[float] = Field(default_factory=lambda: [0, 0])
