@@ -722,13 +722,13 @@ class Drivebase(BaseKevinbotSubsystem):
         """
         return self.robot.get_state().motion.watts
 
-    def get_powers(self) -> tuple[int, int]:
+    def get_powers(self) -> list[float]:
         """Get the currently set wheel speeds in percent
 
         Returns:
-            tuple[int, int]: Percent values from 0 to 100
+            tuple[int, int]: Percent values from 0 to 1
         """
-        return self.robot.get_state().motion.left_power, self.robot.get_state().motion.right_power
+        return self.robot.get_state().motion.powers
 
     def get_states(self) -> list[MotorDriveStatus]:
         """Get the wheels states
