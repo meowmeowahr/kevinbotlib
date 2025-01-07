@@ -199,9 +199,9 @@ class SerialKevinbot(BaseKevinbot):
             line = serial.readline().decode("utf-8", errors="ignore").strip("\n")
 
             if line == "ready":
-                serial.write(b"connection.start\r\n")
-                serial.write(b"core.errors.clear\r\n")
-                serial.write(b"connection.ok\r\n")
+                serial.write(b"connection.start\n")
+                serial.write(b"core.errors.clear\n")
+                serial.write(b"connection.ok\n")
                 break
 
             if time.monotonic() - start_time > timeout:
@@ -268,7 +268,7 @@ class SerialKevinbot(BaseKevinbot):
         Args:
             data (str): Data to send
         """
-        self.raw_tx((data + "\r\n").encode("utf-8"))
+        self.raw_tx((data + "\n").encode("utf-8"))
 
     def raw_tx(self, data: bytes):
         """Send raw bytes over serial.
