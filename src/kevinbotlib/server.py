@@ -158,7 +158,6 @@ class KevinbotServer:
         self.client.subscribe(self.root + "/eyes/get", 0)
         self.client.subscribe(self.root + "/speech/text", 0)
         self.client.subscribe(self.root + "/speech/voice", 0)
-        self.client.subscribe(self.root + "/speech/engine", 0)
         self.client.subscribe("$SYS/broker/clients/connected")
         self.client.publish(self.root + "/server/startup", datetime.now(timezone.utc).timestamp(), 0)
         self.client.publish(f"{self.root}/speech/engines", ",".join(list(self.available_engines.keys())), 0)

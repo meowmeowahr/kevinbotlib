@@ -413,11 +413,17 @@ class SerialKevinbot(BaseKevinbot):
                     if val:
                         temps = val.split(",")
                         valid = True
+
+                        if len(temps) != 3:
+                            logger.error(f"Found {len(temps)} values in temps, expected 3")
+                            valid = False
+                            continue
+
                         for temp in temps:
                             if not re.match("^[-+]?[0-9]+$", temp):
                                 logger.error(f"Found non-integer value in temps, {temps}")
                                 valid = False
-                                break
+                                continue
                         if valid:
                             self._state.thermal.left_motor = int(temps[0]) / 100
                             self._state.thermal.right_motor = int(temps[1]) / 100
