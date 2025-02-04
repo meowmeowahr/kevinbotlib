@@ -24,22 +24,22 @@ class Logger:
         _internal_logger.opt(depth=1).log(level.value.name, message)
 
     def trace(self, message: str):
-        self.log(Level.TRACE, message)
+        _internal_logger.opt(depth=1).log(Level.TRACE.name, message)
 
     def debug(self, message: str):
-        self.log(Level.DEBUG, message)
+        _internal_logger.opt(depth=1).log(Level.DEBUG.name, message)
 
     def info(self, message: str):
-        self.log(Level.INFO, message)
+        _internal_logger.opt(depth=1).log(Level.INFO.name, message)
 
     def warning(self, message: str):
-        self.log(Level.WARNING, message)
+        _internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
     def warn(self, message: str):
-        self.log(Level.WARNING, message)
+        _internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
     def error(self, message: str):
-        self.log(Level.ERROR, message)
+        _internal_logger.opt(depth=1).log(Level.ERROR.name, message)
 
     def critical(self, message: str):
-        self.log(Level.CRITICAL, message)
+        _internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
