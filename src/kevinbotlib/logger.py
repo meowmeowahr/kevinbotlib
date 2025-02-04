@@ -1,3 +1,4 @@
+
 from enum import Enum
 from loguru import logger as _internal_logger
 
@@ -11,8 +12,9 @@ class Level(Enum):
 
 
 class Logger:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, level: Level = Level.DEBUG) -> None:
+        self._internal_logger = _internal_logger
+        self.level = level
 
     def log(self, level: Level, message: str):
         """Log a message with a specified level
