@@ -2,15 +2,13 @@ import time
 
 from kevinbotlib.comm import KevinbotCommClient, StringData
 
-client = KevinbotCommClient()
+client = KevinbotCommClient(on_update=None)
 client.connect()
 client.wait_until_connected()
 
-i = 0
 try:
     while True:
-        client.send("example/hierarchy", StringData(value=f"demo {i}", timeout=2))
-        time.sleep(0.5)
-        i += 1
+        print(client.get("example/hierarchy", StringData))
+        time.sleep(0.1)
 except KeyboardInterrupt:
     client.disconnect()

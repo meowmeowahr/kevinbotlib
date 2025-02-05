@@ -67,19 +67,7 @@ plugins:
 nav:
   - index.md
   - installation.md
-  - Command Line Tools:
-    - cli_listener.md
-    - cli_pub.md
-    - cli_config.md
-  - Systems:
-    - systems/index.md
-    - systems/kevinbot.md
-    - systems/eyes.md
-  - Subsystems:
-    - subsystems/index.md
-    - subsystems/drivebase.md
-    - subsystems/servos.md
-    - subsystems/lighting.md
+  # - Command Line Tools:
   - examples.md
   - architecture.md
   - reference.md

@@ -1,266 +1,273 @@
-from typing import Any, Type, TypeVar
-import time
-import json
+import asyncio
 import threading
-import paho.mqtt.client as mqtt
-from paho.mqtt.enums import CallbackAPIVersion
-import uuid
-from pydantic import BaseModel, ConfigDict
-from enum import IntEnum
+import time
+from collections.abc import Callable
+from abc import ABC
+from typing import Any, Literal, Type, TypeVar
+
 import orjson
-import atexit
+import websockets
+from pydantic import BaseModel
 
 from kevinbotlib.logger import Logger as _Logger
+import kevinbotlib.exceptions
 
 
-class ControlRights(IntEnum):
-    SERVER = 0
-    USER = 1
-    ALL = 2
+class BaseData(BaseModel, ABC):
+    timeout: float | None = None
+    data_id: Literal["0000-0000"] = "0000-0000"
 
+    # def __init__(self) -> None:
+    #     super().__init__()
 
-class SendableDataType(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-    
-    title: str
-    value: Any
-    rights: ControlRights = ControlRights.ALL
-    last_sender: str = "unknown"
-    extras: dict = {}
+    def get_dict(self) -> dict:
+        return {"timeout": self.timeout, "value": None, "did": self.data_id}
 
-    def __str__(self) -> str:
-        return f"{self.value}"
-
-class IntegerData(SendableDataType):
+class IntegerData(BaseData):
     value: int
+    data_id: Literal["0000-0001"] = "0000-0001"
 
-class FloatData(SendableDataType):
-    value: float
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
 
-class StringData(SendableDataType):
+class StringData(BaseData):
     value: str
+    data_id: Literal["0000-0002"] = "0000-0002"
 
-class BooleanData(SendableDataType):
-    value: bool
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
+    
+T = TypeVar("T", bound=BaseData)
 
-class DictData(SendableDataType):
-    value: dict
+class KevinbotCommServer:
+    """WebSocket-based server for handling real-time data synchronization."""
 
-T = TypeVar("T", bound=SendableDataType)
-
-
-class KevinbotCommInstance:
-    def __init__(self, broker="localhost", port=1883, topic_prefix="kevinbot/", rights: ControlRights = ControlRights.USER, client_id: str = f"kevinbotlib-{uuid.uuid4()}"):
-        self.broker = broker
-        self.port = port
-        self.topic_prefix = topic_prefix
-        self.rights = rights
-        self._cid = client_id
+    def __init__(self, host: str = "localhost", port: int = 8765) -> None:
+        self.host: str = host
+        self.port: int = port
 
         self.logger = _Logger()
 
-        self._client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id)
-        self._client.on_connect = self._on_connect
-        self._client.on_message = self._on_message
-        self._client.connect(self.broker, self.port, 60)
-        
-        self.data_store: dict[str, SendableDataType] = {}
-        
-        self.lock = threading.Lock()
-        
-        self._client.loop_start()
-        while not self._client.is_connected():
-            time.sleep(0.1)
+        self.data_store: dict[str, dict[str, Any]] = {}
+        self.clients: set[websockets.ServerConnection] = set()
 
-        atexit.register(self.close)
+    async def remove_expired_data(self) -> None:
+        """Periodically removes expired data based on timeouts."""
+        while True:
+            current_time = time.time()
+            expired_keys = [
+                key for key, entry in self.data_store.items()
+                if entry["data"]["timeout"] and entry["tsu"] + entry["data"]["timeout"] < current_time
+            ]
+            for key in expired_keys:
+                del self.data_store[key]
+                await self.broadcast({"action": "delete", "key": key})
+            await asyncio.sleep(1)
 
-    def _on_connect(self, _: mqtt.Client, __, ___, reason_code, ____):
-        """Subscribe to all topics under the given prefix when connected."""
-        self._client.subscribe(f"{self.topic_prefix}#")
-        self._client.publish(f"{self.topic_prefix}%clients/connect", self._cid)
-        self.logger.info(f"Connected to mqtt with rc={reason_code}")
+    async def broadcast(self, message: dict[str, Any]) -> None:
+        """Broadcasts a message to all connected clients."""
+        if self.clients:
+            msg = orjson.dumps(message)
+            await asyncio.gather(*(client.send(msg) for client in self.clients))
 
-    def _on_message(self, client: mqtt.Client, userdata, msg: mqtt.MQTTMessage):
-        """Handle incoming messages and store the latest values."""
+    async def handle_client(self, websocket: websockets.ServerConnection) -> None:
+        """Handles incoming WebSocket connections."""
+        self.clients.add(websocket)
+        self.logger.info(f"New client connected: {websocket.id}")
         try:
-            full_topic = msg.topic
-            if "%" in full_topic:
-                return
-            
-            payload = json.loads(msg.payload.decode())
-            if not full_topic.startswith(self.topic_prefix):
-                return
-                
-            relative_topic = full_topic[len(self.topic_prefix):]
-            topic_parts = relative_topic.split('/')
+            await websocket.send(orjson.dumps({"action": "sync", "data": self.data_store}))
+            async for message in websocket:
+                msg = orjson.loads(message)
+                if msg["action"] == "publish":
+                    key = msg["key"]
+                    tsc = time.time() if key not in self.data_store else self.data_store[key]["tsc"]
+                    self.data_store[key] = {
+                        "data": msg["data"],
+                        "tsu": time.time(),
+                        "tsc": tsc,
+                    }
+                    await self.broadcast({"action": "update", "key": key, "data": self.data_store[key]})
+                elif msg["action"] == "delete" and msg["key"] in self.data_store:
+                    del self.data_store[msg["key"]]
+                    await self.broadcast({"action": "delete", "key": msg["key"]})
+        except websockets.ConnectionClosed:
+            pass
+        finally:
+            self.logger.info(f"Client disconnected: {websocket.id}")
+            self.clients.remove(websocket)
 
-            if len(topic_parts) < 2:
-                self.logger.error(f"Got malformed data: expected topic depth of at least 2, got {len(topic_parts)}")
-                return
+    async def serve_async(self) -> None:
+        """Starts the WebSocket server."""
+        server = await websockets.serve(self.handle_client, self.host, self.port)
+        asyncio.create_task(self.remove_expired_data())
+        await server.wait_closed()
 
-            key = topic_parts[0]
-            attribute = topic_parts[1]
-            
-            with self.lock:
-                if key not in self.data_store:
-                    self.data_store[key] = SendableDataType(title=key, value=None)
+    def serve(self):
+        asyncio.run(self.serve_async())
 
-                if attribute == "rights":
-                    payload = ControlRights(int(payload))
-                elif attribute == "type":
-                    self.data_store[key].extras["type"] = payload
+class KevinbotCommClient:
+    """WebSocket-based client for real-time data synchronization."""
+
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 8765,
+        on_update: Callable[[str, Any], None] | None = None,
+        on_delete: Callable[[str], None] | None = None,
+        auto_reconnect: bool = True,
+        register_basic_types: bool = True,
+    ) -> None:
+        self.host = host
+        self.port = port
+        self.auto_reconnect = auto_reconnect
+
+        self.logger = _Logger()
+
+        self.data_store: dict[str, Any] = {}
+        self.data_types: dict[str, type[BaseData]] = {}
+
+        self.running = False
+        self.websocket: websockets.ClientConnection | None = None
+        self.loop = asyncio.new_event_loop()
+        self.thread: threading.Thread | None = None
+
+        self.on_update = on_update
+        self.on_delete = on_delete
+
+        if register_basic_types:
+            self.register_type(BaseData)
+            self.register_type(IntegerData)
+            self.register_type(StringData)
+
+    def register_type(self, data_type: type[BaseData]):
+        self.data_types[data_type.model_fields['data_id'].default] = data_type
+        self.logger.debug(f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}")
+
+    def connect(self) -> None:
+        """Starts the client in a background thread."""
+        if self.running:
+            self.logger.warning("Client is already running")
+            return
+
+        self.running = True
+        self.thread = threading.Thread(target=self._run_async_loop, daemon=True)
+        self.thread.start()
+
+    def wait_until_connected(self, timeout: float = 5.0):
+        # TODO: timeout
+        start_time = time.time()
+        while not self.websocket:
+            if time.time() > start_time + timeout:
+                raise kevinbotlib.exceptions.HandshakeTimeoutException("The connection timed out")
+            time.sleep(0.02)
+
+    def disconnect(self) -> None:
+        """Stops the client and closes the connection gracefully."""
+        self.running = False
+        if self.loop and self.loop.is_running():
+            asyncio.run_coroutine_threadsafe(self._close_connection(), self.loop).result()
+
+        if self.thread:
+            self.thread.join()
+            self.thread = None
+
+    def _run_async_loop(self) -> None:
+        """Runs the async event loop in a separate thread."""
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_until_complete(self._connect_and_listen())
+
+    async def _connect_and_listen(self) -> None:
+        """Handles connection and message listening."""
+        while self.running:
+            try:
+                async with websockets.connect(f"ws://{self.host}:{self.port}") as ws:
+                    self.websocket = ws
+                    self.logger.info("Connected to the server")
+                    await self._handle_messages()
+            except (websockets.ConnectionClosed, ConnectionError):
+                self.websocket = None
+                if self.auto_reconnect and self.running:
+                    self.logger.warning("Connection lost. Reconnecting...")
+                    await asyncio.sleep(1)
                 else:
-                    setattr(self.data_store[key], attribute, payload)
-        except Exception as e:
-            self.logger.error(f"Error processing message: {e}")
+                    break
+            except Exception as e:
+                self.logger.error(f"Unexpected error: {e}")
+                self.websocket = None
+                if self.auto_reconnect and self.running:
+                    await asyncio.sleep(1)
+                else:
+                    break
 
-
-    def _loguru_sink(self, message):
-        """Custom sink to send Loguru messages via MQTT."""
-        message = json.loads(message)
-        log_entry = {
-            "time": message["record"]["time"]["repr"],
-            "level": message["record"]["level"]["name"],
-            "message": message["record"]["message"],
-            "file": message["record"]["file"]["name"],
-            "line": message["record"]["line"],
-            "cid": self._cid
-        }
-        self.send("entry", DictData(title="Latest Log Entry", value=log_entry))
-
-    def attach_logger(self, logger: _Logger):
-        logger._internal_logger.add(self._loguru_sink, level=logger.level.name, serialize=True)
-
-    def send(self, key: str | uuid.UUID, data: SendableDataType):
-        """Send a value to the MQTT broker with a specified data type."""
-        if isinstance(key, uuid.UUID):
-            key = str(key)
-
-        payload = data.model_dump()
-        payload["last_sender"] = self._cid
-        with self.lock:
-            self.data_store[key] = data
-
-        for attr, val in payload.items():
-            self._client.publish(f"{self.topic_prefix}{key}/{attr}", orjson.dumps(val))
-
-    def get(self, key: str | uuid.UUID, data_type: Type[T]) -> T | None:
-        """Retrieve the latest value for a given key, ensuring correct casting."""
-        if isinstance(key, uuid.UUID):
-            key = str(key)
-        
-        with self.lock:
-            if key in self.data_store:
-                data = self.data_store[key]
-                return data_type(**data.model_dump())
-        return None
-    
-    @property
-    def mqtt_client(self) -> mqtt.Client:
-        return self._client
-
-    def close(self):
-        """Close the MQTT client connection."""
-        self.logger.info("Closing down mqtt client")
-        self._client.publish(f"{self.topic_prefix}%clients/disconnect", self._cid).wait_for_publish()
-        self._client.loop_stop()
-        self._client.disconnect()
-
-class SubTopic:
-    def __init__(self, parent_instance: KevinbotCommInstance, sub_topic: str):
-        """
-        Initialize a sub-channel using the parent channel's client with a different topic prefix.
-        
-        Args:
-            parent_channel: The parent KevinbotCommChannel instance
-            sub_topic: The sub-topic prefix (e.g., "sensors/" or "controls/")
-        """
-        self.parent = parent_instance
-        # Ensure sub_topic ends with a forward slash
-        self.sub_topic = sub_topic if sub_topic.endswith('/') else f"{sub_topic}/"
-        # Combine parent's topic prefix with sub-topic
-        self.topic_prefix = f"{parent_instance.topic_prefix}{self.sub_topic}"
-        # Create a separate data store for the sub-channel
-        self.data_store: dict[str, SendableDataType] = {}
-        self.lock = threading.Lock()
-        
-        # Subscribe to sub-channel topics
-        self.parent._client.message_callback_add(
-            f"{self.topic_prefix}#",
-            self._on_message
-        )
-        self.parent._client.subscribe(f"{self.topic_prefix}#")
-
-    def _on_message(self, client: mqtt.Client, userdata, msg):
-        """Handle incoming messages specific to this sub-channel."""
+    async def _handle_messages(self) -> None:
+        """Processes incoming messages."""
+        if not self.websocket:
+            return
         try:
-            if msg.topic.startswith("%"):
-                return
-            
-            payload = json.loads(msg.payload.decode())
-            if not msg.topic.startswith(self.topic_prefix):
-                return
-                
-            relative_topic = msg.topic[len(self.topic_prefix):]
-            topic_parts = relative_topic.split('/')
+            async for message in self.websocket:
+                data = orjson.loads(message)
 
-            if len(topic_parts) < 2:
-                self.parent.logger.error(f"Got malformed data: expected topic depth of at least 2, got {len(topic_parts)}")
-                return
-
-            key = topic_parts[0]
-            attribute = topic_parts[1]
-            
-            with self.lock:
-                if key not in self.data_store:
-                    self.data_store[key] = SendableDataType(title=key, value=None)
-
-                if attribute == "rights":
-                    payload = ControlRights(int(payload))
-                elif attribute == "type":
-                    self.data_store[key].extras["type"] = payload
-                else:
-                    setattr(self.data_store[key], attribute, payload)
+                if data["action"] == "sync":
+                    self.data_store = data["data"]
+                elif data["action"] == "update":
+                    key, value = data["key"], data["data"]
+                    self.data_store[key] = value
+                    if self.on_update:
+                        self.on_update(key, value)
+                elif data["action"] == "delete":
+                    key = data["key"]
+                    self.data_store.pop(key, None)
+                    if self.on_delete:
+                        self.on_delete(key)
         except Exception as e:
-            self.parent.logger.error(f"Error processing message in sub-channel: {e}")
+            self.logger.error(f"Error processing messages: {e}")
 
-    def _loguru_sink(self, message):
-        """Custom sink to send Loguru messages via MQTT."""
-        message = json.loads(message)
-        log_entry = {
-            "time": message["record"]["time"]["repr"],
-            "level": message["record"]["level"]["name"],
-            "message": message["record"]["message"],
-            "file": message["record"]["file"]["name"],
-            "line": message["record"]["line"],
-            "cid": self.parent._cid
-        }
-        self.send("entry", DictData(title="Latest Log Entry", value=log_entry))
+    async def _close_connection(self) -> None:
+        """Closes the WebSocket connection."""
+        if self.websocket:
+            await self.websocket.close()
+            self.logger.info("Connection closed")
+            self.websocket = None
 
-    def attach_logger(self, logger: _Logger):
-        logger._internal_logger.add(self._loguru_sink, level=logger.level.name, serialize=True)
+    def send(self, key: str, data: BaseData) -> None:
+        """Publishes data to the server."""
+        if not self.running or not self.websocket:
+            self.logger.error(f"Cannot publish to {key}: client is not connected")
+            return
 
+        async def _publish() -> None:
+            if not self.websocket:
+                return
+            message = orjson.dumps({"action": "publish", "key": key, "data": data.get_dict()})
+            await self.websocket.send(message)
 
-    def send(self, key: str | uuid.UUID, data: SendableDataType):
-        """Send data through the sub-channel."""
-        if isinstance(key, uuid.UUID):
-            key = str(key)
+        asyncio.run_coroutine_threadsafe(_publish(), self.loop)
 
-        payload = data.model_dump()
-        payload["last_sender"] = self.parent._cid
-        with self.lock:
-            self.data_store[key] = data
+    def get(self, key: str, data_type: Type[T], default: Any = None) -> T | None:
+        """Retrieves stored data."""
+        if key not in self.data_store:
+            return None
 
-        for attr, val in payload.items():
-            self.parent._client.publish(f"{self.topic_prefix}{key}/{attr}", orjson.dumps(val))
+        if not self.data_store.get(key, default)["data"]["did"] == data_type.model_fields["data_id"].default:
+            self.logger.error(f"Couldn't get value of {key}, requested value of id {data_type.model_fields['data_id'].default}, got one of {self.data_store.get(key, default)['data']['did']}")
+            return None
 
-    def get(self, key: str | uuid.UUID, data_type: Type[T]) -> T | None:
-        """Retrieve data from the sub-channel's data store."""
-        if isinstance(key, uuid.UUID):
-            key = str(key)
-        
-        with self.lock:
-            if key in self.data_store:
-                data = self.data_store[key]
-                return data_type(**data.model_dump())
-        return None
+        return data_type(**self.data_store.get(key, default)["data"])
+
+    def delete(self, key: str) -> None:
+        """Deletes data from the server."""
+        if not self.running or not self.websocket:
+            self.logger.error("Cannot delete: client is not connected")
+            return
+
+        async def _delete() -> None:
+            if not self.websocket:
+                return
+            message = orjson.dumps({"action": "delete", "key": key})
+            await self.websocket.send(message)
+
+        asyncio.run_coroutine_threadsafe(_delete(), self.loop)

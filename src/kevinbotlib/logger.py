@@ -1,6 +1,8 @@
 
 from enum import Enum
+
 from loguru import logger as _internal_logger
+
 
 class Level(Enum):
     TRACE = _internal_logger.level("TRACE")
