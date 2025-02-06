@@ -1,47 +1,79 @@
 import asyncio
 import threading
 import time
-from collections.abc import Callable
 from abc import ABC
-from typing import Any, Literal, Type, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 import orjson
 import websockets
 from pydantic import BaseModel
 
-from kevinbotlib.logger import Logger as _Logger
 import kevinbotlib.exceptions
+from kevinbotlib.logger import Logger as _Logger
 
 
 class BaseData(BaseModel, ABC):
     timeout: float | None = None
-    data_id: Literal["0000-0000"] = "0000-0000"
-
-    # def __init__(self) -> None:
-    #     super().__init__()
+    data_id: str = "kevinbotlib.dtype.null"
+    flags: list[str] = []
 
     def get_dict(self) -> dict:
         return {"timeout": self.timeout, "value": None, "did": self.data_id}
 
+
 class IntegerData(BaseData):
     value: int
-    data_id: Literal["0000-0001"] = "0000-0001"
+    data_id: str = "kevinbotlib.dtype.int"
 
     def get_dict(self) -> dict:
         data = super().get_dict()
         data["value"] = self.value
         return data
+
 
 class StringData(BaseData):
     value: str
-    data_id: Literal["0000-0002"] = "0000-0002"
+    data_id: str = "kevinbotlib.dtype.str"
 
     def get_dict(self) -> dict:
         data = super().get_dict()
         data["value"] = self.value
         return data
-    
+
+
+class FloatData(BaseData):
+    value: float
+    data_id: str = "kevinbotlib.dtype.float"
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
+
+
+class AnyListData(BaseData):
+    value: list
+    data_id: str = "kevinbotlib.dtype.list.any"
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
+
+
+class DictData(BaseData):
+    value: dict
+    data_id: str = "kevinbotlib.dtype.dict"
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
+
+
 T = TypeVar("T", bound=BaseData)
+
 
 class KevinbotCommServer:
     """WebSocket-based server for handling real-time data synchronization."""
@@ -54,13 +86,15 @@ class KevinbotCommServer:
 
         self.data_store: dict[str, dict[str, Any]] = {}
         self.clients: set[websockets.ServerConnection] = set()
+        self.tasks = set()
 
     async def remove_expired_data(self) -> None:
         """Periodically removes expired data based on timeouts."""
         while True:
             current_time = time.time()
             expired_keys = [
-                key for key, entry in self.data_store.items()
+                key
+                for key, entry in self.data_store.items()
                 if entry["data"]["timeout"] and entry["tsu"] + entry["data"]["timeout"] < current_time
             ]
             for key in expired_keys:
@@ -102,15 +136,19 @@ class KevinbotCommServer:
 
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
-        server = await websockets.serve(self.handle_client, self.host, self.port)
-        asyncio.create_task(self.remove_expired_data())
+        self.logger.info("Starting a new KevinbotCommServer")
+        server = await websockets.serve(self.handle_client, self.host, self.port, compression=None)
+        task = asyncio.create_task(self.remove_expired_data())
+        self.tasks.add(task)
+        task.add_done_callback(self.tasks.discard)
         await server.wait_closed()
 
     def serve(self):
         asyncio.run(self.serve_async())
 
+
 class KevinbotCommClient:
-    """WebSocket-based client for real-time data synchronization."""
+    """KevinbotLib WebSocket-based client for real-time data synchronization and communication."""
 
     def __init__(
         self,
@@ -118,6 +156,7 @@ class KevinbotCommClient:
         port: int = 8765,
         on_update: Callable[[str, Any], None] | None = None,
         on_delete: Callable[[str], None] | None = None,
+        *,
         auto_reconnect: bool = True,
         register_basic_types: bool = True,
     ) -> None:
@@ -142,10 +181,15 @@ class KevinbotCommClient:
             self.register_type(BaseData)
             self.register_type(IntegerData)
             self.register_type(StringData)
+            self.register_type(FloatData)
+            self.register_type(AnyListData)
+            self.register_type(DictData)
 
     def register_type(self, data_type: type[BaseData]):
-        self.data_types[data_type.model_fields['data_id'].default] = data_type
-        self.logger.debug(f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}")
+        self.data_types[data_type.model_fields["data_id"].default] = data_type
+        self.logger.debug(
+            f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}"
+        )
 
     def connect(self) -> None:
         """Starts the client in a background thread."""
@@ -162,7 +206,8 @@ class KevinbotCommClient:
         start_time = time.time()
         while not self.websocket:
             if time.time() > start_time + timeout:
-                raise kevinbotlib.exceptions.HandshakeTimeoutException("The connection timed out")
+                msg = "The connection timed out"
+                raise kevinbotlib.exceptions.HandshakeTimeoutException(msg)
             time.sleep(0.02)
 
     def disconnect(self) -> None:
@@ -184,21 +229,15 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}") as ws:
+                async with websockets.connect(f"ws://{self.host}:{self.port}", compression=None) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()
-            except (websockets.ConnectionClosed, ConnectionError):
+            except (websockets.ConnectionClosed, ConnectionError, OSError) as e:
+                self.logger.error(f"Unexpected error: {e!r}")
                 self.websocket = None
                 if self.auto_reconnect and self.running:
-                    self.logger.warning("Connection lost. Reconnecting...")
-                    await asyncio.sleep(1)
-                else:
-                    break
-            except Exception as e:
-                self.logger.error(f"Unexpected error: {e}")
-                self.websocket = None
-                if self.auto_reconnect and self.running:
+                    self.logger.warning("Can't connect to server, retrying...")
                     await asyncio.sleep(1)
                 else:
                     break
@@ -223,7 +262,7 @@ class KevinbotCommClient:
                     self.data_store.pop(key, None)
                     if self.on_delete:
                         self.on_delete(key)
-        except Exception as e:
+        except orjson.JSONDecodeError as e:
             self.logger.error(f"Error processing messages: {e}")
 
     async def _close_connection(self) -> None:
@@ -247,13 +286,15 @@ class KevinbotCommClient:
 
         asyncio.run_coroutine_threadsafe(_publish(), self.loop)
 
-    def get(self, key: str, data_type: Type[T], default: Any = None) -> T | None:
+    def get(self, key: str, data_type: type[T], default: Any = None) -> T | None:
         """Retrieves stored data."""
         if key not in self.data_store:
             return None
 
-        if not self.data_store.get(key, default)["data"]["did"] == data_type.model_fields["data_id"].default:
-            self.logger.error(f"Couldn't get value of {key}, requested value of id {data_type.model_fields['data_id'].default}, got one of {self.data_store.get(key, default)['data']['did']}")
+        if self.data_store.get(key, default)["data"]["did"] != data_type.model_fields["data_id"].default:
+            self.logger.error(
+                f"Couldn't get value of {key}, requested value of id {data_type.model_fields['data_id'].default}, got one of {self.data_store.get(key, default)['data']['did']}"
+            )
             return None
 
         return data_type(**self.data_store.get(key, default)["data"])

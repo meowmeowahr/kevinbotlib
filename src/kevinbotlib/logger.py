@@ -1,10 +1,10 @@
-
 from enum import Enum
 
 from loguru import logger as _internal_logger
 
 
 class Level(Enum):
+    DATA = _internal_logger.level("DATA", no=4, color="<magenta>", icon="🔄")
     TRACE = _internal_logger.level("TRACE")
     DEBUG = _internal_logger.level("DEBUG")
     INFO = _internal_logger.level("INFO")
@@ -15,6 +15,7 @@ class Level(Enum):
 
 class Logger:
     def __init__(self, level: Level = Level.DEBUG) -> None:
+        # TODO: implement levels
         self._internal_logger = _internal_logger
         self.level = level
 

@@ -112,3 +112,6 @@ exclude_lines = [
 [[tool.mypy.overrides]]
 module = "xbee"
 ignore_missing_imports = true
+
+[tool.ruff.lint]
+ignore = ["G004", "TRY400"]

@@ -8,7 +8,7 @@ client.wait_until_connected()
 
 try:
     while True:
-        print(client.get("example/hierarchy", StringData))
+        print(client.get("example/hierarchy", StringData))  # noqa: T201
         time.sleep(0.1)
 except KeyboardInterrupt:
     client.disconnect()
