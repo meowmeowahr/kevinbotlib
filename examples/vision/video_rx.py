@@ -1,5 +1,3 @@
-import time
-
 from kevinbotlib.comm import KevinbotCommClient
 from kevinbotlib.vision import SingleFrameSendable, FrameDecoders
 

@@ -1,7 +1,7 @@
-from kevinbotlib.comm import BaseData
+from kevinbotlib.comm import BaseSendable
 
 
-class JoystickData(BaseData):
+class JoystickData(BaseSendable):
     data_id: str = "kevinbotlib.dtype.joystick"
     a: bool
     b: bool

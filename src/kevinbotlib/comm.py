@@ -14,7 +14,7 @@ import kevinbotlib.exceptions
 from kevinbotlib.logger import Logger as _Logger
 
 
-class BaseData(BaseModel, ABC):
+class BaseSendable(BaseModel, ABC):
     timeout: float | None = None
     data_id: str = "kevinbotlib.dtype.null"
     flags: list[str] = []
@@ -23,7 +23,7 @@ class BaseData(BaseModel, ABC):
         return {"timeout": self.timeout, "value": None, "did": self.data_id}
 
 
-class IntegerData(BaseData):
+class IntegerSendable(BaseSendable):
     value: int
     data_id: str = "kevinbotlib.dtype.int"
 
@@ -33,7 +33,7 @@ class IntegerData(BaseData):
         return data
 
 
-class StringData(BaseData):
+class StringSendable(BaseSendable):
     value: str
     data_id: str = "kevinbotlib.dtype.str"
 
@@ -43,7 +43,7 @@ class StringData(BaseData):
         return data
 
 
-class FloatData(BaseData):
+class FloatSendable(BaseSendable):
     value: float
     data_id: str = "kevinbotlib.dtype.float"
 
@@ -53,7 +53,7 @@ class FloatData(BaseData):
         return data
 
 
-class AnyListData(BaseData):
+class AnyListSendable(BaseSendable):
     value: list
     data_id: str = "kevinbotlib.dtype.list.any"
 
@@ -63,7 +63,7 @@ class AnyListData(BaseData):
         return data
 
 
-class DictData(BaseData):
+class DictSendable(BaseSendable):
     value: dict
     data_id: str = "kevinbotlib.dtype.dict"
 
@@ -72,7 +72,7 @@ class DictData(BaseData):
         data["value"] = self.value
         return data
 
-class BinaryData(BaseData):
+class BinarySendable(BaseSendable):
     value: bytes
     data_id: str = "kevinbotlib.dtype.bin"
 
@@ -81,7 +81,7 @@ class BinaryData(BaseData):
         data["value"] = self.value.decode("utf-8")
         return data
 
-T = TypeVar("T", bound=BaseData)
+T = TypeVar("T", bound=BaseSendable)
 
 
 class KevinbotCommServer:
@@ -146,7 +146,7 @@ class KevinbotCommServer:
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
         self.logger.info("Starting a new KevinbotCommServer")
-        server = await websockets.serve(self.handle_client, self.host, self.port, compression=None, max_size=2 ** 22)
+        server = await websockets.serve(self.handle_client, self.host, self.port, compression=None, max_size=2 ** 23)
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
@@ -176,7 +176,7 @@ class KevinbotCommClient:
         self.logger = _Logger()
 
         self.data_store: dict[str, Any] = {}
-        self.data_types: dict[str, type[BaseData]] = {}
+        self.data_types: dict[str, type[BaseSendable]] = {}
 
         self.running = False
         self.websocket: websockets.ClientConnection | None = None
@@ -187,14 +187,14 @@ class KevinbotCommClient:
         self.on_delete = on_delete
 
         if register_basic_types:
-            self.register_type(BaseData)
-            self.register_type(IntegerData)
-            self.register_type(StringData)
-            self.register_type(FloatData)
-            self.register_type(AnyListData)
-            self.register_type(DictData)
+            self.register_type(BaseSendable)
+            self.register_type(IntegerSendable)
+            self.register_type(StringSendable)
+            self.register_type(FloatSendable)
+            self.register_type(AnyListSendable)
+            self.register_type(DictSendable)
 
-    def register_type(self, data_type: type[BaseData]):
+    def register_type(self, data_type: type[BaseSendable]):
         self.data_types[data_type.model_fields["data_id"].default] = data_type
         self.logger.debug(
             f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}"
@@ -237,7 +237,7 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}", compression=None, max_size=2 ** 22) as ws:
+                async with websockets.connect(f"ws://{self.host}:{self.port}", compression=None, max_size=2 ** 23) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()
@@ -280,7 +280,7 @@ class KevinbotCommClient:
             self.logger.info("Connection closed")
             self.websocket = None
 
-    def send(self, key: str, data: BaseData) -> None:
+    def send(self, key: str, data: BaseSendable) -> None:
         """Publishes data to the server."""
         if not self.running or not self.websocket:
             self.logger.error(f"Cannot publish to {key}: client is not connected")
