@@ -1,5 +1,5 @@
 from kevinbotlib.comm import KevinbotCommClient
-from kevinbotlib.vision import FrameEncoders, CameraByIndex, VisionCommUtils, MjpegStreamSendable, EmptyPipeline
+from kevinbotlib.vision import CameraByIndex, EmptyPipeline, FrameEncoders, MjpegStreamSendable, VisionCommUtils
 
 client = KevinbotCommClient()
 VisionCommUtils.init_comms_types(client)

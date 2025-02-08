@@ -6,5 +6,5 @@ logger = Logger()
 stream = StreamRedirector(logger)
 
 with contextlib.redirect_stdout(stream):
-    print("Hello from KevinbotLib!")
-    print("This will be converted to a logging entry")
+    print("Hello from KevinbotLib!")  # noqa: T201
+    print("This will be converted to a logging entry")  # noqa: T201

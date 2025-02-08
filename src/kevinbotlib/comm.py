@@ -71,6 +71,7 @@ class DictSendable(BaseSendable):
         data["value"] = self.value
         return data
 
+
 class BinarySendable(BaseSendable):
     value: bytes
     data_id: str = "kevinbotlib.dtype.bin"
@@ -79,6 +80,7 @@ class BinarySendable(BaseSendable):
         data = super().get_dict()
         data["value"] = self.value.decode("utf-8")
         return data
+
 
 T = TypeVar("T", bound=BaseSendable)
 
@@ -145,7 +147,7 @@ class KevinbotCommServer:
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
         self.logger.info("Starting a new KevinbotCommServer")
-        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2 ** 64 - 1)
+        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2**64 - 1)
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
@@ -236,7 +238,7 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2 ** 64 - 1) as ws:
+                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2**64 - 1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()

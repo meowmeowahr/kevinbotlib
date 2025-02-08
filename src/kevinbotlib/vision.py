@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
-import time
-from typing import Annotated, Any, Callable
-from annotated_types import Len
+from collections.abc import Callable
+from typing import Annotated, Any
+
 import cv2
-from cv2.typing import MatLike
 import numpy as np
+import pybase64 as base64
+from annotated_types import Len
+from cv2.typing import MatLike
 
 from kevinbotlib.comm import BinarySendable, KevinbotCommClient
-import pybase64 as base64
+
 
 class SingleFrameSendable(BinarySendable):
     encoding: str
@@ -17,6 +19,7 @@ class SingleFrameSendable(BinarySendable):
         data = super().get_dict()
         data["encoding"] = self.encoding
         return data
+
 
 class MjpegStreamSendable(SingleFrameSendable):
     data_id: str = "kevinbotlib.vision.dtype.mjpeg"
@@ -29,54 +32,59 @@ class MjpegStreamSendable(SingleFrameSendable):
         data["quality"] = self.quality
         data["resolution"] = self.resolution
         return data
-    
+
+
 class FrameEncoders:
     """
     Encoders from OpenCV Mats to Base64
     """
+
     @staticmethod
     def encode_sendable_jpg(frame: MatLike, quality: int = 80) -> SingleFrameSendable:
         _, buffer = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
         return SingleFrameSendable(value=base64.b64encode(buffer), encoding="JPG")
-    
+
     @staticmethod
     def encode_sendable_png(frame: MatLike, compression: int = 3) -> SingleFrameSendable:
         _, buffer = cv2.imencode(".png", frame, [cv2.IMWRITE_PNG_COMPRESSION, compression])
         return SingleFrameSendable(value=base64.b64encode(buffer), encoding="PNG")
-    
+
     @staticmethod
     def encode_jpg(frame: MatLike, quality: int = 80) -> bytes:
         _, buffer = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
         return base64.b64encode(buffer)
-    
+
     @staticmethod
     def encode_png(frame: MatLike, compression: int = 3) -> bytes:
         _, buffer = cv2.imencode(".png", frame, [cv2.IMWRITE_PNG_COMPRESSION, compression])
         return base64.b64encode(buffer)
 
+
 class FrameDecoders:
     """
     Decoders from Base64 to OpenCV Mats
     """
+
     @staticmethod
     def decode_sendable(sendable: SingleFrameSendable) -> MatLike:
         buffer = base64.b64decode(sendable.value)
         if sendable.encoding == "JPG":
             return cv2.imdecode(np.frombuffer(buffer, np.uint8), cv2.IMREAD_COLOR)
-        elif sendable.encoding == "PNG":
+        if sendable.encoding == "PNG":
             return cv2.imdecode(np.frombuffer(buffer, np.uint8), cv2.IMREAD_UNCHANGED)
-        else:
-            raise ValueError(f"Unsupported encoding: {sendable.encoding}")
+        msg = f"Unsupported encoding: {sendable.encoding}"
+        raise ValueError(msg)
 
     @staticmethod
     def decode_base64(data: str, encoding: str) -> MatLike:
         buffer = base64.b64decode(data)
         if encoding == "JPG":
             return cv2.imdecode(np.frombuffer(buffer, np.uint8), cv2.IMREAD_COLOR)
-        elif encoding == "PNG":
+        if encoding == "PNG":
             return cv2.imdecode(np.frombuffer(buffer, np.uint8), cv2.IMREAD_UNCHANGED)
-        else:
-            raise ValueError(f"Unsupported encoding: {encoding}")
+        msg = f"Unsupported encoding: {encoding}"
+        raise ValueError(msg)
+
 
 class VisionCommUtils:
     @staticmethod
@@ -84,9 +92,10 @@ class VisionCommUtils:
         client.register_type(SingleFrameSendable)
         client.register_type(MjpegStreamSendable)
 
+
 class BaseCamera(ABC):
-    """Abstract class for creating Vision Cameras
-    """
+    """Abstract class for creating Vision Cameras"""
+
     @abstractmethod
     def get_frame(self) -> tuple[bool, MatLike]:
         pass
@@ -101,6 +110,7 @@ class CameraByIndex(BaseCamera):
 
     Not recommended if you have more than one camera on a system
     """
+
     def __init__(self, index: int):
         self.capture = cv2.VideoCapture(index)
         self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
@@ -108,23 +118,25 @@ class CameraByIndex(BaseCamera):
 
     def get_frame(self) -> tuple[bool, MatLike]:
         return self.capture.read()
-    
+
     def set_resolution(self, width: int, height: int) -> None:
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
+
 class CameraByDevicePath(BaseCamera):
-    """Create an OpenCV camera from a device path
-    """
+    """Create an OpenCV camera from a device path"""
+
     def __init__(self, path: str):
         self.capture = cv2.VideoCapture(path)
 
     def get_frame(self) -> tuple[bool, MatLike]:
         return self.capture.read()
-    
+
     def set_resolution(self, width: int, height: int) -> None:
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
 
 class VisionPipeline(ABC):
     def __init__(self, source: Callable[[], tuple[bool, MatLike]]) -> None:
@@ -136,6 +148,7 @@ class VisionPipeline(ABC):
 
     def return_values(self) -> Any:
         pass
+
 
 class EmptyPipeline(VisionPipeline):
     def run(self) -> tuple[bool, MatLike]:

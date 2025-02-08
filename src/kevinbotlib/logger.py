@@ -6,13 +6,15 @@ from loguru import logger as _internal_logger
 
 
 class Level(Enum):
-    DATA = _internal_logger.level("DATA", no=4, color="<magenta>", icon="🔄")
+    DATA = _internal_logger.level("DATA", no=3, color="<magenta>", icon="🔄")
     TRACE = _internal_logger.level("TRACE")
+    HIGHFREQ = _internal_logger.level("HIGHFREQ", no=7, color="<magenta>", icon="⏩")
     DEBUG = _internal_logger.level("DEBUG")
     INFO = _internal_logger.level("INFO")
     WARNING = _internal_logger.level("WARNING")
     ERROR = _internal_logger.level("ERROR")
     CRITICAL = _internal_logger.level("CRITICAL")
+
 
 @dataclass
 class LoggerWriteOpts:
@@ -20,19 +22,22 @@ class LoggerWriteOpts:
     colors: bool = True
     ansi: bool = True
 
+
 class Logger:
     def __init__(self, level: Level = Level.DEBUG) -> None:
         # TODO: implement levels
         self._internal_logger = _internal_logger
         self.level = level
 
-    def log(self, level: Level, message: str, opts: LoggerWriteOpts = LoggerWriteOpts()):
+    def log(self, level: Level, message: str, opts: LoggerWriteOpts | None):
         """Log a message with a specified level
 
         Args:
             level (Level): Level to log at
             message (str): Message to log
         """
+        if not opts:
+            opts = LoggerWriteOpts()
         _internal_logger.opt(depth=opts.depth, colors=opts.colors, ansi=opts.ansi).log(level.value.name, message)
 
     def trace(self, message: str):
@@ -56,8 +61,8 @@ class Logger:
     def critical(self, message: str):
         _internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
 
-class StreamRedirector(IO):
 
+class StreamRedirector(IO):
     def __init__(self, logger: Logger, level: Level = Level.INFO):
         self._level = level
         self._logger = logger
