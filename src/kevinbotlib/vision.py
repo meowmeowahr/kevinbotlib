@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
+import time
+from typing import Annotated, Any, Callable
+from annotated_types import Len
 import cv2
 from cv2.typing import MatLike
 import numpy as np
 
-from kevinbotlib.comm import BinarySendable
-import base64
+from kevinbotlib.comm import BinarySendable, KevinbotCommClient
+import pybase64 as base64
 
 class SingleFrameSendable(BinarySendable):
     encoding: str
@@ -15,6 +18,18 @@ class SingleFrameSendable(BinarySendable):
         data["encoding"] = self.encoding
         return data
 
+class MjpegStreamSendable(SingleFrameSendable):
+    data_id: str = "kevinbotlib.vision.dtype.mjpeg"
+    quality: int
+    resolution: Annotated[list[int], Len(min_length=2, max_length=2)]
+    encoding: str = "JPG"
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["quality"] = self.quality
+        data["resolution"] = self.resolution
+        return data
+    
 class FrameEncoders:
     """
     Encoders from OpenCV Mats to Base64
@@ -63,15 +78,21 @@ class FrameDecoders:
         else:
             raise ValueError(f"Unsupported encoding: {encoding}")
 
+class VisionCommUtils:
+    @staticmethod
+    def init_comms_types(client: KevinbotCommClient) -> None:
+        client.register_type(SingleFrameSendable)
+        client.register_type(MjpegStreamSendable)
+
 class BaseCamera(ABC):
     """Abstract class for creating Vision Cameras
     """
     @abstractmethod
-    def get_frame() -> tuple[bool, MatLike]:
+    def get_frame(self) -> tuple[bool, MatLike]:
         pass
 
     @abstractmethod
-    def set_resolution(width, height) -> None:
+    def set_resolution(self, width: int, height: int) -> None:
         pass
 
 
@@ -82,9 +103,15 @@ class CameraByIndex(BaseCamera):
     """
     def __init__(self, index: int):
         self.capture = cv2.VideoCapture(index)
+        self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
+        self.capture.set(cv2.CAP_PROP_FPS, 60)
 
     def get_frame(self) -> tuple[bool, MatLike]:
         return self.capture.read()
+    
+    def set_resolution(self, width: int, height: int) -> None:
+        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 class CameraByDevicePath(BaseCamera):
     """Create an OpenCV camera from a device path
@@ -98,3 +125,18 @@ class CameraByDevicePath(BaseCamera):
     def set_resolution(self, width: int, height: int) -> None:
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+class VisionPipeline(ABC):
+    def __init__(self, source: Callable[[], tuple[bool, MatLike]]) -> None:
+        self.source = source
+
+    @abstractmethod
+    def run(*args, **kwargs) -> tuple[bool, MatLike | None]:
+        pass
+
+    def return_values(self) -> Any:
+        pass
+
+class EmptyPipeline(VisionPipeline):
+    def run(self) -> tuple[bool, MatLike]:
+        return self.source()

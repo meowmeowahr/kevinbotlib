@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import IO
 
 from loguru import logger as _internal_logger
 
@@ -48,3 +49,16 @@ class Logger:
 
     def critical(self, message: str):
         _internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
+
+class StreamRedirector(IO):
+
+    def __init__(self, logger: Logger, level: Level = Level.INFO):
+        self._level = level
+        self._logger = logger
+
+    def write(self, buffer):
+        for line in buffer.rstrip().splitlines():
+            self._logger.log(self._level, line.rstrip())
+
+    def flush(self):
+        pass

@@ -1,16 +1,19 @@
 from kevinbotlib.comm import KevinbotCommClient
-from kevinbotlib.vision import FrameEncoders, SingleFrameSendable, CameraByDevicePath
+from kevinbotlib.vision import FrameEncoders, CameraByIndex, VisionCommUtils, MjpegStreamSendable, EmptyPipeline
 
 client = KevinbotCommClient()
-client.register_type(SingleFrameSendable)
+VisionCommUtils.init_comms_types(client)
 
 client.connect()
 client.wait_until_connected()
 
-camera = CameraByDevicePath("/dev/video0")
-camera.set_resolution(1280, 720)
+camera = CameraByIndex(0)
+camera.set_resolution(1920, 1080)
+
+pipeline = EmptyPipeline(camera.get_frame)
 
 while True:
-    ok, frame = camera.get_frame()
+    ok, frame = pipeline.run()
     if ok:
-        client.send("streams/camera0/frame", FrameEncoders.encode_sendable_png(frame, 0))
+        encoded = FrameEncoders.encode_jpg(frame, 100)
+        client.send("streams/camera0", MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]))

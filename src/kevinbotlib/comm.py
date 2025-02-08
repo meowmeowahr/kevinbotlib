@@ -1,5 +1,4 @@
 import asyncio
-import json
 import threading
 import time
 from abc import ABC
@@ -146,7 +145,7 @@ class KevinbotCommServer:
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
         self.logger.info("Starting a new KevinbotCommServer")
-        server = await websockets.serve(self.handle_client, self.host, self.port, compression=None, max_size=2 ** 23)
+        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2 ** 64 - 1)
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
@@ -237,7 +236,7 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}", compression=None, max_size=2 ** 23) as ws:
+                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2 ** 64 - 1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()
@@ -289,7 +288,7 @@ class KevinbotCommClient:
         async def _publish() -> None:
             if not self.websocket:
                 return
-            message = json.dumps({"action": "publish", "key": key, "data": data.get_dict()})
+            message = orjson.dumps({"action": "publish", "key": key, "data": data.get_dict()})
             await self.websocket.send(message)
 
         asyncio.run_coroutine_threadsafe(_publish(), self.loop)
