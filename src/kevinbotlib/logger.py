@@ -16,7 +16,9 @@ class Level(Enum):
 
 @dataclass
 class LoggerWriteOpts:
-    depth: int = 2
+    depth: int = 1
+    colors: bool = True
+    ansi: bool = True
 
 class Logger:
     def __init__(self, level: Level = Level.DEBUG) -> None:
@@ -31,7 +33,7 @@ class Logger:
             level (Level): Level to log at
             message (str): Message to log
         """
-        _internal_logger.opt(depth=opts.depth).log(level.value.name, message)
+        _internal_logger.opt(depth=opts.depth, colors=opts.colors, ansi=opts.ansi).log(level.value.name, message)
 
     def trace(self, message: str):
         _internal_logger.opt(depth=1).log(Level.TRACE.name, message)
@@ -62,7 +64,7 @@ class StreamRedirector(IO):
 
     def write(self, buffer):
         for line in buffer.rstrip().splitlines():
-            self._logger.log(self._level, line.rstrip())
+            self._logger.log(self._level, line.rstrip(), LoggerWriteOpts(depth=2))
 
     def flush(self):
         pass
