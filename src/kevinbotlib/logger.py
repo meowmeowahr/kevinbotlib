@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 from typing import IO
 
@@ -13,6 +14,9 @@ class Level(Enum):
     ERROR = _internal_logger.level("ERROR")
     CRITICAL = _internal_logger.level("CRITICAL")
 
+@dataclass
+class LoggerWriteOpts:
+    depth: int = 2
 
 class Logger:
     def __init__(self, level: Level = Level.DEBUG) -> None:
@@ -20,14 +24,14 @@ class Logger:
         self._internal_logger = _internal_logger
         self.level = level
 
-    def log(self, level: Level, message: str):
+    def log(self, level: Level, message: str, opts: LoggerWriteOpts = LoggerWriteOpts()):
         """Log a message with a specified level
 
         Args:
             level (Level): Level to log at
             message (str): Message to log
         """
-        _internal_logger.opt(depth=1).log(level.value.name, message)
+        _internal_logger.opt(depth=opts.depth).log(level.value.name, message)
 
     def trace(self, message: str):
         _internal_logger.opt(depth=1).log(Level.TRACE.name, message)
