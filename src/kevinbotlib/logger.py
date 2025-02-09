@@ -68,6 +68,7 @@ class Logger:
             rotation=rotation_size,
             compression="zip",
             enqueue=True,
+            serialize=True
         )
         return log_file
 
