@@ -1,7 +1,7 @@
 import glob
 import os
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import IO
 
@@ -11,7 +11,7 @@ from loguru import logger as _internal_logger
 
 class LoggerDirectories:
     @staticmethod
-    def get_logger_directory(ensure_exists=True) -> str:
+    def get_logger_directory(*, ensure_exists=True) -> str:
         """Returns the log directory path and ensures its existence if needed."""
         log_dir = platformdirs.user_data_dir("kevinbotlib/logging", ensure_exists=ensure_exists)
         os.makedirs(log_dir, exist_ok=True)
@@ -60,16 +60,10 @@ class Logger:
 
     def configure_file_logger(self, directory: str, rotation_size: str = "150MB") -> str:
         """Configures file-based logging with rotation and cleanup."""
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to milliseconds
+        timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to milliseconds
 
         log_file = os.path.join(directory, f"{timestamp}.log")
-        self._internal_logger.add(
-            log_file,
-            rotation=rotation_size,
-            compression="zip",
-            enqueue=True,
-            serialize=True
-        )
+        self._internal_logger.add(log_file, rotation=rotation_size, compression="zip", enqueue=True, serialize=True, level=self.level.value.name)
         return log_file
 
     def log(self, level: Level, message: str, opts: LoggerWriteOpts | None = None):

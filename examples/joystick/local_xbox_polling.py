@@ -1,36 +1,17 @@
 import time
 
-from kevinbotlib.joystick import LocalXboxController, XboxControllerButtons
+from kevinbotlib.joystick import LocalXboxController
 
 controller = LocalXboxController(0)
 controller.start_polling()
 
 try:
     while True:
-        if controller.get_button_state(XboxControllerButtons.A):
-            print("A button is being held.")
-        if controller.get_button_state(XboxControllerButtons.B):
-            print("B button is being held.")
-        if controller.get_button_state(XboxControllerButtons.X):
-            print("X button is being held.")
-        if controller.get_button_state(XboxControllerButtons.Y):
-            print("Y button is being held.")
-        if controller.get_button_state(XboxControllerButtons.LeftBumper):
-            print("LB button is being held.")
-        if controller.get_button_state(XboxControllerButtons.RightBumper):
-            print("RB button is being held.")
-        if controller.get_button_state(XboxControllerButtons.LeftStick):
-            print("Left stick button is being held.")
-        if controller.get_button_state(XboxControllerButtons.RightStick):
-            print("Right stick button is being held.")
-        if controller.get_button_state(XboxControllerButtons.Back):
-            print("Back button is being held.")
-        if controller.get_button_state(XboxControllerButtons.Start):
-            print("Start button is being held.")
-        if controller.get_button_state(XboxControllerButtons.Guide):
-            print("Guide button is being held.")
-        if controller.get_button_state(XboxControllerButtons.Share):
-            print("Share button is being held.")
+        print("Held buttons:", [btn.name for btn in controller.get_buttons()])
+        print("POV Direction:", controller.get_pov_direction())
+        print("Trigger Values:", controller.get_triggers())
+        print("Left Stick Values:", controller.get_left_stick())
+        print("Right Stick Values:", controller.get_right_stick())
         time.sleep(0.1)
 except KeyboardInterrupt:
     controller.stop()

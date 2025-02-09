@@ -1,7 +1,7 @@
 import threading
 import time
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import sdl2
 import sdl2.ext
@@ -9,11 +9,9 @@ import sdl2.ext
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
 
-if TYPE_CHECKING:
-    from collections.abc import Callable
+from collections.abc import Callable
 
-sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK)  # initialize the SDL2 joystick subsystem
-
+sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK)
 
 class XboxControllerButtons(IntEnum):
     A = 0
@@ -29,6 +27,26 @@ class XboxControllerButtons(IntEnum):
     RightStick = 10
     Share = 11
 
+class XboxControllerAxis(IntEnum):
+    """Axis identifiers for Xbox controller."""
+    LeftX = 0
+    LeftY = 1
+    RightX = 3
+    RightY = 4
+    LeftTrigger = 2
+    RightTrigger = 5
+
+class POVDirection(IntEnum):
+    """D-pad directions in degrees."""
+    UP = 0
+    UP_RIGHT = 45
+    RIGHT = 90
+    DOWN_RIGHT = 135
+    DOWN = 180
+    DOWN_LEFT = 225
+    LEFT = 270
+    UP_LEFT = 315
+    NONE = -1
 
 class LocalJoystickIdentifiers:
     """Static class to handle joystick identification queries."""
@@ -59,7 +77,6 @@ class LocalJoystickIdentifiers:
             joystick_guids[index] = bytes(sdl2.SDL_JoystickGetGUID(sdl2.SDL_JoystickOpen(index)).data)
         return joystick_guids
 
-
 class RawLocalJoystickDevice:
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
 
@@ -81,20 +98,42 @@ class RawLocalJoystickDevice:
         self.polling_hz = polling_hz
         self._button_states = {}
         self._button_callbacks = {}
-        self.on_disconnect: Callable[[], Any] | None = None  # Callback when joystick disconnects
+        self._pov_state = POVDirection.NONE
+        self._pov_callbacks: list[Callable[[POVDirection], Any]] = []
+        self._axis_states = {}
+        self._axis_callbacks = {}
 
-    def get_button_state(self, button_id):
+        self.on_disconnect: Callable[[], Any] | None = None
+
+        num_axes = sdl2.SDL_JoystickNumAxes(self._sdl_joystick)
+        for i in range(num_axes):
+            self._axis_states[i] = 0.0
+
+    def get_button_state(self, button_id) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
         return self._button_states.get(button_id, False)
 
-    def get_buttons(self):
+    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        """Returns the current value of the specified axis (-1.0 to 1.0)."""
+        return round(max(min(self._axis_states.get(axis_id, 0.0), 1), -1), precision)
+
+    def get_buttons(self) -> list[int]:
+        """Returns a list of currently pressed buttons."""
         return [key for key, value in self._button_states.items() if value]
 
-    def register_button_callback(self, button_id, callback):
+    def get_pov_direction(self) -> POVDirection:
+        """Returns the current POV (D-pad) direction."""
+        return self._pov_state
+
+    def register_button_callback(self, button_id: int, callback: Callable[[bool], Any]) -> None:
         """Registers a callback function for button press/release events."""
         self._button_callbacks[button_id] = callback
 
-    def _handle_event(self, event):
+    def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        """Registers a callback function for POV (D-pad) direction changes."""
+        self._pov_callbacks.append(callback)
+
+    def _handle_event(self, event) -> None:
         """Handles SDL events and triggers registered callbacks."""
         if event.type == sdl2.SDL_JOYBUTTONDOWN:
             button = event.jbutton.button
@@ -107,6 +146,46 @@ class RawLocalJoystickDevice:
             self._button_states[button] = False
             if button in self._button_callbacks:
                 self._button_callbacks[button](False)
+
+        elif event.type == sdl2.SDL_JOYHATMOTION:
+            # Convert SDL hat values to angles
+            hat_value = event.jhat.value
+            new_direction = self._convert_hat_to_direction(hat_value)
+            
+            if new_direction != self._pov_state:
+                self._pov_state = new_direction
+                for callback in self._pov_callbacks:
+                    callback(new_direction)
+
+        elif event.type == sdl2.SDL_JOYAXISMOTION:
+            axis = event.jaxis.axis
+            # Convert SDL axis value (-32768 to 32767) to float (-1.0 to 1.0)
+            value = event.jaxis.value / 32767.0
+            
+            # For triggers, convert range from [-1.0, 1.0] to [0.0, 1.0]
+            if axis in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+                value = (value + 1.0) / 2.0
+            
+            # Update state and trigger callback if value changed significantly
+            if abs(self._axis_states.get(axis, 0.0) - value) > 0.01:  # Add small threshold to prevent jitter
+                self._axis_states[axis] = value
+                if axis in self._axis_callbacks:
+                    self._axis_callbacks[axis](value)
+
+    def _convert_hat_to_direction(self, hat_value: int) -> POVDirection:
+        """Converts SDL hat value to POVDirection enum."""
+        hat_to_direction = {
+            0x00: POVDirection.NONE,      # centered
+            0x01: POVDirection.UP,        # up
+            0x02: POVDirection.RIGHT,     # right
+            0x04: POVDirection.DOWN,      # down
+            0x08: POVDirection.LEFT,      # left
+            0x03: POVDirection.UP_RIGHT,  # up + right
+            0x06: POVDirection.DOWN_RIGHT,# down + right
+            0x0C: POVDirection.DOWN_LEFT, # down + left
+            0x09: POVDirection.UP_LEFT    # up + left
+        }
+        return hat_to_direction.get(hat_value, POVDirection.NONE)
 
     def _event_loop(self):
         """Internal loop for processing SDL events synchronously."""
@@ -143,12 +222,10 @@ class RawLocalJoystickDevice:
         """Attempts to reconnect the joystick."""
         self._logger.info("Attempting to reconnect...")
 
-        # Refresh SDL joystick system
         sdl2.SDL_QuitSubSystem(sdl2.SDL_INIT_JOYSTICK)
-        time.sleep(1)  # Give SDL time to process device removal
+        time.sleep(1)
         sdl2.SDL_InitSubSystem(sdl2.SDL_INIT_JOYSTICK)
 
-        # Check if joystick is available before opening
         num_joysticks = sdl2.SDL_NumJoysticks()
         if self.index < num_joysticks:
             self._sdl_joystick = sdl2.SDL_JoystickOpen(self.index)
@@ -156,7 +233,7 @@ class RawLocalJoystickDevice:
                 self._logger.info(f"Reconnected joystick {self.index} successfully")
                 return
 
-        time.sleep(1)  # Wait before retrying
+        time.sleep(1)
 
     def start_polling(self):
         """Starts the polling loop in a separate thread."""
@@ -170,14 +247,42 @@ class RawLocalJoystickDevice:
         self.running = False
         sdl2.SDL_JoystickClose(self._sdl_joystick)
 
-
 class LocalXboxController(RawLocalJoystickDevice):
     """Xbox-specific controller with button name mappings."""
 
-    def get_button_state(self, button: XboxControllerButtons):
+    def get_button_state(self, button: XboxControllerButtons) -> bool:
         """Returns the state of a button using its friendly name."""
         return super().get_button_state(button)
+    
+    def get_buttons(self) -> list[XboxControllerButtons]:
+        return [XboxControllerButtons(x) for x in super().get_buttons()]
 
-    def register_button_callback(self, button: XboxControllerButtons, callback):
+    def register_button_callback(self, button: XboxControllerButtons, callback: Callable[[bool], Any]) -> None:
         """Registers a callback using the friendly button name."""
         super().register_button_callback(button, callback)
+
+    def get_dpad_direction(self) -> POVDirection:
+        """Returns the current D-pad direction using Xbox terminology."""
+        return self.get_pov_direction()
+    
+    def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
+        """Returns the current value of the specified trigger (0.0 to 1.0)."""
+        if trigger not in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+            raise ValueError("Invalid trigger specified")
+        return max(self.get_axis_value(trigger), 0)
+    
+    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        return super().get_axis_value(axis_id, precision)
+    
+    def get_triggers(self, precision: int = 3) :
+        return [self.get_trigger_value(XboxControllerAxis.LeftTrigger, precision), self.get_trigger_value(XboxControllerAxis.RightTrigger, precision)]
+
+    def get_left_stick(self, precision: int = 3):
+        return [self.get_axis_value(XboxControllerAxis.LeftX, precision), self.get_axis_value(XboxControllerAxis.LeftY, precision)]
+
+    def get_right_stick(self, precision: int = 3):
+        return [self.get_axis_value(XboxControllerAxis.RightX, precision), self.get_axis_value(XboxControllerAxis.RightY, precision)]
+    
+    def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        """Registers a callback for D-pad direction changes using Xbox terminology."""
+        self.register_pov_callback(callback)

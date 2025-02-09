@@ -58,8 +58,7 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):
         # Set up template environment
         self.template_env = jinja2.Environment(
-            loader=jinja2.PackageLoader("kevinbotlib.fileserver", "templates"),
-            autoescape=True
+            loader=jinja2.PackageLoader("kevinbotlib.fileserver", "templates"), autoescape=True
         )
         self.static_dir = resources.files("kevinbotlib.fileserver.static")
         super().__init__(*args, directory=directory, **kwargs)

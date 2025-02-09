@@ -20,4 +20,4 @@ logger.error("An error message")
 logger.critical("A critical message")
 
 while True:
-    time.sleep(1) # keep the fileserver up
+    time.sleep(1)  # keep the fileserver up
