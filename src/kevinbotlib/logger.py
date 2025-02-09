@@ -1,10 +1,10 @@
+import glob
+import os
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from typing import IO
-import os
-import glob
-from datetime import datetime
-from zipfile import ZipFile
+
 import platformdirs
 from loguru import logger as _internal_logger
 

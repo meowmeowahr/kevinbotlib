@@ -2,12 +2,10 @@
 import logging
 import os
 import threading
-import traceback
 import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from pathlib import Path
+from importlib import resources
 from typing import override
-import importlib.resources as resources
 
 import jinja2
 from pyftpdlib.authorizers import DummyAuthorizer
@@ -108,14 +106,14 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
         final_html.seek(0)
 
         return final_html
-    
+
     @override
     def do_GET(self):
         """Handle GET requests, including serving static files."""
         # Check if this is a static file request
         if self.path.startswith("/static/"):
             resource_path = self.path.replace("/static/", "")
-            
+
             # Attempt to find the resource in the package
             try:
                 with resources.open_binary("kevinbotlib.fileserver.static", resource_path) as file:
