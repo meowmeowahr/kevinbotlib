@@ -58,35 +58,17 @@ class Logger:
     def loguru_logger(self):
         return self._internal_logger
 
-    def configure_file_logger(self, directory: str, rotation_size: str = "150MB", *, plain_log: bool = False, kblog: bool = True) -> str:
+    def configure_file_logger(self, directory: str, rotation_size: str = "150MB") -> str:
         """Configures file-based logging with rotation and cleanup."""
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to milliseconds
 
-        if plain_log:
-            log_file = os.path.join(directory, f"{timestamp}.log")
-            self._internal_logger.add(
-                log_file,
-                rotation=rotation_size,
-                compression="zip",
-                # enqueue=True,
-            )
-
-        if kblog:
-            def mycompress(filepath):
-                archive_path = "sc.{:%Y-%m-%d}.log.zip".format(datetime.now())
-                with ZipFile(archive_path, "w") as archive:
-                    print(archive)
-                    archive.write(filepath, arcname="sc.log")
-                os.remove(filepath)
-
-            log_file = os.path.join(directory, f"{timestamp}.zip")
-            self._internal_logger.add(
-                log_file,
-                rotation=rotation_size,
-                compression="gz",
-                # enqueue=True,
-            )
-
+        log_file = os.path.join(directory, f"{timestamp}.log")
+        self._internal_logger.add(
+            log_file,
+            rotation=rotation_size,
+            compression="zip",
+            enqueue=True,
+        )
         return log_file
 
     def log(self, level: Level, message: str, opts: LoggerWriteOpts | None = None):
