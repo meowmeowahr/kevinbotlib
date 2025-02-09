@@ -80,7 +80,7 @@ class RawLocalJoystickDevice:
         self.running = False
         self.polling_hz = polling_hz
         self._button_states = {}
-        self._event_callbacks = {}
+        self._button_callbacks = {}
         self.on_disconnect: Callable[[], Any] | None = None  # Callback when joystick disconnects
 
     def get_button_state(self, button_id):
@@ -90,23 +90,23 @@ class RawLocalJoystickDevice:
     def get_buttons(self):
         return [key for key, value in self._button_states.items() if value]
 
-    def register_event_callback(self, button_id, callback):
+    def register_button_callback(self, button_id, callback):
         """Registers a callback function for button press/release events."""
-        self._event_callbacks[button_id] = callback
+        self._button_callbacks[button_id] = callback
 
     def _handle_event(self, event):
         """Handles SDL events and triggers registered callbacks."""
         if event.type == sdl2.SDL_JOYBUTTONDOWN:
             button = event.jbutton.button
             self._button_states[button] = True
-            if button in self._event_callbacks:
-                self._event_callbacks[button](True)
+            if button in self._button_callbacks:
+                self._button_callbacks[button](True)
 
         elif event.type == sdl2.SDL_JOYBUTTONUP:
             button = event.jbutton.button
             self._button_states[button] = False
-            if button in self._event_callbacks:
-                self._event_callbacks[button](False)
+            if button in self._button_callbacks:
+                self._button_callbacks[button](False)
 
     def _event_loop(self):
         """Internal loop for processing SDL events synchronously."""
@@ -178,6 +178,6 @@ class LocalXboxController(RawLocalJoystickDevice):
         """Returns the state of a button using its friendly name."""
         return super().get_button_state(button)
 
-    def register_event_callback(self, button: XboxControllerButtons, callback):
+    def register_button_callback(self, button: XboxControllerButtons, callback):
         """Registers a callback using the friendly button name."""
-        super().register_event_callback(button, callback)
+        super().register_button_callback(button, callback)

@@ -90,6 +90,10 @@ header {
     background-image: url('/static/images/archive.svg');
 }
 
+.file-icon.log {
+    background-image: url('/static/images/log.svg');
+}
+
 .file-link {
     text-decoration: none;
     color: var(--secondary-color);

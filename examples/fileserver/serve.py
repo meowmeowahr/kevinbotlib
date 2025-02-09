@@ -11,12 +11,9 @@ server = FileServer(
 )
 
 try:
-    # Start the servers
     server.start()
 
-    # Keep the main thread running
     while True:
         time.sleep(1)
 except KeyboardInterrupt:
     server.stop()
-    print("\nServers stopped")

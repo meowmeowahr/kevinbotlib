@@ -55,6 +55,11 @@ Documentation = "https://github.com/meowmeowahr/kevinbotlib#readme"
 Issues = "https://github.com/meowmeowahr/kevinbotlib/issues"
 Source = "https://github.com/meowmeowahr/kevinbotlib"
 
+[tool.hatch.build.targets.wheel]
+include = [
+    "src/kevinbotlib/fileserver/static/**/*",
+    "src/kevinbotlib/fileserver/templates/**/*",
+]
 
 [tool.hatch.version]
 path = "src/kevinbotlib/__about__.py"

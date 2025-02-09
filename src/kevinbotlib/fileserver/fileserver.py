@@ -2,10 +2,12 @@
 import logging
 import os
 import threading
+import traceback
 import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import override
+import importlib.resources as resources
 
 import jinja2
 from pyftpdlib.authorizers import DummyAuthorizer
@@ -13,6 +15,7 @@ from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
 from kevinbotlib import __about__
+from kevinbotlib.logger import Logger
 
 
 def get_file_type(path):
@@ -31,37 +34,36 @@ def get_file_type(path):
         ".png": "image",
         ".gif": "image",
         ".svg": "image",
-        # Code files
         ".py": "code",
         ".js": "code",
         ".html": "code",
         ".css": "code",
         ".cpp": "code",
         ".h": "code",
-        # Text files
         ".txt": "text",
         ".md": "text",
         ".csv": "text",
-        # PDFs
         ".pdf": "pdf",
-        # Archives
         ".zip": "archive",
         ".tar": "archive",
         ".gz": "archive",
         ".rar": "archive",
+        ".log": "log",
     }
 
     return type_mappings.get(ext, "file")
 
 
-class KevinBotHTTPHandler(SimpleHTTPRequestHandler):
+class FileserverHTTPHandler(SimpleHTTPRequestHandler):
     """Custom HTTP handler with branded interface."""
 
     def __init__(self, *args, directory=None, **kwargs):
         # Set up template environment
-        template_dir = Path(__file__).parent / "templates"
-        self.template_env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_dir)), autoescape=True)
-        self.static_dir = Path(__file__).parent / "static"
+        self.template_env = jinja2.Environment(
+            loader=jinja2.PackageLoader("kevinbotlib.fileserver", "templates"),
+            autoescape=True
+        )
+        self.static_dir = resources.files("kevinbotlib.fileserver.static")
         super().__init__(*args, directory=directory, **kwargs)
 
     def log_message(self, fmt, *args):
@@ -106,26 +108,35 @@ class KevinBotHTTPHandler(SimpleHTTPRequestHandler):
         final_html.seek(0)
 
         return final_html
-
+    
     @override
     def do_GET(self):
         """Handle GET requests, including serving static files."""
         # Check if this is a static file request
         if self.path.startswith("/static/"):
-            file_path = self.static_dir / self.path.replace("/static/", "")
-            if file_path.exists() and file_path.is_file():
-                # Determine content type
-                content_type = self.guess_type(str(file_path))[0]
+            resource_path = self.path.replace("/static/", "")
+            
+            # Attempt to find the resource in the package
+            try:
+                with resources.open_binary("kevinbotlib.fileserver.static", resource_path) as file:
+                    # Determine content type
+                    content_type = self.guess_type(resource_path)[0]
 
-                self.send_response(200)
-                self.send_header("Content-type", content_type)
-                with open(file_path, "rb") as f:
-                    fs = os.fstat(f.fileno())
-                    self.send_header("Content-Length", str(fs[6]))
-                    self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
+                    self.send_response(200)
+                    self.send_header("Content-type", content_type)
+
+                    # Send file length and other headers
+                    file.seek(0, os.SEEK_END)
+                    self.send_header("Content-Length", str(file.tell()))
                     self.end_headers()
-                    self.copyfile(f, self.wfile)
-                return
+
+                    # Reset the file pointer and send the file content
+                    file.seek(0)
+                    self.copyfile(file, self.wfile)
+
+                    return
+            except FileNotFoundError:
+                pass
 
         return super().do_GET()
 
@@ -144,8 +155,6 @@ class FileServer:
         self.ftp_thread = None
         self.http_thread = None
 
-        from kevinbotlib.logger import Logger
-
         self.logger = Logger()
 
     def start_ftp_server(self):
@@ -153,7 +162,7 @@ class FileServer:
 
         ftp_logger = logging.getLogger("pyftpdlib")
         ftp_logger.addHandler(logging.StreamHandler())
-        ftp_logger.setLevel(logging.DEBUG)
+        ftp_logger.setLevel(self.logger.level.value.no)
 
         def logging_redirect(record):
             log_level = next(key for key, val in logging.getLevelNamesMapping().items() if val == record.levelno)
@@ -170,7 +179,7 @@ class FileServer:
 
         handler = FTPHandler
         handler.authorizer = authorizer
-        handler.banner = "Welcome to KevinBot FTP Server"
+        handler.banner = "Welcome to KevinbotLib FTP Server"
 
         self.ftpserver = FTPServer((self.host, self.ftp_port), handler)
 
@@ -184,7 +193,7 @@ class FileServer:
         os.chdir(self.directory)
 
         def handler(*args):
-            return KevinBotHTTPHandler(*args, directory=self.directory)
+            return FileserverHTTPHandler(*args, directory=self.directory)
 
         self.httpserver = HTTPServer((self.host, self.http_port), handler)
 
