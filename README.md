@@ -11,15 +11,19 @@
 
 -----
 
-**Communicate with Kevinbot v3 Hardware**
+**The KevinbotLib Robot Development Framework**
 
-KevinbotLib includes all the necessary classes for communicating with and controlling Kevinbot v3 hardware. It also contains an interface over MQTT to allow multiple clients on-robot as well as off-robot. Your code stays mostly the same whether you are communicating directly over serial, or using MQTT.
+KevinbotLib includes all many utility classes for developing robots, such as communication, joystick input, logging, and more.
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Developing](#developing)
-- [License](#license)
+- [KevinbotLib](#kevinbotlib)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Developing](#developing)
+    - [Set up module in development mode](#set-up-module-in-development-mode)
+    - [Formatting](#formatting)
+  - [License](#license)
 
 ## Installation
 
