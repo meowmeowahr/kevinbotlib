@@ -1,4 +1,3 @@
-
 import time
 
 from kevinbotlib.joystick import LocalXboxController, XboxControllerButtons
@@ -32,6 +31,6 @@ try:
             print("Guide button is being held.")
         if controller.get_button_state(XboxControllerButtons.Share):
             print("Share button is being held.")
-        time.sleep(.1)
+        time.sleep(0.1)
 except KeyboardInterrupt:
     controller.stop()

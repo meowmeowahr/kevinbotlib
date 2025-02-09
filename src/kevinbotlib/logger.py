@@ -29,6 +29,10 @@ class Logger:
         self._internal_logger = _internal_logger
         self.level = level
 
+    @property
+    def loguru_logger(self):
+        return self._internal_logger
+
     def log(self, level: Level, message: str, opts: LoggerWriteOpts | None):
         """Log a message with a specified level
 

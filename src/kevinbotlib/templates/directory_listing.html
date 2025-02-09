@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Listing - KevinBot</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Directory Listing: {{ path }}</h1>
+        </header>
+        
+        <main>
+            <ul class="file-list">
+                {% if path != '/' %}
+                <li class="file-entry">
+                    <a href="../" class="file-link directory-link">
+                        <span class="file-icon folder"></span>
+                        ..
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for urlname, displayname, filetype in entries %}
+                <li class="file-entry">
+                    <a href="{{ urlname }}" class="file-link {% if filetype == 'folder' %}directory-link{% endif %}">
+                        <span class="file-icon {{ filetype }}"></span>
+                        {{ displayname }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+        
+        <footer>
+            <img src="/static/images/icon.png" alt="Logo" class="footer-logo">
+            <p>Powered by KevinbotLib {{ version }}</p>
+        </footer>
+    </div>
+</body>
+</html>

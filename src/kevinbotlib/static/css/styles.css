@@ -1,0 +1,117 @@
+/* src/kevinbotlib/static/css/styles.css */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #2c3e50;
+    --background-color: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-logo {
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-entry {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.file-entry:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.file-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.file-icon.folder {
+    background-image: url('/static/images/folder.svg');
+}
+
+.file-icon.file {
+    background-image: url('/static/images/file.svg');
+}
+
+/* Specific file type icons */
+.file-icon.image {
+    background-image: url('/static/images/image.svg');
+}
+
+.file-icon.text {
+    background-image: url('/static/images/text.svg');
+}
+
+.file-icon.code {
+    background-image: url('/static/images/code.svg');
+}
+
+.file-icon.pdf {
+    background-image: url('/static/images/pdf.svg');
+}
+
+.file-icon.archive {
+    background-image: url('/static/images/archive.svg');
+}
+
+.file-link {
+    text-decoration: none;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    flex-grow: 1;
+}
+
+.directory-link {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-logo {
+    height: 40px;
+    margin-bottom: 10px;
+}
