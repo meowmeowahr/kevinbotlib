@@ -5,3 +5,7 @@
 
 class HandshakeTimeoutException(BaseException):
     """Exception that is produced when the connection handshake times out"""
+
+
+class JoystickMissingException(BaseException):
+    """Exception that is produced when a requested gamepad is missing"""
