@@ -32,6 +32,16 @@ class IntegerSendable(BaseSendable):
         return data
 
 
+class BooleanSendable(BaseSendable):
+    value: bool
+    data_id: str = "kevinbotlib.dtype.bool"
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["value"] = self.value
+        return data
+
+
 class StringSendable(BaseSendable):
     value: str
     data_id: str = "kevinbotlib.dtype.str"
@@ -147,7 +157,7 @@ class KevinbotCommServer:
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
         self.logger.info("Starting a new KevinbotCommServer")
-        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2**64 - 1)
+        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2**48 - 1)
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
@@ -190,6 +200,7 @@ class KevinbotCommClient:
         if register_basic_types:
             self.register_type(BaseSendable)
             self.register_type(IntegerSendable)
+            self.register_type(BooleanSendable)
             self.register_type(StringSendable)
             self.register_type(FloatSendable)
             self.register_type(AnyListSendable)
@@ -238,7 +249,7 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2**64 - 1) as ws:
+                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2**48 - 1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()

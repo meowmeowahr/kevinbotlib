@@ -50,20 +50,21 @@ class LoggerWriteOpts:
 
 
 class Logger:
-    def __init__(self, level: Level = Level.DEBUG) -> None:
+    def __init__(self) -> None:
         self._internal_logger = _internal_logger
-        self.level = level
 
     @property
     def loguru_logger(self):
         return self._internal_logger
 
-    def configure_file_logger(self, directory: str, rotation_size: str = "150MB") -> str:
+    def configure_file_logger(self, directory: str, rotation_size: str = "150MB", level: Level = Level.DEBUG) -> str:
         """Configures file-based logging with rotation and cleanup."""
         timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to milliseconds
 
         log_file = os.path.join(directory, f"{timestamp}.log")
-        self._internal_logger.add(log_file, rotation=rotation_size, compression="zip", enqueue=True, serialize=True, level=self.level.value.name)
+        self._internal_logger.add(
+            log_file, rotation=rotation_size, compression="zip", enqueue=True, serialize=True, level=level.value.name
+        )
         return log_file
 
     def log(self, level: Level, message: str, opts: LoggerWriteOpts | None = None):

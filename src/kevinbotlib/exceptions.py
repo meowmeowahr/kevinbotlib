@@ -9,3 +9,7 @@ class HandshakeTimeoutException(BaseException):
 
 class JoystickMissingException(BaseException):
     """Exception that is produced when a requested gamepad is missing"""
+
+
+class CommandSchedulerAlreadyExistsException(BaseException):
+    """Exception that is produced when an attempt to create more than one command scheduler was made"""
