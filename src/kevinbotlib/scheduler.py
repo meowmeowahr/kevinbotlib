@@ -1,7 +1,5 @@
-import threading
-import time
 from abc import ABC, abstractmethod
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Self, TypedDict
 
@@ -28,8 +26,42 @@ class Command(ABC):
 
     def then(self, next_command: 'Command'):
         """Chain commands to run sequentially"""
-        """disabled for now"""
-        # return SequentialCommand([self, next_command])
+        if isinstance(self, SequentialCommand):
+            commands = self.statup_commands
+        else:
+            commands = [self]
+        commands.append(next_command)
+        return SequentialCommand(commands)
+
+class _SequencedCommand(TypedDict):
+    command: Command
+    has_init: bool
+class SequentialCommand(Command):
+    def __init__(self, commands: list[Command]) -> None:
+        super().__init__()
+        self.statup_commands = commands
+        self.remaining_commands: list[_SequencedCommand] = [{"command": command, "has_init": False} for command in commands]
+
+    def init(self) -> None:
+        self.remaining_commands: list[_SequencedCommand] = [{"command": command, "has_init": False} for command in self.statup_commands]
+
+    def execute(self) -> None:
+        current_command = self.remaining_commands[0]
+        if not current_command["has_init"]:
+            current_command["command"].init()
+            current_command["has_init"] = True
+
+        current_command["command"].execute()
+
+        if current_command["command"].finished():
+            current_command["command"].end()
+            self.remaining_commands.pop(0)
+
+    def end(self) -> None:
+        pass
+
+    def finished(self) -> bool:
+        return len(self.remaining_commands) == 0
 
 @dataclass
 class TriggerActions:
