@@ -21,4 +21,5 @@ class PrintCommand(Command):
 
 scheduler = CommandScheduler()
 scheduler.schedule(PrintCommand("Test"))
+scheduler.schedule(PrintCommand("Test2"))
 scheduler.iterate()
