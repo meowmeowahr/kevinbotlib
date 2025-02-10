@@ -19,6 +19,7 @@ class PrintCommand(Command):
     def finished(self):
         return self._finished
 
+
 scheduler = CommandScheduler()
 scheduler.schedule(PrintCommand("Test"))
 scheduler.schedule(PrintCommand("Test2"))

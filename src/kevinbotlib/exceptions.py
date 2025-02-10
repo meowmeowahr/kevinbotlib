@@ -13,3 +13,7 @@ class JoystickMissingException(BaseException):
 
 class CommandSchedulerAlreadyExistsException(BaseException):
     """Exception that is produced when an attempt to create more than one command scheduler was made"""
+
+
+class CommandSchedulerDoesNotExistException(BaseException):
+    """Exception that is produced when an attempt to get the current scheduler instance before creating a CommandScheduler"""

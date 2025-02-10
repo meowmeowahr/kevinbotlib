@@ -1,4 +1,5 @@
 import time
+
 from kevinbotlib.joystick import LocalXboxController, XboxControllerButtons
 from kevinbotlib.scheduler import Command, CommandScheduler, Trigger
 
@@ -21,6 +22,7 @@ class PrintCommand(Command):
     def finished(self):
         return self._finished
 
+
 class PrintForOneSecondCommand(Command):
     def __init__(self, message: str):
         self.message = message
@@ -40,6 +42,7 @@ class PrintForOneSecondCommand(Command):
     def finished(self):
         return time.time() > self.start + 1
 
+
 start_time = time.time()
 
 
@@ -48,9 +51,13 @@ scheduler = CommandScheduler()
 controller = LocalXboxController(0)
 controller.start_polling()
 
-Trigger(lambda: XboxControllerButtons.A in controller.get_buttons(), scheduler).while_true(PrintForOneSecondCommand("A Button Command"))
-Trigger(lambda: XboxControllerButtons.B in controller.get_buttons(), scheduler).on_true(PrintForOneSecondCommand("B Button Command"))
+Trigger(lambda: XboxControllerButtons.A in controller.get_buttons(), scheduler).while_true(
+    PrintForOneSecondCommand("A Button Command")
+)
+Trigger(lambda: XboxControllerButtons.B in controller.get_buttons(), scheduler).on_true(
+    PrintForOneSecondCommand("B Button Command")
+)
 
 while True:
     scheduler.iterate()
-    time.sleep(.1)
+    time.sleep(0.1)

@@ -1,6 +1,7 @@
 import time
-from kevinbotlib.joystick import LocalXboxController, XboxControllerButtons
-from kevinbotlib.scheduler import Command, CommandScheduler, SequentialCommand, Trigger
+
+from kevinbotlib.scheduler import Command, CommandScheduler, SequentialCommand
+
 
 class PrintForOneSecondCommand(Command):
     def __init__(self, message: str):
@@ -21,6 +22,7 @@ class PrintForOneSecondCommand(Command):
     def finished(self):
         return time.time() > self.start + 1
 
+
 start_time = time.time()
 
 
@@ -29,4 +31,4 @@ scheduler.schedule(SequentialCommand([PrintForOneSecondCommand("command 1"), Pri
 
 while True:
     scheduler.iterate()
-    time.sleep(.1)
+    time.sleep(0.1)
