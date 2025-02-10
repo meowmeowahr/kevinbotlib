@@ -3,5 +3,10 @@
     "version": "1.0-alpha",
     "title": "1.0-alpha",
     "aliases": []
+  },
+  {
+    "version": "0.0",
+    "title": "0.0",
+    "aliases": []
   }
 ]
