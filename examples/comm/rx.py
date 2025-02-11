@@ -1,6 +1,10 @@
 import time
 
 from kevinbotlib.comm import KevinbotCommClient, StringSendable
+from kevinbotlib.logger import Logger, LoggerConfiguration
+
+logger = Logger()
+logger.configure(LoggerConfiguration())
 
 client = KevinbotCommClient(on_update=None)
 client.connect()

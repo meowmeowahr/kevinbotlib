@@ -327,7 +327,7 @@ class JoystickSender:
     def _send(self):
         self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
         self.client.send(self.key + "/pov", IntegerSendable(value=self.joystick.get_pov_direction().value))
-        self.client.send(self.key + "/axes", IntegerSendable(value=self.joystick.get_axes().value))
+        self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
         self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.connected))
 
     def _send_loop(self):

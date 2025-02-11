@@ -1,5 +1,8 @@
 from kevinbotlib.comm import KevinbotCommServer
+from kevinbotlib.logger import Logger, LoggerConfiguration
 
-if __name__ == "__main__":
-    server = KevinbotCommServer()
-    server.serve()
+logger = Logger()
+logger.configure(LoggerConfiguration())
+
+server = KevinbotCommServer()
+server.serve()
