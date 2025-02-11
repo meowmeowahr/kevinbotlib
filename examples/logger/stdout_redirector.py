@@ -1,8 +1,9 @@
 import contextlib
 
-from kevinbotlib.logger import Logger, StreamRedirector
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration, StreamRedirector
 
 logger = Logger()
+logger.configure(LoggerConfiguration(Level.DEBUG))
 stream = StreamRedirector(logger)
 
 with contextlib.redirect_stdout(stream):

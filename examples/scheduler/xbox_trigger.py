@@ -51,7 +51,7 @@ scheduler = CommandScheduler()
 controller = LocalXboxController(0)
 controller.start_polling()
 
-Trigger(lambda: XboxControllerButtons.A in controller.get_buttons(), scheduler).while_true(
+Trigger(lambda: XboxControllerButtons.Guide in controller.get_buttons(), scheduler).while_true(
     PrintForOneSecondCommand("A Button Command")
 )
 Trigger(lambda: XboxControllerButtons.B in controller.get_buttons(), scheduler).on_true(

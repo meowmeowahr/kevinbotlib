@@ -1,16 +1,17 @@
 import time
 
 from kevinbotlib.fileserver import FileServer
-from kevinbotlib.logger import Logger, LoggerDirectories
+from kevinbotlib.logger import FileLoggerConfig, Level, Logger, LoggerConfiguration, LoggerDirectories
 
 print(f"Logging to {LoggerDirectories.get_logger_directory()}")
+
+logger = Logger()
+logger.configure(LoggerConfiguration(Level.DEBUG, FileLoggerConfig()))
 
 fileserver = FileServer("admin", "password", LoggerDirectories.get_logger_directory())
 fileserver.start()
 
-logger = Logger()
 LoggerDirectories.cleanup_logs(LoggerDirectories.get_logger_directory())
-logger.configure_file_logger(LoggerDirectories.get_logger_directory(), "350MB")
 
 logger.trace("A trace message")
 logger.debug("A debug message")

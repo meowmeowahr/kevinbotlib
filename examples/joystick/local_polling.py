@@ -7,7 +7,9 @@ controller.start_polling()
 
 try:
     while True:
-        print(controller.get_buttons())
+        print("Buttons:", controller.get_buttons())
+        print("POV:", controller.get_pov_direction())
+        print("Axes:", controller.get_axes())
         time.sleep(0.1)
 except KeyboardInterrupt:
     controller.stop()

@@ -13,7 +13,7 @@ from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
 from kevinbotlib import __about__
-from kevinbotlib.logger import Logger
+from kevinbotlib.logger import Level, Logger
 
 
 def get_file_type(path):
@@ -159,7 +159,7 @@ class FileServer:
 
         ftp_logger = logging.getLogger("pyftpdlib")
         ftp_logger.addHandler(logging.StreamHandler())
-        ftp_logger.setLevel(self.logger.level.value.no)
+        ftp_logger.setLevel(Level.DEBUG.value.no)
 
         def logging_redirect(record):
             log_level = next(key for key, val in logging.getLevelNamesMapping().items() if val == record.levelno)

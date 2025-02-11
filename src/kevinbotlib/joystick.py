@@ -127,7 +127,12 @@ class RawLocalJoystickDevice:
 
     def get_buttons(self) -> list[int]:
         """Returns a list of currently pressed buttons."""
-        return [key for key, value in self._button_states.items() if value]
+        buttons = [key for key, value in self._button_states.items() if value]
+        buttons.sort()
+        return buttons
+
+    def get_axes(self, precision: int = 3):
+        return [round(max(min(self._axis_states.get(axis_id, 0.0), 1), -1), precision) for axis_id in self._axis_states.keys()]
 
     def get_pov_direction(self) -> POVDirection:
         """Returns the current POV (D-pad) direction."""
@@ -322,6 +327,7 @@ class JoystickSender:
     def _send(self):
         self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
         self.client.send(self.key + "/pov", IntegerSendable(value=self.joystick.get_pov_direction().value))
+        self.client.send(self.key + "/axes", IntegerSendable(value=self.joystick.get_axes().value))
         self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.connected))
 
     def _send_loop(self):
