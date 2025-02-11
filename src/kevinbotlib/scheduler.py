@@ -69,6 +69,39 @@ class SequentialCommand(Command):
         return len(self.remaining_commands) == 0
 
 
+class ParallelCommand(Command):
+    def __init__(self, commands: list[Command]) -> None:
+        super().__init__()
+        self.commands = commands
+        self.remaining_commands: list[_SequencedCommand] = [
+            {"command": command, "has_init": False} for command in commands
+        ]
+
+    def init(self) -> None:
+        self.remaining_commands = [
+            {"command": command, "has_init": False} for command in self.commands
+        ]
+
+    def execute(self) -> None:
+        for command_info in self.remaining_commands[:]:
+            command = command_info["command"]
+            if not command_info["has_init"]:
+                command.init()
+                command_info["has_init"] = True
+
+            command.execute()
+
+            if command.finished():
+                command.end()
+                self.remaining_commands.remove(command_info)
+
+    def end(self) -> None:
+        for command_info in self.remaining_commands:
+            command_info["command"].end()
+
+    def finished(self) -> bool:
+        return len(self.remaining_commands) == 0
+
 @dataclass
 class TriggerActions:
     on_true: Command | None = None
