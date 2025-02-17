@@ -1,5 +1,9 @@
 from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.logger import FileLoggerConfig, Logger, LoggerConfiguration
 from kevinbotlib.vision import CameraByIndex, EmptyPipeline, FrameEncoders, MjpegStreamSendable, VisionCommUtils
+
+logger = Logger()
+logger.configure(LoggerConfiguration(file_logger=FileLoggerConfig()))
 
 client = KevinbotCommClient()
 VisionCommUtils.init_comms_types(client)
@@ -15,5 +19,5 @@ pipeline = EmptyPipeline(camera.get_frame)
 while True:
     ok, frame = pipeline.run()
     if ok:
-        encoded = FrameEncoders.encode_jpg(frame, 80)
-        client.send("streams/camera0", MjpegStreamSendable(value=encoded, quality=80, resolution=frame.shape[:2]))
+        encoded = FrameEncoders.encode_jpg(frame, 100)
+        client.send("streams/camera0", MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]))

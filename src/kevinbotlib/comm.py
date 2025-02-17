@@ -180,8 +180,8 @@ class KevinbotCommClient:
         auto_reconnect: bool = True,
         register_basic_types: bool = True,
     ) -> None:
-        self.host = host
-        self.port = port
+        self._host = host
+        self._port = port
         self.auto_reconnect = auto_reconnect
 
         self.logger = _Logger()
@@ -205,6 +205,28 @@ class KevinbotCommClient:
             self.register_type(FloatSendable)
             self.register_type(AnyListSendable)
             self.register_type(DictSendable)
+
+    @property
+    def host(self):
+        return self._host
+    
+    @host.setter
+    def host(self, value: str):
+        self._host = value
+        if self.is_connected():
+            self.disconnect()
+            self.connect()
+
+    @property
+    def port(self):
+        return self._port
+    
+    @port.setter
+    def port(self, value: str):
+        self._port = value
+        if self.is_connected():
+            self.disconnect()
+            self.connect()
 
     def register_type(self, data_type: type[BaseSendable]):
         self.data_types[data_type.model_fields["data_id"].default] = data_type
@@ -230,26 +252,29 @@ class KevinbotCommClient:
                 raise kevinbotlib.exceptions.HandshakeTimeoutException(msg)
             time.sleep(0.02)
 
+    def is_connected(self):
+        return not not self.websocket
+
     def disconnect(self) -> None:
         """Stops the client and closes the connection gracefully."""
         self.running = False
         if self.loop and self.loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._close_connection(), self.loop).result()
+            asyncio.run_coroutine_threadsafe(self._close_connection(), self.loop)
 
-        if self.thread:
-            self.thread.join()
-            self.thread = None
 
     def _run_async_loop(self) -> None:
         """Runs the async event loop in a separate thread."""
         asyncio.set_event_loop(self.loop)
-        self.loop.run_until_complete(self._connect_and_listen())
+        if not self.loop.is_running():
+            self.loop.run_until_complete(self._connect_and_listen())
+        else:
+            asyncio.run_coroutine_threadsafe(self._connect_and_listen(), self.loop)
 
     async def _connect_and_listen(self) -> None:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self.host}:{self.port}", max_size=2**48 - 1) as ws:
+                async with websockets.connect(f"ws://{self._host}:{self._port}", max_size=2**48 - 1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     await self._handle_messages()
@@ -291,6 +316,7 @@ class KevinbotCommClient:
             await self.websocket.close()
             self.logger.info("Connection closed")
             self.websocket = None
+        print("heree")
 
     def send(self, key: str, data: BaseSendable) -> None:
         """Publishes data to the server."""
