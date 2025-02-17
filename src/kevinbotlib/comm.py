@@ -284,7 +284,8 @@ class KevinbotCommClient:
                 async with websockets.connect(f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
-                    self.on_connect()
+                    if self.on_connect:
+                        self.on_connect()
                     await self._handle_messages()
             except (websockets.ConnectionClosed, ConnectionError, OSError) as e:
                 self.logger.error(f"Unexpected error: {e!r}")
@@ -323,7 +324,8 @@ class KevinbotCommClient:
         if self.websocket:
             await self.websocket.close()
             self.logger.info("Connection closed")
-            self.on_disconnect()
+            if self.on_disconnect:
+                self.on_disconnect()
             self.websocket = None
 
     def send(self, key: str, data: BaseSendable) -> None:
