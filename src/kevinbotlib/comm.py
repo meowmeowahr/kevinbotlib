@@ -176,6 +176,8 @@ class KevinbotCommClient:
         port: int = 8765,
         on_update: Callable[[str, Any], None] | None = None,
         on_delete: Callable[[str], None] | None = None,
+        on_connect: Callable[[], None] | None = None,
+        on_disconnect: Callable[[], None] | None = None,
         *,
         auto_reconnect: bool = True,
         register_basic_types: bool = True,
@@ -196,6 +198,8 @@ class KevinbotCommClient:
 
         self.on_update = on_update
         self.on_delete = on_delete
+        self.on_connect = on_connect
+        self.on_disconnect = on_disconnect
 
         if register_basic_types:
             self.register_type(BaseSendable)
@@ -227,6 +231,9 @@ class KevinbotCommClient:
         if self.is_connected():
             self.disconnect()
             self.connect()
+
+    def get_latency(self) -> float:
+        return self.websocket.latency if self.websocket else float('inf')
 
     def register_type(self, data_type: type[BaseSendable]):
         self.data_types[data_type.model_fields["data_id"].default] = data_type
@@ -274,9 +281,10 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self._host}:{self._port}", max_size=2**48 - 1) as ws:
+                async with websockets.connect(f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
+                    self.on_connect()
                     await self._handle_messages()
             except (websockets.ConnectionClosed, ConnectionError, OSError) as e:
                 self.logger.error(f"Unexpected error: {e!r}")
@@ -315,6 +323,7 @@ class KevinbotCommClient:
         if self.websocket:
             await self.websocket.close()
             self.logger.info("Connection closed")
+            self.on_disconnect()
             self.websocket = None
 
     def send(self, key: str, data: BaseSendable) -> None:
