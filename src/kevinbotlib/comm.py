@@ -316,7 +316,6 @@ class KevinbotCommClient:
             await self.websocket.close()
             self.logger.info("Connection closed")
             self.websocket = None
-        print("heree")
 
     def send(self, key: str, data: BaseSendable) -> None:
         """Publishes data to the server."""
