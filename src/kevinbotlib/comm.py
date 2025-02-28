@@ -17,14 +17,16 @@ class BaseSendable(BaseModel, ABC):
     timeout: float | None = None
     data_id: str = "kevinbotlib.dtype.null"
     flags: list[str] = []
+    struct: dict[str, Any] = {}
 
     def get_dict(self) -> dict:
-        return {"timeout": self.timeout, "value": None, "did": self.data_id}
+        return {"timeout": self.timeout, "value": None, "did": self.data_id, "struct": self.struct}
 
 
 class IntegerSendable(BaseSendable):
     value: int
     data_id: str = "kevinbotlib.dtype.int"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -35,6 +37,7 @@ class IntegerSendable(BaseSendable):
 class BooleanSendable(BaseSendable):
     value: bool
     data_id: str = "kevinbotlib.dtype.bool"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -45,6 +48,7 @@ class BooleanSendable(BaseSendable):
 class StringSendable(BaseSendable):
     value: str
     data_id: str = "kevinbotlib.dtype.str"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -55,6 +59,7 @@ class StringSendable(BaseSendable):
 class FloatSendable(BaseSendable):
     value: float
     data_id: str = "kevinbotlib.dtype.float"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -65,6 +70,7 @@ class FloatSendable(BaseSendable):
 class AnyListSendable(BaseSendable):
     value: list
     data_id: str = "kevinbotlib.dtype.list.any"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -75,6 +81,7 @@ class AnyListSendable(BaseSendable):
 class DictSendable(BaseSendable):
     value: dict
     data_id: str = "kevinbotlib.dtype.dict"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -85,6 +92,7 @@ class DictSendable(BaseSendable):
 class BinarySendable(BaseSendable):
     value: bytes
     data_id: str = "kevinbotlib.dtype.bin"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "limit:1024"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
@@ -353,6 +361,16 @@ class KevinbotCommClient:
             return None
 
         return data_type(**self.data_store.get(key, default)["data"])
+    
+    def get_raw(self, key: str) -> dict | None:
+        if key not in self.data_store:
+            return None
+
+        return self.data_store.get(key, None)["data"]
+    
+    def get_keys(self):
+        return list(self.data_store.keys())
+
 
     def delete(self, key: str) -> None:
         """Deletes data from the server."""

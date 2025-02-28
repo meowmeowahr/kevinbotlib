@@ -26,6 +26,7 @@ class MjpegStreamSendable(SingleFrameSendable):
     quality: int
     resolution: Annotated[list[int], Len(min_length=2, max_length=2)]
     encoding: str = "JPG"
+    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "limit:1024"}, {"element": "resolution", "format": "raw"}, {"element": "quality", "format": "raw"}, {"element": "encoding", "format": "raw"}]}
 
     def get_dict(self) -> dict:
         data = super().get_dict()
