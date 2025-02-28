@@ -99,8 +99,9 @@ class BinarySendable(BaseSendable):
         data["value"] = self.value.decode("utf-8")
         return data
 
+
 class OperationalModeSendable(BaseSendable):
-    enabled: bool
+    enabled: bool = False
     opmode: str = "Teleoperated"
     opmodes: list[str] = ["Teleoperated", "Test"]
     estop: bool = False
@@ -112,6 +113,7 @@ class OperationalModeSendable(BaseSendable):
         data["opmodes"] = self.opmodes
         data["estop"] = self.estop
         return data
+
 
 T = TypeVar("T", bound=BaseSendable)
 
@@ -235,7 +237,7 @@ class KevinbotCommClient:
     @property
     def host(self):
         return self._host
-    
+
     @host.setter
     def host(self, value: str):
         self._host = value
@@ -246,7 +248,7 @@ class KevinbotCommClient:
     @property
     def port(self):
         return self._port
-    
+
     @port.setter
     def port(self, value: str):
         self._port = value
@@ -255,7 +257,7 @@ class KevinbotCommClient:
             self.connect()
 
     def get_latency(self) -> float:
-        return self.websocket.latency if self.websocket else float('inf')
+        return self.websocket.latency if self.websocket else float("inf")
 
     def register_type(self, data_type: type[BaseSendable]):
         self.data_types[data_type.model_fields["data_id"].default] = data_type
@@ -282,14 +284,13 @@ class KevinbotCommClient:
             time.sleep(0.02)
 
     def is_connected(self):
-        return not not self.websocket
+        return bool(self.websocket)
 
     def disconnect(self) -> None:
         """Stops the client and closes the connection gracefully."""
         self.running = False
         if self.loop and self.loop.is_running():
             asyncio.run_coroutine_threadsafe(self._close_connection(), self.loop)
-
 
     def _run_async_loop(self) -> None:
         """Runs the async event loop in a separate thread."""
@@ -303,7 +304,9 @@ class KevinbotCommClient:
         """Handles connection and message listening."""
         while self.running:
             try:
-                async with websockets.connect(f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1) as ws:
+                async with websockets.connect(
+                    f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1
+                ) as ws:
                     self.websocket = ws
                     self.logger.info("Connected to the server")
                     if self.on_connect:
@@ -375,16 +378,15 @@ class KevinbotCommClient:
             return None
 
         return data_type(**self.data_store.get(key, default)["data"])
-    
+
     def get_raw(self, key: str) -> dict | None:
         if key not in self.data_store:
             return None
 
         return self.data_store.get(key, None)["data"]
-    
+
     def get_keys(self):
         return list(self.data_store.keys())
-
 
     def delete(self, key: str) -> None:
         """Deletes data from the server."""

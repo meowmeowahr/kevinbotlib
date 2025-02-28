@@ -13,5 +13,6 @@ class CommandSchedulerAlreadyExistsException(BaseException):
 class CommandSchedulerDoesNotExistException(BaseException):
     """Exception that is produced when an attempt to get the current scheduler instance before creating a CommandScheduler"""
 
+
 class LoggerNotConfiguredException(BaseException):
     """Exception that is produced when trying to log to a non-configured logger"""

@@ -7,6 +7,7 @@ from kevinbotlib.scheduler import Command, CommandScheduler, Trigger
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
+
 class PrintCommand(Command):
     def __init__(self, message: str):
         self.message = message

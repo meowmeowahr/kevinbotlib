@@ -78,9 +78,7 @@ class ParallelCommand(Command):
         ]
 
     def init(self) -> None:
-        self.remaining_commands = [
-            {"command": command, "has_init": False} for command in self.commands
-        ]
+        self.remaining_commands = [{"command": command, "has_init": False} for command in self.commands]
 
     def execute(self) -> None:
         for command_info in self.remaining_commands[:]:
@@ -101,6 +99,7 @@ class ParallelCommand(Command):
 
     def finished(self) -> bool:
         return len(self.remaining_commands) == 0
+
 
 @dataclass
 class TriggerActions:

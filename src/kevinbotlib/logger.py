@@ -4,7 +4,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import IO, Optional
+from typing import IO
 
 import platformdirs
 from loguru import logger as _internal_logger
@@ -35,9 +35,7 @@ class LoggerDirectories:
 
 
 class Level(Enum):
-    DATA = _internal_logger.level("DATA", no=3, color="<magenta>", icon="🔄")
     TRACE = _internal_logger.level("TRACE")
-    HIGHFREQ = _internal_logger.level("HIGHFREQ", no=7, color="<light-blue>", icon="⏩")
     DEBUG = _internal_logger.level("DEBUG")
     INFO = _internal_logger.level("INFO")
     WARNING = _internal_logger.level("WARNING")
@@ -51,11 +49,13 @@ class LoggerWriteOpts:
     colors: bool = True
     ansi: bool = True
 
+
 @dataclass
 class FileLoggerConfig:
     directory: str = field(default_factory=LoggerDirectories.get_logger_directory)
     rotation_size: str = "150MB"
     level: Level | None = None
+
 
 @dataclass
 class LoggerConfiguration:
@@ -80,19 +80,20 @@ class Logger:
         self._internal_logger.add(sys.stderr, level=config.level.value.no)
 
         if config.file_logger:
-            timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3] # Trim to ms
+            timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to ms
             log_file = os.path.join(config.file_logger.directory, f"{timestamp}.log")
-            
+
             self._internal_logger.add(
                 log_file,
                 rotation=config.file_logger.rotation_size,
                 enqueue=True,
                 serialize=True,
-                level=config.file_logger.level.value.no if config.file_logger.level else config.level.value.no
+                level=config.file_logger.level.value.no if config.file_logger.level else config.level.value.no,
             )
             return log_file
+        return None
 
-    def log(self, level: Level, message: str, opts: Optional[LoggerWriteOpts] = None):
+    def log(self, level: Level, message: str, opts: LoggerWriteOpts | None = None):
         """Log a message with a specified level"""
         if not Logger.is_configured:
             raise LoggerNotConfiguredException

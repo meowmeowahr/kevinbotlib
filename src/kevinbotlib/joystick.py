@@ -132,7 +132,7 @@ class RawLocalJoystickDevice:
         return buttons
 
     def get_axes(self, precision: int = 3):
-        return [round(max(min(self._axis_states.get(axis_id, 0.0), 1), -1), precision) for axis_id in self._axis_states.keys()]
+        return [round(max(min(self._axis_states[axis_id], 1), -1), precision) for axis_id in self._axis_states]
 
     def get_pov_direction(self) -> POVDirection:
         """Returns the current POV (D-pad) direction."""

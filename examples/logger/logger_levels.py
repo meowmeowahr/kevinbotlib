@@ -1,7 +1,7 @@
-from kevinbotlib.logger import Logger, Level, LoggerConfiguration
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 
 logger = Logger()
-logger.configure(LoggerConfiguration(Level.DATA)) # lowest available level
+logger.configure(LoggerConfiguration(Level.DATA))  # lowest available level
 
 logger.log(Level.DATA, "A data message")
 logger.trace("A trace message")
