@@ -68,7 +68,7 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
         from kevinbotlib.logger import Logger
 
         logger = Logger()
-        logger.info(f"HTTP: {fmt%args}")
+        logger.trace(f"HTTP: {fmt%args}")
 
     def list_directory(self, path):
         list_entries = os.listdir(path)
@@ -142,13 +142,11 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
 class FileServer:
     """Combined FTP and HTTP file server for KevinBot."""
 
-    def __init__(self, username: str, password: str, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1"):
+    def __init__(self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1"):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port
         self.http_port = http_port
         self.host = host
-        self.username = username
-        self.password = password
         self.ftp_thread = None
         self.http_thread = None
 
@@ -171,8 +169,7 @@ class FileServer:
         ftp_logger.addFilter(logging_redirect)
 
         authorizer = DummyAuthorizer()
-        authorizer.add_user(self.username, self.password, self.directory, perm="elradfmwMT")
-        authorizer.add_anonymous(self.directory, perm="elr")
+        authorizer.add_anonymous(self.directory, perm="elradfmwMT")
 
         handler = FTPHandler
         handler.authorizer = authorizer

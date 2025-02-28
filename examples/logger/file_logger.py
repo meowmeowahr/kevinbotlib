@@ -8,7 +8,7 @@ print(f"Logging to {LoggerDirectories.get_logger_directory()}")
 logger = Logger()
 logger.configure(LoggerConfiguration(Level.DEBUG, FileLoggerConfig()))
 
-fileserver = FileServer("admin", "password", LoggerDirectories.get_logger_directory())
+fileserver = FileServer(LoggerDirectories.get_logger_directory())
 fileserver.start()
 
 LoggerDirectories.cleanup_logs(LoggerDirectories.get_logger_directory())
