@@ -99,6 +99,19 @@ class BinarySendable(BaseSendable):
         data["value"] = self.value.decode("utf-8")
         return data
 
+class OperationalModeSendable(BaseSendable):
+    enabled: bool
+    opmode: str = "Teleoperated"
+    opmodes: list[str] = ["Teleoperated", "Test"]
+    estop: bool = False
+
+    def get_dict(self) -> dict:
+        data = super().get_dict()
+        data["enabled"] = self.enabled
+        data["opmode"] = self.opmode
+        data["opmodes"] = self.opmodes
+        data["estop"] = self.estop
+        return data
 
 T = TypeVar("T", bound=BaseSendable)
 
@@ -217,6 +230,7 @@ class KevinbotCommClient:
             self.register_type(FloatSendable)
             self.register_type(AnyListSendable)
             self.register_type(DictSendable)
+            self.register_type(OperationalModeSendable)
 
     @property
     def host(self):
