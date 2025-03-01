@@ -113,6 +113,22 @@ class OperationalModeSendable(BaseSendable):
         data["opmodes"] = self.opmodes
         data["estop"] = self.estop
         return data
+    
+    def disabled(self) -> "OperationalModeSendable":
+        return OperationalModeSendable(
+            enabled=False,
+            opmode=self.opmode,
+            opmodes=self.opmodes,
+            estop=self.estop
+        )
+
+    def estopped(self) -> "OperationalModeSendable":
+        return OperationalModeSendable(
+            enabled=False,
+            opmode=self.opmode,
+            opmodes=self.opmodes,
+            estop=True
+        )
 
 
 T = TypeVar("T", bound=BaseSendable)

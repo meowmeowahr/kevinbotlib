@@ -31,15 +31,16 @@ class BaseRobot():
         self.telemetry = Logger()
         self.telemetry.configure(LoggerConfiguration(level=log_level, file_logger=FileLoggerConfig()))
 
-        # self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
-        # self.fileserver.start()
+        self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
+        self.fileserver.start()
 
         self.comm_server = KevinbotCommServer(port=serve_port)
         self.comm_client = KevinbotCommClient(port=serve_port)
 
         self._print_log_level = print_level
 
-        self.current_opmode = default_opmode
+        self._ctrl_sendable = OperationalModeSendable(opmode=default_opmode) # here we set the default opmode
+        self._ctrl_sendable_key = "SysOp/opmode"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -51,6 +52,7 @@ class BaseRobot():
 
     @final
     def _signal_usr2_capture(self, sig, frame):
+        """Internal method used for the *EMERGENCY STOP* system **DO NOT OVERRIDE**"""
         self.telemetry.critical("Signal EMERGENCY STOP detected... Stopping now")
         self._signal_estop = True
 
@@ -75,11 +77,19 @@ class BaseRobot():
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             self.comm_client.wait_until_connected()  # wait until connection before publishing data
-            self.comm_client.send("SysOp/opmode", OperationalModeSendable()) # TODO: set defaults
+            self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
             try:
                 self.robot_start()
                 self.telemetry.log(Level.INFO, "Robot started")
+            
                 while True:
+                    sendable = self.comm_client.get(self._ctrl_sendable_key, OperationalModeSendable)
+                    if sendable:
+                        self._ctrl_sendable = sendable
+                    else:
+                        self._ctrl_sendable = self._ctrl_sendable.disabled()
+                        self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+                    
                     if self._signal_stop:
                         raise RobotStoppedException("Robot signal stopped")
                     if self._signal_estop:
