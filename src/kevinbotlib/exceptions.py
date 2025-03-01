@@ -1,6 +1,8 @@
 class HandshakeTimeoutException(BaseException):
-    """Exception that is produced when the connection handshake times out"""
+    """Exception that is produced when the server-up wait times out"""
 
+class ServerTimeoutException(BaseException):
+    """Exception that is produced when the connection handshake times out"""
 
 class JoystickMissingException(BaseException):
     """Exception that is produced when a requested gamepad is missing"""
@@ -16,3 +18,9 @@ class CommandSchedulerDoesNotExistException(BaseException):
 
 class LoggerNotConfiguredException(BaseException):
     """Exception that is produced when trying to log to a non-configured logger"""
+
+class RobotStoppedException(BaseException):
+    """Used when a non-urgent robot stop is triggered"""
+
+class RobotEmergencyStoppedException(BaseException):
+    """Used when a non-urgent robot stop is triggered"""

@@ -131,6 +131,8 @@ class KevinbotCommServer:
         self.clients: set[websockets.ServerConnection] = set()
         self.tasks = set()
 
+        self.serving = False
+
     async def remove_expired_data(self) -> None:
         """Periodically removes expired data based on timeouts."""
         while True:
@@ -184,11 +186,20 @@ class KevinbotCommServer:
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
+        self.serving = True
         await server.wait_closed()
+        self.serving = False
 
     def serve(self):
         asyncio.run(self.serve_async())
 
+    def wait_until_serving(self, timeout: float = 5.0):
+        start_time = time.time()
+        while not self.serving:
+            if time.time() > start_time + timeout:
+                msg = "The server is not serving. You most likely called `wait_until_serving` before starting the server, or the server failed to start"
+                raise kevinbotlib.exceptions.ServerTimeoutException(msg)
+            time.sleep(0.02)
 
 class KevinbotCommClient:
     """KevinbotLib WebSocket-based client for real-time data synchronization and communication."""
