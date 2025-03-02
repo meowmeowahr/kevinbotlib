@@ -15,4 +15,6 @@ class DemoRobot(BaseRobot):
 
 
 if __name__ == "__main__":
-    DemoRobot(log_level=Level.TRACE).run() # run the robot with TRACE (lowest level) logging - recommended to use INFO or higher for production
+    DemoRobot(
+        log_level=Level.TRACE
+    ).run()  # run the robot with TRACE (lowest level) logging - recommended to use INFO or higher for production

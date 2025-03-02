@@ -48,6 +48,7 @@ class LoggerWriteOpts:
     depth: int = 1
     colors: bool = True
     ansi: bool = True
+    exception: bool = False
 
 
 @dataclass
@@ -93,13 +94,15 @@ class Logger:
             return log_file
         return None
 
-    def log(self, level: Level, message: str, opts: LoggerWriteOpts | None = None):
+    def log(self, level: Level, message: str | BaseException, opts: LoggerWriteOpts | None = None):
         """Log a message with a specified level"""
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
         opts = opts or LoggerWriteOpts()
-        self._internal_logger.opt(depth=opts.depth, colors=opts.colors, ansi=opts.ansi).log(level.name, message)
+        self._internal_logger.opt(depth=opts.depth, colors=opts.colors, ansi=opts.ansi, exception=opts.exception).log(
+            level.name, message
+        )
 
     def trace(self, message: str):
         if not Logger.is_configured:

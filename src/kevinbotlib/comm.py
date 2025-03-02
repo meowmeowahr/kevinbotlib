@@ -113,22 +113,12 @@ class OperationalModeSendable(BaseSendable):
         data["opmodes"] = self.opmodes
         data["estop"] = self.estop
         return data
-    
+
     def disabled(self) -> "OperationalModeSendable":
-        return OperationalModeSendable(
-            enabled=False,
-            opmode=self.opmode,
-            opmodes=self.opmodes,
-            estop=self.estop
-        )
+        return OperationalModeSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=self.estop)
 
     def estopped(self) -> "OperationalModeSendable":
-        return OperationalModeSendable(
-            enabled=False,
-            opmode=self.opmode,
-            opmodes=self.opmodes,
-            estop=True
-        )
+        return OperationalModeSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=True)
 
 
 T = TypeVar("T", bound=BaseSendable)
@@ -216,6 +206,7 @@ class KevinbotCommServer:
                 msg = "The server is not serving. You most likely called `wait_until_serving` before starting the server, or the server failed to start"
                 raise kevinbotlib.exceptions.ServerTimeoutException(msg)
             time.sleep(0.02)
+
 
 class KevinbotCommClient:
     """KevinbotLib WebSocket-based client for real-time data synchronization and communication."""

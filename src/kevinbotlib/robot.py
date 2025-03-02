@@ -2,6 +2,7 @@ import contextlib
 import os
 import platform
 import signal
+import sys
 import time
 from threading import Thread
 from typing import NoReturn, final
@@ -9,16 +10,25 @@ from typing import NoReturn, final
 from kevinbotlib.comm import KevinbotCommClient, KevinbotCommServer, OperationalModeSendable
 from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotStoppedException
 from kevinbotlib.fileserver.fileserver import FileServer
-from kevinbotlib.logger import FileLoggerConfig, Level, Logger, LoggerConfiguration, LoggerDirectories, StreamRedirector
+from kevinbotlib.logger import (
+    FileLoggerConfig,
+    Level,
+    Logger,
+    LoggerConfiguration,
+    LoggerDirectories,
+    LoggerWriteOpts,
+    StreamRedirector,
+)
 
 
-class BaseRobot():
+class BaseRobot:
     def __init__(
         self,
         serve_port: int = 8765,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
         default_opmode: str = "Teleoperated",
+        cycle_time: float = 250,
     ):
         """_summary_
 
@@ -27,6 +37,7 @@ class BaseRobot():
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
             default_opmode (str, optional): Default Operational Mode to start in. Defaults to Teleoperated
+            cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
         """
         self.telemetry = Logger()
         self.telemetry.configure(LoggerConfiguration(level=log_level, file_logger=FileLoggerConfig()))
@@ -39,19 +50,21 @@ class BaseRobot():
 
         self._print_log_level = print_level
 
-        self._ctrl_sendable = OperationalModeSendable(opmode=default_opmode) # here we set the default opmode
+        self._ctrl_sendable = OperationalModeSendable(opmode=default_opmode)  # here we set the default opmode
         self._ctrl_sendable_key = "SysOp/opmode"
 
         self._signal_stop = False
         self._signal_estop = False
 
+        self._cycle_hz = cycle_time
+
     @final
-    def _signal_usr1_capture(self, sig, frame):
+    def _signal_usr1_capture(self, _, __):
         self.telemetry.critical("Signal stop detected... Stopping now")
         self._signal_stop = True
 
     @final
-    def _signal_usr2_capture(self, sig, frame):
+    def _signal_usr2_capture(self, _, __):
         """Internal method used for the *EMERGENCY STOP* system **DO NOT OVERRIDE**"""
         self.telemetry.critical("Signal EMERGENCY STOP detected... Stopping now")
         self._signal_estop = True
@@ -59,44 +72,56 @@ class BaseRobot():
     @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
+        try:
+            # platform checks
+            if platform.system() != "Linux":
+                self.telemetry.warning(
+                    "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
+                )
 
-        # platform checks
-        if platform.system() != 'Linux':
-            self.telemetry.warning("Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken")
+            # shutdown signal
+            signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
+            signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
+            self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
 
-        # shutdown signal
-        signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
-        signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
-        self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
+            Thread(
+                target=self.comm_server.serve,
+                daemon=True,
+                name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
+            ).start()
+            self.comm_server.wait_until_serving()
+            self.comm_client.connect()
 
-        Thread(
-            target=self.comm_server.serve, daemon=True, name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer"
-        ).start()
-        self.comm_server.wait_until_serving()
-        self.comm_client.connect()
+            with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
+                self.comm_client.wait_until_connected()  # wait until connection before publishing data
+                self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+                try:
+                    self.robot_start()
+                    self.telemetry.log(Level.INFO, "Robot started")
 
-        with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
-            self.comm_client.wait_until_connected()  # wait until connection before publishing data
-            self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
-            try:
-                self.robot_start()
-                self.telemetry.log(Level.INFO, "Robot started")
-            
-                while True:
-                    sendable = self.comm_client.get(self._ctrl_sendable_key, OperationalModeSendable)
-                    if sendable:
-                        self._ctrl_sendable = sendable
-                    else:
-                        self._ctrl_sendable = self._ctrl_sendable.disabled()
-                        self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
-                    
-                    if self._signal_stop:
-                        raise RobotStoppedException("Robot signal stopped")
-                    if self._signal_estop:
-                        raise RobotEmergencyStoppedException("Robot signal e-stopped")
-                    time.sleep(1)
-            finally:
-                self.robot_end()
+                    while True:
+                        sendable = self.comm_client.get(self._ctrl_sendable_key, OperationalModeSendable)
+                        if sendable:
+                            self._ctrl_sendable = sendable
+                        else:
+                            self._ctrl_sendable = self._ctrl_sendable.disabled()
+                            self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+
+                        if self._signal_stop:
+                            msg = "Robot signal stopped"
+                            raise RobotStoppedException(msg)
+                        if self._signal_estop:
+                            msg = "Robot signal e-stopped"
+                            raise RobotEmergencyStoppedException(msg)
+                        time.sleep(1 / self._cycle_hz)
+                finally:
+                    self.robot_end()
+        except Exception:  # noqa: BLE001
+            # this will output user code errors to the logs
+            self.telemetry.log(
+                Level.CRITICAL, "Robot code execution stopped due to an exception", LoggerWriteOpts(exception=True)
+            )
+            sys.exit(1)
 
     def robot_start(self) -> None:
         """Run after the robot is initialized"""
