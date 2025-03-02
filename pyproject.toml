@@ -40,7 +40,7 @@ dependencies = [
 ]
 
 [project.scripts]
-kevinbot = "kevinbotlib.cli:main"
+kevinbotlib = "kevinbotlib.cli:main"
 
 [project.urls]
 Documentation = "https://github.com/meowmeowahr/kevinbotlib#readme"
