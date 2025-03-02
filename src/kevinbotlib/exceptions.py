@@ -29,5 +29,6 @@ class RobotStoppedException(BaseException):
 class RobotEmergencyStoppedException(BaseException):
     """Used when an urgent robot stop is triggered"""
 
+
 class RobotLockedException(BaseException):
     """Exception that is produced when another instance of a robot is running"""

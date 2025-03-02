@@ -7,8 +7,8 @@ import sys
 import tempfile
 import threading
 import time
-from threading import Thread
 import traceback
+from threading import Thread
 from types import TracebackType
 from typing import NoReturn, final
 
@@ -57,7 +57,6 @@ class InstanceLocker:
             with open(os.path.join(tempfile.gettempdir(), self.lockfile_name), "w") as f:
                 f.write(str(self.pid))
             self._locked = True
-            return True
         except FileExistsError:
             # Double-check in case of race condition
             if self.is_locked(self.lockfile_name):
@@ -67,9 +66,11 @@ class InstanceLocker:
                 f.write(str(self.pid))
             self._locked = True
             return True
-        except IOError as e:
-            Logger().error(f"Failed to create lockfile: {repr(e)}")
+        except OSError as e:
+            Logger().error(f"Failed to create lockfile: {e!r}")
             return False
+        else:
+            return True
 
     def unlock(self) -> None:
         """Release the lock by removing the lockfile."""
@@ -78,13 +79,13 @@ class InstanceLocker:
 
         try:
             if os.path.exists(os.path.join(tempfile.gettempdir(), self.lockfile_name)):
-                with open(os.path.join(tempfile.gettempdir(), self.lockfile_name), "r") as f:
+                with open(os.path.join(tempfile.gettempdir(), self.lockfile_name)) as f:
                     pid = f.read().strip()
                 if pid == str(self.pid):  # Only remove if this process owns the lock
                     os.remove(os.path.join(tempfile.gettempdir(), self.lockfile_name))
             self._locked = False
-        except IOError as e:
-            Logger().error(f"Failed to remove lockfile: {repr(e)}")
+        except OSError as e:
+            Logger().error(f"Failed to remove lockfile: {e!r}")
 
     @staticmethod
     def is_locked(lockfile_name: str) -> int:
@@ -100,17 +101,13 @@ class InstanceLocker:
             return False
 
         try:
-            with open(os.path.join(tempfile.gettempdir(), lockfile_name), "r") as f:
+            with open(os.path.join(tempfile.gettempdir(), lockfile_name)) as f:
                 pid_str = f.read().strip()
                 pid = int(pid_str)
-        except (IOError, ValueError):
+        except (OSError, ValueError):
             # If the file is corrupt or unreadable, assume it's stale and not locked
             return False
-        return pid in [
-     p.info["pid"]
-     for p in psutil.process_iter(attrs=["pid", "name"])
-]
-
+        return pid in [p.info["pid"] for p in psutil.process_iter(attrs=["pid", "name"])]
 
     def __enter__(self) -> "InstanceLocker":
         """Context manager support: acquire the lock."""
@@ -120,6 +117,7 @@ class InstanceLocker:
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager support: release the lock."""
         self.unlock()
+
 
 class BaseRobot:
     def __init__(
@@ -161,7 +159,9 @@ class BaseRobot:
 
         self._print_log_level = print_level
 
-        self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(opmode=default_opmode or opmodes[0], opmodes=opmodes)
+        self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(
+            opmode=default_opmode or opmodes[0], opmodes=opmodes
+        )
         self._ctrl_sendable_key = "%ControlConsole"
 
         self._signal_stop = False
@@ -172,6 +172,7 @@ class BaseRobot:
 
         # Track the previous state for opmode transitions
         self._prev_enabled = None  # Was the robot previously enabled?
+
     @final
     def _signal_usr1_capture(self, _, __):
         self.telemetry.critical("Signal stop detected... Stopping now")
@@ -188,7 +189,7 @@ class BaseRobot:
         self._exc_hook(*args)
 
     @final
-    def _exc_hook(self, exc_type: type, exc_value, tb: TracebackType, *args):
+    def _exc_hook(self, exc_type: type, exc_value, tb: TracebackType, *_args):
         # print out the whole stack
         tb_list = traceback.extract_tb(tb)
         out = "Traceback (most recent call last):\n"
@@ -201,7 +202,6 @@ class BaseRobot:
         self.telemetry.critical(out)
         # Re-raise the exception
         sys.__excepthook__(exc_type, exc_value, tb)
-        
 
     @final
     def run(self) -> NoReturn:
@@ -209,8 +209,7 @@ class BaseRobot:
         if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
             msg = f"Another robot with the class name {self.__class__.__name__} is already running"
             raise RobotLockedException(msg)
-        else:
-            self._instance_locker.lock()
+        self._instance_locker.lock()
 
         if platform.system() != "Linux":
             self.telemetry.warning(
@@ -238,7 +237,9 @@ class BaseRobot:
                 self.telemetry.log(Level.INFO, "Robot started")
 
                 while True:
-                    sendable: ControlConsoleSendable | None = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
+                    sendable: ControlConsoleSendable | None = self.comm_client.get(
+                        self._ctrl_sendable_key, ControlConsoleSendable
+                    )
                     if sendable:
                         self._ctrl_sendable: ControlConsoleSendable = sendable
                     else:
