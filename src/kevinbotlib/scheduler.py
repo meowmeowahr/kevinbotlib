@@ -27,9 +27,15 @@ class Command(ABC):
 
     def then(self, next_command: "Command"):
         """Chain commands to run sequentially"""
-        commands = self.statup_commands if isinstance(self, SequentialCommand) else [self]
+        commands = self.startup_commands if isinstance(self, SequentialCommand) else [self]
         commands.append(next_command)
         return SequentialCommand(commands)
+
+    def alongside(self, next_command: "Command"):
+        """Chain commands to run sequentially"""
+        commands = self.startup_commands if isinstance(self, ParallelCommand) else [self]
+        commands.append(next_command)
+        return ParallelCommand(commands)
 
 
 class _SequencedCommand(TypedDict):
@@ -40,14 +46,14 @@ class _SequencedCommand(TypedDict):
 class SequentialCommand(Command):
     def __init__(self, commands: list[Command]) -> None:
         super().__init__()
-        self.statup_commands = commands
+        self.startup_commands = commands
         self.remaining_commands: list[_SequencedCommand] = [
             {"command": command, "has_init": False} for command in commands
         ]
 
     def init(self) -> None:
         self.remaining_commands: list[_SequencedCommand] = [
-            {"command": command, "has_init": False} for command in self.statup_commands
+            {"command": command, "has_init": False} for command in self.startup_commands
         ]
 
     def execute(self) -> None:
@@ -72,13 +78,13 @@ class SequentialCommand(Command):
 class ParallelCommand(Command):
     def __init__(self, commands: list[Command]) -> None:
         super().__init__()
-        self.commands = commands
+        self.startup_commands = commands
         self.remaining_commands: list[_SequencedCommand] = [
             {"command": command, "has_init": False} for command in commands
         ]
 
     def init(self) -> None:
-        self.remaining_commands = [{"command": command, "has_init": False} for command in self.commands]
+        self.remaining_commands = [{"command": command, "has_init": False} for command in self.startup_commands]
 
     def execute(self) -> None:
         for command_info in self.remaining_commands[:]:
