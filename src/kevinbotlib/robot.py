@@ -7,7 +7,6 @@ import sys
 import tempfile
 import threading
 import time
-import traceback
 from threading import Thread
 from types import TracebackType
 from typing import NoReturn, final
@@ -23,9 +22,9 @@ from kevinbotlib.logger import (
     Logger,
     LoggerConfiguration,
     LoggerDirectories,
+    LoggerWriteOpts,
     StreamRedirector,
 )
-from kevinbotlib.util import fullclassname
 
 
 class InstanceLocker:
@@ -189,19 +188,8 @@ class BaseRobot:
         self._exc_hook(*args)
 
     @final
-    def _exc_hook(self, exc_type: type, exc_value, tb: TracebackType, *_args):
-        # print out the whole stack
-        tb_list = traceback.extract_tb(tb)
-        out = "Traceback (most recent call last):\n"
-
-        for filename, lineno, funcname, line in tb_list:
-            out += f"  File {filename}, line {lineno}, in {funcname}\n"
-            if line:
-                out += f"    {line.strip()}\n"
-        out += f"{fullclassname(exc_type)}: {exc_value}\n"
-        self.telemetry.critical(out)
-        # Re-raise the exception
-        sys.__excepthook__(exc_type, exc_value, tb)
+    def _exc_hook(self, _: type, exc_value, __: TracebackType, *_args):
+        self.telemetry.log(Level.CRITICAL, "The robot stopped due to an exception", LoggerWriteOpts(exception=exc_value))
 
     @final
     def run(self) -> NoReturn:
