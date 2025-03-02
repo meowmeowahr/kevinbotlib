@@ -119,7 +119,7 @@ class AbstractJoystickInterface(ABC):
     @abstractmethod
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
         raise NotImplementedError
-    
+
     @abstractmethod
     def is_connected(self) -> bool:
         return False
@@ -158,6 +158,9 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         for i in range(num_axes):
             self._axis_states[i] = 0.0
 
+    def is_connected(self) -> bool:
+        return self.connected
+
     def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
         return self._button_states.get(button_id, False)
@@ -173,7 +176,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         return buttons
 
     def get_axes(self, precision: int = 3):
-        return [round(max(min(self._axis_states[axis_id], 1), -1), precision) for axis_id in self._axis_states]
+        return [round(float(max(min(self._axis_states[axis_id], 1), -1)), precision) for axis_id in self._axis_states]
 
     def get_pov_direction(self) -> POVDirection:
         """Returns the current POV (D-pad) direction."""
@@ -428,7 +431,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
     @property
     def key(self) -> str:
         return self._client_key
-    
+
     def is_connected(self) -> bool:
         sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
         if not sendable:
@@ -453,7 +456,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             return []
         return sendable.value
 
-    def get_axes(self) -> list[int | Enum | IntEnum]:
+    def get_axes(self) -> list[float]:
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
         if not sendable:
             return []
@@ -513,3 +516,102 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
     def stop(self):
         """Stops the polling thread."""
         self.running = False
+
+
+class RemoteXboxController(RemoteRawJoystickDevice):
+    """Xbox-specific remote controller with button name mappings."""
+
+    def __init__(self, client: KevinbotCommClient, key: str, callback_polling_hz: int = 100) -> None:
+        super().__init__(client, key, callback_polling_hz)
+
+    def get_button_state(self, button: XboxControllerButtons) -> bool:
+        """Returns the state of a button using its friendly Xbox name."""
+        return super().get_button_state(button)
+
+    def get_buttons(self) -> list[XboxControllerButtons]:
+        """Returns a list of currently pressed buttons using Xbox button enums."""
+        return [XboxControllerButtons(x) for x in super().get_buttons()]
+
+    def get_axes(self, precision: int = 3) -> list[float]:
+        """Returns a list of axis values with Xbox-specific ordering."""
+        axes = super().get_axes()
+        if not axes:
+            return [0.0] * len(XboxControllerAxis)  # Return default zeroed axes if no data
+        return [round(x, precision) for x in axes]  # Convert to float and apply precision
+
+    def register_button_callback(self, button: XboxControllerButtons, callback: Callable[[bool], Any]) -> None:
+        """Registers a callback using the friendly Xbox button name."""
+        super().register_button_callback(button, callback)
+
+    def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        """Registers a callback for D-pad direction changes using Xbox terminology."""
+        super().register_pov_callback(callback)
+
+    def get_dpad_direction(self) -> POVDirection:
+        """Returns the current D-pad direction using Xbox terminology."""
+        return super().get_pov_direction()
+
+    def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
+        """Returns the current value of the specified trigger (0.0 to 1.0)."""
+        if trigger not in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+            msg = "Invalid trigger specified"
+            raise ValueError(msg)
+        value = super().get_axis_value(trigger, precision)
+        return max(value, 0.0)  # Ensure triggers are 0.0 to 1.0
+
+    def get_triggers(self, precision: int = 3) -> list[float]:
+        """Returns the current values of both triggers."""
+        return [
+            self.get_trigger_value(XboxControllerAxis.LeftTrigger, precision),
+            self.get_trigger_value(XboxControllerAxis.RightTrigger, precision),
+        ]
+
+    def get_left_stick(self, precision: int = 3) -> list[float]:
+        """Returns the current values of the left stick (x, y)."""
+        return [
+            super().get_axis_value(XboxControllerAxis.LeftX, precision),
+            super().get_axis_value(XboxControllerAxis.LeftY, precision),
+        ]
+
+    def get_right_stick(self, precision: int = 3) -> list[float]:
+        """Returns the current values of the right stick (x, y)."""
+        return [
+            super().get_axis_value(XboxControllerAxis.RightX, precision),
+            super().get_axis_value(XboxControllerAxis.RightY, precision),
+        ]
+
+    def _poll_loop(self):
+        """Xbox-specific polling loop that checks for state changes and triggers callbacks."""
+        while self.running:
+            # Check connection status
+            conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
+            self.connected = conn_sendable.value if conn_sendable else False
+
+            if self.connected:
+                # Check buttons
+                buttons = self.get_buttons()
+                current_button_states = {btn: True for btn in buttons}
+
+                # Check for button state changes
+                for button in set(self._last_button_states.keys()) | set(current_button_states.keys()):
+                    old_state = self._last_button_states.get(button, False)
+                    new_state = current_button_states.get(button, False)
+
+                    if old_state != new_state and button in self._button_callbacks:
+                        self._button_callbacks[button](new_state)
+
+                self._last_button_states = current_button_states
+
+                # Check POV/D-pad
+                current_pov = self.get_dpad_direction()
+                if current_pov != self._last_pov_state:
+                    for callback in self._pov_callbacks:
+                        callback(current_pov)
+                self._last_pov_state = current_pov
+
+                # Check axes (only update states here, specific methods handle formatting)
+                current_axes = super().get_axes()
+                for axis_id in range(len(current_axes)):
+                    self._last_axis_states[axis_id] = current_axes[axis_id]
+
+            time.sleep(1 / self.polling_hz)
