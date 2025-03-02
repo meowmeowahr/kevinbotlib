@@ -2,6 +2,7 @@ import atexit
 import contextlib
 import os
 import platform
+import sched
 import signal
 import sys
 import tempfile
@@ -156,6 +157,8 @@ class BaseRobot:
         self.comm_server = KevinbotCommServer(port=serve_port)
         self.comm_client = KevinbotCommClient(port=serve_port)
 
+        self._event_sched = sched.scheduler()
+
         self._print_log_level = print_level
 
         self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(
@@ -188,7 +191,9 @@ class BaseRobot:
         self._exc_hook(*args)
 
     @final
-    def _exc_hook(self, _: type, exc_value, __: TracebackType, *_args):
+    def _exc_hook(self, _: type, exc_value: BaseException, __: TracebackType, *_args):
+        if isinstance(exc_value, RobotStoppedException) or isinstance(exc_value, RobotEmergencyStoppedException):
+            return
         self.telemetry.log(Level.CRITICAL, "The robot stopped due to an exception", LoggerWriteOpts(exception=exc_value))
 
     @final

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import IO
+from unittest.mock import Base
 
 import platformdirs
 from loguru import logger as _internal_logger
@@ -49,7 +50,7 @@ class LoggerWriteOpts:
     depth: int = 1
     colors: bool = True
     ansi: bool = True
-    exception: bool = False
+    exception: bool | BaseException = False
 
 
 @dataclass
