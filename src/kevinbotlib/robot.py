@@ -56,6 +56,8 @@ class BaseRobot:
         self._signal_stop = False
         self._signal_estop = False
 
+        self._ready_for_periodic = False
+
         self._cycle_hz = cycle_time
 
     @final
@@ -97,6 +99,7 @@ class BaseRobot:
                 self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
                 try:
                     self.robot_start()
+                    self._ready_for_periodic = True
                     self.telemetry.log(Level.INFO, "Robot started")
 
                     while True:
@@ -113,6 +116,15 @@ class BaseRobot:
                         if self._signal_estop:
                             msg = "Robot signal e-stopped"
                             raise RobotEmergencyStoppedException(msg)
+                        
+                        # TODO: implement opmode init - will need to change how self._ready_for_periodic works
+                        if self._ready_for_periodic:
+                            # run periodic
+                            if self._ctrl_sendable.enabled:
+                                self.opmode_enabled_periodic(self._ctrl_sendable.opmode) # TODO: opmode checking
+                            else:
+                                self.opmode_disabled_periodic(self._ctrl_sendable.opmode)
+
                         time.sleep(1 / self._cycle_hz)
                 finally:
                     self.robot_end()
