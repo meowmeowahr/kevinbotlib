@@ -2,7 +2,6 @@ import atexit
 import contextlib
 import os
 import platform
-import sched
 import signal
 import sys
 import tempfile
@@ -128,6 +127,7 @@ class BaseRobot:
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
         cycle_time: float = 250,
+        log_cleanup_timer: float = 10.0
     ):
         """_summary_
 
@@ -136,8 +136,9 @@ class BaseRobot:
             serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8765.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
-            default_opmode (str, optional): Default Operational Mode to start in. Defaults to Teleoperated
+            default_opmode (str, optional): Default Operational Mode to start in. Defaults to the first item of `opmodes`.
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
+            log_cleanup_timer (float, optional): How often to cleanup logs in seconds Set to 0 to disable log cleanup. Defaults to 10.0.
         """
 
         self.telemetry = Logger()
@@ -147,7 +148,6 @@ class BaseRobot:
         threading.excepthook = self._thread_exc_hook
 
         self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
-        self.fileserver.start()
 
         self._instance_locker = InstanceLocker(f"{self.__class__.__name__}.lock")
         atexit.register(self._instance_locker.unlock)
@@ -157,9 +157,8 @@ class BaseRobot:
         self.comm_server = KevinbotCommServer(port=serve_port)
         self.comm_client = KevinbotCommClient(port=serve_port)
 
-        self._event_sched = sched.scheduler()
-
         self._print_log_level = print_level
+        self._log_timer_interval = log_cleanup_timer
 
         self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(
             opmode=default_opmode or opmodes[0], opmodes=opmodes
@@ -192,10 +191,20 @@ class BaseRobot:
 
     @final
     def _exc_hook(self, _: type, exc_value: BaseException, __: TracebackType, *_args):
-        if isinstance(exc_value, RobotStoppedException) or isinstance(exc_value, RobotEmergencyStoppedException):
+        if isinstance(exc_value, RobotEmergencyStoppedException | RobotStoppedException):
             return
-        self.telemetry.log(Level.CRITICAL, "The robot stopped due to an exception", LoggerWriteOpts(exception=exc_value))
+        self.telemetry.log(
+            Level.CRITICAL, "The robot stopped due to an exception", LoggerWriteOpts(exception=exc_value)
+        )
 
+    @final
+    def _log_cleanup_internal(self):
+        LoggerDirectories.cleanup_logs(LoggerDirectories.get_logger_directory())
+        self.telemetry.trace("Cleaned up logs")
+        if self._log_timer_interval != 0:
+            timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
+            timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.start()
     @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
@@ -221,6 +230,13 @@ class BaseRobot:
         self.comm_server.wait_until_serving()
         self.comm_client.connect()
 
+        self.fileserver.start()
+
+        if self._log_timer_interval != 0:
+            timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
+            timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.start()
+
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             self.comm_client.wait_until_connected()
             self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
@@ -236,7 +252,7 @@ class BaseRobot:
                     if sendable:
                         self._ctrl_sendable: ControlConsoleSendable = sendable
                     else:
-                        self._ctrl_sendable = self._ctrl_sendable.disabled()
+                        self._ctrl_sendable.enabled = False
                         self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
 
                     if self._signal_stop:
@@ -246,11 +262,17 @@ class BaseRobot:
                         msg = "Robot signal e-stopped"
                         raise RobotEmergencyStoppedException(msg)
 
-                    if self._ctrl_sendable.opmode not in self._ctrl_sendable.opmodes:
+                    if self._ctrl_sendable.opmodes != self._opmodes:
+                        self._ctrl_sendable.opmodes = self._opmodes
+                        self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+
+                    if self._ctrl_sendable.opmode not in self._opmodes:
                         self.telemetry.error(
                             f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}"
                         )
                         self._ctrl_sendable.opmode = self._opmodes[0]  # Fallback to default opmode
+                        self._ctrl_sendable.enabled = False
+                        self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
 
                     if self._ready_for_periodic:
                         current_enabled: bool = self._ctrl_sendable.enabled

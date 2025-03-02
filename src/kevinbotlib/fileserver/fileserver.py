@@ -199,7 +199,7 @@ class FileServer:
 
         self.httpserver.serve_forever()
 
-    def start(self):
+    def start(self, name: str="KevinbotLib.FileServer.Serve"):
         """Start both FTP and HTTP servers."""
         if not os.path.exists(self.directory):
             msg = f"Directory does not exist: {self.directory}"
@@ -215,7 +215,7 @@ class FileServer:
             )
 
         # Start HTTP server in a thread
-        self.http_thread = threading.Thread(target=self.start_http_server)
+        self.http_thread = threading.Thread(target=self.start_http_server, name=name)
         self.http_thread.daemon = True
         self.http_thread.start()
 

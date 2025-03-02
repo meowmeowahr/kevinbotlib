@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import IO
-from unittest.mock import Base
 
 import platformdirs
 from loguru import logger as _internal_logger

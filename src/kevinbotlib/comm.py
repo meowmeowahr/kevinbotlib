@@ -234,7 +234,7 @@ class KevinbotCommClient:
 
         self.running = False
         self.websocket: websockets.ClientConnection | None = None
-        self.loop = asyncio.new_event_loop()
+        self.loop = asyncio.get_event_loop()
         self.thread: threading.Thread | None = None
 
         self.on_update = on_update
@@ -290,7 +290,7 @@ class KevinbotCommClient:
             return
 
         self.running = True
-        self.thread = threading.Thread(target=self._run_async_loop, daemon=True)
+        self.thread = threading.Thread(target=self._run_async_loop, daemon=True, name="KevinbotLib.CommClient.AsyncLoop")
         self.thread.start()
 
     def wait_until_connected(self, timeout: float = 5.0):
