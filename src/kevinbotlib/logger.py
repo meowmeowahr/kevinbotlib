@@ -41,6 +41,7 @@ class Level(Enum):
     WARNING = _internal_logger.level("WARNING")
     ERROR = _internal_logger.level("ERROR")
     CRITICAL = _internal_logger.level("CRITICAL")
+    SECURITY = _internal_logger.level("SECURITY", 45, "<bg 202><bold>")
 
 
 @dataclass
@@ -136,6 +137,13 @@ class Logger:
             raise LoggerNotConfiguredException
 
         self._internal_logger.opt(depth=1).log(Level.ERROR.name, message)
+
+    def security(self, message: str):
+        if not Logger.is_configured:
+            raise LoggerNotConfiguredException
+
+        self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
+        
 
     def critical(self, message: str):
         if not Logger.is_configured:
