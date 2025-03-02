@@ -1,0 +1,24 @@
+import time
+
+from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.joystick import RemoteRawJoystickDevice
+from kevinbotlib.logger import Logger, LoggerConfiguration
+
+logger = Logger()
+logger.configure(LoggerConfiguration())
+
+client = KevinbotCommClient(on_update=None)
+client.connect()
+client.wait_until_connected()
+
+controller = RemoteRawJoystickDevice(client, "joysticks/0")
+controller.start_polling()
+
+try:
+    while True:
+        print("Buttons:", controller.get_buttons())
+        print("POV:", controller.get_pov_direction())
+        print("Axes:", controller.get_axes())
+        time.sleep(0.1)
+except KeyboardInterrupt:
+    controller.stop()

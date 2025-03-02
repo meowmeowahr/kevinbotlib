@@ -392,3 +392,114 @@ class JoystickSender:
     @final
     def stop(self):
         self.running = False
+
+
+class RemoteRawJoystickDevice(AbstractJoystickInterface):
+    def __init__(self, client: KevinbotCommClient, key: str, callback_polling_hz: int = 100) -> None:
+        super().__init__()
+        self._client: KevinbotCommClient = client
+        self._client_key: str = key.rstrip("/")
+        self.polling_hz = callback_polling_hz
+
+        # Callback storage
+        self._button_callbacks = {}
+        self._pov_callbacks: list[Callable[[POVDirection], Any]] = []
+        self._axis_callbacks = {}
+
+        # State tracking for callback triggering
+        self._last_button_states = {}
+        self._last_pov_state = POVDirection.NONE
+        self._last_axis_states = {}
+
+        self.connected = False
+        self.running = False
+
+        # Start polling thread
+        self.start_polling()
+
+    @property
+    def client(self) -> KevinbotCommClient:
+        return self._client
+
+    @property
+    def key(self) -> str:
+        return self._client_key
+
+    def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+        sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
+        if not sendable:
+            return False
+        return button_id in sendable.value
+
+    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
+        if not sendable:
+            return 0.0
+        return round(sendable.value[axis_id], precision) if axis_id < len(sendable.value) else 0.0
+
+    def get_buttons(self) -> list[int | Enum | IntEnum]:
+        sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
+        if not sendable:
+            return []
+        return sendable.value
+
+    def get_axes(self) -> list[int | Enum | IntEnum]:
+        sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
+        if not sendable:
+            return []
+        return sendable.value
+
+    def get_pov_direction(self) -> POVDirection:
+        sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
+        if not sendable:
+            return POVDirection.NONE
+        return POVDirection(sendable.value)
+
+    def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
+        """Registers a callback function for button press/release events."""
+        self._button_callbacks[button_id] = callback
+
+    def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        """Registers a callback function for POV (D-pad) direction changes."""
+        self._pov_callbacks.append(callback)
+
+    def _poll_loop(self):
+        """Polling loop that checks for state changes and triggers callbacks."""
+        while self.running:
+            # Check connection status
+            conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
+            self.connected = conn_sendable.value if conn_sendable else False
+
+            if self.connected:
+                # Check buttons
+                buttons = self.get_buttons()
+                current_button_states = {btn: True for btn in buttons}
+
+                # Check for button state changes
+                for button in set(self._last_button_states.keys()) | set(current_button_states.keys()):
+                    old_state = self._last_button_states.get(button, False)
+                    new_state = current_button_states.get(button, False)
+
+                    if old_state != new_state and button in self._button_callbacks:
+                        self._button_callbacks[button](new_state)
+
+                self._last_button_states = current_button_states
+
+                # Check POV
+                current_pov = self.get_pov_direction()
+                if current_pov != self._last_pov_state:
+                    for callback in self._pov_callbacks:
+                        callback(current_pov)
+                self._last_pov_state = current_pov
+
+            time.sleep(1 / self.polling_hz)
+
+    def start_polling(self):
+        """Starts the polling loop in a separate thread."""
+        if not self.running:
+            self.running = True
+            threading.Thread(target=self._poll_loop, daemon=True, name="KevinbotLib.Joystick.Remote.Poll").start()
+
+    def stop(self):
+        """Stops the polling thread."""
+        self.running = False
