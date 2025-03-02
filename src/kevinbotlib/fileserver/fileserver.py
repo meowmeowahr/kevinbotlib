@@ -142,9 +142,10 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
 class FileServer:
     """Combined FTP and HTTP file server for KevinBot."""
 
-    def __init__(self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1"):
+    def __init__(self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1", *, enable_ftp_server: bool = False):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port
+        self._ftp_enabled = enable_ftp_server
         self.http_port = http_port
         self.host = host
         self.ftp_thread = None
@@ -203,9 +204,11 @@ class FileServer:
             raise ValueError(msg)
 
         # Start FTP server in a thread
-        self.ftp_thread = threading.Thread(target=self.start_ftp_server)
-        self.ftp_thread.daemon = True
-        self.ftp_thread.start()
+        if self._ftp_enabled:
+            self.ftp_thread = threading.Thread(target=self.start_ftp_server)
+            self.ftp_thread.daemon = True
+            self.ftp_thread.start()
+            self.logger.security("You have the FTP fileserver enabled. The ftp server is a security vunerability that can allow unauthorized access to system files. It is deprecated and will be removed in a future version")
 
         # Start HTTP server in a thread
         self.http_thread = threading.Thread(target=self.start_http_server)
