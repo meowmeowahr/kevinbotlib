@@ -3,43 +3,37 @@
 ![Kevinbot logo](media/icon.svg#only-dark){: style="height:128px;width:128px"}
 ![Kevinbot logo](media/icon-black.svg#only-light){: style="height:128px;width:128px"}
 
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
-[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg?style=for-the-badge)](https://github.com/pypa/hatch)
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
+[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg?style=for-the-badge)](https://github.com/pypa/hatch)
 
-KevinbotLib is a robot control system for Kevinbot v3 and the [Kevinbot Core](https://github.com/meowmeowahr/KevinbotV3-HW-Core). You can easily and safely control Kevinbot's drivebase, servos, lighting, and more. It also continuously polls sensor data. It can operate in two modes: Direct Serial, and MQTT with the Kevinbot Server.
+KevinbotLib is a modular robot control system integrating a high-speed server-client communication system, robust logging, gamepad inputs, and more.
 
 ### Features
 
-* **Multiple Control Interfaces**
-    * Direct Serial mode
-    * MQTT networked mode (with KevinbotLib Server)
-
-
-* **Comprehensive Subsystem Control**
-    * Drivebase with power and state monitoring
-    * Servo control
-    * Multi-zone lighting system with effects
-    * Continuous sensor polling
-    * Battery management and monitoring
-    * IMU support (gyroscope and accelerometer)
-
-
-* **Developer-Friendly Design**
-    * Simple MQTT API
-    * Extensive configuration options
-    * Real-time state tracking
-    * Built-in safety features
-    * Detailed logging and debugging
-    * Python 3.13 support
-
-
-* **Robust Architecture**
-    * Thread-safe communication
-    * Event-based callback system
-    * Auto-reconnection handling
-    * Multiple client support via MQTT
+* **The Command Scheduler**
+    * A way to asyncronously run robot tasks
+    * Commands can be grouped to run sequentially, or in parallel if desired
+    * Commands can be executed at a set interval
+* **The Communication System**
+    * Based on [websockets](https://github.com/python-websockets/websockets)
+    * Data can be easily sent from robot to client or vise-versa
+    * Data is syncronized between all clients
+    * Out-of-the-box ready-made sendables for builtin primitive types
+    * Easy to create custom sendables based on [pydantic](https://github.com/pydantic/pydantic) models
+* **The Vision Pipeline System**
+    * Create vision pipelines based on [OpenCV](https://opencv.org/)
+    * Pre-made sendables for video frames
+    * Pre-made encoders and decoders for the communication system
+* **Robust Logging**
+    * Logging is based on [loguru](https://github.com/Delgan/loguru)
+    * Automatic file rotations
+    * Logs to `stdout`, an inbuilt file server over HTTP, and/or an ~~inbuilt FTP server~~ (deprecated)
+* **Gamepad Inputs**
+    * Based on [SDL2](https://github.com/py-sdl/py-sdl2)
+    * Builtin-support for Raw devices and Xbox One and Xbox Series controllers
+    * Joystick data sender and reciever through the communication system
 
 !!! warning "Development"
     This project is in the early stage of development. There are many missing functions that will be supported in the future.

@@ -53,6 +53,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tilde
 
 plugins:
   - mkdocstrings:
@@ -74,7 +75,8 @@ nav:
   - installation.md
   # - Command Line Tools:
   - examples.md
-  - architecture.md
+  - commandscheduler.md
+  - robot.md
   - reference.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
