@@ -119,6 +119,10 @@ class AbstractJoystickInterface(ABC):
     @abstractmethod
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
         raise NotImplementedError
+    
+    @abstractmethod
+    def is_connected(self) -> bool:
+        return False
 
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
@@ -424,6 +428,12 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
     @property
     def key(self) -> str:
         return self._client_key
+    
+    def is_connected(self) -> bool:
+        sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
+        if not sendable:
+            return False
+        return sendable.value
 
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
         sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)

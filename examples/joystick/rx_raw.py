@@ -19,6 +19,7 @@ try:
         print("Buttons:", controller.get_buttons())
         print("POV:", controller.get_pov_direction())
         print("Axes:", controller.get_axes())
+        print("Connected:", controller.is_connected())
         time.sleep(0.1)
 except KeyboardInterrupt:
     controller.stop()
