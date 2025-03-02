@@ -204,6 +204,7 @@ class BaseRobot:
         self.telemetry.trace("Cleaned up logs")
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
+            timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
             timer.start()
     @final
@@ -235,6 +236,7 @@ class BaseRobot:
 
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
+            timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
             timer.start()
 
