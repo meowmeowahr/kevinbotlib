@@ -127,7 +127,7 @@ class BaseRobot:
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
         cycle_time: float = 250,
-        log_cleanup_timer: float = 10.0
+        log_cleanup_timer: float = 10.0,
     ):
         """
         Initialize the robot
@@ -207,6 +207,7 @@ class BaseRobot:
             timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
             timer.start()
+
     @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""

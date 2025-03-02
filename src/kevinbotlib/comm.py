@@ -1,7 +1,7 @@
 import asyncio
 import threading
 import time
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import Any, TypeVar
 
@@ -21,6 +21,12 @@ class BaseSendable(BaseModel, ABC):
 
     def get_dict(self) -> dict:
         return {"timeout": self.timeout, "value": None, "did": self.data_id, "struct": self.struct}
+
+
+class SendableGenerator(ABC):
+    @abstractmethod
+    def generate_sendable(self) -> BaseSendable:
+        pass
 
 
 class IntegerSendable(BaseSendable):
@@ -290,7 +296,9 @@ class KevinbotCommClient:
             return
 
         self.running = True
-        self.thread = threading.Thread(target=self._run_async_loop, daemon=True, name="KevinbotLib.CommClient.AsyncLoop")
+        self.thread = threading.Thread(
+            target=self._run_async_loop, daemon=True, name="KevinbotLib.CommClient.AsyncLoop"
+        )
         self.thread.start()
 
     def wait_until_connected(self, timeout: float = 5.0):
@@ -371,11 +379,14 @@ class KevinbotCommClient:
                 self.on_disconnect()
             self.websocket = None
 
-    def send(self, key: str, data: BaseSendable) -> None:
+    def send(self, key: str, data: BaseSendable | SendableGenerator) -> None:
         """Publishes data to the server."""
         if not self.running or not self.websocket:
             self.logger.error(f"Cannot publish to {key}: client is not connected")
             return
+        
+        if isinstance(data, SendableGenerator):
+            data = data.generate_sendable()
 
         async def _publish() -> None:
             if not self.websocket:
