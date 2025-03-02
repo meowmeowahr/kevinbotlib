@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.comm import KevinbotCommClient, StringSendable
+from kevinbotlib.comm import IntegerSendable, KevinbotCommClient, StringSendable
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
@@ -12,7 +12,8 @@ client.wait_until_connected()
 
 try:
     while True:
-        print(client.get("example/hierarchy", StringSendable))
+        print(client.get("example/hierarchy/test", IntegerSendable))
+        print(client.get("example/hierarchy/test2", StringSendable))
         time.sleep(0.1)
 except KeyboardInterrupt:
     client.disconnect()
