@@ -7,7 +7,7 @@ import time
 from threading import Thread
 from typing import NoReturn, final
 
-from kevinbotlib.comm import KevinbotCommClient, KevinbotCommServer, ControlConsoleSendable
+from kevinbotlib.comm import ControlConsoleSendable, KevinbotCommClient, KevinbotCommServer
 from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotStoppedException
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
@@ -54,15 +54,17 @@ class BaseRobot:
 
         self._print_log_level = print_level
 
-        self._ctrl_sendable = ControlConsoleSendable(opmode=default_opmode or opmodes[0], opmodes=opmodes)  # here we set the default opmode
+        self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(opmode=default_opmode or opmodes[0], opmodes=opmodes)
         self._ctrl_sendable_key = "%ControlConsole"
 
         self._signal_stop = False
         self._signal_estop = False
 
         self._ready_for_periodic = False
-
         self._cycle_hz = cycle_time
+
+        # Track the previous state for opmode transitions
+        self._prev_enabled = None  # Was the robot previously enabled?
 
     @final
     def _signal_usr1_capture(self, _, __):
@@ -79,13 +81,11 @@ class BaseRobot:
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
         try:
-            # platform checks
             if platform.system() != "Linux":
                 self.telemetry.warning(
                     "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
                 )
 
-            # shutdown signal
             signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
             signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
             self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
@@ -99,7 +99,7 @@ class BaseRobot:
             self.comm_client.connect()
 
             with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
-                self.comm_client.wait_until_connected()  # wait until connection before publishing data
+                self.comm_client.wait_until_connected()
                 self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
                 try:
                     self.robot_start()
@@ -107,9 +107,9 @@ class BaseRobot:
                     self.telemetry.log(Level.INFO, "Robot started")
 
                     while True:
-                        sendable = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
+                        sendable: ControlConsoleSendable | None = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
                         if sendable:
-                            self._ctrl_sendable = sendable
+                            self._ctrl_sendable: ControlConsoleSendable = sendable
                         else:
                             self._ctrl_sendable = self._ctrl_sendable.disabled()
                             self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
@@ -120,23 +120,36 @@ class BaseRobot:
                         if self._signal_estop:
                             msg = "Robot signal e-stopped"
                             raise RobotEmergencyStoppedException(msg)
-                        
-                        # TODO: implement opmode init - will need to change how self._ready_for_periodic works
+
                         if self._ctrl_sendable.opmode not in self._ctrl_sendable.opmodes:
-                            self.telemetry.error(f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}")
+                            self.telemetry.error(
+                                f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}"
+                            )
+                            self._ctrl_sendable.opmode = self._opmodes[0]  # Fallback to default opmode
 
                         if self._ready_for_periodic:
-                            # run periodic
-                            if self._ctrl_sendable.enabled:
-                                self.opmode_enabled_periodic(self._ctrl_sendable.opmode)
+                            current_enabled: bool = self._ctrl_sendable.enabled
+                            if self._ctrl_sendable:
+                                current_opmode = self._ctrl_sendable.opmode
+
+                            if self._prev_enabled != current_enabled:
+                                if current_enabled:
+                                    self.opmode_enabled_init(current_opmode)
+                                else:
+                                    self.opmode_disabled_init(current_opmode)
+
+                            if current_enabled:
+                                self.opmode_enabled_periodic(current_opmode)
                             else:
-                                self.opmode_disabled_periodic(self._ctrl_sendable.opmode)
+                                self.opmode_disabled_periodic(current_opmode)
+
+                            self._prev_enabled = current_enabled
+                            self._prev_opmode = current_opmode
 
                         time.sleep(1 / self._cycle_hz)
                 finally:
                     self.robot_end()
         except Exception:  # noqa: BLE001
-            # this will output user code errors to the logs
             self.telemetry.log(
                 Level.CRITICAL, "Robot code execution stopped due to an exception", LoggerWriteOpts(exception=True)
             )
@@ -162,7 +175,7 @@ class BaseRobot:
             opmode (str): The OpMode the robot is currently in. Default opmodes are `"Teleoperated"` and `"Test"`
         """
 
-    def opmode_disabled_init(self, opmode: str, *, interupted: bool) -> None:
+    def opmode_disabled_init(self, opmode: str) -> None:
         """Runs once when the robot is disabled
 
         Args:

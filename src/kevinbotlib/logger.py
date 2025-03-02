@@ -143,7 +143,6 @@ class Logger:
             raise LoggerNotConfiguredException
 
         self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
-        
 
     def critical(self, message: str):
         if not Logger.is_configured:
