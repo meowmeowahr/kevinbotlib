@@ -3,6 +3,13 @@ from kevinbotlib.robot import BaseRobot
 
 
 class DemoRobot(BaseRobot):
+    def __init__(self):
+        super().__init__(
+            opmodes=["TestOp1", "TestOp2", "TestOp3", "TestOp4"], # robot's operational modes
+            log_level=Level.TRACE, # lowset logging level
+            cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
+        )
+
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()
         print(
@@ -35,8 +42,4 @@ class DemoRobot(BaseRobot):
 
 
 if __name__ == "__main__":
-    DemoRobot(
-        ["TestOp1", "TestOp2", "TestOp3", "TestOp4"],
-        log_level=Level.TRACE,
-        cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
-    ).run()  # run the robot with TRACE (lowest level) logging - recommended to use INFO or higher for production
+    DemoRobot().run()

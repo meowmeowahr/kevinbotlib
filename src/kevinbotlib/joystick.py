@@ -2,7 +2,7 @@ import threading
 import time
 from collections.abc import Callable
 from enum import IntEnum
-from typing import Any
+from typing import Any, final
 
 import sdl2
 import sdl2.ext
@@ -318,22 +318,32 @@ class JoystickSender:
         self, client: KevinbotCommClient, joystick: RawLocalJoystickDevice | LocalXboxController, key: str
     ) -> None:
         self.client = client
-        self.joystick = joystick
-        self.key = key.rstrip("/")
-        self.running = True
-        self.thread = threading.Thread(target=self._send_loop(), daemon=True)
-        self.thread.start()
 
+        self.joystick = joystick
+
+        self.key = key.rstrip("/")
+
+        self.running = False
+
+    @final
     def _send(self):
         self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
         self.client.send(self.key + "/pov", IntegerSendable(value=self.joystick.get_pov_direction().value))
         self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
         self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.connected))
 
+    @final
     def _send_loop(self):
         while self.running:
             self._send()
             time.sleep(1 / self.joystick.polling_hz)
 
+    @final
+    def start(self):
+        self.running = True
+        self.thread = threading.Thread(target=self._send_loop(), daemon=True, name="KevinbotLib.Joysticks.CommSender")
+        self.thread.start()
+
+    @final
     def stop(self):
         self.running = False

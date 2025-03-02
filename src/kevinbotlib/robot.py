@@ -129,7 +129,8 @@ class BaseRobot:
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0
     ):
-        """_summary_
+        """
+        Initialize the robot
 
         Args:
             opmodes (list[str]): List of operational mode names.
