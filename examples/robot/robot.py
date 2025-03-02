@@ -27,6 +27,7 @@ class DemoRobot(BaseRobot):
 
 if __name__ == "__main__":
     DemoRobot(
+        ["TestOp1", "TestOp2", "TestOp3", "TestOp4"],
         log_level=Level.TRACE,
         cycle_time=20 # loop our robot code 20x per second - it is recommended to run much higher in practice
     ).run()  # run the robot with TRACE (lowest level) logging - recommended to use INFO or higher for production

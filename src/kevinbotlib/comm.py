@@ -100,7 +100,7 @@ class BinarySendable(BaseSendable):
         return data
 
 
-class OperationalModeSendable(BaseSendable):
+class ControlConsoleSendable(BaseSendable):
     enabled: bool = False
     opmode: str = "Teleoperated"
     opmodes: list[str] = ["Teleoperated", "Test"]
@@ -114,11 +114,11 @@ class OperationalModeSendable(BaseSendable):
         data["estop"] = self.estop
         return data
 
-    def disabled(self) -> "OperationalModeSendable":
-        return OperationalModeSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=self.estop)
+    def disabled(self) -> "ControlConsoleSendable":
+        return ControlConsoleSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=self.estop)
 
-    def estopped(self) -> "OperationalModeSendable":
-        return OperationalModeSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=True)
+    def estopped(self) -> "ControlConsoleSendable":
+        return ControlConsoleSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=True)
 
 
 T = TypeVar("T", bound=BaseSendable)
@@ -250,7 +250,7 @@ class KevinbotCommClient:
             self.register_type(FloatSendable)
             self.register_type(AnyListSendable)
             self.register_type(DictSendable)
-            self.register_type(OperationalModeSendable)
+            self.register_type(ControlConsoleSendable)
 
     @property
     def host(self):

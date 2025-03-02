@@ -7,7 +7,7 @@ import time
 from threading import Thread
 from typing import NoReturn, final
 
-from kevinbotlib.comm import KevinbotCommClient, KevinbotCommServer, OperationalModeSendable
+from kevinbotlib.comm import KevinbotCommClient, KevinbotCommServer, ControlConsoleSendable
 from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotStoppedException
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
@@ -24,15 +24,17 @@ from kevinbotlib.logger import (
 class BaseRobot:
     def __init__(
         self,
+        opmodes: list[str],
         serve_port: int = 8765,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
-        default_opmode: str = "Teleoperated",
+        default_opmode: str | None = None,
         cycle_time: float = 250,
     ):
         """_summary_
 
         Args:
+            opmodes (list[str]): List of operational mode names.
             serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8765.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
@@ -45,13 +47,15 @@ class BaseRobot:
         self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
         self.fileserver.start()
 
+        self._opmodes = opmodes
+
         self.comm_server = KevinbotCommServer(port=serve_port)
         self.comm_client = KevinbotCommClient(port=serve_port)
 
         self._print_log_level = print_level
 
-        self._ctrl_sendable = OperationalModeSendable(opmode=default_opmode)  # here we set the default opmode
-        self._ctrl_sendable_key = "SysOp/opmode"
+        self._ctrl_sendable = ControlConsoleSendable(opmode=default_opmode or opmodes[0], opmodes=opmodes)  # here we set the default opmode
+        self._ctrl_sendable_key = "%ControlConsole"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -103,7 +107,7 @@ class BaseRobot:
                     self.telemetry.log(Level.INFO, "Robot started")
 
                     while True:
-                        sendable = self.comm_client.get(self._ctrl_sendable_key, OperationalModeSendable)
+                        sendable = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
                         if sendable:
                             self._ctrl_sendable = sendable
                         else:
@@ -118,10 +122,13 @@ class BaseRobot:
                             raise RobotEmergencyStoppedException(msg)
                         
                         # TODO: implement opmode init - will need to change how self._ready_for_periodic works
+                        if self._ctrl_sendable.opmode not in self._ctrl_sendable.opmodes:
+                            self.telemetry.error(f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}")
+
                         if self._ready_for_periodic:
                             # run periodic
                             if self._ctrl_sendable.enabled:
-                                self.opmode_enabled_periodic(self._ctrl_sendable.opmode) # TODO: opmode checking
+                                self.opmode_enabled_periodic(self._ctrl_sendable.opmode)
                             else:
                                 self.opmode_disabled_periodic(self._ctrl_sendable.opmode)
 
