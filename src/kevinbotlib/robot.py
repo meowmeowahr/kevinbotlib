@@ -1,14 +1,21 @@
+import atexit
 import contextlib
 import os
 import platform
 import signal
 import sys
+import tempfile
+import threading
 import time
 from threading import Thread
+import traceback
+from types import TracebackType
 from typing import NoReturn, final
 
+import psutil
+
 from kevinbotlib.comm import ControlConsoleSendable, KevinbotCommClient, KevinbotCommServer
-from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotStoppedException
+from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotLockedException, RobotStoppedException
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
     FileLoggerConfig,
@@ -16,10 +23,103 @@ from kevinbotlib.logger import (
     Logger,
     LoggerConfiguration,
     LoggerDirectories,
-    LoggerWriteOpts,
     StreamRedirector,
 )
+from kevinbotlib.util import fullclassname
 
+
+class InstanceLocker:
+    def __init__(self, lockfile_name: str):
+        """Initialize the InstanceLocker
+
+        Args:
+            lockfile_name (str): The name of the lockfile (e.g., 'robot.lock').
+        """
+        self.lockfile_name = lockfile_name
+        self.pid = os.getpid()
+        self._locked = False
+
+    def lock(self) -> bool:
+        """Attempt to acquire the lock by creating a lockfile with the current PID.
+
+        Returns:
+            bool: True if the lock was successfully acquired, False if another instance is running.
+        """
+        if self._locked:
+            return True  # Already locked by this instance
+
+        # Check if another instance is running
+        if self.is_locked(self.lockfile_name):
+            return False
+
+        # Try to create the lockfile
+        try:
+            with open(os.path.join(tempfile.gettempdir(), self.lockfile_name), "w") as f:
+                f.write(str(self.pid))
+            self._locked = True
+            return True
+        except FileExistsError:
+            # Double-check in case of race condition
+            if self.is_locked(self.lockfile_name):
+                return False
+            # If the process is gone, overwrite the lockfile
+            with open(os.path.join(tempfile.gettempdir(), self.lockfile_name), "w") as f:
+                f.write(str(self.pid))
+            self._locked = True
+            return True
+        except IOError as e:
+            Logger().error(f"Failed to create lockfile: {repr(e)}")
+            return False
+
+    def unlock(self) -> None:
+        """Release the lock by removing the lockfile."""
+        if not self._locked:
+            return
+
+        try:
+            if os.path.exists(os.path.join(tempfile.gettempdir(), self.lockfile_name)):
+                with open(os.path.join(tempfile.gettempdir(), self.lockfile_name), "r") as f:
+                    pid = f.read().strip()
+                if pid == str(self.pid):  # Only remove if this process owns the lock
+                    os.remove(os.path.join(tempfile.gettempdir(), self.lockfile_name))
+            self._locked = False
+        except IOError as e:
+            Logger().error(f"Failed to remove lockfile: {repr(e)}")
+
+    @staticmethod
+    def is_locked(lockfile_name: str) -> int:
+        """Check if the lockfile exists and corresponds to a running process.
+
+        Args:
+            lockfile_name (str): The name of the lockfile to check.
+
+        Returns:
+            int: -1 if not locked, PID of locking process
+        """
+        if not os.path.exists(os.path.join(tempfile.gettempdir(), lockfile_name)):
+            return False
+
+        try:
+            with open(os.path.join(tempfile.gettempdir(), lockfile_name), "r") as f:
+                pid_str = f.read().strip()
+                pid = int(pid_str)
+        except (IOError, ValueError):
+            # If the file is corrupt or unreadable, assume it's stale and not locked
+            return False
+        return pid in [
+     p.info["pid"]
+     for p in psutil.process_iter(attrs=["pid", "name"])
+]
+
+
+    def __enter__(self) -> "InstanceLocker":
+        """Context manager support: acquire the lock."""
+        self.lock()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Context manager support: release the lock."""
+        self.unlock()
 
 class BaseRobot:
     def __init__(
@@ -41,11 +141,18 @@ class BaseRobot:
             default_opmode (str, optional): Default Operational Mode to start in. Defaults to Teleoperated
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
         """
+
         self.telemetry = Logger()
         self.telemetry.configure(LoggerConfiguration(level=log_level, file_logger=FileLoggerConfig()))
 
+        sys.excepthook = self._exc_hook
+        threading.excepthook = self._thread_exc_hook
+
         self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
         self.fileserver.start()
+
+        self._instance_locker = InstanceLocker(f"{self.__class__.__name__}.lock")
+        atexit.register(self._instance_locker.unlock)
 
         self._opmodes = opmodes
 
@@ -65,7 +172,6 @@ class BaseRobot:
 
         # Track the previous state for opmode transitions
         self._prev_enabled = None  # Was the robot previously enabled?
-
     @final
     def _signal_usr1_capture(self, _, __):
         self.telemetry.critical("Signal stop detected... Stopping now")
@@ -78,82 +184,102 @@ class BaseRobot:
         self._signal_estop = True
 
     @final
+    def _thread_exc_hook(self, args):
+        self._exc_hook(*args)
+
+    @final
+    def _exc_hook(self, exc_type: type, exc_value, tb: TracebackType, *args):
+        # print out the whole stack
+        tb_list = traceback.extract_tb(tb)
+        out = "Traceback (most recent call last):\n"
+
+        for filename, lineno, funcname, line in tb_list:
+            out += f"  File {filename}, line {lineno}, in {funcname}\n"
+            if line:
+                out += f"    {line.strip()}\n"
+        out += f"{fullclassname(exc_type)}: {exc_value}\n"
+        self.telemetry.critical(out)
+        # Re-raise the exception
+        sys.__excepthook__(exc_type, exc_value, tb)
+        
+
+    @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
-        try:
-            if platform.system() != "Linux":
-                self.telemetry.warning(
-                    "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
-                )
+        if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
+            msg = f"Another robot with the class name {self.__class__.__name__} is already running"
+            raise RobotLockedException(msg)
+        else:
+            self._instance_locker.lock()
 
-            signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
-            signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
-            self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
-
-            Thread(
-                target=self.comm_server.serve,
-                daemon=True,
-                name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
-            ).start()
-            self.comm_server.wait_until_serving()
-            self.comm_client.connect()
-
-            with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
-                self.comm_client.wait_until_connected()
-                self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
-                try:
-                    self.robot_start()
-                    self._ready_for_periodic = True
-                    self.telemetry.log(Level.INFO, "Robot started")
-
-                    while True:
-                        sendable: ControlConsoleSendable | None = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
-                        if sendable:
-                            self._ctrl_sendable: ControlConsoleSendable = sendable
-                        else:
-                            self._ctrl_sendable = self._ctrl_sendable.disabled()
-                            self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
-
-                        if self._signal_stop:
-                            msg = "Robot signal stopped"
-                            raise RobotStoppedException(msg)
-                        if self._signal_estop:
-                            msg = "Robot signal e-stopped"
-                            raise RobotEmergencyStoppedException(msg)
-
-                        if self._ctrl_sendable.opmode not in self._ctrl_sendable.opmodes:
-                            self.telemetry.error(
-                                f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}"
-                            )
-                            self._ctrl_sendable.opmode = self._opmodes[0]  # Fallback to default opmode
-
-                        if self._ready_for_periodic:
-                            current_enabled: bool = self._ctrl_sendable.enabled
-                            if self._ctrl_sendable:
-                                current_opmode = self._ctrl_sendable.opmode
-
-                            if self._prev_enabled != current_enabled:
-                                if current_enabled:
-                                    self.opmode_enabled_init(current_opmode)
-                                else:
-                                    self.opmode_disabled_init(current_opmode)
-
-                            if current_enabled:
-                                self.opmode_enabled_periodic(current_opmode)
-                            else:
-                                self.opmode_disabled_periodic(current_opmode)
-
-                            self._prev_enabled = current_enabled
-                            self._prev_opmode = current_opmode
-
-                        time.sleep(1 / self._cycle_hz)
-                finally:
-                    self.robot_end()
-        except Exception:  # noqa: BLE001
-            self.telemetry.log(
-                Level.CRITICAL, "Robot code execution stopped due to an exception", LoggerWriteOpts(exception=True)
+        if platform.system() != "Linux":
+            self.telemetry.warning(
+                "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
             )
-            sys.exit(1)
+
+        signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
+        signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
+        self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
+
+        Thread(
+            target=self.comm_server.serve,
+            daemon=True,
+            name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
+        ).start()
+        self.comm_server.wait_until_serving()
+        self.comm_client.connect()
+
+        with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
+            self.comm_client.wait_until_connected()
+            self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+            try:
+                self.robot_start()
+                self._ready_for_periodic = True
+                self.telemetry.log(Level.INFO, "Robot started")
+
+                while True:
+                    sendable: ControlConsoleSendable | None = self.comm_client.get(self._ctrl_sendable_key, ControlConsoleSendable)
+                    if sendable:
+                        self._ctrl_sendable: ControlConsoleSendable = sendable
+                    else:
+                        self._ctrl_sendable = self._ctrl_sendable.disabled()
+                        self.comm_client.send(self._ctrl_sendable_key, self._ctrl_sendable)
+
+                    if self._signal_stop:
+                        msg = "Robot signal stopped"
+                        raise RobotStoppedException(msg)
+                    if self._signal_estop:
+                        msg = "Robot signal e-stopped"
+                        raise RobotEmergencyStoppedException(msg)
+
+                    if self._ctrl_sendable.opmode not in self._ctrl_sendable.opmodes:
+                        self.telemetry.error(
+                            f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}"
+                        )
+                        self._ctrl_sendable.opmode = self._opmodes[0]  # Fallback to default opmode
+
+                    if self._ready_for_periodic:
+                        current_enabled: bool = self._ctrl_sendable.enabled
+                        if self._ctrl_sendable:
+                            current_opmode = self._ctrl_sendable.opmode
+
+                        if self._prev_enabled != current_enabled:
+                            if current_enabled:
+                                self.opmode_enabled_init(current_opmode)
+                            else:
+                                self.opmode_disabled_init(current_opmode)
+
+                        if current_enabled:
+                            self.opmode_enabled_periodic(current_opmode)
+                        else:
+                            self.opmode_disabled_periodic(current_opmode)
+
+                        self._prev_enabled = current_enabled
+                        self._prev_opmode = current_opmode
+
+                    time.sleep(1 / self._cycle_hz)
+            finally:
+                self.robot_end()
 
     def robot_start(self) -> None:
         """Run after the robot is initialized"""
