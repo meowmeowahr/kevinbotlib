@@ -11,9 +11,11 @@ client = KevinbotCommClient()
 client.connect()
 client.wait_until_connected()
 
+
 class TestGenerator(SendableGenerator):
     def generate_sendable(self) -> BaseSendable:
         return IntegerSendable(value=random.randint(0, 100))
+
 
 generator = TestGenerator()
 

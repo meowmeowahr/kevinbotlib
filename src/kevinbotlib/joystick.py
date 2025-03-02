@@ -1,7 +1,8 @@
 import threading
 import time
+from abc import ABC, abstractmethod
 from collections.abc import Callable
-from enum import IntEnum
+from enum import Enum, IntEnum
 from typing import Any, final
 
 import sdl2
@@ -84,7 +85,43 @@ class LocalJoystickIdentifiers:
         return joystick_guids
 
 
-class RawLocalJoystickDevice:
+class AbstractJoystickInterface(ABC):
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.polling_hz = 0
+        self.connected = False
+
+    @abstractmethod
+    def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_buttons(self) -> list[int | Enum | IntEnum]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_axes(self) -> list[int | Enum | IntEnum]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_pov_direction(self) -> POVDirection:
+        raise NotImplementedError
+
+    @abstractmethod
+    def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        raise NotImplementedError
+
+
+class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
 
     def __init__(self, index: int, polling_hz: int = 100):
@@ -117,7 +154,7 @@ class RawLocalJoystickDevice:
         for i in range(num_axes):
             self._axis_states[i] = 0.0
 
-    def get_button_state(self, button_id) -> bool:
+    def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
         return self._button_states.get(button_id, False)
 
@@ -184,7 +221,8 @@ class RawLocalJoystickDevice:
             if axis in self._axis_callbacks:
                 self._axis_callbacks[axis](value)
 
-    def _convert_hat_to_direction(self, hat_value: int) -> POVDirection:
+    @staticmethod
+    def _convert_hat_to_direction(hat_value: int) -> POVDirection:
         """Converts SDL hat value to POVDirection enum."""
         hat_to_direction = {
             0x00: POVDirection.NONE,  # centered
@@ -204,6 +242,11 @@ class RawLocalJoystickDevice:
         while self.running:
             if not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
                 self.connected = False
+                for key in self._axis_states:
+                    self._axis_states[key] = 0.0
+
+                self._button_states = {}
+                self._pov_state = POVDirection.NONE
                 self._handle_disconnect()
                 self._logger.debug(f"Polling paused, controller {self.index} is disconnected")
             else:
@@ -253,8 +296,12 @@ class RawLocalJoystickDevice:
         """Starts the polling loop in a separate thread."""
         if not self.running:
             self.running = True
-            threading.Thread(target=self._event_loop, daemon=True).start()
-            threading.Thread(target=self._check_connection, daemon=True).start()
+            threading.Thread(
+                target=self._event_loop, daemon=True, name=f"KevinbotLib.Joystick.EvLoop.{self.index}"
+            ).start()
+            threading.Thread(
+                target=self._check_connection, daemon=True, name=f"KevinbotLib.Joystick.ConnCheck.{self.index}"
+            ).start()
 
     def stop(self):
         """Stops event handling and releases resources."""
@@ -314,9 +361,7 @@ class LocalXboxController(RawLocalJoystickDevice):
 
 
 class JoystickSender:
-    def __init__(
-        self, client: KevinbotCommClient, joystick: RawLocalJoystickDevice | LocalXboxController, key: str
-    ) -> None:
+    def __init__(self, client: KevinbotCommClient, joystick: AbstractJoystickInterface, key: str) -> None:
         self.client = client
 
         self.joystick = joystick

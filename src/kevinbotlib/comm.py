@@ -384,7 +384,7 @@ class KevinbotCommClient:
         if not self.running or not self.websocket:
             self.logger.error(f"Cannot publish to {key}: client is not connected")
             return
-        
+
         if isinstance(data, SendableGenerator):
             data = data.generate_sendable()
 

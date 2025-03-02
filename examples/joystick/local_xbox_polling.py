@@ -1,6 +1,10 @@
 import time
 
 from kevinbotlib.joystick import LocalXboxController
+from kevinbotlib.logger import Logger, LoggerConfiguration
+
+logger = Logger()
+logger.configure(LoggerConfiguration())
 
 controller = LocalXboxController(0)
 controller.start_polling()
