@@ -35,13 +35,28 @@ class LoggerDirectories:
 
 
 class Level(Enum):
+    """Logging levels"""
+
     TRACE = _internal_logger.level("TRACE")
+    "Trace level logging - used for more detailed info than DEBUG - level no. 5"
+
     DEBUG = _internal_logger.level("DEBUG")
+    "Debug level logging - used for debugging info - level no. 10"
+
     INFO = _internal_logger.level("INFO")
+    "Debug level logging - used for regular info - level no. 20"
+
     WARNING = _internal_logger.level("WARNING")
+    "Warnng level logging - used for warnings and recommended fixes - level no. 30"
+
     ERROR = _internal_logger.level("ERROR")
-    CRITICAL = _internal_logger.level("CRITICAL")
+    "Error level logging - used for non-critical and recoverable errors - level no. 40"
+
     SECURITY = _internal_logger.level("SECURITY", 45, "<bg 202><bold>")
+    "Security level logging - used for non-application-breaking secutiry issues/threats - level no. 45"
+
+    CRITICAL = _internal_logger.level("CRITICAL")
+    "Error level logging - used for critical and non-recoverable errors - level no. 50"
 
 
 @dataclass
