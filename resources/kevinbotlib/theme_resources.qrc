@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>theme_icons/spinbox-caret-up-dark.png</file>
+        <file>theme_icons/spinbox-caret-down-dark.png</file>
+        <file>theme_icons/spinbox-caret-up-light.png</file>
+        <file>theme_icons/spinbox-caret-down-light.png</file>
+    </qresource>
+</RCC>

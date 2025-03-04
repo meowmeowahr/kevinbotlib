@@ -60,7 +60,7 @@ force_include_editable = [
 path = "src/kevinbotlib/__about__.py"
 
 [tool.hatch.envs]
-default = { dependencies = ["mkdocs", "mkdocs-material", "mkdocstrings[python]>=0.18", "mike"], scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" }}
+default = { dependencies = ["mkdocs", "mkdocs-material", "mkdocstrings[python]>=0.18", "mike", "PySide6_Essentials"], scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build", rcc-compile = "pyside6-rcc resources/kevinbotlib/theme_resources.qrc -o src/kevinbotlib/ui/resources_rc.py && pyside6-rcc resources/kevinbotlib/controlconsole_resources.qrc -o src/kevinbotlib/apps/control_console/resources_rc.py && echo 'RCC Resources Compiled'" }}
 
 [tool.hatch.envs.types]
 extra-dependencies = [
@@ -92,7 +92,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.hatch-test.scripts]
-python = ["3.12", "3.11", "3.10"]
+python = ["3.13", "3.12", "3.11", "3.10"]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
 run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
 cov-combine = "coverage combine"
@@ -115,3 +115,4 @@ ignore = ["G004", "TRY400"]
 [tool.ruff.lint.per-file-ignores]
 "examples/*" = ["T201", "S311"]
 "tests/*" = ["S101", "PLR2004"]
+"resources_rc.py" = ["N802"]

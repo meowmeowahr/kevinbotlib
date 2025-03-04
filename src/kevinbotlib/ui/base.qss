@@ -1,10 +1,14 @@
 QMainWindow {
-    background-color: {{"#1a2326" if is_dark else "#eeeeee"}};
+    background-color: {{bg1}};
+}
+
+QWidget:focus {
+    outline: none;
 }
 
 QTabWidget::pane {
-    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
-    background-color: {{"#1e272a" if is_dark else "#ffffff"}};
+    border: 1px solid {{border}};
+    background-color: {{bg2}};
     border-radius: 6px;
 }
 
@@ -13,26 +17,26 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::tab {
-    background: {{"#252d31" if is_dark else "#e6e6e6"}};
-    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
+    background: {{bg3}};
+    border: 1px solid {{border}};
     border-bottom: none;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     padding: 6px 12px;
     min-width: 10ex;
     margin-right: 2px;
-    color: {{"#d0d8d8" if is_dark else "#333333"}};
+    color: {{fg}};
 }
 
 QTabBar::tab:hover:!selected {
-    background: {{"#30383b" if is_dark else "#dcdcdc"}};
+    background: {{bg4}};
 }
 
 QTabBar::tab:selected {
-    background: {{"#40484c" if is_dark else "#ffffff"}};
-    border: 1px solid {{"#50585c" if is_dark else "#c5c5c5"}};
-    border-bottom: 2px solid {{"#4682b4" if is_dark else "#4169e1"}};
-    color: {{"#ffffff" if is_dark else "#1a1a1a"}};
+    background: {{bg5}};
+    border: 1px solid {{border}};
+    border-bottom: 2px solid {{primary1}};
+    color: {{fg_highlight}};
     font-weight: 500;
 }
 
@@ -41,39 +45,40 @@ QTabBar::scroller {
 }
 
 QTabBar QToolButton {
-    background: {{"#252d31" if is_dark else "#e6e6e6"}};
-    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
+    background: {{bg3}};
+    border: 1px solid {{border}};
     border-radius: 4px;
     padding: 2px;
     margin: 2px;
 }
 
 QTabBar QToolButton:hover {
-    background: {{"#30383b" if is_dark else "#dcdcdc"}};
+    background: {{bg4}};
 }
 
 QTabBar QToolButton:pressed {
-    background: {{"#40484c" if is_dark else "#c5c5c5"}};
+    background: {{bg5}};
 }
 
 /* QLineEdit Styling */
 QLineEdit {
-    background-color: {{"#252d31" if is_dark else "#ffffff"}};
-    color: {{"#d0d8d8" if is_dark else "#333333"}};
-    border: 1px solid {{"#50585c" if is_dark else "#c5c5c5"}};
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
     border-radius: 4px;
     padding: 4px;
     margin: 1px;
-    selection-background-color: {{"#4682b4" if is_dark else "#cce7ff"}};
+    selection-background-color: {{selection}};
+    selection-color: {{fg}};
 }
 
 QLineEdit:focus {
-    border: 1px solid {{"#4682b4" if is_dark else "#4169e1"}};
+    border: 1px solid {{primary1}};
 }
 
 /* Radio Button Styling */
 QRadioButton {
-    color: {{"#d0d8d8" if is_dark else "#333333"}};
+    color: {{fg}};
     spacing: 6px;
 }
 
@@ -81,32 +86,79 @@ QRadioButton {
 QRadioButton::indicator:unchecked {
     width: 14px;
     height: 14px;
-    border: 2px solid {{"#50585c" if is_dark else "#c5c5c5"}};
+    border: 2px solid {{border}};
     border-radius: 9px;
-    background-color: {{"#252d31" if is_dark else "#e6e6e6"}};
+    background-color: {{bg3}};
 }
 
 /* Indicator - Hover state (unchecked) */
 QRadioButton::indicator:unchecked:hover {
-    border-color: {{"#4682b4" if is_dark else "#4169e1"}};
-    background-color: {{"#30383b" if is_dark else "#dcdcdc"}};
+    border-color: {{primary1}};
+    background-color: {{bg4}};
 }
 
 /* Indicator - Checked state (circle-in-circle) */
 QRadioButton::indicator:checked {
     width: 14px;
     height: 14px;
-    border: 2px solid {{"#4682b4" if is_dark else "#4169e1"}};
+    border: 2px solid {{primary1}};
     border-radius: 9px;
-    background-color: {{"#4682b4" if is_dark else "#4169e1"}};
+    background-color: {{primary1}};
 }
 
 /* Hover state for checked */
 QRadioButton::indicator:checked:hover {
-    border-color: {{"#5a9bd4" if is_dark else "#5a8cff"}};
-    background-color: {{"#5a9bd4" if is_dark else "#5a8cff"}}; /* Lighter inner circle */
+    border-color: {{primary2}};
+    background-color: {{primary2}};
+}
+
+/* QSpinBox Styling */
+QSpinBox {
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 4px;
+    margin: 1px;
+    selection-background-color: {{selection}};
+    selection-color: {{fg}};
+}
+
+QSpinBox:focus {
+    border: 1px solid {{primary1}};
+}
+
+QSpinBox::up-button, QSpinBox::down-button {
+    background-color: {{bg3}};
+    border: none;
+    width: 16px;
+    margin-right: 2px;
+}
+
+QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+    background-color: {{bg4}};
+}
+
+QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
+    background-color: {{bg5}};
+}
+
+QSpinBox::up-arrow {
+    image: url({{":/theme_icons/spinbox-caret-up-dark.png" if is_dark else ":/theme_icons/spinbox-caret-up-light.png"}});  /* Optional: provide your own arrow icons */
+    width: 12px;
+    height: 10px;
+}
+
+QSpinBox::down-arrow {
+    image: url({{":/theme_icons/spinbox-caret-down-dark.png" if is_dark else ":/theme_icons/spinbox-caret-down-light.png"}});  /* Optional: provide your own arrow icons */
+    width: 12px;
+    height: 10px;
 }
 
 QLabel {
-    color: {{"#d0d8d8" if is_dark else "#333333"}}; 
+    color: {{fg}}; 
+}
+
+#AboutSectionTitle {
+    font-size: 22px;
 }
