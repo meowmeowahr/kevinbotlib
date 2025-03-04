@@ -42,6 +42,7 @@ class SendableGenerator(ABC):
     """
     Abstract class for a function capable of being sent over `KevinbotCommClient`
     """
+
     @abstractmethod
     def generate_sendable(self) -> BaseSendable:
         """Abstract method to generate a sendable
@@ -49,7 +50,6 @@ class SendableGenerator(ABC):
         Returns:
             BaseSendable: The returned sendable
         """
-        pass
 
 
 class IntegerSendable(BaseSendable):

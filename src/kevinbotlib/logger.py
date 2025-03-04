@@ -167,8 +167,7 @@ class Logger:
 
 
 class StreamRedirector(IO):
-    """Redirect a stream to logging
-    """
+    """Redirect a stream to logging"""
 
     def __init__(self, logger: Logger, level: Level = Level.INFO):
         self._level = level

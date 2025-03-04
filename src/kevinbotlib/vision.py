@@ -15,6 +15,7 @@ class SingleFrameSendable(BinarySendable):
     """
     Sendable for a single frame of video or an image
     """
+
     encoding: str
     """Frame encoding format
 
@@ -219,7 +220,6 @@ class BaseCamera(ABC):
         Returns:
             tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
         """
-        pass
 
     @abstractmethod
     def set_resolution(self, width: int, height: int) -> None:
@@ -229,7 +229,6 @@ class BaseCamera(ABC):
             width (int): Frame width in px
             height (int): Frame height in px
         """
-        pass
 
 
 class CameraByIndex(BaseCamera):
@@ -295,7 +294,6 @@ class VisionPipeline(ABC):
         Returns:
             tuple[bool, MatLike | None]: An OpenCV Mat for pipeline visualization purposes. Can be ignored depending on the use case.
         """
-        pass
 
     def return_values(self) -> Any:
         """Retrieves the calculations from the latest pipeline iteration
@@ -303,13 +301,12 @@ class VisionPipeline(ABC):
         Returns:
             Any: Pipeline calculations
         """
-        pass
 
 
 class EmptyPipeline(VisionPipeline):
     """
     A dummy vision pipeline returning the original frame
     """
-    
+
     def run(self) -> tuple[bool, MatLike]:
         return self.source()

@@ -46,6 +46,15 @@ wheels = [
 ]
 
 [[package]]
+name = "darkdetect"
+version = "0.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/77/7575be73bf12dee231d0c6e60ce7fb7a7be4fcd58823374fc59a6e48262e/darkdetect-0.8.0.tar.gz", hash = "sha256:b5428e1170263eb5dea44c25dc3895edd75e6f52300986353cd63533fe7df8b1", size = 7681 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f2/f2/728f041460f1b9739b85ee23b45fa5a505962ea11fd85bdbe2a02b021373/darkdetect-0.8.0-py3-none-any.whl", hash = "sha256:a7509ccf517eaad92b31c214f593dbcf138ea8a43b2935406bbd565e15527a85", size = 8955 },
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.5"
 source = { registry = "https://pypi.org/simple" }
@@ -62,6 +71,7 @@ name = "kevinbotlib"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
+    { name = "darkdetect" },
     { name = "jinja2" },
     { name = "loguru" },
     { name = "opencv-python" },
@@ -73,12 +83,14 @@ dependencies = [
     { name = "pyftpdlib" },
     { name = "pysdl2" },
     { name = "pyserial" },
+    { name = "pyside6-essentials" },
     { name = "websockets" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = "~=8.1.8" },
+    { name = "darkdetect", specifier = ">=0.8.0" },
     { name = "jinja2", specifier = "~=3.1.5" },
     { name = "loguru", specifier = "~=0.7.3" },
     { name = "opencv-python", specifier = "~=4.11.0" },
@@ -90,6 +102,7 @@ requires-dist = [
     { name = "pyftpdlib", specifier = "~=2.0.1" },
     { name = "pysdl2", specifier = "~=0.9.17" },
     { name = "pyserial", specifier = "~=3.5" },
+    { name = "pyside6-essentials", specifier = ">=6.8.2.1" },
     { name = "websockets", specifier = "~=14.2" },
 ]
 
@@ -544,6 +557,31 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1e/7d/ae3f0a63f41e4d2f6cb66a5b57197850f919f59e558159a4dd3a818f5082/pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb", size = 159125 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/bc/587a445451b253b285629263eb51c2d8e9bcea4fc97826266d186f96f558/pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0", size = 90585 },
+]
+
+[[package]]
+name = "pyside6-essentials"
+version = "6.8.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "shiboken6" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/01/bb/0127a53530cec0f9e7268e2fe235322b7b6e592caeb36c558b64da6ec52c/PySide6_Essentials-6.8.2.1-cp39-abi3-macosx_12_0_universal2.whl", hash = "sha256:ae5cc48f7e9a08e73e3ec2387ce245c8150e620b8d5a87548ebd4b8e3aeae49b", size = 134909713 },
+    { url = "https://files.pythonhosted.org/packages/d2/f9/aa4ff511ff1f3dd177f7e8f5a635e03fe578fa2045c8d6be4577e7db3b28/PySide6_Essentials-6.8.2.1-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:5ab31e5395a4724102edd6e8ff980fa3f7cde2aa79050763a1dcc30bb914195a", size = 95331575 },
+    { url = "https://files.pythonhosted.org/packages/fd/69/595002d860ee58431fe7add081d6f54fff94ae9680f2eb8cd355c1649bb6/PySide6_Essentials-6.8.2.1-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:7aed46f91d44399b4c713cf7387f5fb6f0114413fbcdbde493a528fb8e19f6ed", size = 93200219 },
+    { url = "https://files.pythonhosted.org/packages/5b/54/28a8b03f327e2c1d27d4a1ccf1a44997afc73c00ad07125d889640367194/PySide6_Essentials-6.8.2.1-cp39-abi3-win_amd64.whl", hash = "sha256:18de224f09108998d194e60f2fb8a1e86367dd525dd8a6192598e80e6ada649e", size = 72502927 },
+]
+
+[[package]]
+name = "shiboken6"
+version = "6.8.2.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d8/8f/71ccc3642edb59efaca35d4ba974248b1d7847f5e4d87d3ea323e73b2cab/shiboken6-6.8.2.1-cp39-abi3-macosx_12_0_universal2.whl", hash = "sha256:d3dedeb3732ecfc920c9f97da769c0022a1c3bda99346a9eba56fbf093deaa75", size = 401266 },
+    { url = "https://files.pythonhosted.org/packages/7b/ff/ab4f287b9573e50b5a47c10e2af8feb5abecc3c7431bd5deec135efc969e/shiboken6-6.8.2.1-cp39-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:c83e90056f13d0872cc4d2b7bf60b6d6e3b1b172f1f91910c0ba5b641af01758", size = 204273 },
+    { url = "https://files.pythonhosted.org/packages/a6/b0/4fb102eb5260ee06d379769f3c4f0b82ef397c15f1cbbbbb3f6dceb86d5d/shiboken6-6.8.2.1-cp39-abi3-manylinux_2_39_aarch64.whl", hash = "sha256:8592401423acc693f51dbbfae5e7493cc3ed6738be79daaf90afa07f4da5bb25", size = 200909 },
+    { url = "https://files.pythonhosted.org/packages/ae/88/b56bdb38a11066e4eecd1da6be4205bb406398b733b392b11c5aaf9547f7/shiboken6-6.8.2.1-cp39-abi3-win_amd64.whl", hash = "sha256:1b751d47b759762b7ca31bad278d52eca4105d3028880d93979261ebbfba810c", size = 1150270 },
 ]
 
 [[package]]

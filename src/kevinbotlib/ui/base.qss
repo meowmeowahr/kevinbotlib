@@ -1,0 +1,112 @@
+QMainWindow {
+    background-color: {{"#1a2326" if is_dark else "#eeeeee"}};
+}
+
+QTabWidget::pane {
+    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
+    background-color: {{"#1e272a" if is_dark else "#ffffff"}};
+    border-radius: 6px;
+}
+
+QTabWidget::tab-bar {
+    left: 8px;
+}
+
+QTabBar::tab {
+    background: {{"#252d31" if is_dark else "#e6e6e6"}};
+    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 6px 12px;
+    min-width: 10ex;
+    margin-right: 2px;
+    color: {{"#d0d8d8" if is_dark else "#333333"}};
+}
+
+QTabBar::tab:hover:!selected {
+    background: {{"#30383b" if is_dark else "#dcdcdc"}};
+}
+
+QTabBar::tab:selected {
+    background: {{"#40484c" if is_dark else "#ffffff"}};
+    border: 1px solid {{"#50585c" if is_dark else "#c5c5c5"}};
+    border-bottom: 2px solid {{"#4682b4" if is_dark else "#4169e1"}};
+    color: {{"#ffffff" if is_dark else "#1a1a1a"}};
+    font-weight: 500;
+}
+
+QTabBar::scroller { 
+    border: none;
+}
+
+QTabBar QToolButton {
+    background: {{"#252d31" if is_dark else "#e6e6e6"}};
+    border: 1px solid {{"#2d3639" if is_dark else "#d5d5d5"}};
+    border-radius: 4px;
+    padding: 2px;
+    margin: 2px;
+}
+
+QTabBar QToolButton:hover {
+    background: {{"#30383b" if is_dark else "#dcdcdc"}};
+}
+
+QTabBar QToolButton:pressed {
+    background: {{"#40484c" if is_dark else "#c5c5c5"}};
+}
+
+/* QLineEdit Styling */
+QLineEdit {
+    background-color: {{"#252d31" if is_dark else "#ffffff"}};
+    color: {{"#d0d8d8" if is_dark else "#333333"}};
+    border: 1px solid {{"#50585c" if is_dark else "#c5c5c5"}};
+    border-radius: 4px;
+    padding: 4px;
+    margin: 1px;
+    selection-background-color: {{"#4682b4" if is_dark else "#cce7ff"}};
+}
+
+QLineEdit:focus {
+    border: 1px solid {{"#4682b4" if is_dark else "#4169e1"}};
+}
+
+/* Radio Button Styling */
+QRadioButton {
+    color: {{"#d0d8d8" if is_dark else "#333333"}};
+    spacing: 6px;
+}
+
+/* Indicator - Unchecked state */
+QRadioButton::indicator:unchecked {
+    width: 14px;
+    height: 14px;
+    border: 2px solid {{"#50585c" if is_dark else "#c5c5c5"}};
+    border-radius: 9px;
+    background-color: {{"#252d31" if is_dark else "#e6e6e6"}};
+}
+
+/* Indicator - Hover state (unchecked) */
+QRadioButton::indicator:unchecked:hover {
+    border-color: {{"#4682b4" if is_dark else "#4169e1"}};
+    background-color: {{"#30383b" if is_dark else "#dcdcdc"}};
+}
+
+/* Indicator - Checked state (circle-in-circle) */
+QRadioButton::indicator:checked {
+    width: 14px;
+    height: 14px;
+    border: 2px solid {{"#4682b4" if is_dark else "#4169e1"}};
+    border-radius: 9px;
+    background-color: {{"#4682b4" if is_dark else "#4169e1"}};
+}
+
+/* Hover state for checked */
+QRadioButton::indicator:checked:hover {
+    border-color: {{"#5a9bd4" if is_dark else "#5a8cff"}};
+    background-color: {{"#5a9bd4" if is_dark else "#5a8cff"}}; /* Lighter inner circle */
+}
+
+QLabel {
+    color: {{"#d0d8d8" if is_dark else "#333333"}}; 
+}
