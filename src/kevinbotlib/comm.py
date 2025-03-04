@@ -188,7 +188,7 @@ class BinarySendable(BaseSendable):
 class ControlConsoleSendable(BaseSendable):
     enabled: bool = False
     """Is the robot enabled?"""
-    opmode: str = "Teleoperated"
+    opmode: str | None = None
     """The robot's current operational mode"""
     opmodes: list[str] = ["Teleoperated", "Test"]
     """All of the possible operational modes"""
