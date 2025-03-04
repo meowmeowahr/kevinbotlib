@@ -194,6 +194,8 @@ class ControlConsoleSendable(BaseSendable):
     """All of the possible operational modes"""
     estop: bool = False
     """Is the robot emergency stopped?"""
+    data_id: str = "kevinbotlib.dtype.console"
+    """Internally used to differentiate sendable types"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
