@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtCore import Qt, QSettings
+from PySide6.QtCore import Qt, QSettings, QCoreApplication, QCommandLineParser, QCommandLineOption
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -13,6 +13,8 @@ from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
 from kevinbotlib.apps.control_console.pages.control import ControlConsoleControlTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
+from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 import kevinbotlib.apps.control_console.resources_rc
 
@@ -23,7 +25,18 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
         self.setContentsMargins(4, 4, 4, 0)
 
+        self.client = KevinbotCommClient()
+
         self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
+
+        # create settings keys if missing
+        if "network.ip" not in self.settings.allKeys():
+            self.settings.setValue("network.ip", "10.0.0.2")
+        if "network.port" not in self.settings.allKeys():
+            self.settings.setValue("network.port", 8765)
+        if "application.theme" not in self.settings.allKeys():
+            self.settings.setValue("application.theme", "System")
+
         self.theme = Theme(ThemeStyle.Dark)
         self.apply_theme()
 
@@ -36,7 +49,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.ip_status = QLabel(str(self.settings.value("network.ip", "10.0.0.2", str)), alignment=Qt.AlignmentFlag.AlignCenter)
         self.status.addWidget(self.ip_status, 1)
 
-        self.latency_status = QLabel("Latency: 0.00")
+        self.latency_status = QLabel("Latency: 0.00ms")
         self.status.addPermanentWidget(self.latency_status)
 
         self.tabs = QTabWidget(self)
@@ -64,7 +77,30 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    logger = Logger()
+
     app = QApplication(sys.argv)
+    app.setApplicationName("KevinbotLib Dashboard")
+    app.setApplicationVersion(__version__)
+
+    parser = QCommandLineParser()
+    parser.addHelpOption()
+    parser.addVersionOption()
+    parser.addOption(QCommandLineOption(["V", "verbose"], "Enable verbose (DEBUG) logging"))
+    parser.addOption(
+        QCommandLineOption(["T", "trace"], QCoreApplication.translate("main", "Enable tracing (TRACE logging)"))
+    )
+    parser.process(app)
+
+    logger = Logger()
+    log_level = Level.INFO
+    if parser.isSet("verbose"):
+        log_level = Level.DEBUG
+    elif parser.isSet("trace"):
+        log_level = Level.TRACE
+
+    logger.configure(LoggerConfiguration(level=log_level))
+    
     kevinbotlib.apps.control_console.resources_rc.qInitResources()
     QFontDatabase.addApplicationFont(":/fonts/NotoSans-Regular.ttf")
     app.setFont(QFont("Noto Sans", app.font().pointSize()))
