@@ -13,13 +13,13 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 ### Features
 
 * **The Command Scheduler**
-    * A way to asyncronously run robot tasks
+    * A way to asynchronously run robot tasks
     * Commands can be grouped to run sequentially, or in parallel if desired
     * Commands can be executed at a set interval
 * **The Communication System**
     * Based on [websockets](https://github.com/python-websockets/websockets)
-    * Data can be easily sent from robot to client or vise-versa
-    * Data is syncronized between all clients
+    * Data can be easily sent from robot to client or vice-versa
+    * Data is synchronized between all clients
     * Out-of-the-box ready-made sendables for builtin primitive types
     * Easy to create custom sendables based on [pydantic](https://github.com/pydantic/pydantic) models
 * **The Vision Pipeline System**
@@ -33,7 +33,7 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 * **Gamepad Inputs**
     * Based on [SDL2](https://github.com/py-sdl/py-sdl2)
     * Builtin-support for Raw devices and Xbox One and Xbox Series controllers
-    * Joystick data sender and reciever through the communication system
+    * Joystick data sender and receiver through the communication system
 
 !!! warning "Development"
     This project is in the early stage of development. There are many missing functions that will be supported in the future.

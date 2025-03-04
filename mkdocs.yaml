@@ -80,7 +80,11 @@ nav:
   - installation.md
   - Examples: 
     - examples/index.md
+    - examples/robot.md
     - examples/comm.md
+    - examples/logger.md
+    - examples/joystick.md
+    - examples/fileserver.md
   - commandscheduler.md
   - robot.md
   - reference.md

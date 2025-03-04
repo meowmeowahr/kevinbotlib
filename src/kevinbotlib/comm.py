@@ -14,27 +14,58 @@ from kevinbotlib.logger import Logger as _Logger
 
 
 class BaseSendable(BaseModel, ABC):
+    """
+    The base for all of KevinbotLib's sendables.
+
+    _**What is a sendable?**_
+
+    A sendable is a basic unit of data that can be transported through the `KevinbotCommClient` and server
+    """
+
     timeout: float | None = None
     data_id: str = "kevinbotlib.dtype.null"
+    """Internally used to differentiate sendable types"""
     flags: list[str] = []
     struct: dict[str, Any] = {}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         return {"timeout": self.timeout, "value": None, "did": self.data_id, "struct": self.struct}
 
 
 class SendableGenerator(ABC):
+    """
+    Abstract class for a function capable of being sent over `KevinbotCommClient`
+    """
     @abstractmethod
     def generate_sendable(self) -> BaseSendable:
+        """Abstract method to generate a sendable
+
+        Returns:
+            BaseSendable: The returned sendable
+        """
         pass
 
 
 class IntegerSendable(BaseSendable):
     value: int
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.int"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -42,10 +73,18 @@ class IntegerSendable(BaseSendable):
 
 class BooleanSendable(BaseSendable):
     value: bool
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.bool"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -53,10 +92,18 @@ class BooleanSendable(BaseSendable):
 
 class StringSendable(BaseSendable):
     value: str
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.str"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -64,10 +111,18 @@ class StringSendable(BaseSendable):
 
 class FloatSendable(BaseSendable):
     value: float
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.float"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -75,10 +130,18 @@ class FloatSendable(BaseSendable):
 
 class AnyListSendable(BaseSendable):
     value: list
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.any"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -86,10 +149,18 @@ class AnyListSendable(BaseSendable):
 
 class DictSendable(BaseSendable):
     value: dict
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.dict"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value
         return data
@@ -97,10 +168,18 @@ class DictSendable(BaseSendable):
 
 class BinarySendable(BaseSendable):
     value: bytes
+    """Value to send"""
     data_id: str = "kevinbotlib.dtype.bin"
+    """Internally used to differentiate sendable types"""
     struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "limit:1024"}]}
+    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["value"] = self.value.decode("utf-8")
         return data
@@ -108,11 +187,20 @@ class BinarySendable(BaseSendable):
 
 class ControlConsoleSendable(BaseSendable):
     enabled: bool = False
+    """Is the robot enabled?"""
     opmode: str = "Teleoperated"
+    """The robot's current operational mode"""
     opmodes: list[str] = ["Teleoperated", "Test"]
+    """All of the possible operational modes"""
     estop: bool = False
+    """Is the robot emergency stopped?"""
 
     def get_dict(self) -> dict:
+        """Return the sendable in dictionary form
+
+        Returns:
+            dict: The sendable data
+        """
         data = super().get_dict()
         data["enabled"] = self.enabled
         data["opmode"] = self.opmode

@@ -10,7 +10,7 @@
 --8<-- "examples/comm/sending.py"
 ```
 
-### Reciever
+### Receiver
 ```python title="examples/comm/rx.py" linenums="1" 
 --8<-- "examples/comm/rx.py"
 ```

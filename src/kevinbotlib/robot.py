@@ -28,6 +28,12 @@ from kevinbotlib.logger import (
 
 
 class InstanceLocker:
+    """
+    Generate and release a lockfile for an entire application. Useful when trying to prevent multiple instances of an app.
+    
+    Verifies if the application was killed without releasing the lockfile.
+    """
+
     def __init__(self, lockfile_name: str):
         """Initialize the InstanceLocker
 
@@ -261,6 +267,7 @@ class BaseRobot:
 
                     if self._signal_stop:
                         msg = "Robot signal stopped"
+                        self.robot_end()
                         raise RobotStoppedException(msg)
                     if self._signal_estop:
                         msg = "Robot signal e-stopped"
