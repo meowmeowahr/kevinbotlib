@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QGridLayout, QListWidget, QPushButton
 from PySide6.QtCore import QSize
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget
 
 
 class ControlConsoleControlTab(QWidget):
@@ -13,7 +13,7 @@ class ControlConsoleControlTab(QWidget):
         root_layout.addWidget(self.opmode_selector)
 
         self.enable_layout = QGridLayout()
-        root_layout.addLayout(self.enable_layout)        
+        root_layout.addLayout(self.enable_layout)
 
         self.enable_button = QPushButton("Enable")
         self.enable_button.setObjectName("EnableButton")

@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QFrame, QLabel, QSizePolicy
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
+
 
 class SettingsSeparatorWidget(QWidget):
     def __init__(self, title: str):

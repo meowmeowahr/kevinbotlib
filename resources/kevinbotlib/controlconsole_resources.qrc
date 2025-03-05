@@ -2,6 +2,6 @@
 <RCC version="1.0">
     <qresource>
     <file>app_icons/icon.svg</file>
-    <file>fonts/NotoSans-Regular.svg</file>
+    <file>fonts/NotoSans-Regular.ttf</file>
     </qresource>
 </RCC>

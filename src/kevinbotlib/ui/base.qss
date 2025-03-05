@@ -28,6 +28,11 @@ QTabBar::tab {
     color: {{fg}};
 }
 
+QTabWidget#CompactTabs QTabBar::tab {
+    padding: 3px 6px;
+}
+
+
 QTabBar::tab:hover:!selected {
     background: {{bg4}};
 }
@@ -159,6 +164,10 @@ QLabel {
     font-size: 22px;
 }
 
+#AboutSectionVersion {
+    font-size: 14px;
+}
+
 /* QPushButton Styling */
 QPushButton {
     background-color: {{bg3}};
@@ -286,4 +295,90 @@ QListWidget::item:selected {
 
 QListWidget::item:selected:!active {
     background-color: {{bg5}};
+}
+
+/* QTextEdit Styling */
+QTextEdit {
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 4px;
+    selection-background-color: {{selection}};
+    selection-color: {{fg}};
+}
+
+QTextEdit:focus {
+    border: 1px solid {{primary1}};
+}
+
+/* Scrollbar Styling */
+QScrollBar:vertical {
+    border: none;
+    background: {{bg1}};
+    width: 18px;
+    margin: 2px;
+    border-radius: 7px;
+}
+
+QScrollBar::handle:vertical {
+    background: {{primary1}};
+    border-radius: 7px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: {{primary2}};
+}
+
+QScrollBar::handle:vertical:pressed {
+    background: {{primary2}};
+}
+
+QScrollBar::add-line:vertical, 
+QScrollBar::sub-line:vertical {
+    background: none;
+    border: none;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::up-arrow:vertical, 
+QScrollBar::down-arrow:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: {{bg1}};
+    height: 18px;
+    margin: 2px;
+    border-radius: 7px;
+}
+
+QScrollBar::handle:horizontal {
+    background: {{primary1}};
+    border-radius: 7px;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: {{primary1}};
+}
+
+QScrollBar::handle:horizontal:pressed {
+    background: {{primary2}};
+}
+
+QScrollBar::add-line:horizontal, 
+QScrollBar::sub-line:horizontal {
+    background: none;
+    border: none;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::left-arrow:horizontal, 
+QScrollBar::right-arrow:horizontal {
+    background: none;
 }

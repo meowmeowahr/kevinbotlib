@@ -1,14 +1,15 @@
 import sys
 
-from PySide6.QtCore import Qt, QSettings, QCoreApplication, QCommandLineParser, QCommandLineOption
+from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, Qt
+from PySide6.QtGui import QFont, QFontDatabase
 from PySide6.QtWidgets import (
     QApplication,
+    QLabel,
     QMainWindow,
     QTabWidget,
-    QLabel,
 )
-from PySide6.QtGui import QFontDatabase, QFont
 
+import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
 from kevinbotlib.apps.control_console.pages.control import ControlConsoleControlTab
@@ -16,7 +17,6 @@ from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettin
 from kevinbotlib.comm import KevinbotCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
-import kevinbotlib.apps.control_console.resources_rc
 
 
 class ControlConsoleApplicationWindow(QMainWindow):
@@ -46,7 +46,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.connection_status = QLabel("Robot Disconnected")
         self.status.addWidget(self.connection_status)
 
-        self.ip_status = QLabel(str(self.settings.value("network.ip", "10.0.0.2", str)), alignment=Qt.AlignmentFlag.AlignCenter)
+        self.ip_status = QLabel(
+            str(self.settings.value("network.ip", "10.0.0.2", str)), alignment=Qt.AlignmentFlag.AlignCenter
+        )
         self.status.addWidget(self.ip_status, 1)
 
         self.latency_status = QLabel("Latency: 0.00ms")
@@ -100,7 +102,7 @@ if __name__ == "__main__":
         log_level = Level.TRACE
 
     logger.configure(LoggerConfiguration(level=log_level))
-    
+
     kevinbotlib.apps.control_console.resources_rc.qInitResources()
     QFontDatabase.addApplicationFont(":/fonts/NotoSans-Regular.ttf")
     app.setFont(QFont("Noto Sans", app.font().pointSize()))
