@@ -338,6 +338,8 @@ class KevinbotCommClient:
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
 
+        self.hooks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable | None], Any]]] = {}
+
         if register_basic_types:
             self.register_type(BaseSendable)
             self.register_type(IntegerSendable)
@@ -418,19 +420,26 @@ class KevinbotCommClient:
 
     async def _connect_and_listen(self) -> None:
         """Handles connection and message listening."""
+        prev_connection = False
         while self.running:
             try:
                 async with websockets.connect(
                     f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1
                 ) as ws:
                     self.websocket = ws
-                    self.logger.info("Connected to the server")
-                    if self.on_connect:
-                        self.on_connect()
+                    if not prev_connection:
+                        self.logger.info("Connected to the server")
+                        if self.on_connect:
+                            self.on_connect()
+                    prev_connection = True
                     await self._handle_messages()
             except (websockets.ConnectionClosed, ConnectionError, OSError) as e:
                 self.logger.error(f"Unexpected error: {e!r}")
                 self.websocket = None
+                if prev_connection:
+                    if self.on_disconnect:
+                        self.on_disconnect()
+                prev_connection = False
                 if self.auto_reconnect and self.running:
                     self.logger.warning("Can't connect to server, retrying...")
                     await asyncio.sleep(1)
@@ -445,18 +454,26 @@ class KevinbotCommClient:
             async for message in self.websocket:
                 data = orjson.loads(message)
 
+
                 if data["action"] == "sync":
+                    for hook in self.hooks:
+                        if data["data"].get(hook, None) != self.data_store.get(hook, None):
+                            self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook, None)))
                     self.data_store = data["data"]
                 elif data["action"] == "update":
                     key, value = data["key"], data["data"]
                     self.data_store[key] = value
                     if self.on_update:
                         self.on_update(key, value)
+                    if key in self.hooks:
+                        self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook, None)))
                 elif data["action"] == "delete":
                     key = data["key"]
                     self.data_store.pop(key, None)
                     if self.on_delete:
                         self.on_delete(key)
+                    if key in self.hooks:
+                        self.hooks[hook][1](hook, None)
         except orjson.JSONDecodeError as e:
             self.logger.error(f"Error processing messages: {e}")
 
@@ -468,6 +485,14 @@ class KevinbotCommClient:
             if self.on_disconnect:
                 self.on_disconnect()
             self.websocket = None
+
+    def add_hook(self, key: str, data_type: type[T], callback: Callable[[str, T | None], Any]):
+        """Adds a hook for when new data is recieved from the key
+
+        Args:
+            key (str): Key for data hook
+        """
+        self.hooks[key] = (data_type, callback)
 
     def send(self, key: str, data: BaseSendable | SendableGenerator) -> None:
         """Publishes data to the server."""
