@@ -82,7 +82,6 @@ QRadioButton {
     spacing: 6px;
 }
 
-/* Indicator - Unchecked state */
 QRadioButton::indicator:unchecked {
     width: 14px;
     height: 14px;
@@ -91,13 +90,11 @@ QRadioButton::indicator:unchecked {
     background-color: {{bg3}};
 }
 
-/* Indicator - Hover state (unchecked) */
 QRadioButton::indicator:unchecked:hover {
     border-color: {{primary1}};
     background-color: {{bg4}};
 }
 
-/* Indicator - Checked state (circle-in-circle) */
 QRadioButton::indicator:checked {
     width: 14px;
     height: 14px;
@@ -106,7 +103,6 @@ QRadioButton::indicator:checked {
     background-color: {{primary1}};
 }
 
-/* Hover state for checked */
 QRadioButton::indicator:checked:hover {
     border-color: {{primary2}};
     background-color: {{primary2}};
@@ -144,13 +140,13 @@ QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
 }
 
 QSpinBox::up-arrow {
-    image: url({{":/theme_icons/spinbox-caret-up-dark.png" if is_dark else ":/theme_icons/spinbox-caret-up-light.png"}});  /* Optional: provide your own arrow icons */
+    image: url({{":/theme_icons/spinbox-caret-up-dark.png" if is_dark else ":/theme_icons/spinbox-caret-up-light.png"}});
     width: 12px;
     height: 10px;
 }
 
 QSpinBox::down-arrow {
-    image: url({{":/theme_icons/spinbox-caret-down-dark.png" if is_dark else ":/theme_icons/spinbox-caret-down-light.png"}});  /* Optional: provide your own arrow icons */
+    image: url({{":/theme_icons/spinbox-caret-down-dark.png" if is_dark else ":/theme_icons/spinbox-caret-down-light.png"}});
     width: 12px;
     height: 10px;
 }
@@ -161,4 +157,133 @@ QLabel {
 
 #AboutSectionTitle {
     font-size: 22px;
+}
+
+/* QPushButton Styling */
+QPushButton {
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 1px;
+}
+
+QPushButton:hover {
+    background-color: {{bg4}};
+    border-color: {{primary1}};
+}
+
+QPushButton:pressed {
+    background-color: {{bg5}};
+    border-color: {{primary2}};
+}
+
+QPushButton:disabled {
+    background-color: {{bg2}};
+    color: {{fg}}50; /* 50% opacity of foreground color */
+    border-color: {{border}}80; /* 80% opacity of border color */
+}
+
+/* Specific QPushButton Styling */
+#EnableButton {
+    background-color: #4CAF50; /* Green */
+    border-color: #388E3C;
+    color: #0e0e0e;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#EnableButton:hover {
+    background-color: #66BB6A; /* Lighter green */
+    border-color: #4CAF50;
+}
+
+#EnableButton:pressed {
+    background-color: #388E3C; /* Darker green */
+    border-color: #2E7D32;
+}
+
+#EnableButton:disabled {
+    background-color: #A5D6A7; /* Very light green */
+    border-color: #81C784;
+    color: #0e0e0e; /* Light gray text */
+}
+
+#DisableButton {
+    background-color: #F44336; /* Red */
+    border-color: #D32F2F;
+    color: #0e0e0e;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#DisableButton:hover {
+    background-color: #EF5350; /* Lighter red */
+    border-color: #F44336;
+}
+
+#DisableButton:pressed {
+    background-color: #D32F2F; /* Darker red */
+    border-color: #B71C1C;
+}
+
+#DisableButton:disabled {
+    background-color: #EF9A9A; /* Very light red */
+    border-color: #E57373;
+    color: #0e0e0e; /* Light gray text */
+}
+
+#EstopButton {
+    background-color: #FF9800; /* Orange */
+    border-color: #F57C00;
+    color: #0e0e0e;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+#EstopButton:hover {
+    background-color: #FFA726; /* Lighter orange */
+    border-color: #FF9800;
+}
+
+#EstopButton:pressed {
+    background-color: #F57C00; /* Darker orange */
+    border-color: #EF6C00;
+}
+
+#EstopButton:disabled {
+    background-color: #FFCC80; /* Very light orange */
+    border-color: #FFB300;
+    color: #0e0e0e; /* Light gray text */
+}
+
+/* QListWidget Styling */
+QListWidget {
+    background-color: {{bg2}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    color: {{fg}};
+    padding: 2px;
+}
+
+QListWidget::item {
+    padding: 6px;
+    background-color: {{bg3}};
+    border-radius: 2px;
+    margin: 2px;
+}
+
+QListWidget::item:hover {
+    background-color: {{bg4}};
+}
+
+QListWidget::item:selected {
+    background-color: {{bg5}};
+    color: {{fg_highlight}};
+    border: 1px solid {{primary1}};
+}
+
+QListWidget::item:selected:!active {
+    background-color: {{bg5}};
 }
