@@ -25,7 +25,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
         self.setContentsMargins(4, 4, 4, 0)
 
-        self.client = KevinbotCommClient()
 
         self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
 
@@ -36,6 +35,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.settings.setValue("network.port", 8765)
         if "application.theme" not in self.settings.allKeys():
             self.settings.setValue("application.theme", "System")
+
+        self.client = KevinbotCommClient(
+            host=str(self.settings.value("network.ip", "10.0.0.2", str)),
+            port=int(self.settings.value("network.port", 8765, int)), # type: ignore
+            on_connect=self.on_connect,
+            on_disconnect=self.on_disconnect,
+        )
+        self.client.connect()
 
         self.theme = Theme(ThemeStyle.Dark)
         self.apply_theme()
@@ -77,6 +84,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
     def settings_changed(self):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))
 
+        self.client.host = str(self.settings.value("network.ip", "10.0.0.2", str))
+        self.client.port = int(self.settings.value("network.port", 8765, int)) # type: ignore
+
+    def on_connect(self):
+        self.connection_status.setText("Robot Connected")
+
+    def on_disconnect(self):
+        self.connection_status.setText("Robot Disconnected")
 
 if __name__ == "__main__":
     logger = Logger()
