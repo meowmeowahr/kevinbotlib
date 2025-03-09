@@ -12,9 +12,9 @@ from PySide6.QtWidgets import (
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
-from kevinbotlib.apps.control_console.pages.control import ControlConsoleControlTab
+from kevinbotlib.apps.control_console.pages.control import AppState, ControlConsoleControlTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import ControlConsoleSendable, KevinbotCommClient
+from kevinbotlib.comm import KevinbotCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -37,6 +37,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.settings.setValue("application.theme", "System")
             
         self._ctrl_status_key = "%ControlConsole/status"
+        self._ctrl_request_key = "%ControlConsole/request"
 
         self.client = KevinbotCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -68,7 +69,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab = ControlConsoleSettingsTab(self.settings, self)
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
-        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key)
+        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
 
         self.tabs.addTab(self.control, "Control")
         self.tabs.addTab(self.settings_tab, "Settings")
@@ -93,11 +94,13 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.client.port = int(self.settings.value("network.port", 8765, int)) # type: ignore
 
     def on_connect(self):
-        self.connection_status.setText("Robot Connected") 
+        self.connection_status.setText("Robot Connected")
+        self.control.state.set(AppState.WAITING)
 
     def on_disconnect(self):
         self.connection_status.setText("Robot Disconnected")
         self.control.clear_opmodes()
+        self.control.state.set(AppState.NO_COMMS)
 
 if __name__ == "__main__":
     logger = Logger()

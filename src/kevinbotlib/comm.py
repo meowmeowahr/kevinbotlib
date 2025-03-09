@@ -185,40 +185,19 @@ class BinarySendable(BaseSendable):
         return data
 
 
-class ControlConsoleSendable(BaseSendable):
-    enabled: bool = False
-    """Is the robot enabled?"""
-    opmode: str | None = None
-    """The robot's current operational mode"""
-    opmodes: list[str] = ["Teleoperated", "Test"]
-    """All of the possible operational modes"""
-    estop: bool = False
-    """Is the robot emergency stopped?"""
-    data_id: str = "kevinbotlib.dtype.console"
-    """Internally used to differentiate sendable types"""
-
-    def get_dict(self) -> dict:
-        """Return the sendable in dictionary form
-
-        Returns:
-            dict: The sendable data
-        """
-        data = super().get_dict()
-        data["enabled"] = self.enabled
-        data["opmode"] = self.opmode
-        data["opmodes"] = self.opmodes
-        data["estop"] = self.estop
-        return data
-
-    def disabled(self) -> "ControlConsoleSendable":
-        return ControlConsoleSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=self.estop)
-
-    def estopped(self) -> "ControlConsoleSendable":
-        return ControlConsoleSendable(enabled=False, opmode=self.opmode, opmodes=self.opmodes, estop=True)
-
-
 T = TypeVar("T", bound=BaseSendable)
 
+
+class CommPath:
+    def __init__(self, path: str) -> None:
+        self._path = path
+
+    def __truediv__(self, new: str):
+        return CommPath(self._path.rstrip("/") + "/" + new.lstrip("/"))
+    
+    @property
+    def path(self) -> str:
+        return self._path
 
 class KevinbotCommServer:
     """WebSocket-based server for handling real-time data synchronization."""
@@ -348,7 +327,6 @@ class KevinbotCommClient:
             self.register_type(FloatSendable)
             self.register_type(AnyListSendable)
             self.register_type(DictSendable)
-            self.register_type(ControlConsoleSendable)
 
     @property
     def host(self):
@@ -439,6 +417,7 @@ class KevinbotCommClient:
                 if prev_connection:
                     if self.on_disconnect:
                         self.on_disconnect()
+                        self.data_store = {}
                 prev_connection = False
                 if self.auto_reconnect and self.running:
                     self.logger.warning("Can't connect to server, retrying...")
@@ -454,11 +433,10 @@ class KevinbotCommClient:
             async for message in self.websocket:
                 data = orjson.loads(message)
 
-
                 if data["action"] == "sync":
                     for hook in self.hooks:
-                        if data["data"].get(hook, None) != self.data_store.get(hook, None):
-                            self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook, None)))
+                        if data["data"].get(hook) != self.data_store.get(hook):
+                            self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook)["data"]))
                     self.data_store = data["data"]
                 elif data["action"] == "update":
                     key, value = data["key"], data["data"]
@@ -466,7 +444,7 @@ class KevinbotCommClient:
                     if self.on_update:
                         self.on_update(key, value)
                     if key in self.hooks:
-                        self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook, None)))
+                        self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"]["data"]))
                 elif data["action"] == "delete":
                     key = data["key"]
                     self.data_store.pop(key, None)
@@ -486,19 +464,24 @@ class KevinbotCommClient:
                 self.on_disconnect()
             self.websocket = None
 
-    def add_hook(self, key: str, data_type: type[T], callback: Callable[[str, T | None], Any]):
+    def add_hook(self, key: str | CommPath, data_type: type[T], callback: Callable[[str, T | None], Any]):
         """Adds a hook for when new data is recieved from the key
 
         Args:
             key (str): Key for data hook
         """
-        self.hooks[key] = (data_type, callback)
+        if isinstance(key, CommPath):
+            key = key.path
+        self.hooks[key] = (data_type, callback) # type: ignore
 
-    def send(self, key: str, data: BaseSendable | SendableGenerator) -> None:
+    def send(self, key: str | CommPath, data: BaseSendable | SendableGenerator) -> None:
         """Publishes data to the server."""
         if not self.running or not self.websocket:
             self.logger.error(f"Cannot publish to {key}: client is not connected")
             return
+        
+        if isinstance(key, CommPath):
+            key = key.path
 
         if isinstance(data, SendableGenerator):
             data = data.generate_sendable()
@@ -511,8 +494,11 @@ class KevinbotCommClient:
 
         asyncio.run_coroutine_threadsafe(_publish(), self.loop)
 
-    def get(self, key: str, data_type: type[T], default: Any = None) -> T | None:
+    def get(self, key: str | CommPath, data_type: type[T], default: Any = None) -> T | None:
         """Retrieves stored data."""
+        if isinstance(key, CommPath):
+            key = key.path
+        
         if key not in self.data_store:
             return None
         if self.data_store.get(key, default)["data"]["did"] != data_type.model_fields["data_id"].default:

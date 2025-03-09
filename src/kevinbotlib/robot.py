@@ -9,11 +9,11 @@ import threading
 import time
 from threading import Thread
 from types import TracebackType
-from typing import NoReturn, final
+from typing import NoReturn, Self, final
 
 import psutil
 
-from kevinbotlib.comm import ControlConsoleSendable, KevinbotCommClient, KevinbotCommServer
+from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, KevinbotCommServer, StringSendable
 from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotLockedException, RobotStoppedException
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
@@ -167,10 +167,8 @@ class BaseRobot:
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer
 
-        self._ctrl_sendable: ControlConsoleSendable = ControlConsoleSendable(
-            opmode=default_opmode or opmodes[0], opmodes=opmodes
-        )
-        self._ctrl_status_key = "%ControlConsole/status"
+        self._ctrl_status_root_key = "%ControlConsole/status"
+        self._ctrl_request_root_key = "%ControlConsole/request"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -180,6 +178,12 @@ class BaseRobot:
 
         # Track the previous state for opmode transitions
         self._prev_enabled = None  # Was the robot previously enabled?
+
+        self._opmode = opmodes[0]
+
+    @property
+    def opmode(self) -> str:
+        return self._opmode
 
     @final
     def _signal_usr1_capture(self, _, __):
@@ -213,6 +217,31 @@ class BaseRobot:
             timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
             timer.start()
+
+    @final
+    def _update_console_enabled(self, enabled: bool):
+        # we don't want to allow dashbaord visibility - set struct to {}
+        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "state", BooleanSendable(value=enabled, struct={}))
+
+    @final
+    def _update_console_opmodes(self, opmodes: list[str]):
+        # we don't want to allow dashbaord visibility - set struct to {}
+        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "opmodes", AnyListSendable(value=opmodes, struct={}))
+
+    @final
+    def _update_console_opmode(self, opmode: str):
+        # we don't want to allow dashbaord visibility - set struct to {}
+        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "opmode", StringSendable(value=opmode, struct={}))
+
+    @final
+    def _get_console_enabled_request(self):
+        sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "state", BooleanSendable)
+        return sendable.value if sendable else False
+
+    @final
+    def _get_console_opmode_request(self):
+        sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable)
+        return sendable.value if sendable else self._opmodes[0]
 
     @final
     def run(self) -> NoReturn:
@@ -249,21 +278,17 @@ class BaseRobot:
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             self.comm_client.wait_until_connected()
-            self.comm_client.send(self._ctrl_status_key, self._ctrl_sendable)
+            self._update_console_enabled(False) # report disabled
+            self._update_console_opmodes(self._opmodes) # report opmodes
+            self._update_console_opmode(self._opmodes[0]) # report current opmode
+
             try:
                 self.robot_start()
                 self._ready_for_periodic = True
                 self.telemetry.log(Level.INFO, "Robot started")
 
                 while True:
-                    sendable: ControlConsoleSendable | None = self.comm_client.get(
-                        self._ctrl_status_key, ControlConsoleSendable
-                    )
-                    if sendable:
-                        self._ctrl_sendable: ControlConsoleSendable = sendable
-                    else:
-                        self._ctrl_sendable.enabled = False
-                        self.comm_client.send(self._ctrl_status_key, self._ctrl_sendable)
+                    self._update_console_enabled(False) # report disabled
 
                     if self._signal_stop:
                         msg = "Robot signal stopped"
@@ -273,22 +298,12 @@ class BaseRobot:
                         msg = "Robot signal e-stopped"
                         raise RobotEmergencyStoppedException(msg)
 
-                    if self._ctrl_sendable.opmodes != self._opmodes:
-                        self._ctrl_sendable.opmodes = self._opmodes
-                        self.comm_client.send(self._ctrl_status_key, self._ctrl_sendable)
-
-                    if self._ctrl_sendable.opmode not in self._opmodes:
-                        self.telemetry.error(
-                            f"Got incorrect OpMode: {self._ctrl_sendable.opmode} from {self._ctrl_sendable.opmodes}"
-                        )
-                        self._ctrl_sendable.opmode = self._opmodes[0]  # Fallback to default opmode
-                        self._ctrl_sendable.enabled = False
-                        self.comm_client.send(self._ctrl_status_key, self._ctrl_sendable)
-
                     if self._ready_for_periodic:
-                        current_enabled: bool = self._ctrl_sendable.enabled
-                        if self._ctrl_sendable:
-                            current_opmode = self._ctrl_sendable.opmode
+                        current_enabled: bool = self._get_console_enabled_request()
+                        current_opmode = self._get_console_opmode_request()
+                        if current_opmode != self.opmode:
+                            self._update_console_opmode(current_opmode)
+                            self._opmode = current_opmode # will also set self.opmode
 
                         if self._prev_enabled != current_enabled:
                             if current_enabled:
