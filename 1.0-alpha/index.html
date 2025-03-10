@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
     
     
       
@@ -360,9 +360,37 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="examples/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     Examples
@@ -370,7 +398,137 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/robot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Robot Examples
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/comm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Communication Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/logger/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Logging Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/joystick/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Joystick Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fileserver Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -508,15 +666,15 @@
 <h3 id="features">Features</h3>
 <ul>
 <li><strong>The Command Scheduler</strong><ul>
-<li>A way to asyncronously run robot tasks</li>
+<li>A way to asynchronously run robot tasks</li>
 <li>Commands can be grouped to run sequentially, or in parallel if desired</li>
 <li>Commands can be executed at a set interval</li>
 </ul>
 </li>
 <li><strong>The Communication System</strong><ul>
 <li>Based on <a href="https://github.com/python-websockets/websockets">websockets</a></li>
-<li>Data can be easily sent from robot to client or vise-versa</li>
-<li>Data is syncronized between all clients</li>
+<li>Data can be easily sent from robot to client or vice-versa</li>
+<li>Data is synchronized between all clients</li>
 <li>Out-of-the-box ready-made sendables for builtin primitive types</li>
 <li>Easy to create custom sendables based on <a href="https://github.com/pydantic/pydantic">pydantic</a> models</li>
 </ul>
@@ -536,7 +694,7 @@
 <li><strong>Gamepad Inputs</strong><ul>
 <li>Based on <a href="https://github.com/py-sdl/py-sdl2">SDL2</a></li>
 <li>Builtin-support for Raw devices and Xbox One and Xbox Series controllers</li>
-<li>Joystick data sender and reciever through the communication system</li>
+<li>Joystick data sender and receiver through the communication system</li>
 </ul>
 </li>
 </ul>
