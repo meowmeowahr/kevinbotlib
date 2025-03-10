@@ -177,9 +177,10 @@ class BaseRobot:
         self._cycle_hz = cycle_time
 
         # Track the previous state for opmode transitions
-        self._prev_enabled = None  # Was the robot previously enabled?
+        self._prev_enabled = None
+        self._prev_opmode = None
 
-        self._opmode = opmodes[0]
+        self._opmode = opmodes[0] if default_opmode is None else default_opmode
 
     @property
     def opmode(self) -> str:
@@ -221,7 +222,7 @@ class BaseRobot:
     @final
     def _update_console_enabled(self, enabled: bool):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "state", BooleanSendable(value=enabled, struct={}))
+        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "enabled", BooleanSendable(value=enabled, struct={}))
 
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
@@ -235,7 +236,7 @@ class BaseRobot:
 
     @final
     def _get_console_enabled_request(self):
-        sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "state", BooleanSendable)
+        sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable)
         return sendable.value if sendable else False
 
     @final
@@ -278,9 +279,9 @@ class BaseRobot:
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             self.comm_client.wait_until_connected()
-            self._update_console_enabled(False) # report disabled
-            self._update_console_opmodes(self._opmodes) # report opmodes
-            self._update_console_opmode(self._opmodes[0]) # report current opmode
+            self._update_console_enabled(False)
+            self._update_console_opmodes(self._opmodes)
+            self._update_console_opmode(self._opmode)
 
             try:
                 self.robot_start()
@@ -288,8 +289,6 @@ class BaseRobot:
                 self.telemetry.log(Level.INFO, "Robot started")
 
                 while True:
-                    self._update_console_enabled(False) # report disabled
-
                     if self._signal_stop:
                         msg = "Robot signal stopped"
                         self.robot_end()
@@ -301,26 +300,32 @@ class BaseRobot:
                     if self._ready_for_periodic:
                         current_enabled: bool = self._get_console_enabled_request()
                         current_opmode = self._get_console_opmode_request()
-                        if current_opmode != self.opmode:
+
+                        # Handle opmode change
+                        if current_opmode != self._opmode:
+                            if self._prev_enabled is not None:  # Not first iteration
+                                self.opmode_exit(self._opmode, self._prev_enabled)
+                            self._opmode = current_opmode
                             self._update_console_opmode(current_opmode)
-                            self._opmode = current_opmode # will also set self.opmode
+                            self.opmode_init(current_opmode, current_enabled)
 
-                        if self._prev_enabled != current_enabled:
-                            if current_enabled:
-                                self.opmode_enabled_init(current_opmode)
-                            else:
-                                self.opmode_disabled_init(current_opmode)
+                        # Handle enable/disable transitions
+                        elif self._prev_enabled != current_enabled:
+                            self._update_console_enabled(current_enabled)
+                            if self._prev_enabled is not None:  # Not first iteration
+                                self.opmode_exit(self._opmode, self._prev_enabled)
+                            self.opmode_init(self._opmode, current_enabled)
 
-                        if current_enabled:
-                            self.opmode_enabled_periodic(current_opmode)
-                        else:
-                            self.opmode_disabled_periodic(current_opmode)
+                        # Run periodic
+                        self.opmode_periodic(self._opmode, current_enabled)
 
                         self._prev_enabled = current_enabled
                         self._prev_opmode = current_opmode
 
                     time.sleep(1 / self._cycle_hz)
             finally:
+                if self._prev_enabled is not None:  # Ensure we exit the current opmode
+                    self.opmode_exit(self._opmode, self._prev_enabled)
                 self.robot_end()
 
     def robot_start(self) -> None:
@@ -329,30 +334,26 @@ class BaseRobot:
     def robot_end(self) -> None:
         """Runs before the robot is requested to stop via service or keyboard interrupt"""
 
-    def opmode_enabled_init(self, opmode: str) -> None:
-        """Runs once when the robot is enabled
+    def opmode_init(self, opmode: str, enabled: bool) -> None:
+        """Runs when entering an opmode state (either enabled or disabled)
 
         Args:
-            opmode (str): The OpMode the robot was enabled in. Default opmodes are `"Teleoperated"` and `"Test"`
+            opmode (str): The OpMode being entered
+            enabled (bool): Whether the robot is enabled in this opmode
         """
 
-    def opmode_enabled_periodic(self, opmode: str) -> None:
-        """Loops when the robot is enabled
+    def opmode_exit(self, opmode: str, enabled: bool) -> None:
+        """Runs when exiting an opmode state (either enabled or disabled)
 
         Args:
-            opmode (str): The OpMode the robot is currently in. Default opmodes are `"Teleoperated"` and `"Test"`
+            opmode (str): The OpMode being exited
+            enabled (bool): Whether the robot was enabled in this opmode
         """
 
-    def opmode_disabled_init(self, opmode: str) -> None:
-        """Runs once when the robot is disabled
+    def opmode_periodic(self, opmode: str, enabled: bool) -> None:
+        """Loops continuously while in an opmode state
 
         Args:
-            opmode (str): The OpMode the robot was disabled in. Default opmodes are `"Teleoperated"` and `"Test"`
-        """
-
-    def opmode_disabled_periodic(self, opmode: str) -> None:
-        """Loops when the robot is disabled
-
-        Args:
-            opmode (str): The OpMode the robot is currently in. Default opmodes are `"Teleoperated"` and `"Test"`
+            opmode (str): The current OpMode
+            enabled (bool): Whether the robot is currently enabled
         """

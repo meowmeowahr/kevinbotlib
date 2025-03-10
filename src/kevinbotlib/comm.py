@@ -444,7 +444,7 @@ class KevinbotCommClient:
                     if self.on_update:
                         self.on_update(key, value)
                     if key in self.hooks:
-                        self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"]["data"]))
+                        self.hooks[key][1](key, self.hooks[key][0](**data["data"]["data"]))
                 elif data["action"] == "delete":
                     key = data["key"]
                     self.data_store.pop(key, None)
@@ -518,8 +518,11 @@ class KevinbotCommClient:
     def get_keys(self):
         return list(self.data_store.keys())
 
-    def delete(self, key: str) -> None:
+    def delete(self, key: str | CommPath) -> None:
         """Deletes data from the server."""
+        if isinstance(key, CommPath):
+            key = key.path
+
         if not self.running or not self.websocket:
             self.logger.error("Cannot delete: client is not connected")
             return

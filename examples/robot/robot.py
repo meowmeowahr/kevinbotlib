@@ -16,25 +16,20 @@ class DemoRobot(BaseRobot):
             "Starting robot..."
         )  # print statements are redirected to the KevinbotLib logging system - please don't do this in production
 
-    def opmode_disabled_periodic(self, opmode: str) -> None:
-        super().opmode_disabled_periodic(opmode)
+    def opmode_periodic(self, opmode: str, enabled: bool) -> None:
+        super().opmode_periodic(opmode, enabled)
 
-        print(f"OpMode disabled... {opmode}")
+        print(f"OpMode {'enabled' if enabled else 'disabled'}... {opmode}")
 
-    def opmode_enabled_periodic(self, opmode: str) -> None:
-        super().opmode_enabled_periodic(opmode)
+    def opmode_init(self, opmode: str, enabled: bool) -> None:
+        super().opmode_init(opmode, enabled)
 
-        print(f"OpMode enabled... {opmode}")
+        print(f"OpMode {'enabled' if enabled else 'disabled'} init... {opmode}")
 
-    def opmode_disabled_init(self, opmode: str) -> None:
-        super().opmode_disabled_init(opmode)
+    def opmode_exit(self, opmode: str, enabled: bool) -> None:
+        super().opmode_exit(opmode, enabled)
 
-        print(f"OpMode disabled init... {opmode}")
-
-    def opmode_enabled_init(self, opmode: str) -> None:
-        super().opmode_enabled_init(opmode)
-
-        print(f"OpMode enabled init... {opmode}")
+        print(f"OpMode {'enabled' if enabled else 'disabled'} exit... {opmode}")
 
     def robot_end(self) -> None:  # runs as the robot propares to shutdown
         super().robot_end()

@@ -1,6 +1,6 @@
 import sys
 
-from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, Qt
+from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, Qt, QTimer
 from PySide6.QtGui import QFont, QFontDatabase
 from PySide6.QtWidgets import (
     QApplication,
@@ -14,7 +14,7 @@ from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
 from kevinbotlib.apps.control_console.pages.control import AppState, ControlConsoleControlTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.comm import CommPath, KevinbotCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -38,6 +38,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
             
         self._ctrl_status_key = "%ControlConsole/status"
         self._ctrl_request_key = "%ControlConsole/request"
+        self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
 
         self.client = KevinbotCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -45,6 +46,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
             on_connect=self.on_connect,
             on_disconnect=self.on_disconnect,
         )
+
+        self.heartbeat_timer = QTimer()
+        self.heartbeat_timer.setInterval(100)
+        self.heartbeat_timer.timeout.connect(self.heartbeat)
+        self.heartbeat_timer.start()
 
         self.theme = Theme(ThemeStyle.Dark)
         self.apply_theme()
@@ -101,6 +107,16 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.connection_status.setText("Robot Disconnected")
         self.control.clear_opmodes()
         self.control.state.set(AppState.NO_COMMS)
+
+    def heartbeat(self):
+        if not self.client.is_connected():
+            return
+        
+        ws = self.client.websocket
+        if ws:
+            self.client.send(CommPath(self._ctrl_heartbeat_key) / "heartbeat", StringSendable(value=str(ws.id), timeout=0.25))
+        else:
+            self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
 
 if __name__ == "__main__":
     logger = Logger()

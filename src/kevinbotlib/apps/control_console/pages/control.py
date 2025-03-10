@@ -3,7 +3,7 @@ from typing import Any, Callable
 from PySide6.QtCore import Qt, QTimer, QItemSelection
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel
 
-from kevinbotlib.comm import AnyListSendable, CommPath, KevinbotCommClient, StringSendable
+from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, StringSendable
 
 
 class AppState(Enum):
@@ -36,13 +36,15 @@ class ControlConsoleControlTab(QWidget):
 
         self.client.add_hook(CommPath(self.status_key) / "opmodes", AnyListSendable, self.on_opmodes_update)
         self.client.add_hook(CommPath(self.status_key) / "opmode", StringSendable, self.on_opmode_update)
+        self.client.add_hook(CommPath(self.status_key) / "enabled", BooleanSendable, self.on_enabled_update)
 
 
         self.opmodes = []
         self.opmode = None
+        self.enabled = None
 
         self.state = StateManager(AppState.NO_COMMS, self.state_update)
-        self.dependencies = [lambda: self.client.is_connected(), lambda: len(self.opmodes) > 1, lambda: self.opmode is not None]
+        self.dependencies = [lambda: self.client.is_connected(), lambda: len(self.opmodes) > 1, lambda: self.opmode is not None, lambda: self.enabled is not None]
 
         self.depencency_periodic = QTimer()
         self.depencency_periodic.setInterval(1000)
@@ -65,16 +67,19 @@ class ControlConsoleControlTab(QWidget):
         self.enable_button = QPushButton("Enable")
         self.enable_button.setObjectName("EnableButton")
         self.enable_button.setFixedHeight(80)
+        self.enable_button.clicked.connect(self.enable_request)
         self.enable_layout.addWidget(self.enable_button, 0, 0, 1, 2)
 
         self.disable_button = QPushButton("Disable")
         self.disable_button.setObjectName("DisableButton")
         self.disable_button.setFixedHeight(80)
+        self.disable_button.clicked.connect(self.disable_request)
         self.enable_layout.addWidget(self.disable_button, 0, 2, 1, 3)
 
         self.estop_button = QPushButton("EMERGENCY STOP")
         self.estop_button.setObjectName("EstopButton")
         self.estop_button.setFixedHeight(96)
+        self.estop_button.pressed.connect(self.estop_request)
         self.enable_layout.addWidget(self.estop_button, 1, 0, 1, 5)
 
         self.robot_state = QLabel("Communication\nDown")
@@ -88,6 +93,15 @@ class ControlConsoleControlTab(QWidget):
     def opmode_selection_changed(self, selected: QItemSelection, deselected: QItemSelection, /):
         if len(self.opmode_selector.selectedItems()) == 1:
             self.client.send(CommPath(self.request_key) / "opmode", StringSendable(value=self.opmode_selector.selectedItems()[0].data(0)))
+
+    def enable_request(self):
+        self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
+
+    def disable_request(self):
+        self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
+
+    def estop_request(self):
+        self.client.send(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
 
     def on_opmodes_update(self, _: str, sendable: AnyListSendable | None): # these are for non-initial updates
         if not sendable:
@@ -106,7 +120,7 @@ class ControlConsoleControlTab(QWidget):
                 ready = False
                 break
         if ready:
-            self.state.set(AppState.ROBOT_DISABLED)
+            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
     
     def on_opmode_update(self, _: str, sendable: StringSendable | None): # these are for non-initial updates
         if not sendable:
@@ -121,7 +135,20 @@ class ControlConsoleControlTab(QWidget):
                 ready = False
                 break
         if ready:
-            self.state.set(AppState.ROBOT_DISABLED)
+            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+
+    def on_enabled_update(self, _: str, sendable: BooleanSendable | None):
+        if not sendable:
+            return
+        self.enabled = sendable.value
+        ready = True
+        for cond in self.dependencies:
+            if not cond():
+                ready = False
+                break
+        if ready:
+            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+        
 
     def periodic_dependency_check(self):
         ready = True
@@ -130,7 +157,7 @@ class ControlConsoleControlTab(QWidget):
                 ready = False
                 break
         if ready:
-            self.state.set(AppState.ROBOT_DISABLED)
+            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
 
     def clear_opmodes(self):
         self.opmodes.clear()
