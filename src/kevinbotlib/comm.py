@@ -355,7 +355,7 @@ class KevinbotCommClient:
 
     def register_type(self, data_type: type[BaseSendable]):
         self.data_types[data_type.model_fields["data_id"].default] = data_type
-        self.logger.debug(
+        self.logger.trace(
             f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}"
         )
 
