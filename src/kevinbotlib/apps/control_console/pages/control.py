@@ -73,12 +73,14 @@ class ControlConsoleControlTab(QWidget):
         self.disable_button = QPushButton("Disable")
         self.disable_button.setObjectName("DisableButton")
         self.disable_button.setFixedHeight(80)
+        self.disable_button.setShortcut("Return")
         self.disable_button.clicked.connect(self.disable_request)
         self.enable_layout.addWidget(self.disable_button, 0, 2, 1, 3)
 
         self.estop_button = QPushButton("EMERGENCY STOP")
         self.estop_button.setObjectName("EstopButton")
         self.estop_button.setFixedHeight(96)
+        self.estop_button.setShortcut("Space")
         self.estop_button.pressed.connect(self.estop_request)
         self.enable_layout.addWidget(self.estop_button, 1, 0, 1, 5)
 
