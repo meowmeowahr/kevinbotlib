@@ -52,6 +52,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.heartbeat_timer.timeout.connect(self.heartbeat)
         self.heartbeat_timer.start()
 
+        self.latency_timer = QTimer()
+        self.latency_timer.setInterval(1000)
+        self.latency_timer.timeout.connect(self.update_latency)
+        self.latency_timer.start()
+
         self.theme = Theme(ThemeStyle.Dark)
         self.apply_theme()
 
@@ -117,6 +122,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.client.send(CommPath(self._ctrl_heartbeat_key) / "heartbeat", StringSendable(value=str(ws.id), timeout=0.25))
         else:
             self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
+
+    def update_latency(self):
+        if self.client.websocket:
+            self.latency_status.setText(f"Latency: {self.client.websocket.latency:.2f}ms")
+
 
 if __name__ == "__main__":
     logger = Logger()

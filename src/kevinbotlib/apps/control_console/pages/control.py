@@ -89,6 +89,8 @@ class ControlConsoleControlTab(QWidget):
 
     def state_update(self, state: AppState):
         self.robot_state.setText(state.value.format(self.opmode))
+        if self.opmode in self.opmodes:
+            self.opmode_selector.setCurrentRow(self.opmodes.index(self.opmode))
 
     def opmode_selection_changed(self, selected: QItemSelection, deselected: QItemSelection, /):
         if len(self.opmode_selector.selectedItems()) == 1:

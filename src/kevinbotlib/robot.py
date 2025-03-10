@@ -179,6 +179,7 @@ class BaseRobot:
         # Track the previous state for opmode transitions
         self._prev_enabled = None
         self._prev_opmode = None
+        self._estop = False
 
         self._opmode = opmodes[0] if default_opmode is None else default_opmode
 
@@ -243,6 +244,10 @@ class BaseRobot:
     def _get_console_opmode_request(self):
         sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable)
         return sendable.value if sendable else self._opmodes[0]
+    
+    @final
+    def _get_estop_request(self):
+        return self.comm_client.get_raw(CommPath(self._ctrl_request_root_key) / "estop") is not None
 
     @final
     def run(self) -> NoReturn:
@@ -296,6 +301,13 @@ class BaseRobot:
                     if self._signal_estop:
                         msg = "Robot signal e-stopped"
                         raise RobotEmergencyStoppedException(msg)
+                    
+                    if self._get_estop_request():
+                        self.telemetry.critical("Control Console EMERGENCY STOP detected... Stopping now")
+                        msg = "Robot control console e-stopped"
+                        self._estop = True
+                        raise RobotEmergencyStoppedException(msg)
+
 
                     if self._ready_for_periodic:
                         current_enabled: bool = self._get_console_enabled_request()
@@ -324,9 +336,9 @@ class BaseRobot:
 
                     time.sleep(1 / self._cycle_hz)
             finally:
-                if self._prev_enabled is not None:  # Ensure we exit the current opmode
-                    self.opmode_exit(self._opmode, self._prev_enabled)
-                self.robot_end()
+                if not self._estop:
+                    self.robot_end()
+                # this will be a pre-mature exit to estop as fast as possible
 
     def robot_start(self) -> None:
         """Run after the robot is initialized"""

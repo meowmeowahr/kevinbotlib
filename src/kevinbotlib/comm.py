@@ -411,7 +411,7 @@ class KevinbotCommClient:
                             self.on_connect()
                     prev_connection = True
                     await self._handle_messages()
-            except (websockets.ConnectionClosed, ConnectionError, OSError) as e:
+            except (websockets.ConnectionClosed, ConnectionError, OSError, websockets.InvalidMessage) as e:
                 self.logger.error(f"Unexpected error: {e!r}")
                 self.websocket = None
                 if prev_connection:
@@ -509,7 +509,10 @@ class KevinbotCommClient:
 
         return data_type(**self.data_store.get(key, default)["data"])
 
-    def get_raw(self, key: str) -> dict | None:
+    def get_raw(self, key: str | CommPath) -> dict | None:
+        if isinstance(key, CommPath):
+            key = key.path
+        
         if key not in self.data_store:
             return None
 
