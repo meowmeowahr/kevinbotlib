@@ -63,13 +63,10 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.status = self.statusBar()
         self.status.setSizeGripEnabled(False)
 
-        self.connection_status = QLabel("Robot Disconnected")
-        self.status.addWidget(self.connection_status)
-
         self.ip_status = QLabel(
             str(self.settings.value("network.ip", "10.0.0.2", str)), alignment=Qt.AlignmentFlag.AlignCenter
         )
-        self.status.addWidget(self.ip_status, 1)
+        self.status.addWidget(self.ip_status)
 
         self.latency_status = QLabel("Latency: 0.00ms")
         self.status.addPermanentWidget(self.latency_status)
@@ -105,11 +102,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.client.port = int(self.settings.value("network.port", 8765, int)) # type: ignore
 
     def on_connect(self):
-        self.connection_status.setText("Robot Connected")
         self.control.state.set(AppState.WAITING)
 
     def on_disconnect(self):
-        self.connection_status.setText("Robot Disconnected")
         self.control.clear_opmodes()
         self.control.state.set(AppState.NO_COMMS)
 

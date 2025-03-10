@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Callable
 from PySide6.QtCore import Qt, QTimer, QItemSelection
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel, QTextEdit
 
 from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, StringSendable
 
@@ -84,10 +84,18 @@ class ControlConsoleControlTab(QWidget):
         self.estop_button.pressed.connect(self.estop_request)
         self.enable_layout.addWidget(self.estop_button, 1, 0, 1, 5)
 
+        root_layout.addSpacing(32)
+        
         self.robot_state = QLabel("Communication\nDown")
         self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.robot_state.setAlignment(Qt.AlignmentFlag.AlignCenter)
         root_layout.addWidget(self.robot_state)
+
+        root_layout.addSpacing(32)
+
+        self.logs = QTextEdit(readOnly=True)
+        self.logs.setObjectName("LogView")
+        root_layout.addWidget(self.logs)
 
     def state_update(self, state: AppState):
         self.robot_state.setText(state.value.format(self.opmode))

@@ -382,3 +382,10 @@ QScrollBar::left-arrow:horizontal,
 QScrollBar::right-arrow:horizontal {
     background: none;
 }
+
+
+#LogView {
+    background-color: #0e0e0e;
+    color: #ffffff;
+    font-family: monospace;
+}
