@@ -389,3 +389,75 @@ QScrollBar::right-arrow:horizontal {
     color: #ffffff;
     font-family: monospace;
 }
+
+/* QCheckBox Styling */
+QCheckBox {
+    color: {{fg}};
+    spacing: 6px;
+    margin: 1px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid {{border}};
+    border-radius: 3px;
+    background-color: {{bg3}};
+}
+
+QCheckBox::indicator:hover {
+    border-color: {{primary1}};
+    background-color: {{bg4}};
+}
+
+QCheckBox::indicator:checked {
+    border: 1px solid {{primary1}};
+    border-radius: 3px;
+    background-color: {{primary1}};
+    image: url({{":/theme_icons/checkbox-checked-dark-2x.png" if is_dark else ":/theme_icons/checkbox-checked-light-2x.png"}});
+}
+
+QCheckBox::indicator:checked:hover {
+    border-color: {{primary2}};
+    background-color: {{primary2}};
+    image: url({{":/theme_icons/checkbox-checked-hover-dark-2x.png" if is_dark else ":/theme_icons/checkbox-checked-hover-light-2x.png"}});
+}
+
+QCheckBox::indicator:indeterminate {
+    border: 1px solid {{primary1}};
+    border-radius: 3px;
+    background-color: {{bg3}};
+    image: url({{":/theme_icons/checkbox-indeterminate-dark-2x.png" if is_dark else ":/theme_icons/checkbox-indeterminate-light-2x.png"}});
+}
+
+QCheckBox::indicator:indeterminate:hover {
+    border-color: {{primary2}};
+    background-color: {{bg4}};
+    image: url({{":/theme_icons/checkbox-indeterminate-hover-dark-2x.png" if is_dark else ":/theme_icons/checkbox-indeterminate-hover-light-2x.png"}});
+}
+
+QCheckBox:disabled {
+    color: {{fg}}50; /* 50% opacity of foreground color */
+}
+
+QCheckBox::indicator:disabled {
+    border-color: {{border}}80; /* 80% opacity of border color */
+    background-color: {{bg2}};
+}
+
+QCheckBox::indicator:checked:disabled {
+    border-color: {{primary1}}50; /* 50% opacity of primary color */
+    background-color: {{primary1}}40; /* 40% opacity of primary color */
+    image: url({{":/theme_icons/checkbox-checked-disabled-dark.png" if is_dark else ":/theme_icons/checkbox-checked-disabled-light.png"}});
+}
+
+QCheckBox::indicator:indeterminate:disabled {
+    border-color: {{primary1}}50; /* 50% opacity of primary color */
+    background-color: {{bg2}};
+    image: url({{":/theme_icons/checkbox-indeterminate-disabled-dark.png" if is_dark else ":/theme_icons/checkbox-indeterminate-disabled-light.png"}});
+}
+
+QCheckBox::indicator:hover:disabled {
+    border-color: {{border}}80; /* No additional hover effect when disabled */
+    background-color: {{bg2}};
+}

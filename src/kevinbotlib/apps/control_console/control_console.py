@@ -173,8 +173,6 @@ if __name__ == "__main__":
     logger.configure(LoggerConfiguration(level=log_level))
 
     kevinbotlib.apps.control_console.resources_rc.qInitResources()
-    QFontDatabase.addApplicationFont(":/fonts/NotoSans-Regular.ttf")
-    app.setFont(QFont("Noto Sans", app.font().pointSize()))
     window = ControlConsoleApplicationWindow()
     window.show()
     sys.exit(app.exec())

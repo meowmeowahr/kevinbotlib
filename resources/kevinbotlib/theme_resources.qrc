@@ -5,5 +5,17 @@
         <file>theme_icons/spinbox-caret-down-dark.png</file>
         <file>theme_icons/spinbox-caret-up-light.png</file>
         <file>theme_icons/spinbox-caret-down-light.png</file>
+        <file>theme_icons/checkbox-checked-dark-2x.png</file>
+        <file>theme_icons/checkbox-checked-light-2x.png</file>
+        <file>theme_icons/checkbox-checked-hover-dark-2x.png</file>
+        <file>theme_icons/checkbox-checked-hover-light-2x.png</file>
+        <file>theme_icons/checkbox-checked-disabled-dark-2x.png</file>
+        <file>theme_icons/checkbox-checked-disabled-light-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-dark-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-light-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-hover-dark-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-hover-light-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-disabled-dark-2x.png</file>
+        <file>theme_icons/checkbox-indeterminate-disabled-light-2x.png</file>
     </qresource>
 </RCC>
