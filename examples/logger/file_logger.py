@@ -1,7 +1,13 @@
 import time
 
 from kevinbotlib.fileserver import FileServer
-from kevinbotlib.logger import FileLoggerConfig, Level, Logger, LoggerConfiguration, LoggerDirectories
+from kevinbotlib.logger import (
+    FileLoggerConfig,
+    Level,
+    Logger,
+    LoggerConfiguration,
+    LoggerDirectories,
+)
 
 print(f"Logging to {LoggerDirectories.get_logger_directory()}")
 

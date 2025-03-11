@@ -8,7 +8,12 @@ from typing import Any, final
 import sdl2
 import sdl2.ext
 
-from kevinbotlib.comm import AnyListSendable, BooleanSendable, IntegerSendable, KevinbotCommClient
+from kevinbotlib.comm import (
+    AnyListSendable,
+    BooleanSendable,
+    IntegerSendable,
+    KevinbotCommClient,
+)
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
 
@@ -220,7 +225,10 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             value = event.jaxis.value / 32767.0
 
             # For triggers, convert range from [-1.0, 1.0] to [0.0, 1.0]
-            if axis in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+            if axis in (
+                XboxControllerAxis.LeftTrigger,
+                XboxControllerAxis.RightTrigger,
+            ):
                 value = (value + 1.0) / 2.0
 
             # Update state and trigger callback if value changed significantly
@@ -304,10 +312,14 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         if not self.running:
             self.running = True
             threading.Thread(
-                target=self._event_loop, daemon=True, name=f"KevinbotLib.Joystick.EvLoop.{self.index}"
+                target=self._event_loop,
+                daemon=True,
+                name=f"KevinbotLib.Joystick.EvLoop.{self.index}",
             ).start()
             threading.Thread(
-                target=self._check_connection, daemon=True, name=f"KevinbotLib.Joystick.ConnCheck.{self.index}"
+                target=self._check_connection,
+                daemon=True,
+                name=f"KevinbotLib.Joystick.ConnCheck.{self.index}",
             ).start()
 
     def stop(self):
@@ -336,7 +348,10 @@ class LocalXboxController(RawLocalJoystickDevice):
 
     def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
         """Returns the current value of the specified trigger (0.0 to 1.0)."""
-        if trigger not in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+        if trigger not in (
+            XboxControllerAxis.LeftTrigger,
+            XboxControllerAxis.RightTrigger,
+        ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
         return max(self.get_axis_value(trigger, precision), 0)
@@ -380,7 +395,10 @@ class JoystickSender:
     @final
     def _send(self):
         self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
-        self.client.send(self.key + "/pov", IntegerSendable(value=self.joystick.get_pov_direction().value))
+        self.client.send(
+            self.key + "/pov",
+            IntegerSendable(value=self.joystick.get_pov_direction().value),
+        )
         self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
         self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.connected))
 
@@ -393,7 +411,11 @@ class JoystickSender:
     @final
     def start(self):
         self.running = True
-        self.thread = threading.Thread(target=self._send_loop(), daemon=True, name="KevinbotLib.Joysticks.CommSender")
+        self.thread = threading.Thread(
+            target=self._send_loop(),
+            daemon=True,
+            name="KevinbotLib.Joysticks.CommSender",
+        )
         self.thread.start()
 
     @final
@@ -511,7 +533,11 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         """Starts the polling loop in a separate thread."""
         if not self.running:
             self.running = True
-            threading.Thread(target=self._poll_loop, daemon=True, name="KevinbotLib.Joystick.Remote.Poll").start()
+            threading.Thread(
+                target=self._poll_loop,
+                daemon=True,
+                name="KevinbotLib.Joystick.Remote.Poll",
+            ).start()
 
     def stop(self):
         """Stops the polling thread."""
@@ -553,7 +579,10 @@ class RemoteXboxController(RemoteRawJoystickDevice):
 
     def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
         """Returns the current value of the specified trigger (0.0 to 1.0)."""
-        if trigger not in (XboxControllerAxis.LeftTrigger, XboxControllerAxis.RightTrigger):
+        if trigger not in (
+            XboxControllerAxis.LeftTrigger,
+            XboxControllerAxis.RightTrigger,
+        ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
         value = super().get_axis_value(trigger, precision)

@@ -1,6 +1,14 @@
 import sys
 
-from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, Qt, QTimer
+import ansi2html
+from PySide6.QtCore import (
+    QCommandLineOption,
+    QCommandLineParser,
+    QCoreApplication,
+    QSettings,
+    Qt,
+    QTimer,
+)
 from PySide6.QtGui import QFont, QFontDatabase, QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
@@ -8,15 +16,17 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QTabWidget,
 )
-import markupsafe
 
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
-from kevinbotlib.apps.control_console.pages.control import AppState, ControlConsoleControlTab
+from kevinbotlib.apps.control_console.pages.control import (
+    AppState,
+    ControlConsoleControlTab,
+)
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import CommPath, KevinbotCommClient, StringSendable
-from kevinbotlib.logger import Message, Level, Logger, LoggerConfiguration
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -26,7 +36,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
         self.setContentsMargins(4, 4, 4, 0)
 
-        logger.add_hook(self.log_hook)
+        logger.add_hook_ansi(self.log_hook)
 
         self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
 
@@ -37,14 +47,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.settings.setValue("network.port", 8765)
         if "application.theme" not in self.settings.allKeys():
             self.settings.setValue("application.theme", "System")
-            
+
         self._ctrl_status_key = "%ControlConsole/status"
         self._ctrl_request_key = "%ControlConsole/request"
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
 
         self.client = KevinbotCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
-            port=int(self.settings.value("network.port", 8765, int)), # type: ignore
+            port=int(self.settings.value("network.port", 8765, int)),  # type: ignore
             on_connect=self.on_connect,
             on_disconnect=self.on_disconnect,
         )
@@ -66,7 +76,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.status.setSizeGripEnabled(False)
 
         self.ip_status = QLabel(
-            str(self.settings.value("network.ip", "10.0.0.2", str)), alignment=Qt.AlignmentFlag.AlignCenter
+            str(self.settings.value("network.ip", "10.0.0.2", str)),
+            alignment=Qt.AlignmentFlag.AlignCenter,
         )
         self.status.addWidget(self.ip_status)
 
@@ -87,8 +98,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.client.connect()
 
-    def log_hook(self, data: Message):
-        self.control.logs.append(f"<span style='color: red;'>CONSOLE</span> | {data.record['level'].name} | {markupsafe.escape(data.record['message'])}")
+    def log_hook(self, data: str):
+        self.control.logs.append(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
         if self.control.autoscroll_checkbox.isChecked():
             self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
 
@@ -106,7 +117,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))
 
         self.client.host = str(self.settings.value("network.ip", "10.0.0.2", str))
-        self.client.port = int(self.settings.value("network.port", 8765, int)) # type: ignore
+        self.client.port = int(self.settings.value("network.port", 8765, int))  # type: ignore
 
     def on_connect(self):
         self.control.state.set(AppState.WAITING)
@@ -118,10 +129,13 @@ class ControlConsoleApplicationWindow(QMainWindow):
     def heartbeat(self):
         if not self.client.is_connected():
             return
-        
+
         ws = self.client.websocket
         if ws:
-            self.client.send(CommPath(self._ctrl_heartbeat_key) / "heartbeat", StringSendable(value=str(ws.id), timeout=0.25))
+            self.client.send(
+                CommPath(self._ctrl_heartbeat_key) / "heartbeat",
+                StringSendable(value=str(ws.id), timeout=0.25),
+            )
         else:
             self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
 
@@ -142,7 +156,10 @@ if __name__ == "__main__":
     parser.addVersionOption()
     parser.addOption(QCommandLineOption(["V", "verbose"], "Enable verbose (DEBUG) logging"))
     parser.addOption(
-        QCommandLineOption(["T", "trace"], QCoreApplication.translate("main", "Enable tracing (TRACE logging)"))
+        QCommandLineOption(
+            ["T", "trace"],
+            QCoreApplication.translate("main", "Enable tracing (TRACE logging)"),
+        )
     )
     parser.process(app)
 

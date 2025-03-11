@@ -35,7 +35,12 @@ class BaseSendable(BaseModel, ABC):
         Returns:
             dict: The sendable data
         """
-        return {"timeout": self.timeout, "value": None, "did": self.data_id, "struct": self.struct}
+        return {
+            "timeout": self.timeout,
+            "value": None,
+            "did": self.data_id,
+            "struct": self.struct,
+        }
 
 
 class SendableGenerator(ABC):
@@ -194,10 +199,11 @@ class CommPath:
 
     def __truediv__(self, new: str):
         return CommPath(self._path.rstrip("/") + "/" + new.lstrip("/"))
-    
+
     @property
     def path(self) -> str:
         return self._path
+
 
 class KevinbotCommServer:
     """WebSocket-based server for handling real-time data synchronization."""
@@ -367,7 +373,9 @@ class KevinbotCommClient:
 
         self.running = True
         self.thread = threading.Thread(
-            target=self._run_async_loop, daemon=True, name="KevinbotLib.CommClient.AsyncLoop"
+            target=self._run_async_loop,
+            daemon=True,
+            name="KevinbotLib.CommClient.AsyncLoop",
         )
         self.thread.start()
 
@@ -402,7 +410,9 @@ class KevinbotCommClient:
         while self.running:
             try:
                 async with websockets.connect(
-                    f"ws://{self._host}:{self._port}", max_size=2**48 - 1, ping_interval=1
+                    f"ws://{self._host}:{self._port}",
+                    max_size=2**48 - 1,
+                    ping_interval=1,
                 ) as ws:
                     self.websocket = ws
                     if not prev_connection:
@@ -411,13 +421,17 @@ class KevinbotCommClient:
                             self.on_connect()
                     prev_connection = True
                     await self._handle_messages()
-            except (websockets.ConnectionClosed, ConnectionError, OSError, websockets.InvalidMessage) as e:
+            except (
+                websockets.ConnectionClosed,
+                ConnectionError,
+                OSError,
+                websockets.InvalidMessage,
+            ) as e:
                 self.logger.error(f"Unexpected error: {e!r}")
                 self.websocket = None
-                if prev_connection:
-                    if self.on_disconnect:
-                        self.on_disconnect()
-                        self.data_store = {}
+                if prev_connection and self.on_disconnect:
+                    self.on_disconnect()
+                    self.data_store = {}
                 prev_connection = False
                 if self.auto_reconnect and self.running:
                     self.logger.warning("Can't connect to server, retrying...")
@@ -436,7 +450,10 @@ class KevinbotCommClient:
                 if data["action"] == "sync":
                     for hook in self.hooks:
                         if data["data"].get(hook) != self.data_store.get(hook):
-                            self.hooks[hook][1](hook, self.hooks[hook][0](**data["data"].get(hook)["data"]))
+                            self.hooks[hook][1](
+                                hook,
+                                self.hooks[hook][0](**data["data"].get(hook)["data"]),
+                            )
                     self.data_store = data["data"]
                 elif data["action"] == "update":
                     key, value = data["key"], data["data"]
@@ -464,7 +481,12 @@ class KevinbotCommClient:
                 self.on_disconnect()
             self.websocket = None
 
-    def add_hook(self, key: str | CommPath, data_type: type[T], callback: Callable[[str, T | None], Any]):
+    def add_hook(
+        self,
+        key: str | CommPath,
+        data_type: type[T],
+        callback: Callable[[str, T | None], Any],
+    ):
         """Adds a hook for when new data is recieved from the key
 
         Args:
@@ -472,14 +494,14 @@ class KevinbotCommClient:
         """
         if isinstance(key, CommPath):
             key = key.path
-        self.hooks[key] = (data_type, callback) # type: ignore
+        self.hooks[key] = (data_type, callback)  # type: ignore
 
     def send(self, key: str | CommPath, data: BaseSendable | SendableGenerator) -> None:
         """Publishes data to the server."""
         if not self.running or not self.websocket:
             self.logger.error(f"Cannot publish to {key}: client is not connected")
             return
-        
+
         if isinstance(key, CommPath):
             key = key.path
 
@@ -498,7 +520,7 @@ class KevinbotCommClient:
         """Retrieves stored data."""
         if isinstance(key, CommPath):
             key = key.path
-        
+
         if key not in self.data_store:
             return None
         if self.data_store.get(key, default)["data"]["did"] != data_type.model_fields["data_id"].default:
@@ -512,7 +534,7 @@ class KevinbotCommClient:
     def get_raw(self, key: str | CommPath) -> dict | None:
         if isinstance(key, CommPath):
             key = key.path
-        
+
         if key not in self.data_store:
             return None
 

@@ -1,7 +1,12 @@
 import random
 import time
 
-from kevinbotlib.comm import BaseSendable, IntegerSendable, KevinbotCommClient, SendableGenerator
+from kevinbotlib.comm import (
+    BaseSendable,
+    IntegerSendable,
+    KevinbotCommClient,
+    SendableGenerator,
+)
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()

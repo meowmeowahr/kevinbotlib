@@ -1,6 +1,13 @@
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QTabWidget, QTextEdit, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from kevinbotlib import __about__
 from kevinbotlib.licenses import get_licenses
@@ -38,6 +45,9 @@ class ControlConsoleAboutTab(QWidget):
         license_tabs.setObjectName("CompactTabs")
         right_layout.addWidget(license_tabs)
 
-        license_tabs.addTab(QTextEdit(plainText=get_licenses()["kevinbotlib"], readOnly=True), "KevinbotLib Control Console")
-        for dependency, license in get_licenses().items():
-            license_tabs.addTab(QTextEdit(plainText=license, readOnly=True), dependency)
+        license_tabs.addTab(
+            QTextEdit(plainText=get_licenses()["kevinbotlib"], readOnly=True),
+            "KevinbotLib Control Console",
+        )
+        for dependency, lic in get_licenses().items():
+            license_tabs.addTab(QTextEdit(plainText=lic, readOnly=True), dependency)

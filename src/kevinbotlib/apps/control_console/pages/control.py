@@ -1,9 +1,27 @@
+from collections.abc import Callable
 from enum import Enum
-from typing import Any, Callable
-from PySide6.QtCore import Qt, QTimer, QItemSelection
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel, QTextEdit, QCheckBox, QVBoxLayout
+from typing import Any
 
-from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, StringSendable
+from PySide6.QtCore import QItemSelection, Qt, QTimer
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
+from kevinbotlib.comm import (
+    AnyListSendable,
+    BooleanSendable,
+    CommPath,
+    KevinbotCommClient,
+    StringSendable,
+)
 
 
 class AppState(Enum):
@@ -12,6 +30,7 @@ class AppState(Enum):
     CODE_ERROR = "Robot Code\nError"
     ROBOT_DISABLED = "{0}\nDisabled"
     ROBOT_ENABLED = "{0}\nEnabled"
+
 
 class StateManager:
     def __init__(self, state: AppState, updated: Callable[[AppState], Any]) -> None:
@@ -25,6 +44,7 @@ class StateManager:
     def get(self) -> AppState:
         return self._state
 
+
 class ControlConsoleControlTab(QWidget):
     def __init__(self, client: KevinbotCommClient, status_key: str, request_key: str):
         super().__init__()
@@ -34,17 +54,29 @@ class ControlConsoleControlTab(QWidget):
         self.status_key = status_key
         self.request_key = request_key
 
-        self.client.add_hook(CommPath(self.status_key) / "opmodes", AnyListSendable, self.on_opmodes_update)
+        self.client.add_hook(
+            CommPath(self.status_key) / "opmodes",
+            AnyListSendable,
+            self.on_opmodes_update,
+        )
         self.client.add_hook(CommPath(self.status_key) / "opmode", StringSendable, self.on_opmode_update)
-        self.client.add_hook(CommPath(self.status_key) / "enabled", BooleanSendable, self.on_enabled_update)
-
+        self.client.add_hook(
+            CommPath(self.status_key) / "enabled",
+            BooleanSendable,
+            self.on_enabled_update,
+        )
 
         self.opmodes = []
         self.opmode = None
         self.enabled = None
 
         self.state = StateManager(AppState.NO_COMMS, self.state_update)
-        self.dependencies = [lambda: self.client.is_connected(), lambda: len(self.opmodes) > 1, lambda: self.opmode is not None, lambda: self.enabled is not None]
+        self.dependencies = [
+            lambda: self.client.is_connected(),
+            lambda: len(self.opmodes) > 1,
+            lambda: self.opmode is not None,
+            lambda: self.enabled is not None,
+        ]
 
         self.depencency_periodic = QTimer()
         self.depencency_periodic.setInterval(1000)
@@ -116,9 +148,12 @@ class ControlConsoleControlTab(QWidget):
         if self.opmode in self.opmodes:
             self.opmode_selector.setCurrentRow(self.opmodes.index(self.opmode))
 
-    def opmode_selection_changed(self, selected: QItemSelection, deselected: QItemSelection, /):
+    def opmode_selection_changed(self, _: QItemSelection, __: QItemSelection, /):
         if len(self.opmode_selector.selectedItems()) == 1:
-            self.client.send(CommPath(self.request_key) / "opmode", StringSendable(value=self.opmode_selector.selectedItems()[0].data(0)))
+            self.client.send(
+                CommPath(self.request_key) / "opmode",
+                StringSendable(value=self.opmode_selector.selectedItems()[0].data(0)),
+            )
 
     def enable_request(self):
         self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
@@ -129,11 +164,11 @@ class ControlConsoleControlTab(QWidget):
     def estop_request(self):
         self.client.send(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
 
-    def on_opmodes_update(self, _: str, sendable: AnyListSendable | None): # these are for non-initial updates
+    def on_opmodes_update(self, _: str, sendable: AnyListSendable | None):  # these are for non-initial updates
         if not sendable:
             self.opmode_selector.clear()
             return
-        if not sendable.value == self.opmodes:
+        if sendable.value != self.opmodes:
             self.opmodes.clear()
             self.opmode_selector.clear()
             for opmode in sendable.value:
@@ -147,8 +182,8 @@ class ControlConsoleControlTab(QWidget):
                 break
         if ready:
             self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
-    
-    def on_opmode_update(self, _: str, sendable: StringSendable | None): # these are for non-initial updates
+
+    def on_opmode_update(self, _: str, sendable: StringSendable | None):  # these are for non-initial updates
         if not sendable:
             return
         if sendable.value in self.opmodes:
@@ -174,7 +209,6 @@ class ControlConsoleControlTab(QWidget):
                 break
         if ready:
             self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
-        
 
     def periodic_dependency_check(self):
         ready = True

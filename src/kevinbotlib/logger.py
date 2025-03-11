@@ -1,10 +1,11 @@
 import glob
 import os
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import IO, Callable
+from typing import IO
 
 import platformdirs
 from loguru import logger as _internal_logger
@@ -116,21 +117,44 @@ class Logger:
             )
             return log_file
         return None
-    
+
     def add_hook(self, hook: Callable[[Message], None]):
         if not self.config:
             raise LoggerNotConfiguredException
-        self._internal_logger.add(hook, level=self.config.level.value.no if self.config.level else self.config.level.value.no, serialize=True)
+        self._internal_logger.add(
+            hook,  # type: ignore
+            level=self.config.level.value.no if self.config.level else self.config.level.value.no,
+            serialize=True,
+            colorize=True,
+        )
 
-    def log(self, level: Level, message: str | BaseException, opts: LoggerWriteOpts | None = None):
+    def add_hook_ansi(self, hook: Callable[[str], None]):
+        if not self.config:
+            raise LoggerNotConfiguredException
+        self._internal_logger.add(
+            hook,
+            level=self.config.level.value.no if self.config.level else self.config.level.value.no,
+            serialize=False,
+            colorize=True,
+        )
+
+    def log(
+        self,
+        level: Level,
+        message: str | BaseException,
+        opts: LoggerWriteOpts | None = None,
+    ):
         """Log a message with a specified level"""
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
         opts = opts or LoggerWriteOpts()
-        self._internal_logger.opt(depth=opts.depth, colors=opts.colors, ansi=opts.ansi, exception=opts.exception).log(
-            level.name, message
-        )
+        self._internal_logger.opt(
+            depth=opts.depth,
+            colors=opts.colors,
+            ansi=opts.ansi,
+            exception=opts.exception,
+        ).log(level.name, message)
 
     def trace(self, message: str):
         if not Logger.is_configured:

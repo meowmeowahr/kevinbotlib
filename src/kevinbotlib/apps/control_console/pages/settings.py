@@ -1,10 +1,21 @@
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QSettings, Signal
-from PySide6.QtWidgets import QFormLayout, QFrame, QHBoxLayout, QLineEdit, QRadioButton, QSizePolicy, QSpinBox, QWidget
+from PySide6.QtWidgets import (
+    QFormLayout,
+    QFrame,
+    QHBoxLayout,
+    QLineEdit,
+    QRadioButton,
+    QSizePolicy,
+    QSpinBox,
+    QWidget,
+)
 
 if TYPE_CHECKING:
-    from kevinbotlib.apps.control_console.control_console import ControlConsoleApplicationWindow
+    from kevinbotlib.apps.control_console.control_console import (
+        ControlConsoleApplicationWindow,
+    )
 
 
 class ControlConsoleSettingsTab(QWidget):
@@ -20,7 +31,10 @@ class ControlConsoleSettingsTab(QWidget):
         self.setLayout(self.form)
 
         # Theme Setting
-        self.form.addRow("Theme", UiColorSettingsSwitcher(self.settings, "application.theme", self.main_window))
+        self.form.addRow(
+            "Theme",
+            UiColorSettingsSwitcher(self.settings, "application.theme", self.main_window),
+        )
 
         # IP Address Setting
         self.ip_input = QLineEdit()
@@ -48,7 +62,12 @@ class ControlConsoleSettingsTab(QWidget):
 
 
 class UiColorSettingsSwitcher(QFrame):
-    def __init__(self, settings: QSettings, key: str, main_window: "ControlConsoleApplicationWindow"):
+    def __init__(
+        self,
+        settings: QSettings,
+        key: str,
+        main_window: "ControlConsoleApplicationWindow",
+    ):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
 

@@ -5,7 +5,12 @@ from kevinbotlib.robot import BaseRobot
 class DemoRobot(BaseRobot):
     def __init__(self):
         super().__init__(
-            opmodes=["TestOp1", "TestOp2", "TestOp3", "TestOp4"],  # robot's operational modes
+            opmodes=[
+                "TestOp1",
+                "TestOp2",
+                "TestOp3",
+                "TestOp4",
+            ],  # robot's operational modes
             log_level=Level.TRACE,  # lowset logging level
             cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
         )

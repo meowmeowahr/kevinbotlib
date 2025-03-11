@@ -3,7 +3,10 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Self, TypedDict
 
-from kevinbotlib.exceptions import CommandSchedulerAlreadyExistsException, CommandSchedulerDoesNotExistException
+from kevinbotlib.exceptions import (
+    CommandSchedulerAlreadyExistsException,
+    CommandSchedulerDoesNotExistException,
+)
 
 
 class Command(ABC):

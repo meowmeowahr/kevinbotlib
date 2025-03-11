@@ -40,6 +40,7 @@ dependencies = [
   "psutil>=7.0.0",
   "pyside6-essentials>=6.8.2.1",
   "darkdetect>=0.8.0",
+  "ansi2html>=1.9.2",
 ]
 
 [project.scripts]
@@ -116,3 +117,4 @@ ignore = ["G004", "TRY400"]
 "examples/*" = ["T201", "S311"]
 "tests/*" = ["S101", "PLR2004"]
 "resources_rc.py" = ["N802"]
+"*" = ["FBT001"]

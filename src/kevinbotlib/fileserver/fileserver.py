@@ -58,7 +58,8 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):
         # Set up template environment
         self.template_env = jinja2.Environment(
-            loader=jinja2.PackageLoader("kevinbotlib.fileserver", "templates"), autoescape=True
+            loader=jinja2.PackageLoader("kevinbotlib.fileserver", "templates"),
+            autoescape=True,
         )
         self.static_dir = resources.files("kevinbotlib.fileserver.static")
         super().__init__(*args, directory=directory, **kwargs)
@@ -90,7 +91,10 @@ class FileserverHTTPHandler(SimpleHTTPRequestHandler):
         # Render template
         template = self.template_env.get_template("directory_listing.html")
         html_content = template.render(
-            entries=entries, path=self.path, host=self.headers.get("Host", ""), version=__about__.__version__
+            entries=entries,
+            path=self.path,
+            host=self.headers.get("Host", ""),
+            version=__about__.__version__,
         )
 
         encoded = html_content.encode("utf-8", "replace")
@@ -143,7 +147,13 @@ class FileServer:
     """Combined FTP and HTTP file server for KevinBot."""
 
     def __init__(
-        self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1", *, enable_ftp_server: bool = False
+        self,
+        directory=".",
+        ftp_port=2121,
+        http_port=8000,
+        host="127.0.0.1",
+        *,
+        enable_ftp_server: bool = False,
     ):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port

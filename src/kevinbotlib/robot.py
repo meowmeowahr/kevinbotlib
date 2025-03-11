@@ -9,12 +9,23 @@ import threading
 import time
 from threading import Thread
 from types import TracebackType
-from typing import NoReturn, Self, final
+from typing import NoReturn, final
 
 import psutil
 
-from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, KevinbotCommServer, StringSendable
-from kevinbotlib.exceptions import RobotEmergencyStoppedException, RobotLockedException, RobotStoppedException
+from kevinbotlib.comm import (
+    AnyListSendable,
+    BooleanSendable,
+    CommPath,
+    KevinbotCommClient,
+    KevinbotCommServer,
+    StringSendable,
+)
+from kevinbotlib.exceptions import (
+    RobotEmergencyStoppedException,
+    RobotLockedException,
+    RobotStoppedException,
+)
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
     FileLoggerConfig,
@@ -207,7 +218,9 @@ class BaseRobot:
         if isinstance(exc_value, RobotEmergencyStoppedException | RobotStoppedException):
             return
         self.telemetry.log(
-            Level.CRITICAL, "The robot stopped due to an exception", LoggerWriteOpts(exception=exc_value)
+            Level.CRITICAL,
+            "The robot stopped due to an exception",
+            LoggerWriteOpts(exception=exc_value),
         )
 
     @final
@@ -223,17 +236,26 @@ class BaseRobot:
     @final
     def _update_console_enabled(self, enabled: bool):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "enabled", BooleanSendable(value=enabled, struct={}))
+        return self.comm_client.send(
+            CommPath(self._ctrl_status_root_key) / "enabled",
+            BooleanSendable(value=enabled, struct={}),
+        )
 
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "opmodes", AnyListSendable(value=opmodes, struct={}))
+        return self.comm_client.send(
+            CommPath(self._ctrl_status_root_key) / "opmodes",
+            AnyListSendable(value=opmodes, struct={}),
+        )
 
     @final
     def _update_console_opmode(self, opmode: str):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(CommPath(self._ctrl_status_root_key) / "opmode", StringSendable(value=opmode, struct={}))
+        return self.comm_client.send(
+            CommPath(self._ctrl_status_root_key) / "opmode",
+            StringSendable(value=opmode, struct={}),
+        )
 
     @final
     def _get_console_enabled_request(self):
@@ -244,7 +266,7 @@ class BaseRobot:
     def _get_console_opmode_request(self):
         sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable)
         return sendable.value if sendable else self._opmodes[0]
-    
+
     @final
     def _get_estop_request(self):
         return self.comm_client.get_raw(CommPath(self._ctrl_request_root_key) / "estop") is not None
@@ -301,13 +323,12 @@ class BaseRobot:
                     if self._signal_estop:
                         msg = "Robot signal e-stopped"
                         raise RobotEmergencyStoppedException(msg)
-                    
+
                     if self._get_estop_request():
                         self.telemetry.critical("Control Console EMERGENCY STOP detected... Stopping now")
                         msg = "Robot control console e-stopped"
                         self._estop = True
                         raise RobotEmergencyStoppedException(msg)
-
 
                     if self._ready_for_periodic:
                         current_enabled: bool = self._get_console_enabled_request()
