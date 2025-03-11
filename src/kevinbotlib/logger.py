@@ -4,10 +4,11 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import IO
+from typing import IO, Callable
 
 import platformdirs
 from loguru import logger as _internal_logger
+from loguru._handler import Message
 
 from kevinbotlib.exceptions import LoggerNotConfiguredException
 
@@ -85,14 +86,20 @@ class Logger:
 
     def __init__(self) -> None:
         self._internal_logger = _internal_logger
+        self._config: LoggerConfiguration | None = None
+
+    @property
+    def config(self) -> LoggerConfiguration | None:
+        return self._config
 
     @property
     def loguru_logger(self):
         return self._internal_logger
 
     def configure(self, config: LoggerConfiguration):
-        Logger.is_configured = True
         """Configures file-based logging with rotation and cleanup."""
+        Logger.is_configured = True
+        self._config = config
         self._internal_logger.remove()
         self._internal_logger.add(sys.stderr, level=config.level.value.no)
 
@@ -109,6 +116,11 @@ class Logger:
             )
             return log_file
         return None
+    
+    def add_hook(self, hook: Callable[[Message], None]):
+        if not self.config:
+            raise LoggerNotConfiguredException
+        self._internal_logger.add(hook, level=self.config.level.value.no if self.config.level else self.config.level.value.no, serialize=True)
 
     def log(self, level: Level, message: str | BaseException, opts: LoggerWriteOpts | None = None):
         """Log a message with a specified level"""

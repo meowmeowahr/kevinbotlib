@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, Qt, QTimer
-from PySide6.QtGui import QFont, QFontDatabase
+from PySide6.QtGui import QFont, QFontDatabase, QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -15,7 +15,7 @@ from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
 from kevinbotlib.apps.control_console.pages.control import AppState, ControlConsoleControlTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import CommPath, KevinbotCommClient, StringSendable
-from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.logger import Message, Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -25,6 +25,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
         self.setContentsMargins(4, 4, 4, 0)
 
+        logger.add_hook(self.log_hook)
 
         self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
 
@@ -84,6 +85,10 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(ControlConsoleAboutTab(), "About")
 
         self.client.connect()
+
+    def log_hook(self, data: Message):
+        self.control.logs.append(f"<span style='color: red;'>CONSOLE</span> | {data.record['level'].name} | {data.record['message']}")
+        self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
 
     def apply_theme(self):
         theme_name = self.settings.value("application.theme", "Dark")
