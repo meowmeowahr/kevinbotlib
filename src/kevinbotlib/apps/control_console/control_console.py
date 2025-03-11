@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QTabWidget,
 )
+import markupsafe
 
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
@@ -87,8 +88,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.client.connect()
 
     def log_hook(self, data: Message):
-        self.control.logs.append(f"<span style='color: red;'>CONSOLE</span> | {data.record['level'].name} | {data.record['message']}")
-        self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
+        self.control.logs.append(f"<span style='color: red;'>CONSOLE</span> | {data.record['level'].name} | {markupsafe.escape(data.record['message'])}")
+        if self.control.autoscroll_checkbox.isChecked():
+            self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
 
     def apply_theme(self):
         theme_name = self.settings.value("application.theme", "Dark")

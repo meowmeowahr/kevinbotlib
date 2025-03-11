@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Callable
 from PySide6.QtCore import Qt, QTimer, QItemSelection
-from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel, QTextEdit
+from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QListWidget, QPushButton, QWidget, QLabel, QTextEdit, QCheckBox, QVBoxLayout
 
 from kevinbotlib.comm import AnyListSendable, BooleanSendable, CommPath, KevinbotCommClient, StringSendable
 
@@ -85,7 +85,7 @@ class ControlConsoleControlTab(QWidget):
         self.enable_layout.addWidget(self.estop_button, 1, 0, 1, 5)
 
         root_layout.addSpacing(32)
-        
+
         self.robot_state = QLabel("Communication\nDown")
         self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.robot_state.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -93,9 +93,23 @@ class ControlConsoleControlTab(QWidget):
 
         root_layout.addSpacing(32)
 
+        self.logs_layout = QVBoxLayout()
+        root_layout.addLayout(self.logs_layout)
+
         self.logs = QTextEdit(readOnly=True)
         self.logs.setObjectName("LogView")
-        root_layout.addWidget(self.logs)
+
+        log_controls_layout = QHBoxLayout()
+        self.clear_button = QPushButton("Clear")
+        self.clear_button.clicked.connect(self.logs.clear)
+        log_controls_layout.addWidget(self.clear_button)
+
+        self.autoscroll_checkbox = QCheckBox("Autoscroll")
+        self.autoscroll_checkbox.setChecked(True)
+        log_controls_layout.addWidget(self.autoscroll_checkbox)
+
+        self.logs_layout.addLayout(log_controls_layout)
+        self.logs_layout.addWidget(self.logs)
 
     def state_update(self, state: AppState):
         self.robot_state.setText(state.value.format(self.opmode))
