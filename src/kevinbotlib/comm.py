@@ -200,6 +200,9 @@ class CommPath:
     def __truediv__(self, new: str):
         return CommPath(self._path.rstrip("/") + "/" + new.lstrip("/"))
 
+    def __str__(self) -> str:
+        return self._path
+
     @property
     def path(self) -> str:
         return self._path
