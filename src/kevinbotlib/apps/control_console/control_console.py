@@ -99,7 +99,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.controllers_tab = ControlConsoleControllersTab()
 
 
-        self.tabs.addTab(self.control, "Run")
+        self.tabs.addTab(self.control, QIcon(":/app_icons/icon.svg"), "Run")
         self.tabs.addTab(self.controllers_tab, "Controllers")
         self.tabs.addTab(self.settings_tab, "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(), "About")
@@ -170,6 +170,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setApplicationName("KevinbotLib Dashboard")
     app.setApplicationVersion(__version__)
+    app.setStyle("Fusion") # can solve some platform-specific issues
 
     parser = QCommandLineParser()
     parser.addHelpOption()
