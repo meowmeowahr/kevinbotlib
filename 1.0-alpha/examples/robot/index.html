@@ -700,14 +700,24 @@
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DemoRobot</span><span class="p">(</span><span class="n">BaseRobot</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">opmodes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TestOp1&quot;</span><span class="p">,</span> <span class="s2">&quot;TestOp2&quot;</span><span class="p">,</span> <span class="s2">&quot;TestOp3&quot;</span><span class="p">,</span> <span class="s2">&quot;TestOp4&quot;</span><span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
+            <span class="n">opmodes</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;TestOp1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TestOp2&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TestOp3&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TestOp4&quot;</span><span class="p">,</span>
+            <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
         <span class="p">)</span>
