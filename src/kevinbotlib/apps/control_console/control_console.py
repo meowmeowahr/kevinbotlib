@@ -1,4 +1,5 @@
 import sys
+from queue import Queue
 
 import ansi2html
 from PySide6.QtCore import (
@@ -9,7 +10,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QFont, QFontDatabase, QTextCursor
+from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -37,6 +38,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.setContentsMargins(4, 4, 4, 0)
 
         logger.add_hook_ansi(self.log_hook)
+
+        self.console_log_queue: Queue[str] = Queue(1000)
 
         self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
 
@@ -98,10 +101,22 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.client.connect()
 
+        self.log_timer = QTimer()
+        self.log_timer.setInterval(250)
+        self.log_timer.timeout.connect(self.update_logs)
+        self.log_timer.start()
+
     def log_hook(self, data: str):
-        self.control.logs.append(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
-        if self.control.autoscroll_checkbox.isChecked():
-            self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
+        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
+
+    def update_logs(self):
+        if not self.control:
+            return
+
+        while not self.console_log_queue.empty():
+            self.control.logs.append(self.console_log_queue.get())
+            if self.control.autoscroll_checkbox.isChecked():
+                self.control.logs.moveCursor(QTextCursor.MoveOperation.End)
 
     def apply_theme(self):
         theme_name = self.settings.value("application.theme", "Dark")
