@@ -21,7 +21,7 @@
 ```
 
 ### Receiving Raw Joystick Data with a `KevinbotCommClient`
-```python title="examples/joystick/rw_raw.py" linenums="1" 
+```python title="examples/joystick/rx_raw.py" linenums="1" 
 --8<-- "examples/joystick/rx_raw.py"
 ```
 
