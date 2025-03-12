@@ -180,6 +180,7 @@ class BaseRobot:
 
         self._ctrl_status_root_key = "%ControlConsole/status"
         self._ctrl_request_root_key = "%ControlConsole/request"
+        self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -272,6 +273,10 @@ class BaseRobot:
         return self.comm_client.get_raw(CommPath(self._ctrl_request_root_key) / "estop") is not None
 
     @final
+    def _get_console_heartbeat_present(self):
+        return self.comm_client.get_raw(CommPath(self._ctrl_heartbeat_key) / "heartbeat") is not None
+
+    @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
         if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
@@ -329,11 +334,14 @@ class BaseRobot:
                         msg = "Robot control console e-stopped"
                         self._estop = True
                         raise RobotEmergencyStoppedException(msg)
+                    
+                    current_enabled: bool = self._get_console_enabled_request()
+                    current_opmode = self._get_console_opmode_request()
+
+                    if not self._get_console_heartbeat_present():
+                        current_enabled = False
 
                     if self._ready_for_periodic:
-                        current_enabled: bool = self._get_console_enabled_request()
-                        current_opmode = self._get_console_opmode_request()
-
                         # Handle opmode change
                         if current_opmode != self._opmode:
                             if self._prev_enabled is not None:  # Not first iteration
