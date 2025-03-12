@@ -334,7 +334,7 @@ class BaseRobot:
                         msg = "Robot control console e-stopped"
                         self._estop = True
                         raise RobotEmergencyStoppedException(msg)
-                    
+
                     current_enabled: bool = self._get_console_enabled_request()
                     current_opmode = self._get_console_opmode_request()
 

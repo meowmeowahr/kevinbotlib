@@ -10,7 +10,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QTextCursor, QIcon
+from PySide6.QtGui import QIcon, QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
     QTabWidget,
 )
 
-from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
@@ -26,6 +25,7 @@ from kevinbotlib.apps.control_console.pages.control import (
     AppState,
     ControlConsoleControlTab,
 )
+from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import CommPath, KevinbotCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
