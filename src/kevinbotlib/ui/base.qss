@@ -269,6 +269,7 @@ QPushButton:disabled {
 
 /* QListWidget Styling */
 QListWidget {
+    show-decoration-selected: 1;
     background-color: {{bg2}};
     border: 1px solid {{border}};
     border-radius: 4px;
@@ -278,8 +279,6 @@ QListWidget {
 
 QListWidget::item {
     padding: 6px;
-    background-color: {{bg3}};
-    border-radius: 2px;
     margin: 2px;
 }
 
