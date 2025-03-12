@@ -10,7 +10,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QTextCursor
+from PySide6.QtGui import QTextCursor, QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QTabWidget,
 )
 
+from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
@@ -35,6 +36,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
+        self.setWindowIcon(QIcon(":/app_icons/icon.svg"))
         self.setContentsMargins(4, 4, 4, 0)
 
         logger.add_hook_ansi(self.log_hook)
@@ -94,8 +96,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
         self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
+        self.controllers_tab = ControlConsoleControllersTab()
 
-        self.tabs.addTab(self.control, "Control")
+
+        self.tabs.addTab(self.control, "Run")
+        self.tabs.addTab(self.controllers_tab, "Controllers")
         self.tabs.addTab(self.settings_tab, "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(), "About")
 
