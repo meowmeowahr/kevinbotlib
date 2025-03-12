@@ -86,7 +86,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         )
         self.status.addWidget(self.ip_status)
 
-        self.latency_status = QLabel("Latency: 0.00ms")
+        self.latency_status = QLabel("Latency: -.--ms")
         self.status.addPermanentWidget(self.latency_status)
 
         self.tabs = QTabWidget(self)
