@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/meowmeowahr/kevinbotlib/refs/heads/main/docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
+  <img src="docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
 </p>
 
 # KevinbotLib
