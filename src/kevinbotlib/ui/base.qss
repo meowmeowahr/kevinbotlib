@@ -1,4 +1,4 @@
-QMainWindow {
+QMainWindow, QDialog {
     background-color: {{bg1}};
 }
 

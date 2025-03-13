@@ -9,8 +9,9 @@ from PySide6.QtCore import (
     QSettings,
     Qt,
     QTimer,
+    QSize
 )
-from PySide6.QtGui import QIcon, QTextCursor
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -91,6 +92,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.status.addPermanentWidget(self.latency_status)
 
         self.tabs = QTabWidget(self)
+        self.tabs.setIconSize(QSize(20, 20))
         self.setCentralWidget(self.tabs)
 
         self.settings_tab = ControlConsoleSettingsTab(self.settings, self)
@@ -103,7 +105,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
         self.tabs.addTab(self.controllers_tab, qta.icon("mdi6.gamepad-variant"), "Controllers")
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
-        self.tabs.addTab(ControlConsoleAboutTab(), qta.icon("mdi6.information"), "About")
+        self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
         self.client.connect()
 
