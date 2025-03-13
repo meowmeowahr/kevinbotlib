@@ -348,6 +348,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify installation
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -633,6 +642,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify installation
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -666,6 +684,18 @@
 <p>Run the following in a virtual environment for the base version.
 <div class="highlight"><pre><span></span><code><span class="go">pip install kevinbotlib</span>
 </code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some Linux systems require adding the user to the <code>dialout</code> group to access serial-connected hardware</p>
+<p>Run the following command to add yourself to the group:
+<div class="highlight"><pre><span></span><code><span class="go">sudo usermod -a -G dialout $USER</span>
+</code></pre></div></p>
+</div>
+<h2 id="verify-installation">Verify installation</h2>
+<p>You can check the installed version of KevinbotLb by running the following command:
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib --version</span>
+</code></pre></div></p>
+<p>You should see something like this <code>KevinbotLib, version 1.0.0-alpha.3</code></p>
 
 
 
