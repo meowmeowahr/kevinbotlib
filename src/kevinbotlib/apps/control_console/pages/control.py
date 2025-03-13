@@ -134,6 +134,7 @@ class ControlConsoleControlTab(QWidget):
 
         self.logs = QTextEdit(readOnly=True)
         self.logs.document().setMaximumBlockCount(10000)  # limit log length
+        self.logs.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
         self.logs.setObjectName("LogView")
 
         log_controls_layout = QHBoxLayout()
