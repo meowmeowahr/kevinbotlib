@@ -21,6 +21,14 @@ class Theme:
         self.style = style
         self.app: QApplication | QMainWindow | None = None
 
+    def is_dark(self):
+        if self.style == ThemeStyle.Dark:
+            return True
+        elif self.style == ThemeStyle.Light:
+            return False
+        else:
+            return darkdetect.isDark()
+
     def get_stylesheet(self):
         try:
             template_loader = jinja2.FileSystemLoader(searchpath=pathlib.Path(__file__).parent.resolve())

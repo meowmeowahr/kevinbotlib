@@ -41,6 +41,7 @@ dependencies = [
   "pyside6-essentials>=6.8.2.1",
   "darkdetect>=0.8.0",
   "ansi2html>=1.9.2",
+  "qtawesome>=1.4.0",
 ]
 
 [project.scripts]

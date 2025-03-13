@@ -78,6 +78,10 @@ class ControlConsoleControlTab(QWidget):
             lambda: self.enabled is not None,
         ]
 
+        self.state_label_timer = QTimer()
+        self.state_label_timer.timeout.connect(self.pulse_state_label)
+        self.state_label_timer_runs = 0
+
         self.depencency_periodic = QTimer()
         self.depencency_periodic.setInterval(1000)
         self.depencency_periodic.timeout.connect(self.periodic_dependency_check)
@@ -141,8 +145,22 @@ class ControlConsoleControlTab(QWidget):
         self.autoscroll_checkbox.setChecked(True)
         log_controls_layout.addWidget(self.autoscroll_checkbox)
 
+        log_controls_layout.addStretch()
+
         self.logs_layout.addLayout(log_controls_layout)
         self.logs_layout.addWidget(self.logs)
+
+    def pulse_state_label(self):
+        if self.state_label_timer_runs == 3:
+            self.state_label_timer_runs = 0
+            self.state_label_timer.stop()
+            self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
+            return
+        if self.robot_state.styleSheet() == "font-size: 20px; font-weight: bold; color: #f44336;":
+            self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
+        else:
+            self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold; color: #f44336;")
+        self.state_label_timer_runs += 1
 
     def state_update(self, state: AppState):
         self.robot_state.setText(state.value.format(self.opmode))
@@ -157,12 +175,25 @@ class ControlConsoleControlTab(QWidget):
             )
 
     def enable_request(self):
+        if not self.client.is_connected():
+            self.state_label_timer.start(100)
+            return
+
         self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
 
     def disable_request(self):
+        if not self.client.is_connected():
+            self.state_label_timer.start(100)
+            return
+
         self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
 
     def estop_request(self):
+        if not self.client.is_connected():
+            self.state_label_timer.start(100)
+            # return
+            # don't return - maybe something went wrong with is_connected and estop is still possible
+
         self.client.send(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
 
     def on_opmodes_update(self, _: str, sendable: AnyListSendable | None):  # these are for non-initial updates

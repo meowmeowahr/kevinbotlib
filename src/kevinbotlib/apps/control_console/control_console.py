@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QTabWidget,
 )
+import qtawesome as qta
 
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
@@ -99,10 +100,10 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.controllers_tab = ControlConsoleControllersTab()
 
 
-        self.tabs.addTab(self.control, QIcon(":/app_icons/icon.svg"), "Run")
-        self.tabs.addTab(self.controllers_tab, "Controllers")
-        self.tabs.addTab(self.settings_tab, "Settings")
-        self.tabs.addTab(ControlConsoleAboutTab(), "About")
+        self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
+        self.tabs.addTab(self.controllers_tab, qta.icon("mdi6.gamepad-variant"), "Controllers")
+        self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
+        self.tabs.addTab(ControlConsoleAboutTab(), qta.icon("mdi6.information"), "About")
 
         self.client.connect()
 
@@ -132,6 +133,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
         else:
             self.theme.set_style(ThemeStyle.System)
         self.theme.apply(self)
+
+        if self.theme.is_dark():
+            qta.dark(app)
+        else:
+            qta.light(app)
 
     def settings_changed(self):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))
