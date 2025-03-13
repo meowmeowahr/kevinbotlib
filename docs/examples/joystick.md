@@ -26,6 +26,6 @@
 ```
 
 ### Receiving Xbox Joystick Data with a `KevinbotCommClient`
-```python title="examples/joystick/rw_xbox.py" linenums="1" 
+```python title="examples/joystick/rx_xbox.py" linenums="1" 
 --8<-- "examples/joystick/rx_xbox.py"
 ```
