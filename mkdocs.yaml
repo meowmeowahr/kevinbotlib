@@ -85,6 +85,8 @@ nav:
     - examples/logger.md
     - examples/joystick.md
     - examples/fileserver.md
+  - The KevinbotLib Control Console:
+    - console/index.md
   - commandscheduler.md
   - robot.md
   - reference.md

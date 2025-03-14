@@ -166,6 +166,12 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def is_connected(self) -> bool:
         return self.connected
 
+    def get_button_count(self) -> int:
+        """Returns the total number of buttons on the joystick."""
+        if not self._sdl_joystick or not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
+            return 0
+        return sdl2.SDL_JoystickNumButtons(self._sdl_joystick)
+
     def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
         return self._button_states.get(button_id, False)

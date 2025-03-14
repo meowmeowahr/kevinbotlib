@@ -267,9 +267,30 @@ QPushButton:disabled {
     color: #0e0e0e; /* Light gray text */
 }
 
+QLabel#ButtonInputStateBoxInactive {
+    background-color: #D32F2F;
+}
+
+QLabel#ButtonInputStateBoxActive {
+    background-color: #4CAF50;
+}
+
+QProgressBar {
+    border: 2px solid {{bg4}};
+    border-radius: 2px;
+    background-color: {{bg4}};
+}
+
+QProgressBar::chunk {
+    background-color: {{primary1}};
+}
+
+QProgressBar#AxesStateInputBar {
+    max-height: 18px;
+}
+
 /* QListWidget Styling */
 QListWidget {
-    show-decoration-selected: 1;
     background-color: {{bg2}};
     border: 1px solid {{border}};
     border-radius: 4px;
@@ -279,6 +300,7 @@ QListWidget {
 
 QListWidget::item {
     padding: 6px;
+    border-radius: 2px;
     margin: 2px;
 }
 
@@ -287,13 +309,8 @@ QListWidget::item:hover {
 }
 
 QListWidget::item:selected {
-    background-color: {{bg5}};
     color: {{fg_highlight}};
     border: 1px solid {{primary1}};
-}
-
-QListWidget::item:selected:!active {
-    background-color: {{bg5}};
 }
 
 /* QTextEdit Styling */
