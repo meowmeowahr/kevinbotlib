@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import sys
 from queue import Queue
 
@@ -35,13 +36,15 @@ from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
 class ControlConsoleApplicationWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, logger: Logger):
         super().__init__()
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
         self.setWindowIcon(QIcon(":/app_icons/icon.svg"))
         self.setContentsMargins(4, 4, 4, 0)
 
-        logger.add_hook_ansi(self.log_hook)
+        self.logger = logger
+        if self.logger:
+            self.logger.add_hook_ansi(self.log_hook)
 
         self.console_log_queue: Queue[str] = Queue(1000)
 
@@ -101,7 +104,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
         self.controllers_tab = ControlConsoleControllersTab()
 
-
         self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
         self.tabs.addTab(self.controllers_tab, qta.icon("mdi6.gamepad-variant"), "Controllers")
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
@@ -137,9 +139,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.theme.apply(self)
 
         if self.theme.is_dark():
-            qta.dark(app)
+            qta.dark(QApplication.instance())
         else:
-            qta.light(app)
+            qta.light(QApplication.instance())
 
     def settings_changed(self):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))
@@ -172,36 +174,62 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.latency_status.setText(f"Latency: {self.client.websocket.latency:.2f}ms")
 
 
+@dataclass
+class ControlConsoleApplicationStartupArguments:
+    verbose: bool = False
+    trace: bool = True
+
+
+class ControlConsoleApplicationRunner:
+    def __init__(self, args: ControlConsoleApplicationStartupArguments | None = None):
+        self.logger = Logger()
+        self.app = QApplication(sys.argv)
+        self.app.setApplicationName("KevinbotLib Dashboard")
+        self.app.setApplicationVersion(__version__)
+        self.app.setStyle("Fusion")  # can solve some platform-specific issues
+
+        self.configure_logger(args)
+        self.window = None
+
+    def configure_logger(self, args: ControlConsoleApplicationStartupArguments | None):
+        if args is None:
+            parser = QCommandLineParser()
+            parser.addHelpOption()
+            parser.addVersionOption()
+            parser.addOption(QCommandLineOption(["V", "verbose"], "Enable verbose (DEBUG) logging"))
+            parser.addOption(
+                QCommandLineOption(
+                    ["T", "trace"],
+                    QCoreApplication.translate("main", "Enable tracing (TRACE logging)"),
+                )
+            )
+            parser.process(self.app)
+
+            log_level = Level.INFO
+            if parser.isSet("verbose"):
+                log_level = Level.DEBUG
+            elif parser.isSet("trace"):
+                log_level = Level.TRACE
+        else:
+            log_level = Level.INFO
+            if args.verbose:
+                log_level = Level.DEBUG
+            elif args.trace:
+                log_level = Level.TRACE
+
+        self.logger.configure(LoggerConfiguration(level=log_level))
+
+    def run(self):
+        kevinbotlib.apps.control_console.resources_rc.qInitResources()
+        self.window = ControlConsoleApplicationWindow(self.logger)
+        self.window.show()
+        sys.exit(self.app.exec())
+
+
+def execute(args: ControlConsoleApplicationStartupArguments | None):
+    runner = ControlConsoleApplicationRunner(args)
+    runner.run()
+
+
 if __name__ == "__main__":
-    logger = Logger()
-
-    app = QApplication(sys.argv)
-    app.setApplicationName("KevinbotLib Dashboard")
-    app.setApplicationVersion(__version__)
-    app.setStyle("Fusion") # can solve some platform-specific issues
-
-    parser = QCommandLineParser()
-    parser.addHelpOption()
-    parser.addVersionOption()
-    parser.addOption(QCommandLineOption(["V", "verbose"], "Enable verbose (DEBUG) logging"))
-    parser.addOption(
-        QCommandLineOption(
-            ["T", "trace"],
-            QCoreApplication.translate("main", "Enable tracing (TRACE logging)"),
-        )
-    )
-    parser.process(app)
-
-    logger = Logger()
-    log_level = Level.INFO
-    if parser.isSet("verbose"):
-        log_level = Level.DEBUG
-    elif parser.isSet("trace"):
-        log_level = Level.TRACE
-
-    logger.configure(LoggerConfiguration(level=log_level))
-
-    kevinbotlib.apps.control_console.resources_rc.qInitResources()
-    window = ControlConsoleApplicationWindow()
-    window.show()
-    sys.exit(app.exec())
+    execute(None)
