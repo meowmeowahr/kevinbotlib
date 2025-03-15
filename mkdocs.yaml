@@ -87,9 +87,13 @@ nav:
     - examples/fileserver.md
   - The KevinbotLib Control Console:
     - console/index.md
+  - Command Line Tools:
+    - cli/index.md
   - commandscheduler.md
   - robot.md
-  - reference.md
+  - KevinbotLib Reference:
+    - reference/index.md
+    - reference/ui.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
 
