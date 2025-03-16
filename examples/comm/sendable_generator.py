@@ -3,8 +3,8 @@ import time
 
 from kevinbotlib.comm import (
     BaseSendable,
-    IntegerSendable,
     CommunicationClient,
+    IntegerSendable,
     SendableGenerator,
 )
 from kevinbotlib.logger import Logger, LoggerConfiguration

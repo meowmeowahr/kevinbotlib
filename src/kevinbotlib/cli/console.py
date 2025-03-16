@@ -5,18 +5,24 @@ import click
 
 @click.command("console")
 @click.option(
-    "-v", "--verbose",
+    "-v",
+    "--verbose",
     is_flag=True,
     help="Enable verbose (DEBUG) logging",
 )
 @click.option(
-    "-t", "--trace",
+    "-t",
+    "--trace",
     is_flag=True,
     help="Enable tracing (TRACE) logging",
 )
 def controlconsole(verbose: bool, trace: bool):
     """APP: The KevinbotLib Control Console"""
-    from kevinbotlib.apps.control_console.control_console import ControlConsoleApplicationRunner, ControlConsoleApplicationStartupArguments
+    from kevinbotlib.apps.control_console.control_console import (
+        ControlConsoleApplicationRunner,
+        ControlConsoleApplicationStartupArguments,
+    )
+
     args = ControlConsoleApplicationStartupArguments(verbose=verbose, trace=trace)
     runner = ControlConsoleApplicationRunner(args)
     runner.run()

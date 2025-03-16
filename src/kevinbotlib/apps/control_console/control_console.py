@@ -1,17 +1,10 @@
-from dataclasses import dataclass
 import sys
+from dataclasses import dataclass
 from queue import Queue
 
 import ansi2html
-from PySide6.QtCore import (
-    QCommandLineOption,
-    QCommandLineParser,
-    QCoreApplication,
-    QSettings,
-    Qt,
-    QTimer,
-    QSize
-)
+import qtawesome as qta
+from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, QSize, Qt, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
@@ -19,7 +12,6 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QTabWidget,
 )
-import qtawesome as qta
 
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__

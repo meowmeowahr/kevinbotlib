@@ -24,10 +24,9 @@ class Theme:
     def is_dark(self):
         if self.style == ThemeStyle.Dark:
             return True
-        elif self.style == ThemeStyle.Light:
+        if self.style == ThemeStyle.Light:
             return False
-        else:
-            return darkdetect.isDark()
+        return darkdetect.isDark()
 
     def get_stylesheet(self):
         try:

@@ -152,7 +152,7 @@ class ControlConsoleControlTab(QWidget):
         self.logs_layout.addWidget(self.logs)
 
     def pulse_state_label(self):
-        if self.state_label_timer_runs == 3:
+        if self.state_label_timer_runs == 3:  # noqa: PLR2004
             self.state_label_timer_runs = 0
             self.state_label_timer.stop()
             self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")

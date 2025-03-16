@@ -8,11 +8,12 @@ from typing import Any, final
 import sdl2
 import sdl2.ext
 
+from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
-    IntegerSendable,
     CommunicationClient,
+    IntegerSendable,
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
@@ -273,12 +274,16 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             else:
                 self.connected = True
 
-            events = sdl2.ext.get_events()
+            _sdl2_event_dispatcher().iterate()
+            events: list[sdl2.events.SDL_Event] = _sdl2_event_dispatcher().get(
+                sdl2.joystick.SDL_JoystickInstanceID(self._sdl_joystick)
+            )
             for event in events:
                 if event.type == sdl2.SDL_QUIT:
                     self.running = False
                     break
-                self._handle_event(event)
+                if event.jdevice.which == sdl2.joystick.SDL_JoystickInstanceID(self._sdl_joystick):
+                    self._handle_event(event)
 
             time.sleep(1 / self.polling_hz)
 

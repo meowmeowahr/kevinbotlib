@@ -7,7 +7,9 @@ logger = Logger()
 logger.configure(LoggerConfiguration())
 
 controller = LocalXboxController(0)
+controller2 = LocalXboxController(1)
 controller.start_polling()
+controller2.start_polling()
 
 try:
     while True:

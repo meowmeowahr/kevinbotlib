@@ -1,18 +1,17 @@
+import qtawesome as qta
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
-    QPushButton,
-    QDialog,
-    QApplication,
 )
-
-import qtawesome as qta
 
 from kevinbotlib import __about__
 from kevinbotlib.licenses import get_licenses

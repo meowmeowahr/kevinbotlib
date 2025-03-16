@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.comm import IntegerSendable, CommunicationClient, StringSendable
+from kevinbotlib.comm import CommunicationClient, IntegerSendable, StringSendable
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
