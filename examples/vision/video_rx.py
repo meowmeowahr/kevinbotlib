@@ -1,12 +1,12 @@
 import cv2
 
-from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.comm import CommunicationClient
 from kevinbotlib.logger import Logger, LoggerConfiguration
 from kevinbotlib.vision import FrameDecoders, MjpegStreamSendable, VisionCommUtils
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
-client = KevinbotCommClient()
+client = CommunicationClient()
 VisionCommUtils.init_comms_types(client)
 
 client.connect()

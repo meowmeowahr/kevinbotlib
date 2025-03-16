@@ -1,12 +1,12 @@
 import time
 
-from kevinbotlib.comm import IntegerSendable, KevinbotCommClient, StringSendable
+from kevinbotlib.comm import IntegerSendable, CommunicationClient, StringSendable
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = KevinbotCommClient()
+client = CommunicationClient()
 client.connect()
 client.wait_until_connected()
 

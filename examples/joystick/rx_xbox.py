@@ -1,13 +1,13 @@
 import time
 
-from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.comm import CommunicationClient
 from kevinbotlib.joystick import RemoteXboxController
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = KevinbotCommClient(on_update=None)
+client = CommunicationClient(on_update=None)
 client.connect()
 client.wait_until_connected()
 

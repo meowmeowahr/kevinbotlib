@@ -4,7 +4,7 @@ import time
 from kevinbotlib.comm import (
     BaseSendable,
     IntegerSendable,
-    KevinbotCommClient,
+    CommunicationClient,
     SendableGenerator,
 )
 from kevinbotlib.logger import Logger, LoggerConfiguration
@@ -12,7 +12,7 @@ from kevinbotlib.logger import Logger, LoggerConfiguration
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = KevinbotCommClient()
+client = CommunicationClient()
 client.connect()
 client.wait_until_connected()
 

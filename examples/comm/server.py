@@ -1,8 +1,8 @@
-from kevinbotlib.comm import KevinbotCommServer
+from kevinbotlib.comm import CommunicationServer
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-server = KevinbotCommServer()
+server = CommunicationServer()
 server.serve()

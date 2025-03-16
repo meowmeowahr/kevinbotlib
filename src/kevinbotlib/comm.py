@@ -208,7 +208,7 @@ class CommPath:
         return self._path
 
 
-class KevinbotCommServer:
+class CommunicationServer:
     """WebSocket-based server for handling real-time data synchronization."""
 
     def __init__(self, host: str = "localhost", port: int = 8765) -> None:
@@ -292,7 +292,7 @@ class KevinbotCommServer:
             time.sleep(0.02)
 
 
-class KevinbotCommClient:
+class CommunicationClient:
     """KevinbotLib WebSocket-based client for real-time data synchronization and communication."""
 
     def __init__(

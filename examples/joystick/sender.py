@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.comm import CommunicationClient
 from kevinbotlib.joystick import JoystickSender, LocalXboxController
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
@@ -12,7 +12,7 @@ controller = LocalXboxController(
 )  # it doesn't matter what type of controller is being sent - all values will be converted to raw anyway
 controller.start_polling()
 
-client = KevinbotCommClient()
+client = CommunicationClient()
 client.connect()
 client.wait_until_connected()
 

@@ -8,7 +8,7 @@ import pybase64 as base64
 from annotated_types import Len
 from cv2.typing import MatLike
 
-from kevinbotlib.comm import BinarySendable, KevinbotCommClient
+from kevinbotlib.comm import BinarySendable, CommunicationClient
 
 
 class SingleFrameSendable(BinarySendable):
@@ -200,7 +200,7 @@ class VisionCommUtils:
     """
 
     @staticmethod
-    def init_comms_types(client: KevinbotCommClient) -> None:
+    def init_comms_types(client: CommunicationClient) -> None:
         """Allows the use of frame data over the communication client
 
         Args:

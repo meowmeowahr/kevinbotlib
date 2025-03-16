@@ -1,4 +1,4 @@
-from kevinbotlib.comm import KevinbotCommClient
+from kevinbotlib.comm import CommunicationClient
 from kevinbotlib.logger import FileLoggerConfig, Logger, LoggerConfiguration
 from kevinbotlib.vision import (
     CameraByIndex,
@@ -11,7 +11,7 @@ from kevinbotlib.vision import (
 logger = Logger()
 logger.configure(LoggerConfiguration(file_logger=FileLoggerConfig()))
 
-client = KevinbotCommClient()
+client = CommunicationClient()
 VisionCommUtils.init_comms_types(client)
 
 client.connect()

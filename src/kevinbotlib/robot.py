@@ -17,8 +17,8 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
-    KevinbotCommClient,
-    KevinbotCommServer,
+    CommunicationClient,
+    CommunicationServer,
     StringSendable,
 )
 from kevinbotlib.exceptions import (
@@ -172,8 +172,8 @@ class BaseRobot:
 
         self._opmodes = opmodes
 
-        self.comm_server = KevinbotCommServer(port=serve_port)
-        self.comm_client = KevinbotCommClient(port=serve_port)
+        self.comm_server = CommunicationServer(port=serve_port)
+        self.comm_client = CommunicationClient(port=serve_port)
 
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer

@@ -12,7 +12,7 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     IntegerSendable,
-    KevinbotCommClient,
+    CommunicationClient,
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
@@ -389,7 +389,7 @@ class LocalXboxController(RawLocalJoystickDevice):
 
 
 class JoystickSender:
-    def __init__(self, client: KevinbotCommClient, joystick: AbstractJoystickInterface, key: str) -> None:
+    def __init__(self, client: CommunicationClient, joystick: AbstractJoystickInterface, key: str) -> None:
         self.client = client
 
         self.joystick = joystick
@@ -430,9 +430,9 @@ class JoystickSender:
 
 
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
-    def __init__(self, client: KevinbotCommClient, key: str, callback_polling_hz: int = 100) -> None:
+    def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:
         super().__init__()
-        self._client: KevinbotCommClient = client
+        self._client: CommunicationClient = client
         self._client_key: str = key.rstrip("/")
         self.polling_hz = callback_polling_hz
 
@@ -453,7 +453,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         self.start_polling()
 
     @property
-    def client(self) -> KevinbotCommClient:
+    def client(self) -> CommunicationClient:
         return self._client
 
     @property
@@ -553,7 +553,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
 class RemoteXboxController(RemoteRawJoystickDevice):
     """Xbox-specific remote controller with button name mappings."""
 
-    def __init__(self, client: KevinbotCommClient, key: str, callback_polling_hz: int = 100) -> None:
+    def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:
         super().__init__(client, key, callback_polling_hz)
 
     def get_button_state(self, button: XboxControllerButtons) -> bool:

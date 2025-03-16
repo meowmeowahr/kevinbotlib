@@ -30,7 +30,7 @@ from kevinbotlib.apps.control_console.pages.control import (
 )
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import CommPath, KevinbotCommClient, StringSendable
+from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -62,7 +62,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_request_key = "%ControlConsole/request"
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
 
-        self.client = KevinbotCommClient(
+        self.client = CommunicationClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
             port=int(self.settings.value("network.port", 8765, int)),  # type: ignore
             on_connect=self.on_connect,
