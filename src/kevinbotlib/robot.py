@@ -357,8 +357,7 @@ class BaseRobot:
                                 self.opmode_exit(self._opmode, self._prev_enabled)
                             self.opmode_init(self._opmode, current_enabled)
 
-                        # Run periodic
-                        self.opmode_periodic(self._opmode, current_enabled)
+                        self.robot_periodic(self._opmode, current_enabled)
 
                         self._prev_enabled = current_enabled
                         self._prev_opmode = current_opmode
@@ -375,6 +374,14 @@ class BaseRobot:
     def robot_end(self) -> None:
         """Runs before the robot is requested to stop via service or keyboard interrupt"""
 
+    def robot_periodic(self, opmode: str, enabled: bool):
+        """Periodically runs every robot cycle
+
+        Args:
+            opmode (str): The current OpMode
+            enabled (bool): WHether the robot is enabled in this opmode
+        """
+
     def opmode_init(self, opmode: str, enabled: bool) -> None:
         """Runs when entering an opmode state (either enabled or disabled)
 
@@ -389,12 +396,4 @@ class BaseRobot:
         Args:
             opmode (str): The OpMode being exited
             enabled (bool): Whether the robot was enabled in this opmode
-        """
-
-    def opmode_periodic(self, opmode: str, enabled: bool) -> None:
-        """Loops continuously while in an opmode state
-
-        Args:
-            opmode (str): The current OpMode
-            enabled (bool): Whether the robot is currently enabled
         """
