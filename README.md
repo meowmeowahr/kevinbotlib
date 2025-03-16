@@ -1,5 +1,12 @@
+> [!IMPORTANT]  
+> This version of KevinbotLib is unsupported.
+> 
+> The new KevinbotLib supports custom robot system development and much more
+>
+> Check it out [here](https://github.com/meowmeowahr/kevinbotlib)
+
 <p align="center">
-  <img src="https://raw.githubusercontent.com/meowmeowahr/kevinbotlib/refs/heads/main/docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
+  <img src="https://raw.githubusercontent.com/meowmeowahr/kevinbotlib/refs/heads/v0.x/docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
 </p>
 
 # KevinbotLib
