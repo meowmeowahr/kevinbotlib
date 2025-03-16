@@ -5,6 +5,7 @@
 # KevinbotLib
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg)](https://pypi.org/project/kevinbotlib)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kevinbotlib.svg)](https://pypi.org/project/kevinbotlib)
