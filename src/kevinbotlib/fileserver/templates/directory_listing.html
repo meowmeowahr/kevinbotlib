@@ -14,7 +14,7 @@
         
         <main>
             <ul class="file-list">
-                {% if path != '/' %}
+                {% if path and path != '/' %}
                 <li class="file-entry">
                     <a href="../" class="file-link directory-link">
                         <span class="file-icon folder"></span>
@@ -25,7 +25,7 @@
                 
                 {% for urlname, displayname, filetype in entries %}
                 <li class="file-entry">
-                    <a href="{{ urlname }}" class="file-link {% if filetype == 'folder' %}directory-link{% endif %}">
+                    <a href="/{{ urlname }}" class="file-link {% if filetype == 'folder' %}directory-link{% endif %}">
                         <span class="file-icon {{ filetype }}"></span>
                         {{ displayname }}
                     </a>

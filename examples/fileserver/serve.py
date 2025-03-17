@@ -1,6 +1,10 @@
 import time
 
 from kevinbotlib.fileserver import FileServer
+from kevinbotlib.logger import Logger, LoggerConfiguration
+
+logger = Logger()
+logger.configure(LoggerConfiguration())
 
 server = FileServer(
     ftp_port=2121,  # ftp
