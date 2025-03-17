@@ -5,6 +5,7 @@ KevinbotLib Command-line Interface
 import click
 
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.cli.fileserver import fileserver
 from kevinbotlib.cli.console import controlconsole
 
 
@@ -24,6 +25,7 @@ def cli():
 
 def main():  # no cov
     cli.add_command(controlconsole)
+    cli.add_command(fileserver)
     cli(prog_name="kevinbotlib")
 
 
