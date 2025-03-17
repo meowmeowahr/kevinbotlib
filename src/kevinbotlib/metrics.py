@@ -1,5 +1,7 @@
 from enum import IntEnum
+
 from pydantic import BaseModel
+
 
 class MetricType(IntEnum):
     """
@@ -18,7 +20,7 @@ class MetricType(IntEnum):
     """Display the value as a temperature in Fahrenheit. Dashboards may convert to Celcius."""
     BytesType = 5
     """Display the values as a number of bytes. Dashboards may convert it into human readable KB, MB, etc"""
-    
+
 
 class Metric(BaseModel):
     """
@@ -52,7 +54,7 @@ class SystemMetrics:
         """
         self._metrics[identifier] = metric
 
-    def update(self, identifier: str, value: str | int | float | None) -> None:
+    def update(self, identifier: str, value: str | float | None) -> None:
         """Update the value of a metric
 
         Args:

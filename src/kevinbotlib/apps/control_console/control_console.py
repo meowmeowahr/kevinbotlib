@@ -1,6 +1,6 @@
-from functools import partial
 import sys
 from dataclasses import dataclass
+from functools import partial
 from queue import Queue
 
 import ansi2html
@@ -67,7 +67,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
             sender = DynamicJoystickSender(self.client, partial(self.get_joystick, i), key=self._ctrl_controller_key.format(i))
-            print(self._ctrl_controller_key.format(i))
             sender.stop()
             self.joystick_senders.append(sender)
 

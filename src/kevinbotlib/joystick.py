@@ -133,7 +133,7 @@ class AbstractJoystickInterface(ABC):
 class NullJoystick(AbstractJoystickInterface):
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
         return False
-    
+
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         return 0.0
 
@@ -142,16 +142,16 @@ class NullJoystick(AbstractJoystickInterface):
 
     def get_axes(self) -> list[int | Enum | IntEnum]:
         return []
-    
+
     def get_pov_direction(self) -> POVDirection:
         return POVDirection.NONE
-    
+
     def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
         return
-    
+
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
         return
-    
+
     def is_connected(self) -> bool:
         return super().is_connected()
 
