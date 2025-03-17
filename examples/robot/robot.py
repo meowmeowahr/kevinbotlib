@@ -21,8 +21,8 @@ class DemoRobot(BaseRobot):
             "Starting robot..."
         )  # print statements are redirected to the KevinbotLib logging system - please don't do this in production
 
-    def opmode_periodic(self, opmode: str, enabled: bool) -> None:
-        super().opmode_periodic(opmode, enabled)
+    def robot_periodic(self, opmode: str, enabled: bool) -> None:
+        super().robot_periodic(opmode, enabled)
 
         print(f"OpMode {'enabled' if enabled else 'disabled'}... {opmode}")
 
