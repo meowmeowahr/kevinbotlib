@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "examples/robot/robot.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Test Metrics Robot",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "examples/robot/metrics_robot.py",
+            "console": "integratedTerminal"
         }
     ]
 }

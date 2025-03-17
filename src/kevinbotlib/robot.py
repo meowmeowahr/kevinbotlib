@@ -13,12 +13,14 @@ from typing import NoReturn, final
 
 import psutil
 
+from kevinbotlib.__about__ import __version__
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
     CommunicationClient,
     CommunicationServer,
+    DictSendable,
     StringSendable,
 )
 from kevinbotlib.exceptions import (
@@ -37,7 +39,7 @@ from kevinbotlib.logger import (
     StreamRedirector,
 )
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
-from kevinbotlib.__about__ import __version__
+from kevinbotlib.system import SystemPerformanceData
 
 
 class InstanceLocker:
@@ -139,11 +141,20 @@ class InstanceLocker:
 
 class BaseRobot:
     @staticmethod
-    def add_basic_metrics(robot: 'BaseRobot'):
+    def add_basic_metrics(robot: 'BaseRobot', update_interval: float = 2.0):
         robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("memory.usage", Metric("Memory Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("disk.usage", Metric("Disk Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("kevinbotlib.version", Metric("KevinbotLib Version", __version__, MetricType.RawType))
+
+        def metrics_updater():
+            while True:
+                robot.metrics.update("cpu.usage", SystemPerformanceData.cpu().total_usage_percent)
+                robot.metrics.update("memory.usage", SystemPerformanceData.memory().percent)
+                robot.metrics.update("disk.usage", SystemPerformanceData.primary_disk().percent)
+                time.sleep(update_interval)
+
+        threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
 
     def __init__(
         self,
@@ -154,6 +165,7 @@ class BaseRobot:
         default_opmode: str | None = None,
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
+        metrics_publish_timer: float = 5.0
     ):
         """
         Initialize the robot
@@ -165,7 +177,9 @@ class BaseRobot:
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
             default_opmode (str, optional): Default Operational Mode to start in. Defaults to the first item of `opmodes`.
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
-            log_cleanup_timer (float, optional): How often to cleanup logs in seconds Set to 0 to disable log cleanup. Defaults to 10.0.
+            log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
+            metrics_publish_timer (float, optional): How often to **publish** system metrics. Set to 0 to disable metrics publishing. Defaults to 5.0.
+            NOTE: This is separate from `BaseRobot.add_basic_metrics()` update_interval
         """
 
         self.telemetry = Logger()
@@ -186,10 +200,12 @@ class BaseRobot:
 
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer
+        self._metrics_timer_interval = metrics_publish_timer
 
         self._ctrl_status_root_key = "%ControlConsole/status"
         self._ctrl_request_root_key = "%ControlConsole/request"
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
+        self._ctrl_metrics_key = "%ControlConsole/metrics"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -247,6 +263,20 @@ class BaseRobot:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
             timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.start()
+
+    @final
+    def _metrics_pub_internal(self):
+        if self._metrics.getall():
+            self.comm_client.send(CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall()))
+            self.telemetry.trace(f"Published system metrics to {self._ctrl_metrics_key}")
+        else:
+            self.telemetry.warning("There were no metrics to publish, consider disabling metrics publishing to improve system resource usage")
+
+        if self._log_timer_interval != 0:
+            timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
+            timer.setDaemon(True)
+            timer.setName("KevinbotLib.Robot.Metrics.Publish")
             timer.start()
 
     @final
@@ -322,6 +352,12 @@ class BaseRobot:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
             timer.setDaemon(True)
             timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.start()
+
+        if self._metrics_timer_interval != 0:
+            timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
+            timer.setDaemon(True)
+            timer.setName("KevinbotLib.Robot.Metrics.Updater")
             timer.start()
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):

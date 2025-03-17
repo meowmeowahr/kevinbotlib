@@ -2,6 +2,7 @@ from enum import IntEnum
 
 from pydantic.dataclasses import dataclass
 
+
 class MetricType(IntEnum):
     """
     Display types for `kevinbotlib.metrics.Metric`
@@ -73,7 +74,7 @@ class SystemMetrics:
             Metric: A system metric
         """
         return self._metrics[identifier]
-    
+
     def getall(self) -> dict[str, Metric]:
         """Get all available system metrics
 

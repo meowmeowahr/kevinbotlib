@@ -6,15 +6,13 @@ class DemoRobot(BaseRobot):
     def __init__(self):
         super().__init__(
             opmodes=[
-                "TestOp1",
-                "TestOp2",
-                "TestOp3",
-                "TestOp4",
+                "TestMetricsRobot",
             ],  # robot's operational modes
-            log_level=Level.TRACE,  # lowset logging level
-            cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
-            metrics_publish_timer=0, # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
+            log_level=Level.TRACE,  # lowest logging level
+            cycle_time=5,  # loop our robot code 5x per second - it is recommended to run much higher in practice
+            metrics_publish_timer=5.0, # how often to publish new system metrics to the control console
         )
+        BaseRobot.add_basic_metrics(self, update_interval=2.0) # how fast to get new metrics internally
 
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()
@@ -25,7 +23,7 @@ class DemoRobot(BaseRobot):
     def robot_periodic(self, opmode: str, enabled: bool) -> None:
         super().robot_periodic(opmode, enabled)
 
-        print(f"OpMode {'enabled' if enabled else 'disabled'}... {opmode}")
+        print(self.metrics.getall())
 
     def opmode_init(self, opmode: str, enabled: bool) -> None:
         super().opmode_init(opmode, enabled)

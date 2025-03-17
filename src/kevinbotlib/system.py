@@ -1,6 +1,6 @@
+
 import psutil
 from pydantic.dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -26,7 +26,7 @@ class CPUInfo:
 @dataclass
 class MemoryInfo:
     """Memory Information Type"""
-    
+
     total: int
     """Total memory amount (bytes)"""
     available: int
@@ -42,7 +42,7 @@ class MemoryInfo:
 @dataclass
 class DiskInfo:
     """Disk Information Type"""
-    
+
     device: str
     """Device path"""
     mountpoint: str
@@ -97,7 +97,7 @@ class SystemPerformanceData:
         )
 
     @staticmethod
-    def disks() -> List[DiskInfo]:
+    def disks() -> list[DiskInfo]:
         """Gets system disk(s) information"""
         disks = []
         for part in psutil.disk_partitions(all=False):
@@ -123,5 +123,5 @@ class SystemPerformanceData:
             if disk.mountpoint == '/':
                 return disk
         if not SystemPerformanceData.disks():
-            raise 
+            raise
         return SystemPerformanceData.disks()[0]
