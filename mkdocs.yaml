@@ -84,6 +84,7 @@ nav:
     - examples/comm.md
     - examples/logger.md
     - examples/joystick.md
+    - examples/system.md
     - examples/fileserver.md
   - The KevinbotLib Control Console:
     - console/index.md

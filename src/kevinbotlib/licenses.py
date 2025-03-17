@@ -1188,6 +1188,11 @@ THE SOFTWARE.
 
 
 def get_licenses() -> dict[str, str]:
+    """Return all licenses of KevinbotLib and it's dependencies
+
+    Returns:
+        dict[str, str]: license name-license text
+    """
     return {
         "kevinbotlib": __about__.__license__,
         "Jinja2": _JINJA2_LICENSE,

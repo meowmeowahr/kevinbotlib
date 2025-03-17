@@ -178,8 +178,7 @@ class BaseRobot:
             default_opmode (str, optional): Default Operational Mode to start in. Defaults to the first item of `opmodes`.
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
             log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
-            metrics_publish_timer (float, optional): How often to **publish** system metrics. Set to 0 to disable metrics publishing. Defaults to 5.0.
-            NOTE: This is separate from `BaseRobot.add_basic_metrics()` update_interval
+            metrics_publish_timer (float, optional): How often to **publish** system metrics. This is separate from `BaseRobot.add_basic_metrics()` update_interval. Set to 0 to disable metrics publishing. Defaults to 5.0.
         """
 
         self.telemetry = Logger()
