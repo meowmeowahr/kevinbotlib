@@ -73,3 +73,11 @@ class SystemMetrics:
             Metric: A system metric
         """
         return self._metrics[identifier]
+    
+    def getall(self) -> dict[str, Metric]:
+        """Get all available system metrics
+
+        Returns:
+            dict[str, Metric]: identifier-metric pair dictionary
+        """
+        return self._metrics

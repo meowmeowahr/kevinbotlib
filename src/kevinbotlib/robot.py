@@ -143,7 +143,7 @@ class BaseRobot:
         robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("memory.usage", Metric("Memory Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("disk.usage", Metric("Disk Usage", 0.0, MetricType.PercentageUsedType))
-        robot.metrics.add("kevinbotlib.version", Metric("Disk Usage", __version__, MetricType.RawType))
+        robot.metrics.add("kevinbotlib.version", Metric("KevinbotLib Version", __version__, MetricType.RawType))
 
     def __init__(
         self,
