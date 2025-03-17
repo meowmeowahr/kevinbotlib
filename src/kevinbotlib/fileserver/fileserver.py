@@ -4,15 +4,16 @@ import os
 import threading
 import urllib.parse
 from importlib import resources
+from wsgiref.simple_server import make_server
 
 import jinja2
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
-from wsgiref.simple_server import make_server
 
 from kevinbotlib import __about__
 from kevinbotlib.logger import Level, Logger, StreamRedirector
+
 
 # Your existing get_file_type function remains unchanged
 def get_file_type(path):
@@ -99,7 +100,7 @@ class FileserverHTTPHandler:
         if path.startswith("static/"):
             resource_path = path.replace("static/", "")
             body, status, content_type = self.serve_static(resource_path)
-            status_line = f"{status} {'OK' if status == 200 else 'Not Found'}"
+            status_line = f"{status} {'OK' if status == 200 else 'Not Found'}" # noqa: PLR2004
             headers = [("Content-Type", content_type), ("Content-Length", str(len(body)))]
             start_response(status_line, headers)
             return [body]
@@ -113,18 +114,17 @@ class FileserverHTTPHandler:
                 return [b"Directory not found"]
             start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Content-Length", str(len(body)))])
             return [body]
-        elif os.path.isfile(full_path):
+        if os.path.isfile(full_path):
             with open(full_path, "rb") as f:
                 body = f.read()
             content_type = self.guess_type(full_path)
             start_response("200 OK", [("Content-Type", content_type), ("Content-Length", str(len(body)))])
             return [body]
-        else:
-            start_response("404 Not Found", [("Content-Type", "text/plain")])
-            return [b"File not found"]
+        start_response("404 Not Found", [("Content-Type", "text/plain")])
+        return [b"File not found"]
 
 class FileServer:
-    """Combined FTP and HTTP file server for KevinBot."""
+    """Simple HTTP file server for KevinbotLib"""
     def __init__(self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1", *, enable_ftp_server: bool = False):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port
@@ -171,7 +171,8 @@ class FileServer:
     def start(self, name: str = "KevinbotLib.FileServer.Serve"):
         """Start both FTP and HTTP servers."""
         if not os.path.exists(self.directory):
-            raise ValueError(f"Directory does not exist: {self.directory}")
+            msg = f"Directory does not exist: {self.directory}"
+            raise ValueError(msg)
 
         if self._ftp_enabled:
             self.ftp_thread = threading.Thread(target=self.start_ftp_server)

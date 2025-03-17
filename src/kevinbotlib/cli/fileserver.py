@@ -1,5 +1,7 @@
 import time
+
 import click
+
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 
@@ -35,13 +37,13 @@ from kevinbotlib.logger import Logger, LoggerConfiguration
     default="localhost",
     help="Host to serve on (default: localhost)",
 )
-def fileserver(verbose: bool, trace: bool, dir: str, port: int, host: str):
+def fileserver(verbose: bool, trace: bool, directory: str, port: int, host: str):
     """
     Serve files over HTTP
     """
     from kevinbotlib.fileserver.fileserver import FileServer
     from kevinbotlib.logger import Level
-    
+
     log_level = Level.INFO
     if verbose:
         log_level = Level.DEBUG
@@ -53,10 +55,10 @@ def fileserver(verbose: bool, trace: bool, dir: str, port: int, host: str):
 
     server = FileServer(
         http_port=port,
-        directory=dir,
+        directory=directory,
         host=host,
     )
     server.start()
-    
+
     while True:
         time.sleep(1)
