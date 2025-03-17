@@ -7,21 +7,27 @@ from qtpy.QtWidgets import QApplication, QMainWindow
 
 import kevinbotlib.ui.resources_rc
 
-kevinbotlib.ui.resources_rc.qInitResources()
+kevinbotlib.ui.resources_rc.qInitResources() # this shouldn't be required, make linters happy
 
 
 class ThemeStyle(Enum):
+    """Theme options for the KevinbotLib UI theme"""
     Light = 0
+    """Light mode"""
     Dark = 1
+    """Dark mode"""
     System = 2
+    """System theme, uses GTK on Linux, and system preference on Windows/macOS"""
 
 
 class Theme:
+    """Qt theming engine for the KevinbotLib UI style"""
     def __init__(self, style: ThemeStyle):
         self.style = style
         self.app: QApplication | QMainWindow | None = None
 
     def is_dark(self):
+        """Detect if the currently applied style is dark"""
         if self.style == ThemeStyle.Dark:
             return True
         if self.style == ThemeStyle.Light:
@@ -29,6 +35,7 @@ class Theme:
         return darkdetect.isDark()
 
     def get_stylesheet(self):
+        """Get the formatted stylesheet string to apply"""
         try:
             template_loader = jinja2.FileSystemLoader(searchpath=pathlib.Path(__file__).parent.resolve())
             template_env = jinja2.Environment(loader=template_loader, autoescape=True)
@@ -76,10 +83,12 @@ class Theme:
             return ""
 
     def apply(self, app: QApplication | QMainWindow):
+        """Apply the theme to an application of window"""
         app.setStyleSheet(self.get_stylesheet())
         self.app = app
 
     def set_style(self, style: ThemeStyle):
+        """Update the current style"""
         self.style = style
         if self.app:
             self.app.setStyleSheet(self.get_stylesheet())
