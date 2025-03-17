@@ -95,7 +95,7 @@ class AbstractJoystickInterface(ABC):
     def __init__(self) -> None:
         super().__init__()
 
-        self.polling_hz = 0
+        self.polling_hz = 100
         self.connected = False
 
     @abstractmethod
@@ -130,6 +130,30 @@ class AbstractJoystickInterface(ABC):
     def is_connected(self) -> bool:
         return False
 
+class NullJoystick(AbstractJoystickInterface):
+    def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+        return False
+    
+    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        return 0.0
+
+    def get_buttons(self) -> list[int | Enum | IntEnum]:
+        return []
+
+    def get_axes(self) -> list[int | Enum | IntEnum]:
+        return []
+    
+    def get_pov_direction(self) -> POVDirection:
+        return POVDirection.NONE
+    
+    def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
+        return
+    
+    def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        return
+    
+    def is_connected(self) -> bool:
+        return super().is_connected()
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
@@ -411,7 +435,7 @@ class JoystickSender:
             IntegerSendable(value=self.joystick.get_pov_direction().value),
         )
         self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
-        self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.connected))
+        self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.is_connected()))
 
     @final
     def _send_loop(self):
@@ -423,7 +447,7 @@ class JoystickSender:
     def start(self):
         self.running = True
         self.thread = threading.Thread(
-            target=self._send_loop(),
+            target=self._send_loop,
             daemon=True,
             name="KevinbotLib.Joysticks.CommSender",
         )
@@ -433,6 +457,45 @@ class JoystickSender:
     def stop(self):
         self.running = False
 
+class DynamicJoystickSender:
+    def __init__(self, client: CommunicationClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str) -> None:
+        self.client = client
+
+        self.joystick = joystick_getter
+
+        self.key = key.rstrip("/")
+
+        self.running = False
+
+    @final
+    def _send(self):
+        self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick().get_buttons()))
+        self.client.send(
+            self.key + "/pov",
+            IntegerSendable(value=self.joystick().get_pov_direction().value),
+        )
+        self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick().get_axes()))
+        self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick().is_connected()))
+
+    @final
+    def _send_loop(self):
+        while self.running:
+            self._send()
+            time.sleep(1 / self.joystick().polling_hz)
+
+    @final
+    def start(self):
+        self.running = True
+        self.thread = threading.Thread(
+            target=self._send_loop,
+            daemon=True,
+            name="KevinbotLib.Joysticks.CommSender",
+        )
+        self.thread.start()
+
+    @final
+    def stop(self):
+        self.running = False
 
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
     def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:
