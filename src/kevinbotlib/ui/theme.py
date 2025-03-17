@@ -3,7 +3,7 @@ from enum import Enum
 
 import darkdetect
 import jinja2
-from PySide6.QtWidgets import QApplication, QMainWindow
+from qtpy.QtWidgets import QApplication, QMainWindow
 
 import kevinbotlib.ui.resources_rc
 

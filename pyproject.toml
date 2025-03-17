@@ -42,6 +42,7 @@ dependencies = [
   "darkdetect>=0.8.0",
   "ansi2html>=1.9.2",
   "qtawesome>=1.4.0",
+  "qtpy>=2.4.3",
 ]
 
 [project.optional-dependencies]
@@ -71,7 +72,7 @@ force_include_editable = [
 path = "src/kevinbotlib/__about__.py"
 
 [tool.hatch.envs]
-default = { scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build", rcc-compile = "pyside6-rcc resources/kevinbotlib/theme_resources.qrc -o src/kevinbotlib/ui/resources_rc.py && pyside6-rcc resources/kevinbotlib/controlconsole_resources.qrc -o src/kevinbotlib/apps/control_console/resources_rc.py && echo 'RCC Resources Compiled'" }}
+default = { scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" }}
 
 [tool.hatch.envs.types]
 extra-dependencies = [

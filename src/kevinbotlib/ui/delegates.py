@@ -1,6 +1,6 @@
-from PySide6.QtCore import QModelIndex, QPersistentModelIndex
-from PySide6.QtGui import QPainter
-from PySide6.QtWidgets import QApplication, QStyle, QStyledItemDelegate, QStyleOptionViewItem
+from qtpy.QtCore import QModelIndex, QPersistentModelIndex
+from qtpy.QtGui import QPainter
+from qtpy.QtWidgets import QApplication, QStyle, QStyledItemDelegate, QStyleOptionViewItem
 
 
 class NoFocusDelegate(QStyledItemDelegate):
