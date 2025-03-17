@@ -1,3 +1,4 @@
+from functools import partial
 import sys
 from dataclasses import dataclass
 from queue import Queue
@@ -23,6 +24,7 @@ from kevinbotlib.apps.control_console.pages.control import (
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
+from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -53,6 +55,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_status_key = "%ControlConsole/status"
         self._ctrl_request_key = "%ControlConsole/request"
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
+        self._ctrl_controller_key = "%ControlConsole/joystick/{0}"
 
         self.client = CommunicationClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -60,6 +63,13 @@ class ControlConsoleApplicationWindow(QMainWindow):
             on_connect=self.on_connect,
             on_disconnect=self.on_disconnect,
         )
+
+        self.joystick_senders: list[DynamicJoystickSender] = []
+        for i in range(8):
+            sender = DynamicJoystickSender(self.client, partial(self.get_joystick, i), key=self._ctrl_controller_key.format(i))
+            print(self._ctrl_controller_key.format(i))
+            sender.stop()
+            self.joystick_senders.append(sender)
 
         self.heartbeat_timer = QTimer()
         self.heartbeat_timer.setInterval(100)
@@ -108,6 +118,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.log_timer.timeout.connect(self.update_logs)
         self.log_timer.start()
 
+    def get_joystick(self, index: int):
+        return NullJoystick()
+
     def log_hook(self, data: str):
         self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
 
@@ -143,9 +156,13 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def on_connect(self):
         self.control.state.set(AppState.WAITING)
+        for sender in self.joystick_senders:
+            sender.start()
 
     def on_disconnect(self):
         self.control.clear_opmodes()
+        for sender in self.joystick_senders:
+            sender.stop()
         self.control.state.set(AppState.NO_COMMS)
 
     def heartbeat(self):
