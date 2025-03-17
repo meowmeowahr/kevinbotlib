@@ -1,7 +1,6 @@
 from enum import IntEnum
 
-from pydantic import BaseModel
-
+from pydantic.dataclasses import dataclass
 
 class MetricType(IntEnum):
     """
@@ -22,7 +21,8 @@ class MetricType(IntEnum):
     """Display the values as a number of bytes. Dashboards may convert it into human readable KB, MB, etc"""
 
 
-class Metric(BaseModel):
+@dataclass
+class Metric:
     """
     A single system metric
 
@@ -31,9 +31,9 @@ class Metric(BaseModel):
 
     title: str
     """The title of the metric"""
-    value: str | int | float | None
+    value: str | int | float | None = None
     """The value of the metric"""
-    kind: MetricType
+    kind: MetricType = MetricType.RawType
     """How should the metric be displayed?"""
 
 class SystemMetrics:

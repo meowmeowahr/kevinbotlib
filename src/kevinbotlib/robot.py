@@ -36,6 +36,8 @@ from kevinbotlib.logger import (
     LoggerWriteOpts,
     StreamRedirector,
 )
+from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
+from kevinbotlib.__about__ import __version__
 
 
 class InstanceLocker:
@@ -136,6 +138,13 @@ class InstanceLocker:
 
 
 class BaseRobot:
+    @staticmethod
+    def add_basic_metrics(robot: 'BaseRobot'):
+        robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
+        robot.metrics.add("memory.usage", Metric("Memory Usage", 0.0, MetricType.PercentageUsedType))
+        robot.metrics.add("disk.usage", Metric("Disk Usage", 0.0, MetricType.PercentageUsedType))
+        robot.metrics.add("kevinbotlib.version", Metric("Disk Usage", __version__, MetricType.RawType))
+
     def __init__(
         self,
         opmodes: list[str],
@@ -194,6 +203,12 @@ class BaseRobot:
         self._estop = False
 
         self._opmode = opmodes[0] if default_opmode is None else default_opmode
+
+        self._metrics = SystemMetrics()
+
+    @property
+    def metrics(self):
+        return self._metrics
 
     @property
     def opmode(self) -> str:
