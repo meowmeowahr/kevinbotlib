@@ -14,3 +14,8 @@
 ```python title="examples/robot/joystick_robot.py" linenums="1" 
 --8<-- "examples/robot/joystick_robot.py"
 ```
+
+### Dynamic State Changes
+```python title="examples/robot/dynamic_robot.py" linenums="1" 
+--8<-- "examples/robot/dynamic_robot.py"
+```

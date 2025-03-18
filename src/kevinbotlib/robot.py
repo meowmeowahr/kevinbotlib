@@ -166,6 +166,7 @@ class BaseRobot:
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
         metrics_publish_timer: float = 5.0,
+        *,
         allow_enable_without_console: bool = False,
     ):
         """
@@ -307,8 +308,8 @@ class BaseRobot:
         )
 
     @final
-    def _on_console_enabled_request(self, _ : str, sendable: BooleanSendable | None):
-        self._current_enabled =  sendable.value if sendable else False
+    def _on_console_enabled_request(self, _: str, sendable: BooleanSendable | None):
+        self._current_enabled = sendable.value if sendable else False
 
     @final
     def _get_console_opmode_request(self):
@@ -340,7 +341,9 @@ class BaseRobot:
         signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
         self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
 
-        self.comm_client.add_hook(CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request)
+        self.comm_client.add_hook(
+            CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
+        )
 
         Thread(
             target=self.comm_server.serve,
@@ -392,9 +395,8 @@ class BaseRobot:
 
                     current_opmode: str = self._get_console_opmode_request()
 
-                    if not self._allow_enable_without_console:
-                        if not self._get_console_heartbeat_present():
-                            self._current_enabled = False
+                    if not self._get_console_heartbeat_present() and not self._allow_enable_without_console:
+                        self._current_enabled = False
 
                     if self._ready_for_periodic:
                         # Handle opmode change
@@ -472,7 +474,8 @@ class BaseRobot:
     @opmode.setter
     def opmode(self, value: str):
         if value not in self._opmodes:
-            raise ValueError(f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}")
+            msg = f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}"
+            raise ValueError(msg)
         self._opmode = value
         self._update_console_opmode(value)
 
@@ -484,4 +487,3 @@ class BaseRobot:
         """Immediately trigger an emergency stop."""
         self.telemetry.critical("Manual estop() called - triggering emergency stop")
         self._signal_estop = True
-

@@ -14,7 +14,7 @@ class DemoRobot(BaseRobot):
             log_level=Level.TRACE,  # lowset logging level
             cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
             metrics_publish_timer=0,  # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
-            allow_enable_without_console=True # * allow the robot to enable without the prescence of a control console
+            allow_enable_without_console=True,  # * allow the robot to enable without the prescence of a control console
         )
 
     def robot_start(self) -> None:  # runs once as the robot starts
@@ -35,7 +35,6 @@ class DemoRobot(BaseRobot):
 
         if opmode == "OpModeThatWillEnable":
             self.enabled = True
-            print("here")
 
         if opmode == "OpModeThatWillDisable":
             self.enabled = False
