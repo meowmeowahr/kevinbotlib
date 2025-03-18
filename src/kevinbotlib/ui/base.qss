@@ -406,6 +406,16 @@ QScrollBar::right-arrow:horizontal {
     font-family: monospace;
 }
 
+QMenu {
+    background-color: {{bg2}};
+    border-radius: 2px;
+    margin: 2px;
+}
+
+QMenu::item:selected {
+    background-color: {{bg5}};
+}
+
 /* QCheckBox Styling */
 QCheckBox {
     color: {{fg}};
