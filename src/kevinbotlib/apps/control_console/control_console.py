@@ -27,6 +27,7 @@ from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettin
 from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
 from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -58,6 +59,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
         self._ctrl_controller_key = "%ControlConsole/joystick/{0}"
         self._ctrl_metrics_key = "%ControlConsole/metrics"
+        self._ctrl_logs_key = "%ControlConsole/logs"
 
         self.client = CommunicationClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -65,6 +67,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
             on_connect=self.on_connect,
             on_disconnect=self.on_disconnect,
         )
+
+        self.logrx = ANSILogReceiver(self.on_log, self.client, self._ctrl_logs_key)
+        self.logrx.start()
 
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
@@ -128,6 +133,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def log_hook(self, data: str):
         self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
+
+    def on_log(self, ansi: str):
+        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(ansi.strip()))
 
     def update_logs(self):
         if not self.control:
