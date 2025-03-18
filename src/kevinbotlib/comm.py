@@ -274,7 +274,7 @@ class CommunicationServer:
     async def serve_async(self) -> None:
         """Starts the WebSocket server."""
         self.logger.info("Starting a new KevinbotCommServer")
-        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2**48 - 1)
+        server = await websockets.serve(self.handle_client, self.host, self.port, max_size=2**48 - 1, compression=None)
         task = asyncio.create_task(self.remove_expired_data())
         self.tasks.add(task)
         task.add_done_callback(self.tasks.discard)
@@ -419,6 +419,7 @@ class CommunicationClient:
                     f"ws://{self._host}:{self._port}",
                     max_size=2**48 - 1,
                     ping_interval=1,
+                    compression=None,
                 ) as ws:
                     self.websocket = ws
                     if not prev_connection:
@@ -505,7 +506,7 @@ class CommunicationClient:
         """
         if isinstance(key, CommPath):
             key = key.path
-        
+
         if key not in self.hooks:
             self.hooks[key] = []
         self.hooks[key].append((data_type, callback))  # type: ignore

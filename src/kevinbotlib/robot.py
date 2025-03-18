@@ -39,6 +39,7 @@ from kevinbotlib.logger import (
     StreamRedirector,
 )
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
+from kevinbotlib.remotelog import ANSILogSender
 from kevinbotlib.system import SystemPerformanceData
 
 
@@ -197,18 +198,20 @@ class BaseRobot:
 
         self._opmodes = opmodes
 
+        self._ctrl_status_root_key = "%ControlConsole/status"
+        self._ctrl_request_root_key = "%ControlConsole/request"
+        self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
+        self._ctrl_metrics_key = "%ControlConsole/metrics"
+        self._ctrl_logs_key = "%ControlConsole/logs"
+
         self.comm_server = CommunicationServer(port=serve_port)
         self.comm_client = CommunicationClient(port=serve_port)
+        self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer
         self._metrics_timer_interval = metrics_publish_timer
         self._allow_enable_without_console = allow_enable_without_console
-
-        self._ctrl_status_root_key = "%ControlConsole/status"
-        self._ctrl_request_root_key = "%ControlConsole/request"
-        self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
-        self._ctrl_metrics_key = "%ControlConsole/metrics"
 
         self._signal_stop = False
         self._signal_estop = False
@@ -369,6 +372,7 @@ class BaseRobot:
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             self.comm_client.wait_until_connected()
+            self.log_sender.start()
             self._update_console_enabled(False)
             self._update_console_opmodes(self._opmodes)
             self._update_console_opmode(self._opmode)
