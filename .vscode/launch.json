@@ -17,6 +17,13 @@
             "request": "launch",
             "program": "examples/robot/metrics_robot.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Test Joystick Robot",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "examples/robot/joystick_robot.py",
+            "console": "integratedTerminal"
         }
     ]
 }
