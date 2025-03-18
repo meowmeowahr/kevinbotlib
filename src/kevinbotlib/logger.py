@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import IO
+from warnings import deprecated
 
 import platformdirs
 from loguru import logger as _internal_logger
@@ -180,6 +181,7 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
+    @deprecated("Use Logger.warning() instead")
     def warn(self, message: str):
         self.warning(message)
 
