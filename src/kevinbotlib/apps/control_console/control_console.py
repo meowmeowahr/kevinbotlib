@@ -194,7 +194,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def update_latency(self):
         if self.client.websocket:
-            self.latency_status.setText(f"Latency: {self.client.websocket.latency:.2f}ms")
+            self.latency_status.setText(f"Latency: {self.client.websocket.latency*1000:.2f}ms")
 
 
 @dataclass
