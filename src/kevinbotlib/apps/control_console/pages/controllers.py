@@ -222,6 +222,9 @@ class ControlConsoleControllersTab(QWidget):
         self.selector = QListWidget()
         self.selector.setMaximumWidth(250)
         self.selector.setItemDelegate(ActiveItemDelegate())
+        self.selector.setDragDropMode(QListWidget.DragDropMode.InternalMove)
+        self.selector.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.selector.model().rowsMoved.connect(self.on_controller_reordered)
         self.selector.currentItemChanged.connect(self.on_selection_changed)
 
         self.refresh_button = QPushButton("Refresh")
@@ -233,6 +236,7 @@ class ControlConsoleControllersTab(QWidget):
 
         self.controllers = {}
         self.button_states = {}
+        self.controller_order = []
         self.selected_index = None
 
         self.content_stack = QStackedWidget()
@@ -264,6 +268,23 @@ class ControlConsoleControllersTab(QWidget):
         self.timer.timeout.connect(self.update_controller_list)
         self.timer.start(2000)
 
+    def on_controller_reordered(self, parent, start, end, destination, row):
+        new_order = []
+        for i in range(self.selector.count()):
+            item = self.selector.item(i)
+            index = int(item.text().split(":")[0])
+            new_order.append(index)
+
+        self.controller_order = new_order
+
+        # Rebuild controllers in new order
+        self.controllers = {index: self.controllers[index] for index in self.controller_order if index in self.controllers}
+        self.button_states = {index: self.button_states[index] for index in self.controller_order if index in self.button_states}
+
+    @property
+    def ordered_controllers(self) -> dict:
+        return {index: self.controllers[index] for index in self.controller_order if index in self.controllers}
+
     def update_controller_list(self):
         joystick_names = LocalJoystickIdentifiers.get_names()
         valid_indices = list(range(len(joystick_names)))
@@ -277,13 +298,25 @@ class ControlConsoleControllersTab(QWidget):
         self.selector.blockSignals(True)
         try:
             prev_selected_index = self.selected_index
+            previous_order = []
+            for i in range(self.selector.count()):
+                item = self.selector.item(i)
+                previous_order.append(item.text())  # or extract index instead
 
             self.selector.clear()
 
             index_to_row_map = {}
             selected_row = None
 
-            for i, index in enumerate(valid_indices):
+            # Preserve existing order or append new indices
+            for index in valid_indices:
+                if index not in self.controller_order:
+                    self.controller_order.append(index)
+
+            # Remove deleted indices
+            self.controller_order = [idx for idx in self.controller_order if idx in valid_indices]
+
+            for i, index in enumerate(self.controller_order):
                 if index not in self.controllers:
                     try:
                         joystick = RawLocalJoystickDevice(index)
