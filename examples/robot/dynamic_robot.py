@@ -1,0 +1,60 @@
+from kevinbotlib.logger import Level
+from kevinbotlib.robot import BaseRobot
+
+
+class DemoRobot(BaseRobot):
+    def __init__(self):
+        super().__init__(
+            opmodes=[
+                "OpModeThatWillEnable",
+                "OpModeThatWillDisable",
+                "OpModeThatWillEStop",
+                "OpModeThatWill1stOpMode",
+            ],  # robot's operational modes
+            log_level=Level.TRACE,  # lowset logging level
+            cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
+            metrics_publish_timer=0,  # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
+            allow_enable_without_console=True # * allow the robot to enable without the prescence of a control console
+        )
+
+    def robot_start(self) -> None:  # runs once as the robot starts
+        super().robot_start()
+        print(
+            "Starting robot..."
+        )  # print statements are redirected to the KevinbotLib logging system - please don't do this in production
+
+    def robot_periodic(self, opmode: str, enabled: bool) -> None:
+        super().robot_periodic(opmode, enabled)
+
+        print(f"OpMode {'enabled' if enabled else 'disabled'}... {opmode}")
+
+    def opmode_init(self, opmode: str, enabled: bool) -> None:
+        super().opmode_init(opmode, enabled)
+
+        print(f"OpMode {'enabled' if enabled else 'disabled'} init... {opmode}")
+
+        if opmode == "OpModeThatWillEnable":
+            self.enabled = True
+            print("here")
+
+        if opmode == "OpModeThatWillDisable":
+            self.enabled = False
+
+        if opmode == "OpModeThatWillEStop":
+            self.estop()
+
+        if opmode == "OpModeThatWill1stOpMode":
+            self.opmode = self.opmodes[0]
+
+    def opmode_exit(self, opmode: str, enabled: bool) -> None:
+        super().opmode_exit(opmode, enabled)
+
+        print(f"OpMode {'enabled' if enabled else 'disabled'} exit... {opmode}")
+
+    def robot_end(self) -> None:  # runs as the robot propares to shutdown
+        super().robot_end()
+        print("Ending robot...")
+
+
+if __name__ == "__main__":
+    DemoRobot().run()

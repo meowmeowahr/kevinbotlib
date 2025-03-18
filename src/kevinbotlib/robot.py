@@ -166,6 +166,7 @@ class BaseRobot:
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
         metrics_publish_timer: float = 5.0,
+        allow_enable_without_console: bool = False,
     ):
         """
         Initialize the robot
@@ -179,6 +180,7 @@ class BaseRobot:
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
             log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
             metrics_publish_timer (float, optional): How often to **publish** system metrics. This is separate from `BaseRobot.add_basic_metrics()` update_interval. Set to 0 to disable metrics publishing. Defaults to 5.0.
+            allow_enable_without_console (bool, optional): Allow the robot to be enabled without an active control console. Defaults to False.
         """
 
         self.telemetry = Logger()
@@ -200,6 +202,7 @@ class BaseRobot:
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer
         self._metrics_timer_interval = metrics_publish_timer
+        self._allow_enable_without_console = allow_enable_without_console
 
         self._ctrl_status_root_key = "%ControlConsole/status"
         self._ctrl_request_root_key = "%ControlConsole/request"
@@ -216,6 +219,7 @@ class BaseRobot:
         self._prev_enabled = None
         self._prev_opmode = None
         self._estop = False
+        self._current_enabled: bool = False
 
         self._opmode = opmodes[0] if default_opmode is None else default_opmode
 
@@ -224,10 +228,6 @@ class BaseRobot:
     @property
     def metrics(self):
         return self._metrics
-
-    @property
-    def opmode(self) -> str:
-        return self._opmode
 
     @final
     def _signal_usr1_capture(self, _, __):
@@ -307,9 +307,8 @@ class BaseRobot:
         )
 
     @final
-    def _get_console_enabled_request(self):
-        sendable = self.comm_client.get(CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable)
-        return sendable.value if sendable else False
+    def _on_console_enabled_request(self, _ : str, sendable: BooleanSendable | None):
+        self._current_enabled =  sendable.value if sendable else False
 
     @final
     def _get_console_opmode_request(self):
@@ -340,6 +339,8 @@ class BaseRobot:
         signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
         signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
         self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
+
+        self.comm_client.add_hook(CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request)
 
         Thread(
             target=self.comm_server.serve,
@@ -389,11 +390,11 @@ class BaseRobot:
                         self._estop = True
                         raise RobotEmergencyStoppedException(msg)
 
-                    current_enabled: bool = self._get_console_enabled_request()
-                    current_opmode = self._get_console_opmode_request()
+                    current_opmode: str = self._get_console_opmode_request()
 
-                    if not self._get_console_heartbeat_present():
-                        current_enabled = False
+                    if not self._allow_enable_without_console:
+                        if not self._get_console_heartbeat_present():
+                            self._current_enabled = False
 
                     if self._ready_for_periodic:
                         # Handle opmode change
@@ -402,18 +403,18 @@ class BaseRobot:
                                 self.opmode_exit(self._opmode, self._prev_enabled)
                             self._opmode = current_opmode
                             self._update_console_opmode(current_opmode)
-                            self.opmode_init(current_opmode, current_enabled)
+                            self.opmode_init(current_opmode, self._current_enabled)
 
                         # Handle enable/disable transitions
-                        elif self._prev_enabled != current_enabled:
-                            self._update_console_enabled(current_enabled)
+                        elif self._prev_enabled != self._current_enabled:
+                            self._update_console_enabled(self._current_enabled)
                             if self._prev_enabled is not None:  # Not first iteration
                                 self.opmode_exit(self._opmode, self._prev_enabled)
-                            self.opmode_init(self._opmode, current_enabled)
+                            self.opmode_init(self._opmode, self._current_enabled)
 
-                        self.robot_periodic(self._opmode, current_enabled)
+                        self.robot_periodic(self._opmode, self._current_enabled)
 
-                        self._prev_enabled = current_enabled
+                        self._prev_enabled = self._current_enabled
                         self._prev_opmode = current_opmode
 
                     time.sleep(1 / self._cycle_hz)
@@ -451,3 +452,36 @@ class BaseRobot:
             opmode (str): The OpMode being exited
             enabled (bool): Whether the robot was enabled in this opmode
         """
+
+    @property
+    def enabled(self) -> bool:
+        return self._prev_enabled if self._prev_enabled is not None else False
+
+    @enabled.setter
+    def enabled(self, value: bool):
+        if not self._allow_enable_without_console and not self._get_console_heartbeat_present():
+            self.telemetry.warning("Tried to dynamically enable without a connected control console")
+            return
+        self._update_console_enabled(value)
+        self._current_enabled = value
+
+    @property
+    def opmode(self) -> str:
+        return self._opmode
+
+    @opmode.setter
+    def opmode(self, value: str):
+        if value not in self._opmodes:
+            raise ValueError(f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}")
+        self._opmode = value
+        self._update_console_opmode(value)
+
+    @property
+    def opmodes(self) -> list[str]:
+        return self._opmodes
+
+    def estop(self) -> None:
+        """Immediately trigger an emergency stop."""
+        self.telemetry.critical("Manual estop() called - triggering emergency stop")
+        self._signal_estop = True
+
