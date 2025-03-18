@@ -314,7 +314,7 @@ QListWidget::item:selected {
 }
 
 /* QTextEdit Styling */
-QTextEdit {
+QTextEdit, QPlainTextEdit {
     background-color: {{bg3}};
     color: {{fg}};
     border: 1px solid {{border}};
@@ -324,7 +324,7 @@ QTextEdit {
     selection-color: {{fg}};
 }
 
-QTextEdit:focus {
+QTextEdit:focus, QPlainTextEdit:focus {
     border: 1px solid {{primary1}};
 }
 
