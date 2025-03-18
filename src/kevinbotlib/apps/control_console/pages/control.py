@@ -73,7 +73,7 @@ class ControlConsoleControlTab(QWidget):
         self.state = StateManager(AppState.NO_COMMS, self.state_update)
         self.dependencies = [
             lambda: self.client.is_connected(),
-            lambda: len(self.opmodes) > 1,
+            lambda: len(self.opmodes) > 0,
             lambda: self.opmode is not None,
             lambda: self.enabled is not None,
         ]
