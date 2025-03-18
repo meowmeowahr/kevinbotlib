@@ -35,6 +35,13 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
     * Based on [SDL2](https://github.com/py-sdl/py-sdl2)
     * Builtin-support for Raw devices and Xbox One and Xbox Series controllers
     * Joystick data sender and receiver through the communication system
+* **The Control Console**
+    * Operate a KevinbotLib robot through a simple GUI interface
+    * Supports up to 8 gamepad devices (up to 32 buttons each)
+    * View live robot telemetry
+    * View battery voltage (planned)
+    * Change robot state and OpModes
+    * Monitor robot system metrics
 
 !!! warning "Development"
     This project is in the early stage of development. There are many missing functions that will be supported in the future.
