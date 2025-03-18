@@ -43,6 +43,7 @@ dependencies = [
   "ansi2html>=1.9.2",
   "qtawesome>=1.4.0",
   "qtpy>=2.4.3",
+  "deprecated>=1.2.18",
 ]
 
 [project.optional-dependencies]

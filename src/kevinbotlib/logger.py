@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import IO
-from warnings import deprecated
 
 import platformdirs
+from deprecated import deprecated
 from loguru import logger as _internal_logger
 from loguru._handler import Message
 

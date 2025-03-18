@@ -52,4 +52,3 @@ def server(verbose: bool, trace: bool, port: int, host: str):
         host=host,
     )
     server.serve()
-
