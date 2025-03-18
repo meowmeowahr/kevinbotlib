@@ -33,5 +33,6 @@ class RobotEmergencyStoppedException(BaseException):
 class RobotLockedException(BaseException):
     """Exception that is produced when another instance of a robot is running"""
 
+
 class PrimaryDiskNotFoundException(BaseException):
     """Exception that is produced when SystemPerformanceData can't find a primary system disk"""

@@ -1,4 +1,3 @@
-
 import psutil
 from pydantic.dataclasses import dataclass
 
@@ -61,6 +60,7 @@ class DiskInfo:
 
 class SystemPerformanceData:
     """System information API"""
+
     @staticmethod
     def cpu() -> CPUInfo:
         """Gets CPU information"""
@@ -103,15 +103,17 @@ class SystemPerformanceData:
         for part in psutil.disk_partitions(all=False):
             try:
                 usage = psutil.disk_usage(part.mountpoint)
-                disks.append(DiskInfo(
-                    device=part.device,
-                    mountpoint=part.mountpoint,
-                    fstype=part.fstype,
-                    total=usage.total,
-                    used=usage.used,
-                    free=usage.free,
-                    percent=usage.percent,
-                ))
+                disks.append(
+                    DiskInfo(
+                        device=part.device,
+                        mountpoint=part.mountpoint,
+                        fstype=part.fstype,
+                        total=usage.total,
+                        used=usage.used,
+                        free=usage.free,
+                        percent=usage.percent,
+                    )
+                )
             except PermissionError:
                 continue
         return disks
@@ -120,7 +122,7 @@ class SystemPerformanceData:
     def primary_disk() -> DiskInfo:
         """Gets system primary disk information"""
         for disk in SystemPerformanceData.disks():
-            if disk.mountpoint == '/':
+            if disk.mountpoint == "/":
                 return disk
         if not SystemPerformanceData.disks():
             raise

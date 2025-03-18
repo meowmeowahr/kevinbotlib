@@ -130,11 +130,12 @@ class AbstractJoystickInterface(ABC):
     def is_connected(self) -> bool:
         return False
 
+
 class NullJoystick(AbstractJoystickInterface):
-    def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+    def get_button_state(self, _: int | Enum | IntEnum) -> bool:
         return False
 
-    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+    def get_axis_value(self, _: int, __: int = 3) -> float:
         return 0.0
 
     def get_buttons(self) -> list[int | Enum | IntEnum]:
@@ -146,14 +147,15 @@ class NullJoystick(AbstractJoystickInterface):
     def get_pov_direction(self) -> POVDirection:
         return POVDirection.NONE
 
-    def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
+    def register_button_callback(self, _: int | Enum | IntEnum, __: Callable[[bool], Any]) -> None:
         return
 
-    def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+    def register_pov_callback(self, _: Callable[[POVDirection], Any]) -> None:
         return
 
     def is_connected(self) -> bool:
         return super().is_connected()
+
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
@@ -457,8 +459,11 @@ class JoystickSender:
     def stop(self):
         self.running = False
 
+
 class DynamicJoystickSender:
-    def __init__(self, client: CommunicationClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str) -> None:
+    def __init__(
+        self, client: CommunicationClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
+    ) -> None:
         self.client = client
 
         self.joystick = joystick_getter
@@ -496,6 +501,7 @@ class DynamicJoystickSender:
     @final
     def stop(self):
         self.running = False
+
 
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
     def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:

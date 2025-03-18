@@ -268,7 +268,7 @@ class ControlConsoleControllersTab(QWidget):
         self.timer.timeout.connect(self.update_controller_list)
         self.timer.start(2000)
 
-    def on_controller_reordered(self, parent, start, end, destination, row):
+    def on_controller_reordered(self, _, __, ___, ____, _____):
         new_order = []
         for i in range(self.selector.count()):
             item = self.selector.item(i)
@@ -278,8 +278,12 @@ class ControlConsoleControllersTab(QWidget):
         self.controller_order = new_order
 
         # Rebuild controllers in new order
-        self.controllers = {index: self.controllers[index] for index in self.controller_order if index in self.controllers}
-        self.button_states = {index: self.button_states[index] for index in self.controller_order if index in self.button_states}
+        self.controllers = {
+            index: self.controllers[index] for index in self.controller_order if index in self.controllers
+        }
+        self.button_states = {
+            index: self.button_states[index] for index in self.controller_order if index in self.button_states
+        }
 
     @property
     def ordered_controllers(self) -> dict:

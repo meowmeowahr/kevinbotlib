@@ -7,11 +7,12 @@ from qtpy.QtWidgets import QApplication, QMainWindow
 
 import kevinbotlib.ui.resources_rc
 
-kevinbotlib.ui.resources_rc.qInitResources() # this shouldn't be required, make linters happy
+kevinbotlib.ui.resources_rc.qInitResources()  # this shouldn't be required, make linters happy
 
 
 class ThemeStyle(Enum):
     """Theme options for the KevinbotLib UI theme"""
+
     Light = 0
     """Light mode"""
     Dark = 1
@@ -22,6 +23,7 @@ class ThemeStyle(Enum):
 
 class Theme:
     """Qt theming engine for the KevinbotLib UI style"""
+
     def __init__(self, style: ThemeStyle):
         self.style = style
         self.app: QApplication | QMainWindow | None = None

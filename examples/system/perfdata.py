@@ -1,6 +1,5 @@
 from kevinbotlib.system import SystemPerformanceData
 
-
 cpu = SystemPerformanceData.cpu()
 print("CPU")
 print(cpu)

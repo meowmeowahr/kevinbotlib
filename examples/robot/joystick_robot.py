@@ -11,7 +11,7 @@ class DemoRobot(BaseRobot):
             ],  # robot's operational modes
             log_level=Level.TRACE,  # lowset logging level
             cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
-            metrics_publish_timer=0, # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
+            metrics_publish_timer=0,  # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
         )
 
         self.joystick1 = RemoteXboxController(self.comm_client, "%ControlConsole/joystick/0")

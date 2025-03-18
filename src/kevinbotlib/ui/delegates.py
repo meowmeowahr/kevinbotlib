@@ -5,6 +5,7 @@ from qtpy.QtWidgets import QApplication, QStyle, QStyledItemDelegate, QStyleOpti
 
 class NoFocusDelegate(QStyledItemDelegate):
     """Qt QStyledItemDelegate that removes the focus indicator"""
+
     def paint(self, painter, option: QStyleOptionViewItem, index):
         option.state = QStyle.StateFlag.State_Enabled  # type: ignore
         super().paint(painter, option, index)
@@ -12,6 +13,7 @@ class NoFocusDelegate(QStyledItemDelegate):
 
 class ComboBoxNoTextDelegate(QStyledItemDelegate):
     """Qt QStyledItemDelegate that removes text from QComboBox"""
+
     def __init__(self, parent=None):
         super().__init__(parent)
 

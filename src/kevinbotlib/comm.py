@@ -194,7 +194,9 @@ T = TypeVar("T", bound=BaseSendable)
 
 
 class CommPath:
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: "str | CommPath") -> None:
+        if isinstance(path, CommPath):
+            path = path.path
         self._path = path
 
     def __truediv__(self, new: str):

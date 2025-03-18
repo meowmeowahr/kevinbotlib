@@ -141,7 +141,7 @@ class InstanceLocker:
 
 class BaseRobot:
     @staticmethod
-    def add_basic_metrics(robot: 'BaseRobot', update_interval: float = 2.0):
+    def add_basic_metrics(robot: "BaseRobot", update_interval: float = 2.0):
         robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("memory.usage", Metric("Memory Usage", 0.0, MetricType.PercentageUsedType))
         robot.metrics.add("disk.usage", Metric("Disk Usage", 0.0, MetricType.PercentageUsedType))
@@ -165,7 +165,7 @@ class BaseRobot:
         default_opmode: str | None = None,
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
-        metrics_publish_timer: float = 5.0
+        metrics_publish_timer: float = 5.0,
     ):
         """
         Initialize the robot
@@ -267,10 +267,14 @@ class BaseRobot:
     @final
     def _metrics_pub_internal(self):
         if self._metrics.getall():
-            self.comm_client.send(CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall()))
+            self.comm_client.send(
+                CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall())
+            )
             self.telemetry.trace(f"Published system metrics to {self._ctrl_metrics_key}")
         else:
-            self.telemetry.warning("There were no metrics to publish, consider disabling metrics publishing to improve system resource usage")
+            self.telemetry.warning(
+                "There were no metrics to publish, consider disabling metrics publishing to improve system resource usage"
+            )
 
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)

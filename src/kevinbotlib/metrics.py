@@ -37,12 +37,14 @@ class Metric:
     kind: MetricType = MetricType.RawType
     """How should the metric be displayed?"""
 
+
 class SystemMetrics:
     """
     Keep track of various system metrics
 
     Example metrics: CPU usage, CPU temperature, Disk usage, etc...
     """
+
     def __init__(self) -> None:
         self._metrics: dict[str, Metric] = {}
 

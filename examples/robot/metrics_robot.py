@@ -10,9 +10,9 @@ class DemoRobot(BaseRobot):
             ],  # robot's operational modes
             log_level=Level.TRACE,  # lowest logging level
             cycle_time=5,  # loop our robot code 5x per second - it is recommended to run much higher in practice
-            metrics_publish_timer=5.0, # how often to publish new system metrics to the control console
+            metrics_publish_timer=5.0,  # how often to publish new system metrics to the control console
         )
-        BaseRobot.add_basic_metrics(self, update_interval=2.0) # how fast to get new metrics internally
+        BaseRobot.add_basic_metrics(self, update_interval=2.0)  # how fast to get new metrics internally
 
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()

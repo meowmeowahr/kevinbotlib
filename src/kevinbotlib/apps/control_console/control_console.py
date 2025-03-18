@@ -22,6 +22,7 @@ from kevinbotlib.apps.control_console.pages.control import (
     ControlConsoleControlTab,
 )
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
+from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
 from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
@@ -56,6 +57,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_request_key = "%ControlConsole/request"
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
         self._ctrl_controller_key = "%ControlConsole/joystick/{0}"
+        self._ctrl_metrics_key = "%ControlConsole/metrics"
 
         self.client = CommunicationClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -66,7 +68,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
-            sender = DynamicJoystickSender(self.client, partial(self.get_joystick, i), key=self._ctrl_controller_key.format(i))
+            sender = DynamicJoystickSender(
+                self.client, partial(self.get_joystick, i), key=self._ctrl_controller_key.format(i)
+            )
             sender.stop()
             self.joystick_senders.append(sender)
 
@@ -104,9 +108,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
         self.controllers_tab = ControlConsoleControllersTab()
+        self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 
         self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
         self.tabs.addTab(self.controllers_tab, qta.icon("mdi6.gamepad-variant"), "Controllers")
+        self.tabs.addTab(self.metrics_tab, qta.icon("mdi6.speedometer"), "Metrics")
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
@@ -163,6 +169,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         for sender in self.joystick_senders:
             sender.stop()
         self.control.state.set(AppState.NO_COMMS)
+        self.metrics_tab.text.clear()
 
     def heartbeat(self):
         if not self.client.is_connected():

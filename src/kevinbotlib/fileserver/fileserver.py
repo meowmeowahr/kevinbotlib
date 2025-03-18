@@ -22,15 +22,30 @@ def get_file_type(path):
         return "folder"
     ext = os.path.splitext(path)[1].lower()
     type_mappings = {
-        ".jpg": "image", ".jpeg": "image", ".png": "image", ".gif": "image", ".svg": "image",
-        ".py": "code", ".js": "code", ".html": "code", ".css": "code", ".cpp": "code", ".h": "code",
+        ".jpg": "image",
+        ".jpeg": "image",
+        ".png": "image",
+        ".gif": "image",
+        ".svg": "image",
+        ".py": "code",
+        ".js": "code",
+        ".html": "code",
+        ".css": "code",
+        ".cpp": "code",
+        ".h": "code",
         ".pdf": "pdf",
-        ".zip": "archive", ".tar": "archive", ".gz": "archive", ".rar": "archive", ".log": "log",
+        ".zip": "archive",
+        ".tar": "archive",
+        ".gz": "archive",
+        ".rar": "archive",
+        ".log": "log",
     }
     return type_mappings.get(ext, "file")
 
+
 class FileserverHTTPHandler:
     """Custom WSGI handler for file serving."""
+
     def __init__(self, directory):
         self.directory = directory
         self.template_env = jinja2.Environment(
@@ -86,9 +101,17 @@ class FileserverHTTPHandler:
         """Simplified content type guessing."""
         ext = os.path.splitext(path)[1].lower()
         mime_types = {
-            ".html": "text/html", ".css": "text/css", ".js": "application/javascript",
-            ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif",
-            ".svg": "image/svg+xml", ".pdf": "application/pdf", ".json": "application/json", ".log": "text/plain",
+            ".html": "text/html",
+            ".css": "text/css",
+            ".js": "application/javascript",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".gif": "image/gif",
+            ".svg": "image/svg+xml",
+            ".pdf": "application/pdf",
+            ".json": "application/json",
+            ".log": "text/plain",
         }
         return mime_types.get(ext, "application/octet-stream")
 
@@ -100,7 +123,7 @@ class FileserverHTTPHandler:
         if path.startswith("static/"):
             resource_path = path.replace("static/", "")
             body, status, content_type = self.serve_static(resource_path)
-            status_line = f"{status} {'OK' if status == 200 else 'Not Found'}" # noqa: PLR2004
+            status_line = f"{status} {'OK' if status == 200 else 'Not Found'}"  # noqa: PLR2004
             headers = [("Content-Type", content_type), ("Content-Length", str(len(body)))]
             start_response(status_line, headers)
             return [body]
@@ -123,9 +146,13 @@ class FileserverHTTPHandler:
         start_response("404 Not Found", [("Content-Type", "text/plain")])
         return [b"File not found"]
 
+
 class FileServer:
     """Simple HTTP file server for KevinbotLib"""
-    def __init__(self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1", *, enable_ftp_server: bool = False):
+
+    def __init__(
+        self, directory=".", ftp_port=2121, http_port=8000, host="127.0.0.1", *, enable_ftp_server: bool = False
+    ):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port
         self._ftp_enabled = enable_ftp_server
