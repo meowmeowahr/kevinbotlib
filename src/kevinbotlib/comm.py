@@ -328,7 +328,8 @@ class CommunicationClient:
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
 
-        self.hooks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable | None], Any]]] = {}
+        # Modified to store a list of (data_type, callback) tuples per key
+        self.hooks: dict[str, list[tuple[type[BaseSendable], Callable[[str, BaseSendable | None], Any]]]] = {}
 
         if register_basic_types:
             self.register_type(BaseSendable)
@@ -455,10 +456,9 @@ class CommunicationClient:
                 if data["action"] == "sync":
                     for hook in self.hooks:
                         if data["data"].get(hook) != self.data_store.get(hook):
-                            self.hooks[hook][1](
-                                hook,
-                                self.hooks[hook][0](**data["data"].get(hook)["data"]),
-                            )
+                            # Call all callbacks for this hook
+                            for hook_type, callback in self.hooks[hook]:
+                                callback(hook, hook_type(**data["data"].get(hook)["data"]))
                     self.data_store = data["data"]
                 elif data["action"] == "update":
                     key, value = data["key"], data["data"]
@@ -466,14 +466,18 @@ class CommunicationClient:
                     if self.on_update:
                         self.on_update(key, value)
                     if key in self.hooks:
-                        self.hooks[key][1](key, self.hooks[key][0](**data["data"]["data"]))
+                        # Call all callbacks for this key
+                        for hook_type, callback in self.hooks[key]:
+                            callback(key, hook_type(**data["data"]["data"]))
                 elif data["action"] == "delete":
                     key = data["key"]
                     self.data_store.pop(key, None)
                     if self.on_delete:
                         self.on_delete(key)
                     if key in self.hooks:
-                        self.hooks[hook][1](hook, None)
+                        # Call all callbacks with None for this key
+                        for _, callback in self.hooks[key]:
+                            callback(key, None)
         except orjson.JSONDecodeError as e:
             self.logger.error(f"Error processing messages: {e}")
 
@@ -492,14 +496,19 @@ class CommunicationClient:
         data_type: type[T],
         callback: Callable[[str, T | None], Any],
     ):
-        """Adds a hook for when new data is recieved from the key
+        """Adds a hook for when new data is received from the key.
 
         Args:
-            key (str): Key for data hook
+            key (str | CommPath): Key for data hook
+            data_type (type[T]): Expected data type for the hook
+            callback (Callable[[str, T | None], Any]): Callback to invoke when data changes
         """
         if isinstance(key, CommPath):
             key = key.path
-        self.hooks[key] = (data_type, callback)  # type: ignore
+        
+        if key not in self.hooks:
+            self.hooks[key] = []
+        self.hooks[key].append((data_type, callback))  # type: ignore
 
     def send(self, key: str | CommPath, data: BaseSendable | SendableGenerator) -> None:
         """Publishes data to the server."""
