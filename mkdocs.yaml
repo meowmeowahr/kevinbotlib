@@ -67,6 +67,7 @@ plugins:
               show_symbol_type_toc: true
               show_root_members_full_path: true
               parameter_headings: false
+              show_source: false
               filters: ["!^_", "^__init__$"]
   - search
   - mike
@@ -94,6 +95,8 @@ nav:
   - robot.md
   - KevinbotLib Reference:
     - reference/index.md
+    - reference/hardwareinterface.md
+    - reference/hardwarecontroller.md
     - reference/ui.md
   - Advanced:
     - advanced/websocket.md

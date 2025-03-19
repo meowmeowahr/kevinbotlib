@@ -207,6 +207,11 @@ class RawSerialInterface:
         self._serial.exclusive = value
 
     def open(self):
+        """Attempt to open the serial port
+
+        Raises:
+            SerialPortOpenFailure: Port failed to open
+        """
         try:
             self._serial.open()
         except serial.SerialException as e:
