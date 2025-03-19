@@ -151,7 +151,13 @@ class FileServer:
     """Simple HTTP file server for KevinbotLib"""
 
     def __init__(
-        self, directory=".", ftp_port=2121, http_port=8000, host="0.0.0.0", *, enable_ftp_server: bool = False
+        self,
+        directory=".",
+        ftp_port=2121,
+        http_port=8000,
+        host="0.0.0.0",  # TODO: do we need to fix this # noqa: S104
+        *,
+        enable_ftp_server: bool = False,
     ):
         self.directory = os.path.abspath(directory)
         self.ftp_port = ftp_port

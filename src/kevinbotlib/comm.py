@@ -213,7 +213,7 @@ class CommPath:
 class CommunicationServer:
     """WebSocket-based server for handling real-time data synchronization."""
 
-    def __init__(self, host: str = "0.0.0.0", port: int = 8765) -> None:
+    def __init__(self, host: str = "0.0.0.0", port: int = 8765) -> None:  # noqa: S104 # TODO: do we need to fix this
         self.host: str = host
         self.port: int = port
 
