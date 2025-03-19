@@ -126,12 +126,12 @@ class RawSerialInterface:
         self._serial.bytesize = value
 
     @property
-    def parity(self) -> str:
+    def parity(self) -> SerialParity:
         """The parity checking mode (e.g., NONE, EVEN, ODD)"""
-        return self._serial.parity
+        return SerialParity(self._serial.parity)
 
     @parity.setter
-    def parity(self, value: str) -> None:
+    def parity(self, value: SerialParity) -> None:
         self._serial.parity = value
 
     @property
@@ -227,8 +227,8 @@ class RawSerialInterface:
             bytes: Character array
         """
         return self._serial.read(n)
-    
-    def read_until(self, term: bytes = b'\n', size: int | None = None) -> bytes:
+
+    def read_until(self, term: bytes = b"\n", size: int | None = None) -> bytes:
         """
         Reads until `term` is found, `size` bytes is reached, or read timeout
 
@@ -240,7 +240,7 @@ class RawSerialInterface:
             bytes: Character array
         """
         return self._serial.read_until(term, size)
-    
+
     def write(self, data: bytes) -> int | None:
         """Write bytes to the serial port
 
@@ -254,3 +254,7 @@ class RawSerialInterface:
             return self._serial.write(data)
         except serial.SerialTimeoutException as e:
             raise SerialWriteTimeout(*e.args) from e
+
+    def flush(self):
+        """Wait until all serial data is written"""
+        self._serial.flush()
