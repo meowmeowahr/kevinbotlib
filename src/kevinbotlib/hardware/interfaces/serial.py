@@ -6,7 +6,7 @@ import serial.tools
 import serial.tools.list_ports
 from pydantic.dataclasses import dataclass
 
-from kevinbotlib.hardware.interfaces.exceptions import SerialPortOpenFailure, SerialWriteTimeout
+from kevinbotlib.hardware.interfaces.exceptions import SerialException, SerialPortOpenFailure, SerialWriteTimeout
 
 
 @dataclass
@@ -272,6 +272,8 @@ class RawSerialInterface(io.IOBase):
             return self._serial.write(data)
         except serial.SerialTimeoutException as e:
             raise SerialWriteTimeout(*e.args) from e
+        except serial.SerialException as e:
+            raise SerialException(*e.args) from e
 
     def flush(self):
         """Wait until all serial data is written"""

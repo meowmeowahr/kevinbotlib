@@ -4,7 +4,7 @@ from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 class RawKeyValueSerialController:
     """A controller for managing key-value pairs over a raw serial interface"""
 
-    def __init__(self, interface: RawSerialInterface, delimeter: bytes = b"=", terminator: bytes = b"\n"):
+    def __init__(self, interface: RawSerialInterface, delimeter: bytes = b"=", terminator: bytes = b"\n") -> None:
         """Initialize the controller with a serial interface
 
         Args:
@@ -16,20 +16,20 @@ class RawKeyValueSerialController:
         self._delimiter = delimeter
         self._terminator = terminator
 
-    def send_value(self, key: str, value: str) -> int | None:
+    def write(self, key: bytes, value: bytes) -> int | None:
         """Send a key-value pair over the serial connection
 
         Args:
-            key (str): The key to set
-            value (str): The value to associate with the key
+            key (bytes): The key to set
+            value (bytes): The value to associate with the key
 
         Returns:
             int | None: Number of bytes written
         """
-        message = f"{key}{self._delimiter.decode()}{value}".encode() + self._terminator
+        message = key + self._delimiter + value + self._terminator
         return self._iface.write(message)
 
-    def read_value(self) -> tuple[bytes, bytes] | None:
+    def read(self) -> tuple[bytes, bytes] | None:
         """Read the next key-value pair from the serial connection
 
         Returns:

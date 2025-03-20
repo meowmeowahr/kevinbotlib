@@ -8,3 +8,7 @@ class BaseSerialTimeoutException(BaseException):
 
 class SerialWriteTimeout(BaseSerialTimeoutException):
     """Raised on a serial write timeout"""
+
+
+class SerialException(BaseException):
+    """Raised on a general serial communication failure"""
