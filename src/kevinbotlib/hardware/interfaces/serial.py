@@ -263,3 +263,37 @@ class RawSerialInterface:
     def flush(self):
         """Wait until all serial data is written"""
         self._serial.flush()
+
+    @property
+    def in_waiting(self) -> int:
+        """Get the number of bytes in the transmit buffer
+
+        Returns:
+            int: Number of bytes
+        """
+        return self._serial.in_waiting
+    
+    @property
+    def out_waiting(self) -> int:
+        """Get the number of bytes in the receive buffer
+
+        Returns:
+            int: Number of bytes
+        """
+        return self._serial.out_waiting
+    
+    def reset_input_buffer(self) -> None:
+        """Clear the input buffer, delete and ignore all data
+        """
+        self._serial.reset_input_buffer()
+
+    def reset_output_buffer(self) -> None:
+        """Clear the output buffer, delete and ignore all data
+        """
+        self._serial.reset_output_buffer()
+
+    def reset_buffers(self) -> None:
+        """Reset input and output buffers, delete and ignore all data
+        """
+        self.reset_input_buffer()
+        self.reset_output_buffer()
