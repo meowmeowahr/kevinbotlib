@@ -10,7 +10,7 @@
 --8<-- "examples/robot/metrics_robot.py"
 ```
 
-### Robot Controller with Joystick Publishing
+### Robot Controller with Joystick Listening
 ```python title="examples/robot/joystick_robot.py" linenums="1" 
 --8<-- "examples/robot/joystick_robot.py"
 ```
