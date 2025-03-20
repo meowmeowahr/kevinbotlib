@@ -126,7 +126,7 @@ exclude_lines = [
 ignore = ["G004", "TRY400"]
 
 [tool.ruff.lint.per-file-ignores]
-"examples/*" = ["T201", "S311"]
+"examples/*" = ["T201", "S311", "T203"]
 "tests/*" = ["S101", "PLR2004"]
 "resources_rc.py" = ["N802"]
 "*" = ["FBT001"]

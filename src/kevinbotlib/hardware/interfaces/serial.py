@@ -1,3 +1,4 @@
+import io
 from enum import StrEnum
 
 import serial
@@ -45,7 +46,7 @@ class SerialParity(StrEnum):
     SPACE = serial.PARITY_SPACE
 
 
-class RawSerialInterface:
+class RawSerialInterface(io.IOBase):
     """Raw serial interface"""
 
     def __init__(
@@ -97,6 +98,8 @@ class RawSerialInterface:
 
     def __del__(self):
         self._serial.close()
+
+    # * connection
 
     @property
     def port(self) -> str | None:
@@ -217,6 +220,17 @@ class RawSerialInterface:
         except serial.SerialException as e:
             raise SerialPortOpenFailure(*e.args) from e
 
+    @property
+    def is_open(self) -> bool:
+        """Is the serial port open?
+
+        Returns:
+            bool: Open state
+        """
+        return self._serial.is_open
+
+    # * read
+
     def read(self, n: int = 1) -> bytes:
         """
         Reads `n` bytes from the serial port
@@ -246,6 +260,8 @@ class RawSerialInterface:
         """
         return self._serial.read_until(term, size)
 
+    # * write
+
     def write(self, data: bytes) -> int | None:
         """Write bytes to the serial port
 
@@ -264,6 +280,8 @@ class RawSerialInterface:
         """Wait until all serial data is written"""
         self._serial.flush()
 
+    # * buffer control
+
     @property
     def in_waiting(self) -> int:
         """Get the number of bytes in the transmit buffer
@@ -272,7 +290,7 @@ class RawSerialInterface:
             int: Number of bytes
         """
         return self._serial.in_waiting
-    
+
     @property
     def out_waiting(self) -> int:
         """Get the number of bytes in the receive buffer
@@ -281,19 +299,102 @@ class RawSerialInterface:
             int: Number of bytes
         """
         return self._serial.out_waiting
-    
+
     def reset_input_buffer(self) -> None:
-        """Clear the input buffer, delete and ignore all data
-        """
+        """Clear the input buffer, delete and ignore all data"""
         self._serial.reset_input_buffer()
 
     def reset_output_buffer(self) -> None:
-        """Clear the output buffer, delete and ignore all data
-        """
+        """Clear the output buffer, delete and ignore all data"""
         self._serial.reset_output_buffer()
 
     def reset_buffers(self) -> None:
-        """Reset input and output buffers, delete and ignore all data
-        """
+        """Reset input and output buffers, delete and ignore all data"""
         self.reset_input_buffer()
         self.reset_output_buffer()
+
+    # * line conditions
+
+    def send_break(self, duration: float = 0.25) -> None:
+        """Send the break condition for `duration`, then return to idle state
+
+        Args:
+            duration (float, optional): Seconds for BREAK condition. Defaults to 0.25.
+        """
+        self._serial.send_break(duration)
+
+    @property
+    def break_condition(self) -> bool:
+        """Serial `BREAK` condition, no transmit when active
+
+        Returns:
+            bool: BREAK condition
+        """
+        return self._serial.break_condition
+
+    @break_condition.setter
+    def break_condition(self, bk: bool):
+        self._serial.break_condition = bk
+
+    @property
+    def rts(self) -> bool:
+        """Serial `RTS` line, setting before connecting is possible
+
+        Returns:
+            bool: RTS
+        """
+        return self._serial.rts
+
+    @rts.setter
+    def rts(self, rts: bool):
+        self._serial.rts = rts
+
+    @property
+    def dtr(self) -> bool:
+        """Serial `DTR` line, setting before connecting is possible
+
+        Returns:
+            bool: DTR
+        """
+        return self._serial.dtr
+
+    @dtr.setter
+    def dtr(self, dtr: bool):
+        self._serial.dtr = dtr
+
+    @property
+    def cts(self) -> bool:
+        """Get the state if the `CTS` line
+
+        Returns:
+            bool: CTS state
+        """
+        return self._serial.cts
+
+    @property
+    def ri(self) -> bool:
+        """Get the state if the `RI` line
+
+        Returns:
+            bool: RI state
+        """
+        return self._serial.ri
+
+    @property
+    def cd(self) -> bool:
+        """Get the state if the `CD` line
+
+        Returns:
+            bool: CD state
+        """
+        return self._serial.cd
+
+    # * misc
+    @property
+    def device_name(self) -> str | None:
+        """Device name
+
+        Returns:
+            str | None: Device name, if available
+        """
+        return self._serial.name
