@@ -1,3 +1,3 @@
 # Hardware Controller Reference
 
-::: kevinbotlib.hardware.controllers
+::: kevinbotlib.hardware.controllers.keyvalue

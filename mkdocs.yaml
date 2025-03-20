@@ -42,10 +42,14 @@ theme:
 
 markdown_extensions:
   - attr_list
+  - md_in_html
+  - footnotes
   - admonition
   - pymdownx.details
   - pymdownx.snippets
-  - pymdownx.emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.superfences:
@@ -87,6 +91,8 @@ nav:
     - examples/joystick.md
     - examples/system.md
     - examples/fileserver.md
+    - examples/hardwareinterface.md
+    - examples/hardwarecontroller.md
   - The KevinbotLib Control Console:
     - console/index.md
   - Command Line Tools:
