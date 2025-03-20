@@ -96,9 +96,6 @@ class RawSerialInterface(io.IOBase):
             exclusive,
         )
 
-    def __del__(self):
-        self._serial.close()
-
     # * connection
 
     @property

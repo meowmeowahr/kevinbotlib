@@ -1,5 +1,6 @@
 from kevinbotlib.scheduler import Command, CommandScheduler
 
+
 def test_scheduler():
     class TestCommand(Command):
         def __init__(self, flag: int) -> None:
