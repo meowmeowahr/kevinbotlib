@@ -18,7 +18,7 @@ The KevinbotLib Robot class sets up some components of KevinbotLib to make desig
 * Communication Client
 * Logging Configuration
 * Periodic log file rotations
-* Logging to HTML Server
+* Logging to HTTP Server
 * Control Console communication and management
 * Robot operational mode management
 * Safety features
