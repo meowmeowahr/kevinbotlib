@@ -17,7 +17,7 @@ class RawKeyValueSerialController:
         self._terminator = terminator
 
     def send_value(self, key: str, value: str) -> int | None:
-        """Set a key-value pair over the serial connection
+        """Send a key-value pair over the serial connection
 
         Args:
             key (str): The key to set
