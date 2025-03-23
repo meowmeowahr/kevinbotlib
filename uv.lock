@@ -287,7 +287,7 @@ requires-dist = [
     { name = "pyftpdlib", specifier = "~=2.0.1" },
     { name = "pysdl2", specifier = "~=0.9.17" },
     { name = "pyserial", specifier = "~=3.5" },
-    { name = "pyside6-essentials", specifier = ">=6.8.2.1" },
+    { name = "pyside6-essentials", specifier = ">=6.8.0.2" },
     { name = "qtawesome", specifier = ">=1.4.0" },
     { name = "qtpy", specifier = ">=2.4.3" },
     { name = "websockets", specifier = "~=15.0.1" },
