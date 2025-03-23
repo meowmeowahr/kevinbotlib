@@ -9,7 +9,7 @@
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg)](https://pypi.org/project/kevinbotlib)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kevinbotlib.svg)](https://pypi.org/project/kevinbotlib)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6be6caaa88b040bc9d18171b6b079492)](https://app.codacy.com/gh/meowmeowahr/kevinbotlib-deploytool/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0a806fcc04e441538d3c92d42ab3f7ca)](https://app.codacy.com/gh/meowmeowahr/kevinbotlib/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 -----
 
