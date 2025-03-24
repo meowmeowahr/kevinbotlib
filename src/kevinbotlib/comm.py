@@ -394,7 +394,7 @@ class CommunicationClient:
             time.sleep(0.02)
 
     def is_connected(self):
-        return bool(self.websocket)
+        return not not self.websocket
 
     def disconnect(self) -> None:
         """Stops the client and closes the connection gracefully."""

@@ -129,7 +129,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.log_timer.start()
 
     def get_joystick(self, index: int):
-        return dict(enumerate(self.controllers_tab.ordered_controllers.values())).get(index, NullJoystick())
+        controllers = list(self.controllers_tab.ordered_controllers.values())
+        return controllers[index] if index < len(controllers) else NullJoystick()
 
     def log_hook(self, data: str):
         self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
