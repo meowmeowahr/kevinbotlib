@@ -44,9 +44,15 @@ This will trigger a graceful system shutdown similar to `CTRL-C` on the console
 
 This should leave the robot in a state where it's ready for a code restart
 
+!!! info
+    This will cause the application to end with exit code `64`
+
 ### `SIGUSR2`
 
 This will trigger an **emergency shutdown** similar to hitting space on the Control Console
+
+!!! info
+    This will cause the application to end with exit code `65`
 
 !!! example
     If the robot code's PID (process id) is 1234, you can run the following command to gracefully shut it down:

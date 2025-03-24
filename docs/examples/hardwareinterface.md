@@ -1,8 +1,8 @@
 # Hardware Interface Examples
 
-### Serial Hardware Query Example
+## Serial Hardware Query Example
 
-```python title="examples/hardware/serial_query.py" linenums="1" 
+```python title="examples/hardware/serial_query.py" linenums="1"
 --8<-- "examples/hardware/serial_query.py"
 ```
 
@@ -10,14 +10,14 @@
 
 !!! example
     ![Image title](../media/nano.png){ align=left }
-    
+
     This example requires a serial device responding to pings to be connected.
 
     You can make one using the [Ping Pong Test Gadget](https://github.com/meowmeowahr/kevinbotlib-test-gadgets/tree/main/pingpong)
 
     The test gadget can be flashed to most PlatformIO compatible devices.
 
-```python title="examples/hardware/serial_raw_ping_pong.py" linenums="1" 
+```python title="examples/hardware/serial_raw_ping_pong.py" linenums="1"
 --8<-- "examples/hardware/serial_raw_ping_pong.py"
 ```
 
