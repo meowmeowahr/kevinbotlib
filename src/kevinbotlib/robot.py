@@ -386,16 +386,16 @@ class BaseRobot:
                     if self._signal_stop:
                         msg = "Robot signal stopped"
                         self.robot_end()
-                        raise RobotStoppedException(msg)
+                        raise RobotStoppedException(msg)  # noqa: TRY301
                     if self._signal_estop:
                         msg = "Robot signal e-stopped"
-                        raise RobotEmergencyStoppedException(msg)
+                        raise RobotEmergencyStoppedException(msg)  # noqa: TRY301
 
                     if self._get_estop_request():
                         self.telemetry.critical("Control Console EMERGENCY STOP detected... Stopping now")
                         msg = "Robot control console e-stopped"
                         self._estop = True
-                        raise RobotEmergencyStoppedException(msg)
+                        raise RobotEmergencyStoppedException(msg)  # noqa: TRY301
 
                     current_opmode: str = self._get_console_opmode_request()
 
@@ -424,6 +424,10 @@ class BaseRobot:
                         self._prev_opmode = current_opmode
 
                     time.sleep(1 / self._cycle_hz)
+            except RobotStoppedException:
+                sys.exit(64)
+            except RobotEmergencyStoppedException:
+                sys.exit(65)
             finally:
                 if not self._estop:
                     self.robot_end()
