@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "kevinbotlib"
 dynamic = ["version"]
-description = 'The KevinbotLib Robot Development Framework'
+description = "The KevinbotLib Robot Development Framework"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "LGPL-3.0-or-later"
@@ -14,7 +14,7 @@ authors = [
   { name = "Kevin Ahr", email = "meowmeowahr@gmail.com" },
 ]
 classifiers = [
-  "Development Status :: 1 - Planning",
+  "Development Status :: 2 - Pre-Alpha",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
