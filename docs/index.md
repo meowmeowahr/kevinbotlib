@@ -6,6 +6,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kevinbotlib.svg?style=for-the-badge)](https://pypi.org/project/kevinbotlib)
 ![PyPI - License](https://img.shields.io/pypi/l/kevinbotlib?style=for-the-badge)
+![Pepy Total Downloads](https://img.shields.io/pepy/dt/kevinbotlib?style=for-the-badge)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=for-the-badge)](https://github.com/astral-sh/uv)
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg?style=for-the-badge)](https://github.com/pypa/hatch)
