@@ -1,3 +1,4 @@
+from typing import overload
 from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 
 
@@ -16,17 +17,17 @@ class RawKeyValueSerialController:
         self._delimiter = delimeter
         self._terminator = terminator
 
-    def write(self, key: bytes, value: bytes) -> int | None:
+    def write(self, key: bytes, value: bytes | None = None) -> int | None:
         """Send a key-value pair over the serial connection
 
         Args:
             key (bytes): The key to set
-            value (bytes): The value to associate with the key
+            value (bytes | None): The value to associate with the key. If no value is provided, will not send a delimeter. Defaults to None.
 
         Returns:
             int | None: Number of bytes written
         """
-        message = key + self._delimiter + value + self._terminator
+        message = key + self._delimiter + value + self._terminator if value else key + self._terminator
         return self._iface.write(message)
 
     def read(self) -> tuple[bytes, bytes] | None:
