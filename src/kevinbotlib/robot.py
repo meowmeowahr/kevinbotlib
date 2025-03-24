@@ -229,6 +229,52 @@ class BaseRobot:
 
         self._metrics = SystemMetrics()
 
+        if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
+            msg = f"Another robot with the class name {self.__class__.__name__} is already running"
+            raise RobotLockedException(msg)
+        self._instance_locker.lock()
+
+        if platform.system() != "Linux":
+            self.telemetry.warning(
+                "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
+            )
+
+        signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
+        signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
+        self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
+
+        self.comm_client.add_hook(
+            CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
+        )
+
+        Thread(
+            target=self.comm_server.serve,
+            daemon=True,
+            name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
+        ).start()
+        self.comm_server.wait_until_serving()
+        self.comm_client.connect()
+
+        self.fileserver.start()
+
+        if self._log_timer_interval != 0:
+            timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
+            timer.setDaemon(True)
+            timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.start()
+
+        if self._metrics_timer_interval != 0:
+            timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
+            timer.setDaemon(True)
+            timer.setName("KevinbotLib.Robot.Metrics.Updater")
+            timer.start()
+
+        self.comm_client.wait_until_connected()
+        self.log_sender.start()
+        self._update_console_enabled(False)
+        self._update_console_opmodes(self._opmodes)
+        self._update_console_opmode(self._opmode)
+
     @property
     def metrics(self):
         return self._metrics
@@ -330,53 +376,7 @@ class BaseRobot:
     @final
     def run(self) -> NoReturn:
         """Run the robot loop. Method is **final**."""
-        if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
-            msg = f"Another robot with the class name {self.__class__.__name__} is already running"
-            raise RobotLockedException(msg)
-        self._instance_locker.lock()
-
-        if platform.system() != "Linux":
-            self.telemetry.warning(
-                "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
-            )
-
-        signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
-        signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
-        self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
-
-        self.comm_client.add_hook(
-            CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
-        )
-
-        Thread(
-            target=self.comm_server.serve,
-            daemon=True,
-            name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
-        ).start()
-        self.comm_server.wait_until_serving()
-        self.comm_client.connect()
-
-        self.fileserver.start()
-
-        if self._log_timer_interval != 0:
-            timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Cleanup.LogCleanup")
-            timer.start()
-
-        if self._metrics_timer_interval != 0:
-            timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Robot.Metrics.Updater")
-            timer.start()
-
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
-            self.comm_client.wait_until_connected()
-            self.log_sender.start()
-            self._update_console_enabled(False)
-            self._update_console_opmodes(self._opmodes)
-            self._update_console_opmode(self._opmode)
-
             try:
                 self.robot_start()
                 self._ready_for_periodic = True
