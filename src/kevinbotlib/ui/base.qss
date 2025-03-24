@@ -332,14 +332,14 @@ QTextEdit:focus, QPlainTextEdit:focus {
 QScrollBar:vertical {
     border: none;
     background: {{bg1}};
-    width: 18px;
+    width: 14px;
     margin: 2px;
-    border-radius: 7px;
+    border-radius: 5px;
 }
 
 QScrollBar::handle:vertical {
     background: {{primary1}};
-    border-radius: 7px;
+    border-radius: 5px;
     min-height: 20px;
 }
 
@@ -367,14 +367,14 @@ QScrollBar::down-arrow:vertical {
 QScrollBar:horizontal {
     border: none;
     background: {{bg1}};
-    height: 18px;
+    height: 14px;
     margin: 2px;
-    border-radius: 7px;
+    border-radius: 5px;
 }
 
 QScrollBar::handle:horizontal {
     background: {{primary1}};
-    border-radius: 7px;
+    border-radius: 5px;
     min-width: 20px;
 }
 
@@ -410,10 +410,17 @@ QMenu {
     background-color: {{bg2}};
     border-radius: 2px;
     margin: 2px;
+    color: {{fg}};
 }
 
 QMenu::item:selected {
     background-color: {{bg5}};
+}
+
+QFrame[frameShape=Panel],
+QFrame[frameShape=VLine],
+QFrame[frameShape=HLine] {
+    color: {{border}};
 }
 
 /* QCheckBox Styling */
