@@ -333,6 +333,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -599,6 +603,50 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -771,6 +819,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -808,6 +860,50 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1013,7 +1109,7 @@
 
 
 <h1 id="joystick-examples">Joystick Examples</h1>
-<h3 id="local-controller-query">Local Controller Query</h3>
+<h2 id="local-controller-query">Local Controller Query</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_query.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1038,7 +1134,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joystick GUIDs: </span><span class="si">{</span><span class="n">guids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="local-raw-polling">Local Raw Polling</h3>
+<h2 id="local-raw-polling">Local Raw Polling</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_polling.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1077,7 +1173,7 @@
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="local-xbox-polling">Local Xbox Polling</h3>
+<h2 id="local-xbox-polling">Local Xbox Polling</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_xbox_polling.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1124,7 +1220,7 @@
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="sending-joystick-data-with-a-kevinbotcommclient">Sending Joystick Data with a <code>KevinbotCommClient</code></h3>
+<h2 id="sending-joystick-data-with-a-kevinbotcommclient">Sending Joystick Data with a <code>KevinbotCommClient</code></h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/sender.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1171,7 +1267,7 @@
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="receiving-raw-joystick-data-with-a-kevinbotcommclient">Receiving Raw Joystick Data with a <code>KevinbotCommClient</code></h3>
+<h2 id="receiving-raw-joystick-data-with-a-kevinbotcommclient">Receiving Raw Joystick Data with a <code>KevinbotCommClient</code></h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/rx_raw.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1222,7 +1318,7 @@
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="receiving-xbox-joystick-data-with-a-kevinbotcommclient">Receiving Xbox Joystick Data with a <code>KevinbotCommClient</code></h3>
+<h2 id="receiving-xbox-joystick-data-with-a-kevinbotcommclient">Receiving Xbox Joystick Data with a <code>KevinbotCommClient</code></h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/rx_xbox.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>

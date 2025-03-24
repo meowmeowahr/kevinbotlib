@@ -331,6 +331,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -492,6 +496,50 @@
   
   <span class="md-ellipsis">
     Fileserver Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Examples
     
   </span>
   
@@ -766,6 +814,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -803,6 +855,50 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1022,7 +1118,7 @@
 <li>Communication Client</li>
 <li>Logging Configuration</li>
 <li>Periodic log file rotations</li>
-<li>Logging to HTML Server</li>
+<li>Logging to HTTP Server</li>
 <li>Control Console communication and management</li>
 <li>Robot operational mode management</li>
 <li>Safety features</li>
@@ -1046,8 +1142,16 @@
 <h3 id="sigusr1"><code>SIGUSR1</code></h3>
 <p>This will trigger a graceful system shutdown similar to <code>CTRL-C</code> on the console</p>
 <p>This should leave the robot in a state where it's ready for a code restart</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This will cause the application to end with exit code <code>64</code></p>
+</div>
 <h3 id="sigusr2"><code>SIGUSR2</code></h3>
 <p>This will trigger an <strong>emergency shutdown</strong> similar to hitting space on the Control Console</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This will cause the application to end with exit code <code>65</code></p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>If the robot code's PID (process id) is 1234, you can run the following command to gracefully shut it down:</p>

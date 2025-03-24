@@ -333,6 +333,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -445,9 +449,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#robot-controller-with-joystick-publishing" class="md-nav__link">
+  <a href="#robot-controller-with-joystick-listening" class="md-nav__link">
     <span class="md-ellipsis">
-      Robot Controller with Joystick Publishing
+      Robot Controller with Joystick Listening
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-state-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic State Changes
     </span>
   </a>
   
@@ -562,6 +575,50 @@
   
   <span class="md-ellipsis">
     Fileserver Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Examples
     
   </span>
   
@@ -744,6 +801,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -781,6 +842,50 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -926,9 +1031,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#robot-controller-with-joystick-publishing" class="md-nav__link">
+  <a href="#robot-controller-with-joystick-listening" class="md-nav__link">
     <span class="md-ellipsis">
-      Robot Controller with Joystick Publishing
+      Robot Controller with Joystick Listening
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-state-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic State Changes
     </span>
   </a>
   
@@ -959,7 +1073,7 @@
 
 
 <h1 id="robot-examples">Robot Examples</h1>
-<h3 id="robot-controller">Robot Controller</h3>
+<h2 id="robot-controller">Robot Controller</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/robot/robot.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1052,7 +1166,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">DemoRobot</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="robot-controller-with-metrics-publishing">Robot Controller with Metrics Publishing</h3>
+<h2 id="robot-controller-with-metrics-publishing">Robot Controller with Metrics Publishing</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/robot/metrics_robot.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1141,7 +1255,7 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">DemoRobot</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h3 id="robot-controller-with-joystick-publishing">Robot Controller with Joystick Publishing</h3>
+<h2 id="robot-controller-with-joystick-listening">Robot Controller with Joystick Listening</h2>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/robot/joystick_robot.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -1224,6 +1338,125 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">opmode_init</span><span class="p">(</span><span class="n">opmode</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpMode </span><span class="si">{</span><span class="s1">&#39;enabled&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;disabled&#39;</span><span class="si">}</span><span class="s2"> init... </span><span class="si">{</span><span class="n">opmode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">opmode_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">opmode_exit</span><span class="p">(</span><span class="n">opmode</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpMode </span><span class="si">{</span><span class="s1">&#39;enabled&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;disabled&#39;</span><span class="si">}</span><span class="s2"> exit... </span><span class="si">{</span><span class="n">opmode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">robot_end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># runs as the robot propares to shutdown</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">robot_end</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ending robot...&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">DemoRobot</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="dynamic-state-changes">Dynamic State Changes</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/robot/dynamic_robot.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DemoRobot</span><span class="p">(</span><span class="n">BaseRobot</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">opmodes</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;OpModeThatWillEnable&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;OpModeThatWillDisable&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;OpModeThatWillEStop&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;OpModeThatWill1stOpMode&quot;</span><span class="p">,</span>
+            <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
+            <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
+            <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
+            <span class="n">allow_enable_without_console</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># * allow the robot to enable without the prescence of a control console</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">robot_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># runs once as the robot starts</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">robot_start</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Starting robot...&quot;</span>
+        <span class="p">)</span>  <span class="c1"># print statements are redirected to the KevinbotLib logging system - please don&#39;t do this in production</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">robot_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">robot_periodic</span><span class="p">(</span><span class="n">opmode</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpMode </span><span class="si">{</span><span class="s1">&#39;enabled&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;disabled&#39;</span><span class="si">}</span><span class="s2">... </span><span class="si">{</span><span class="n">opmode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">opmode_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">opmode_init</span><span class="p">(</span><span class="n">opmode</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpMode </span><span class="si">{</span><span class="s1">&#39;enabled&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;disabled&#39;</span><span class="si">}</span><span class="s2"> init... </span><span class="si">{</span><span class="n">opmode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">opmode</span> <span class="o">==</span> <span class="s2">&quot;OpModeThatWillEnable&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">opmode</span> <span class="o">==</span> <span class="s2">&quot;OpModeThatWillDisable&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">opmode</span> <span class="o">==</span> <span class="s2">&quot;OpModeThatWillEStop&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">opmode</span> <span class="o">==</span> <span class="s2">&quot;OpModeThatWill1stOpMode&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">opmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opmodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">opmode_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opmode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">opmode_exit</span><span class="p">(</span><span class="n">opmode</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
