@@ -87,10 +87,10 @@ class FileserverHTTPHandler:
         self.logger.debug(f"Rendered directory listing for {path}")
         return html_content.encode("utf-8"), 200
 
-    def serve_static(self, resource_path):
+    def serve_static(self, resource_path: str):
         """Serve static files from the package."""
         try:
-            with resources.open_binary("kevinbotlib.fileserver.static", resource_path) as file:
+            with resources.open_binary(f"kevinbotlib.fileserver.static.{'.'.join(resource_path.split('/')[:-1])}", resource_path.split("/")[-1]) as file:
                 content_type = self.guess_type(resource_path)
                 file_content = file.read()
                 return file_content, 200, content_type
