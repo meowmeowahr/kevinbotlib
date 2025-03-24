@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
+  <img src="https://github.com/meowmeowahr/kevinbotlib/raw/main/docs/media/icon.svg" alt="Kevinbot v3 logo" width=120/>
 </p>
 
 # KevinbotLib
@@ -37,18 +37,21 @@ pip install kevinbotlib
 
 ### Set up module in development mode
 
-* Install hatch
+- Install hatch
   
   [Hatch Installation](https://hatch.pypa.io/1.12/install/) (I recommend using pipx)
-* Clone this repo
+- Clone this repo
 
   ```console
   git clone https://github.com/meowmeowahr/kevinbotlib && cd kevinbotlib
   ```
+
 * Create env
+
   ```console
   hatch env create
   ```
+
 * Activate env
 
   ```console
