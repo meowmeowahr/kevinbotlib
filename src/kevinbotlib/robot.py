@@ -7,9 +7,10 @@ import sys
 import tempfile
 import threading
 import time
+from collections.abc import Callable
 from threading import Thread
 from types import TracebackType
-from typing import Any, Callable, NoReturn, final
+from typing import Any, NoReturn, final
 
 import psutil
 
@@ -433,8 +434,15 @@ class BaseRobot:
             except RobotStoppedException:
                 sys.exit(64)
             except RobotEmergencyStoppedException:
+                stop_threads: list[Thread] = []
                 for hook in BaseRobot.estop_hooks:
-                    Thread(target=hook, name="KevinbotLib.Robot.EstopAction").start()
+                    t = Thread(target=hook, name="KevinbotLib.Robot.EstopAction")
+                    t.start()
+                    stop_threads.append(t)
+
+                for t in stop_threads:
+                    t.join()
+                
                 sys.exit(65)
             finally:
                 if not self._estop:

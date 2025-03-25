@@ -1,4 +1,3 @@
-from typing import overload
 from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 
 
