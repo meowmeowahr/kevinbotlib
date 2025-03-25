@@ -442,7 +442,7 @@ class BaseRobot:
 
                 for t in stop_threads:
                     t.join()
-                
+
                 sys.exit(65)
             finally:
                 if not self._estop:
