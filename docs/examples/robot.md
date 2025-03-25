@@ -6,6 +6,12 @@
 --8<-- "examples/robot/robot.py"
 ```
 
+## Robot Emergency Stop
+
+```python title="examples/robot/estop_robot.py" linenums="1"
+--8<-- "examples/robot/estop_robot.py"
+```
+
 ## Robot Controller with Metrics Publishing
 
 ```python title="examples/robot/metrics_robot.py" linenums="1"
