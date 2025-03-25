@@ -9,7 +9,7 @@ import threading
 import time
 from threading import Thread
 from types import TracebackType
-from typing import NoReturn, final
+from typing import Any, Callable, NoReturn, final
 
 import psutil
 
@@ -141,6 +141,8 @@ class InstanceLocker:
 
 
 class BaseRobot:
+    estop_hooks: list[Callable[[], Any]] = []
+
     @staticmethod
     def add_basic_metrics(robot: "BaseRobot", update_interval: float = 2.0):
         robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
@@ -156,6 +158,10 @@ class BaseRobot:
                 time.sleep(update_interval)
 
         threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
+
+    @staticmethod
+    def register_estop_hook(hook: Callable[[], Any]):
+        BaseRobot.estop_hooks.append(hook)
 
     def __init__(
         self,
@@ -427,6 +433,8 @@ class BaseRobot:
             except RobotStoppedException:
                 sys.exit(64)
             except RobotEmergencyStoppedException:
+                for hook in BaseRobot.estop_hooks:
+                    Thread(target=hook, name="KevinbotLib.Robot.EstopAction").start()
                 sys.exit(65)
             finally:
                 if not self._estop:
