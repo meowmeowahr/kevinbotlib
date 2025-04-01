@@ -188,7 +188,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         if ws:
             self.client.send(
                 CommPath(self._ctrl_heartbeat_key) / "heartbeat",
-                StringSendable(value=str(ws.id), timeout=0.25),
+                StringSendable(value=str(ws.id), timeout=1.5),
             )
         else:
             self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
