@@ -1392,7 +1392,7 @@
 
 
 <h4 id="kevinbotlib.hardware.controllers.keyvalue.RawKeyValueSerialController.write" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">write</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h4>
 
@@ -1434,15 +1434,15 @@
                 <code>value</code>
             </td>
             <td>
-                  <code><span title="bytes">bytes</span></code>
+                  <code><span title="bytes">bytes</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The value to associate with the key</p>
+                <p>The value to associate with the key. If no value is provided, will not send a delimeter. Defaults to None.</p>
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>None</code>
             </td>
           </tr>
       </tbody>
