@@ -23,8 +23,10 @@ class ANSILogSender:
         self._is_started = True
 
     def hook(self, message):
-        self.client.send(self.key, StringSendable(value=message))
-        # print("here\n")
+        try:
+            self.client.send(self.key, StringSendable(value=message))
+        except Exception:
+            pass
 
 
 class ANSILogReceiver:
