@@ -1,5 +1,6 @@
 import asyncio
 import json
+from re import S
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -593,9 +594,14 @@ class RedisCommClient:
         """Initialize Redis client with connection parameters."""
         _Logger().warning("RedisCommClient is experimental and may not work as expected")
         self.redis = redis.Redis(host=host, port=port, db=db, decode_responses=True)
-        self.pubsub = self.redis.pubsub()
         self.running = False
         self.sub_thread: threading.Thread | None = None
+        self.hooks: list[tuple[str, type[BaseSendable], Callable[[BaseSendable], None]]] = []
+        self._start_hooks()
+
+    def add_hook(self, key: str, data_type: type[BaseSendable], callback: Callable[[BaseSendable], None]) -> None:
+        """Add a callback to be triggered when a sendable of data_type is set for key."""
+        self.hooks.append((key, data_type, callback))
 
     def set(self, key: str, sendable: BaseSendable) -> None:
         """Store a sendable in Redis under the specified key."""
@@ -643,8 +649,12 @@ class RedisCommClient:
 
     def get_raw(self, key: str) -> dict | None:
         """Retrieve the raw JSON for a key."""
-        raw = self.redis.get(key)
-        return json.loads(raw) if raw else None
+        try:
+            raw = self.redis.get(key)
+            return orjson.loads(raw) if raw else None
+        except (redis.exceptions.ConnectionError, orjson.JSONDecodeError) as e:
+            _Logger().error(f"Cannot get raw {key}: {e}")
+            return None
 
     def send(self, channel: str, sendable: BaseSendable) -> None:
         """Publish a sendable to a Redis channel."""
@@ -654,32 +664,43 @@ class RedisCommClient:
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot publish to {channel}: {e}")
 
-    def receive(self, channel: str, callback: Callable[[BaseSendable], None]) -> None:
-        """Subscribe to a channel and process incoming sendables."""
-        def message_handler(message):
-            try:
-                data = orjson.loads(message["data"])
-                sendable_type = self.SENDABLE_TYPES.get(data["did"])
-                if sendable_type:
-                    sendable = sendable_type(**data)
-                    callback(sendable)
-            except (orjson.JSONDecodeError, ValidationError, KeyError):
-                pass  # Ignore invalid messages
-
+    def _start_hooks(self) -> None:
         if not self.running:
-            self.pubsub.subscribe(**{channel: message_handler})
             self.running = True
-            self.sub_thread = threading.Thread(target=self._run_pubsub, daemon=True)
+            self.sub_thread = threading.Thread(target=self._run_hooks, daemon=True)
             self.sub_thread.start()
 
-    def _run_pubsub(self):
+    def _run_hooks(self):
         """Run the pubsub listener in a separate thread."""
-        self.pubsub.run_in_thread(sleep_time=0.01)
+        previous_values = {
+
+        }
+        while True:
+            # update previous values with hook keys
+            for key, _, _ in self.hooks:
+                if key not in previous_values:
+                    previous_values[key] = None
+                message = self.redis.get(key)
+                if message != previous_values[key]:
+                    # Call the hook
+                    for key, data_type, callback in self.hooks:
+                        try:
+                            raw = self.redis.get(key)
+                            if raw:
+                                data = orjson.loads(raw)
+                                if data["did"] == data_type(**data).data_id:
+                                    sendable = self.SENDABLE_TYPES[data["did"]](**data)
+                                    callback(sendable)
+                        except (orjson.JSONDecodeError, ValidationError, KeyError):
+                            pass
+                previous_values[key] = message
+            if not self.running:
+                break
+            time.sleep(0.01)
 
     def close(self):
         """Close the Redis connection and stop the pubsub thread."""
         self.running = False
-        self.pubsub.close()
         self.redis.close()
         if self.sub_thread:
             self.sub_thread.join()
