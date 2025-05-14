@@ -44,6 +44,7 @@ dependencies = [
   "qtawesome>=1.4.0",
   "qtpy>=2.4.3",
   "deprecated>=1.2.18",
+  "redis>=6.1.0",
 ]
 
 [project.optional-dependencies]
