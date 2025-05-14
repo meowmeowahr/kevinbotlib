@@ -704,3 +704,25 @@ class RedisCommClient:
         self.redis.close()
         if self.sub_thread:
             self.sub_thread.join()
+
+    @property
+    def host(self) -> str:
+        return self.redis.connection_pool.connection_kwargs["host"]
+    
+    @property
+    def port(self) -> int:
+        return self.redis.connection_pool.connection_kwargs["port"]
+        
+    @host.setter
+    def host(self, value: str):
+        self.redis.connection_pool.connection_kwargs["host"] = value
+        if self.running:
+            self.close()
+            self._start_hooks()
+
+    @port.setter
+    def port(self, value: int):
+        self.redis.connection_pool.connection_kwargs["port"] = value
+        if self.running:
+            self.close()
+            self._start_hooks()
