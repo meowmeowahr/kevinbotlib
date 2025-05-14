@@ -3,8 +3,8 @@ import time
 
 from kevinbotlib.comm import (
     BaseSendable,
-    RedisCommClient,
     IntegerSendable,
+    RedisCommClient,
     SendableGenerator,
 )
 from kevinbotlib.logger import Logger, LoggerConfiguration

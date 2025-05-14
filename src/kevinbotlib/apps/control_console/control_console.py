@@ -187,7 +187,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.client.send(
             CommPath(self._ctrl_heartbeat_key) / "heartbeat",
-            StringSendable(value=str(datetime.datetime.now()), timeout=1.5),
+            StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
         )
 
     def update_latency(self):

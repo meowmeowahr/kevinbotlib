@@ -12,8 +12,8 @@ from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispa
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
-    RedisCommClient,
     IntegerSendable,
+    RedisCommClient,
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
