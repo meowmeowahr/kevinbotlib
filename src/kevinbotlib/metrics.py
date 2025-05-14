@@ -20,6 +20,8 @@ class MetricType(IntEnum):
     """Display the value as a temperature in Fahrenheit. Dashboards may convert to Celcius."""
     BytesType = 5
     """Display the values as a number of bytes. Dashboards may convert it into human readable KB, MB, etc"""
+    BooleanType = 6
+    """Display the value as a boolean."""
 
 
 @dataclass
