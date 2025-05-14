@@ -1,3 +1,4 @@
+import datetime
 import sys
 from dataclasses import dataclass
 from functools import partial
@@ -24,7 +25,7 @@ from kevinbotlib.apps.control_console.pages.control import (
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
+from kevinbotlib.comm import CommPath, RedisCommClient, StringSendable
 from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
@@ -61,7 +62,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
 
-        self.client = CommunicationClient(
+        self.client = RedisCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
             port=int(self.settings.value("network.port", 8765, int)),  # type: ignore
             on_connect=self.on_connect,
@@ -184,18 +185,17 @@ class ControlConsoleApplicationWindow(QMainWindow):
         if not self.client.is_connected():
             return
 
-        ws = self.client.websocket
-        if ws:
-            self.client.send(
-                CommPath(self._ctrl_heartbeat_key) / "heartbeat",
-                StringSendable(value=str(ws.id), timeout=1.5),
-            )
-        else:
-            self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
+        self.client.send(
+            CommPath(self._ctrl_heartbeat_key) / "heartbeat",
+            StringSendable(value=str(datetime.datetime.now()), timeout=1.5),
+        )
 
     def update_latency(self):
-        if self.client.websocket:
-            self.latency_status.setText(f"Latency: {self.client.websocket.latency*1000:.2f}ms")
+        latency = self.client.get_latency()
+        if latency:
+            self.latency_status.setText(f"Latency: {latency:.2f}ms")
+        else:
+            self.latency_status.setText("Latency: --.--ms")
 
 
 @dataclass

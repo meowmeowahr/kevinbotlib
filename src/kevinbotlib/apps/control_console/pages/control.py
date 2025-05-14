@@ -19,7 +19,7 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
-    CommunicationClient,
+    RedisCommClient,
     StringSendable,
 )
 
@@ -46,7 +46,7 @@ class StateManager:
 
 
 class ControlConsoleControlTab(QWidget):
-    def __init__(self, client: CommunicationClient, status_key: str, request_key: str):
+    def __init__(self, client: RedisCommClient, status_key: str, request_key: str):
         super().__init__()
 
         self.client = client

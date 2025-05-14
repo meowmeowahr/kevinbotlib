@@ -19,9 +19,8 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
-    CommunicationClient,
-    CommunicationServer,
     DictSendable,
+    RedisCommClient,
     StringSendable,
 )
 from kevinbotlib.exceptions import (
@@ -167,7 +166,7 @@ class BaseRobot:
     def __init__(
         self,
         opmodes: list[str],
-        serve_port: int = 8765,
+        serve_port: int = 6379,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
@@ -211,8 +210,7 @@ class BaseRobot:
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
 
-        self.comm_server = CommunicationServer(port=serve_port)
-        self.comm_client = CommunicationClient(port=serve_port)
+        self.comm_client = RedisCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level
@@ -254,12 +252,6 @@ class BaseRobot:
             CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
         )
 
-        Thread(
-            target=self.comm_server.serve,
-            daemon=True,
-            name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
-        ).start()
-        self.comm_server.wait_until_serving()
         self.comm_client.connect()
 
         self.fileserver.start()
@@ -277,6 +269,7 @@ class BaseRobot:
             timer.start()
 
         self.comm_client.wait_until_connected()
+        self.comm_client.wipeall()
         self.log_sender.start()
         self._update_console_enabled(False)
         self._update_console_opmodes(self._opmodes)

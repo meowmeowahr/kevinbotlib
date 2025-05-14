@@ -12,7 +12,7 @@ from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispa
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
-    CommunicationClient,
+    RedisCommClient,
     IntegerSendable,
 )
 from kevinbotlib.exceptions import JoystickMissingException
@@ -420,7 +420,7 @@ class LocalXboxController(RawLocalJoystickDevice):
 
 
 class JoystickSender:
-    def __init__(self, client: CommunicationClient, joystick: AbstractJoystickInterface, key: str) -> None:
+    def __init__(self, client: RedisCommClient, joystick: AbstractJoystickInterface, key: str) -> None:
         self.client = client
 
         self.joystick = joystick
@@ -462,7 +462,7 @@ class JoystickSender:
 
 class DynamicJoystickSender:
     def __init__(
-        self, client: CommunicationClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
+        self, client: RedisCommClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
     ) -> None:
         self.client = client
 
@@ -504,9 +504,9 @@ class DynamicJoystickSender:
 
 
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
-    def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:
+    def __init__(self, client: RedisCommClient, key: str, callback_polling_hz: int = 100) -> None:
         super().__init__()
-        self._client: CommunicationClient = client
+        self._client: RedisCommClient = client
         self._client_key: str = key.rstrip("/")
         self.polling_hz = callback_polling_hz
 
@@ -527,7 +527,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         self.start_polling()
 
     @property
-    def client(self) -> CommunicationClient:
+    def client(self) -> RedisCommClient:
         return self._client
 
     @property
@@ -627,7 +627,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
 class RemoteXboxController(RemoteRawJoystickDevice):
     """Xbox-specific remote controller with button name mappings."""
 
-    def __init__(self, client: CommunicationClient, key: str, callback_polling_hz: int = 100) -> None:
+    def __init__(self, client: RedisCommClient, key: str, callback_polling_hz: int = 100) -> None:
         super().__init__(client, key, callback_polling_hz)
 
     def get_button_state(self, button: XboxControllerButtons) -> bool:

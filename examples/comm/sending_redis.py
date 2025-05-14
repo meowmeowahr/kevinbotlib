@@ -7,8 +7,8 @@ logger = Logger()
 logger.configure(LoggerConfiguration())
 
 client = RedisCommClient()
-# client.connect()
-# client.wait_until_connected()
+client.connect()
+client.wait_until_connected()
 
 i = 0
 try:

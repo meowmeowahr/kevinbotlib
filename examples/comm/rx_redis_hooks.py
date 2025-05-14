@@ -7,12 +7,12 @@ logger = Logger()
 logger.configure(LoggerConfiguration())
 
 client = RedisCommClient()
-# client.connect()
-# client.wait_until_connected()
+client.connect()
+client.wait_until_connected()
 
 
-def hook(message) -> None:
-    print(message)
+def hook(key, message) -> None:
+    print(f"Received message from {key}: {message}")
 
 
 client.add_hook("example/hierarchy/test", IntegerSendable, hook)
