@@ -666,11 +666,15 @@ class RedisCommClient:
             _Logger().error(f"Cannot get raw {key}: {e}")
             return None
 
-    def send(self, key: CommPath | str, sendable: BaseSendable) -> None:
+    def send(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """Set a sendable in the Redis database."""
         if not self.running or not self.redis:
             _Logger().error(f"Cannot publish to {key}: client is not started")
             return
+        
+        if isinstance(sendable, SendableGenerator):
+            sendable = sendable.generate_sendable()
+
         data = sendable.get_dict()
         try:
             self.redis.set(str(key), json.dumps(data))

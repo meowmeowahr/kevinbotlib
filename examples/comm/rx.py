@@ -1,12 +1,12 @@
 import time
 
-from kevinbotlib.comm import CommunicationClient, IntegerSendable, StringSendable
+from kevinbotlib.comm import IntegerSendable, RedisCommClient, StringSendable
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = CommunicationClient(on_update=None)
+client = RedisCommClient()
 client.connect()
 client.wait_until_connected()
 
@@ -16,4 +16,4 @@ try:
         print(client.get("example/hierarchy/test2", StringSendable))
         time.sleep(0.1)
 except KeyboardInterrupt:
-    client.disconnect()
+    client.close()
