@@ -142,7 +142,7 @@ class InstanceLocker:
 
 
 class BaseRobot:
-    estop_hooks: list[Callable[[], Any]] = []
+    estop_hooks: list[Callable[[], Any]] = []  # noqa: RUF012
 
     @staticmethod
     def add_basic_metrics(robot: "BaseRobot", update_interval: float = 2.0):

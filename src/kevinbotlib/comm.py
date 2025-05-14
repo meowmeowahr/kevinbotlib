@@ -1,4 +1,5 @@
 import asyncio
+import json
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -6,8 +7,10 @@ from collections.abc import Callable
 from typing import Any, TypeVar
 
 import orjson
+import redis
+import redis.exceptions
 import websockets
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 import kevinbotlib.exceptions
 from kevinbotlib.logger import Logger as _Logger
@@ -574,3 +577,109 @@ class CommunicationClient:
             await self.websocket.send(message)
 
         asyncio.run_coroutine_threadsafe(_delete(), self.loop)
+
+class RedisCommClient:
+    SENDABLE_TYPES = {
+        "kevinbotlib.dtype.int": IntegerSendable,
+        "kevinbotlib.dtype.bool": BooleanSendable,
+        "kevinbotlib.dtype.str": StringSendable,
+        "kevinbotlib.dtype.float": FloatSendable,
+        "kevinbotlib.dtype.list.any": AnyListSendable,
+        "kevinbotlib.dtype.dict": DictSendable,
+        "kevinbotlib.dtype.bin": BinarySendable,
+    }
+
+    def __init__(self, host: str = "localhost", port: int = 6379, db: int = 0):
+        """Initialize Redis client with connection parameters."""
+        _Logger().warning("RedisCommClient is experimental and may not work as expected")
+        self.redis = redis.Redis(host=host, port=port, db=db, decode_responses=True)
+        self.pubsub = self.redis.pubsub()
+        self.running = False
+        self.sub_thread: threading.Thread | None = None
+
+    def set(self, key: str, sendable: BaseSendable) -> None:
+        """Store a sendable in Redis under the specified key."""
+        data = sendable.get_dict()
+        self.redis.set(key, json.dumps(data))
+
+    def get(self, key: str, type: type[BaseSendable]) -> BaseSendable | None:
+        """Retrieve and deserialize a sendable by key."""
+        try:
+            raw = self.redis.get(key)
+        except redis.exceptions.ConnectionError as e:
+            _Logger().error(f"Cannot get {key}: {e}")
+            return None
+        if raw is None:
+            return None
+        try:
+            data = json.loads(raw)
+            sendable_type = self.SENDABLE_TYPES.get(data["did"])
+            if sendable_type:
+                return sendable_type(**data)
+        except (orjson.JSONDecodeError, ValidationError, KeyError):
+            pass
+        return None
+
+    def get_keys(self) -> list[str]:
+        """Return a list of all keys in the Redis database."""
+        try:
+            return self.redis.keys("*")
+        except redis.exceptions.ConnectionError as e:
+            _Logger().error(f"Cannot get keys: {e}")
+            return []
+
+    def get_all(self) -> dict[str, BaseSendable] | None:
+        """Retrieve all sendables in the database, deserialized."""
+        keys = self.get_keys()
+        result = {}
+        try:
+            for key in keys:
+                sendable = self.get(key)
+                result[key] = sendable
+        except Exception as e:
+            _Logger().error(f"Error retrieving all sendables: {e}")
+            return None
+        return result
+
+    def get_raw(self, key: str) -> dict | None:
+        """Retrieve the raw JSON for a key."""
+        raw = self.redis.get(key)
+        return json.loads(raw) if raw else None
+
+    def send(self, channel: str, sendable: BaseSendable) -> None:
+        """Publish a sendable to a Redis channel."""
+        data = sendable.get_dict()
+        try:
+            self.redis.set(channel, json.dumps(data))
+        except redis.exceptions.ConnectionError as e:
+            _Logger().error(f"Cannot publish to {channel}: {e}")
+
+    def receive(self, channel: str, callback: Callable[[BaseSendable], None]) -> None:
+        """Subscribe to a channel and process incoming sendables."""
+        def message_handler(message):
+            try:
+                data = orjson.loads(message["data"])
+                sendable_type = self.SENDABLE_TYPES.get(data["did"])
+                if sendable_type:
+                    sendable = sendable_type(**data)
+                    callback(sendable)
+            except (orjson.JSONDecodeError, ValidationError, KeyError):
+                pass  # Ignore invalid messages
+
+        if not self.running:
+            self.pubsub.subscribe(**{channel: message_handler})
+            self.running = True
+            self.sub_thread = threading.Thread(target=self._run_pubsub, daemon=True)
+            self.sub_thread.start()
+
+    def _run_pubsub(self):
+        """Run the pubsub listener in a separate thread."""
+        self.pubsub.run_in_thread(sleep_time=0.01)
+
+    def close(self):
+        """Close the Redis connection and stop the pubsub thread."""
+        self.running = False
+        self.pubsub.close()
+        self.redis.close()
+        if self.sub_thread:
+            self.sub_thread.join()

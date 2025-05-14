@@ -13,8 +13,10 @@ class DemoRobot(BaseRobot):
             metrics_publish_timer=0,  # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
         )
 
-        BaseRobot.register_estop_hook(lambda: print("E-STOP Hook 1")) # usually used for hardware shutdowns
-        BaseRobot.register_estop_hook(lambda: print("E-STOP Hook 2")) # they will run in a thread - *MUST BE THREAD-SAFE*
+        BaseRobot.register_estop_hook(lambda: print("E-STOP Hook 1"))  # usually used for hardware shutdowns
+        BaseRobot.register_estop_hook(
+            lambda: print("E-STOP Hook 2")
+        )  # they will run in a thread - *MUST BE THREAD-SAFE*
 
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()

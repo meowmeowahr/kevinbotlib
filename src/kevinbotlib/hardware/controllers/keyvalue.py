@@ -42,7 +42,7 @@ class RawKeyValueSerialController:
 
         if self._delimiter not in line:
             return (line.rstrip(self._terminator), b"")
-        elif line and self._delimiter in line:
+        if line and self._delimiter in line:
             key, value = line.split(self._delimiter, 1)
             value = value.rstrip(self._terminator)
             return (key, value)

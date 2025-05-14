@@ -1,3 +1,4 @@
+import contextlib
 from collections.abc import Callable
 from typing import Any
 
@@ -23,10 +24,8 @@ class ANSILogSender:
         self._is_started = True
 
     def hook(self, message):
-        try:
+        with contextlib.suppress(Exception):
             self.client.send(self.key, StringSendable(value=message))
-        except Exception:
-            pass
 
 
 class ANSILogReceiver:
