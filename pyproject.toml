@@ -32,7 +32,6 @@ dependencies = [
   "platformdirs~=4.3.8",
   "orjson~=3.10.18",
   "pybase64~=1.4.1",
-  "websockets~=15.0.1",
   "pysdl2~=0.9.17",
   "opencv-python~=4.11.0",
   "pyftpdlib~=2.0.1",
