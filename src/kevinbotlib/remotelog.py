@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import contextlib
 from typing import Any
 
 from kevinbotlib.comm import CommPath, RedisCommClient, StringSendable
@@ -23,8 +24,8 @@ class ANSILogSender:
         self._is_started = True
 
     def hook(self, message):
-        # with contextlib.suppress(Exception):
-        #     self.client.send(self.key, StringSendable(value=message))
+        with contextlib.suppress(Exception) and Logger.suppress():
+            self.client.send(self.key, StringSendable(value=message))
         pass
 
 

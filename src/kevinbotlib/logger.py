@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import glob
 import os
 import sys
@@ -85,6 +86,7 @@ class LoggerConfiguration:
 
 class Logger:
     is_configured = False
+    _suppress = False
 
     def __init__(self) -> None:
         self._internal_logger = _internal_logger
@@ -97,6 +99,15 @@ class Logger:
     @property
     def loguru_logger(self):
         return self._internal_logger
+    
+    @classmethod
+    @contextmanager
+    def suppress(cls):
+        cls._suppress = True
+        try:
+            yield
+        finally:
+            cls._suppress = False
 
     def configure(self, config: LoggerConfiguration):
         """Configures file-based logging with rotation and cleanup."""
@@ -149,6 +160,9 @@ class Logger:
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+
         opts = opts or LoggerWriteOpts()
         self._internal_logger.opt(
             depth=opts.depth,
@@ -161,24 +175,36 @@ class Logger:
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.TRACE.name, message)
 
     def debug(self, message: str):
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.DEBUG.name, message)
 
     def info(self, message: str):
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.INFO.name, message)
 
     def warning(self, message: str):
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
     @deprecated("Use Logger.warning() instead")
@@ -189,18 +215,27 @@ class Logger:
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.ERROR.name, message)
 
     def security(self, message: str):
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
 
     def critical(self, message: str):
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
+        if Logger._suppress:
+            return
+        
         self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
 
 

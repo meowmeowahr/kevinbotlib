@@ -413,7 +413,6 @@ class BaseRobot:
                             self._prev_opmode = current_opmode
 
                         # Handle enable/disable transitions
-                        Logger().info(f"prev: {self._prev_enabled}, curr: {self._current_enabled}")
                         if self._prev_enabled != self._current_enabled:
                             self._update_console_enabled(self._current_enabled)
                             if self._prev_enabled is not None:  # Not first iteration
@@ -422,7 +421,6 @@ class BaseRobot:
                             self._prev_enabled = self._current_enabled
 
                         self.robot_periodic(self._opmode, self._current_enabled)
-
 
                     time.sleep(1 / self._cycle_hz)
             except RobotStoppedException:
