@@ -13,8 +13,8 @@ client.wait_until_connected()
 i = 0
 try:
     while True:
-        client.send("example/hierarchy/test", IntegerSendable(value=i))
-        client.send("example/hierarchy/test2", StringSendable(value=f"demo {i}"))
+        client.set("example/hierarchy/test", IntegerSendable(value=i))
+        client.set("example/hierarchy/test2", StringSendable(value=f"demo {i}"))
         time.sleep(0.5)
         i += 1
 except KeyboardInterrupt:

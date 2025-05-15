@@ -431,13 +431,13 @@ class JoystickSender:
 
     @final
     def _send(self):
-        self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
-        self.client.send(
+        self.client.set(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
+        self.client.set(
             self.key + "/pov",
             IntegerSendable(value=self.joystick.get_pov_direction().value),
         )
-        self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
-        self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick.is_connected()))
+        self.client.set(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
+        self.client.set(self.key + "/connected", BooleanSendable(value=self.joystick.is_connected()))
 
     @final
     def _send_loop(self):
@@ -474,13 +474,13 @@ class DynamicJoystickSender:
 
     @final
     def _send(self):
-        self.client.send(self.key + "/buttons", AnyListSendable(value=self.joystick().get_buttons()))
-        self.client.send(
+        self.client.set(self.key + "/buttons", AnyListSendable(value=self.joystick().get_buttons()))
+        self.client.set(
             self.key + "/pov",
             IntegerSendable(value=self.joystick().get_pov_direction().value),
         )
-        self.client.send(self.key + "/axes", AnyListSendable(value=self.joystick().get_axes()))
-        self.client.send(self.key + "/connected", BooleanSendable(value=self.joystick().is_connected()))
+        self.client.set(self.key + "/axes", AnyListSendable(value=self.joystick().get_axes()))
+        self.client.set(self.key + "/connected", BooleanSendable(value=self.joystick().is_connected()))
 
     @final
     def _send_loop(self):

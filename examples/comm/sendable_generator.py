@@ -26,7 +26,7 @@ generator = TestGenerator()
 
 try:
     while True:
-        client.send("example/hierarchy/test", generator)
+        client.set("example/hierarchy/test", generator)
         time.sleep(0.5)
 except KeyboardInterrupt:
     client.close()

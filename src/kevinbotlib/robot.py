@@ -317,7 +317,7 @@ class BaseRobot:
     @final
     def _metrics_pub_internal(self):
         if self._metrics.getall():
-            self.comm_client.send(
+            self.comm_client.set(
                 CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall())
             )
             self.telemetry.trace(f"Published system metrics to {self._ctrl_metrics_key}")
@@ -335,7 +335,7 @@ class BaseRobot:
     @final
     def _update_console_enabled(self, enabled: bool):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "enabled",
             BooleanSendable(value=enabled, struct={}),
         )
@@ -343,7 +343,7 @@ class BaseRobot:
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmodes",
             AnyListSendable(value=opmodes, struct={}),
         )
@@ -351,7 +351,7 @@ class BaseRobot:
     @final
     def _update_console_opmode(self, opmode: str):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmode",
             StringSendable(value=opmode, struct={}),
         )

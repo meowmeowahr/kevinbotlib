@@ -170,7 +170,7 @@ class ControlConsoleControlTab(QWidget):
 
     def opmode_selection_changed(self, _: QItemSelection, __: QItemSelection, /):
         if len(self.opmode_selector.selectedItems()) == 1:
-            self.client.send(
+            self.client.set(
                 CommPath(self.request_key) / "opmode",
                 StringSendable(value=self.opmode_selector.selectedItems()[0].data(0)),
             )
@@ -180,14 +180,14 @@ class ControlConsoleControlTab(QWidget):
             self.state_label_timer.start(100)
             return
 
-        self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
+        self.client.set(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
 
     def disable_request(self):
         if not self.client.is_connected():
             self.state_label_timer.start(100)
             return
 
-        self.client.send(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
+        self.client.set(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
 
     def estop_request(self):
         if not self.client.is_connected():
@@ -195,7 +195,7 @@ class ControlConsoleControlTab(QWidget):
             # return
             # don't return - maybe something went wrong with is_connected and estop is still possible
 
-        self.client.send(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
+        self.client.set(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
 
     def on_opmodes_update(self, _: str, sendable: AnyListSendable | None):  # these are for non-initial updates
         if not sendable:

@@ -1,21 +1,21 @@
 # Communication Examples
 
-## Server
+## Setter
 
-```python title="examples/comm/server.py" linenums="1"
---8<-- "examples/comm/server.py"
+```python title="examples/comm/setter.py" linenums="1"
+--8<-- "examples/comm/setter.py"
 ```
 
-## Sender
+## Getter
 
-```python title="examples/comm/sending.py" linenums="1"
---8<-- "examples/comm/sending.py"
+```python title="examples/comm/getter.py" linenums="1"
+--8<-- "examples/comm/getter.py"
 ```
 
-## Receiver
+## Getter with Hooks
 
-```python title="examples/comm/rx.py" linenums="1"
---8<-- "examples/comm/rx.py"
+```python title="examples/comm/getter_hooks.py" linenums="1"
+--8<-- "examples/comm/getter_hooks.py"
 ```
 
 ## Sendable Generator

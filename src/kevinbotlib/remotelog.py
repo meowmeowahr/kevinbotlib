@@ -25,7 +25,7 @@ class ANSILogSender:
 
     def hook(self, message):
         with contextlib.suppress(Exception) and Logger.suppress():
-            self.client.send(self.key, StringSendable(value=message))
+            self.client.set(self.key, StringSendable(value=message))
         pass
 
 
