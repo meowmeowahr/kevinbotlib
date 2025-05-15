@@ -426,6 +426,7 @@ class BaseRobot:
             except RobotStoppedException:
                 sys.exit(64)
             except RobotEmergencyStoppedException:
+                self.telemetry.critical("Running E-Stop hooks...")
                 stop_threads: list[Thread] = []
                 for hook in BaseRobot.estop_hooks:
                     t = Thread(target=hook, name="KevinbotLib.Robot.EstopAction")
@@ -435,6 +436,8 @@ class BaseRobot:
                 for t in stop_threads:
                     t.join()
 
+                time.sleep(1)
+                self.comm_client.close()
                 sys.exit(65)
             finally:
                 if not self._estop:
