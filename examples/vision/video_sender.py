@@ -30,3 +30,7 @@ while True:
             "streams/camera0",
             MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]),
         )
+        client.send(
+            "streams/camera1",
+            MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]),
+        )

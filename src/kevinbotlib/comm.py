@@ -231,7 +231,6 @@ class RedisCommClient:
         on_disconnect: Callable[[], None] | None = None,
     ) -> None:
         """Initialize Redis client with connection parameters."""
-        _Logger().warning("RedisCommClient is experimental and may not work as expected")
         self.redis = None
         self._host = host
         self._port = port
@@ -322,7 +321,10 @@ class RedisCommClient:
 
         data = sendable.get_dict()
         try:
-            self.redis.set(str(key), json.dumps(data))
+            if sendable.timeout:
+                self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
+            else:
+                self.redis.set(str(key), orjson.dumps(data))
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
 
