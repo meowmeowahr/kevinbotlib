@@ -331,7 +331,7 @@ class RedisCommClient:
                 self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
             else:
                 self.redis.set(str(key), orjson.dumps(data))
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
 
     def publish(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
@@ -366,10 +366,10 @@ class RedisCommClient:
                         if callback:
                             callback[1](channel, callback[0](**data))
                     except Exception as e:
-                        _Logger().error(f"Failed to process message: {repr(e)}")
-        except redis.exceptions.ConnectionError:
+                        _Logger().error(f"Failed to process message: {e!r}")
+        except (redis.exceptions.ConnectionError, ValueError, AttributeError):
             pass
-            
+
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
         if isinstance(key, CommPath):
@@ -540,6 +540,9 @@ class RedisCommClient:
             if self._listener_thread and not self._listener_thread.is_alive():
                 self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
                 self._listener_thread.start()
+            checker = threading.Thread(target=self._redis_connection_check, daemon=True)
+            checker.setName("KevinbotLib.Redis.ConnCheck")
+            checker.start()
 
     @port.setter
     def port(self, value: int):
@@ -556,3 +559,16 @@ class RedisCommClient:
             if self._listener_thread and not self._listener_thread.is_alive():
                 self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
                 self._listener_thread.start()
+            checker = threading.Thread(target=self._redis_connection_check, daemon=True)
+            checker.setName("KevinbotLib.Redis.ConnCheck")
+            checker.start()
+
+    def _redis_connection_check(self):
+        try:
+            if not self.redis:
+                return
+            self.redis.ping()
+            if self.on_connect:
+                self.on_connect()
+        except redis.exceptions.ConnectionError:
+            return

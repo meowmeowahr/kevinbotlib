@@ -1,8 +1,8 @@
-from contextlib import contextmanager
 import glob
 import os
 import sys
 from collections.abc import Callable
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -99,7 +99,7 @@ class Logger:
     @property
     def loguru_logger(self):
         return self._internal_logger
-    
+
     @classmethod
     @contextmanager
     def suppress(cls):
@@ -177,7 +177,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.TRACE.name, message)
 
     def debug(self, message: str):
@@ -186,7 +186,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.DEBUG.name, message)
 
     def info(self, message: str):
@@ -195,7 +195,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.INFO.name, message)
 
     def warning(self, message: str):
@@ -204,7 +204,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
     @deprecated("Use Logger.warning() instead")
@@ -217,7 +217,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.ERROR.name, message)
 
     def security(self, message: str):
@@ -226,7 +226,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
 
     def critical(self, message: str):
@@ -235,7 +235,7 @@ class Logger:
 
         if Logger._suppress:
             return
-        
+
         self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
 
 

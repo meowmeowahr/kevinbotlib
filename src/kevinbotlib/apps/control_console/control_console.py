@@ -1,15 +1,27 @@
 import datetime
 import sys
+import time
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
 from threading import Thread
-import time
 
 import ansi2html
 import qtawesome as qta
-from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, QSize, Qt, QTimer, Signal, Slot, QObject, QThread
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import (
+    QCommandLineOption,
+    QCommandLineParser,
+    QCoreApplication,
+    QObject,
+    QSettings,
+    QSize,
+    Qt,
+    QThread,
+    QTimer,
+    Signal,
+    Slot,
+)
+from PySide6.QtGui import QIcon, QCloseEvent
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -224,6 +236,12 @@ class ControlConsoleApplicationWindow(QMainWindow):
             self.latency_status.setText(f"Latency: {latency:.2f}ms")
         else:
             self.latency_status.setText("Latency: --.--ms")
+
+    def closeEvent(self, event: QCloseEvent):
+        self.heartbeat_timer.stop()
+        self.heartbeat_thread.quit()
+        self.heartbeat_thread.moveToThread(self.thread())
+        event.accept()
 
 
 @dataclass
