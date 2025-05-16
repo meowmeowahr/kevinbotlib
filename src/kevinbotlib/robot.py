@@ -160,6 +160,12 @@ class BaseRobot:
         threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
 
     @staticmethod
+    def add_battery(robot: "BaseRobot", min: int, max: int, source: Callable[[], float], update_interval: float = 0.1):
+        robot._batteries.append((min, max, source))
+        if not robot._batt_publish_thread.is_alive():
+            robot._batt_publish_thread.start()
+
+    @staticmethod
     def register_estop_hook(hook: Callable[[], Any]):
         BaseRobot.estop_hooks.append(hook)
 
@@ -173,6 +179,7 @@ class BaseRobot:
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
         metrics_publish_timer: float = 5.0,
+        battery_publish_timer: float = 0.1,
         *,
         allow_enable_without_console: bool = False,
     ):
@@ -188,6 +195,7 @@ class BaseRobot:
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
             log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
             metrics_publish_timer (float, optional): How often to **publish** system metrics. This is separate from `BaseRobot.add_basic_metrics()` update_interval. Set to 0 to disable metrics publishing. Defaults to 5.0.
+            battery_publish_timer (float, optional): How often to **publish** battery voltages.  Set to 0 to disable battery publishing. Defaults to 0.1.
             allow_enable_without_console (bool, optional): Allow the robot to be enabled without an active control console. Defaults to False.
         """
 
@@ -209,6 +217,7 @@ class BaseRobot:
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
+        self._ctrl_batteries_key = "%ControlConsole/batteries"
 
         self.comm_client = RedisCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
@@ -233,6 +242,10 @@ class BaseRobot:
         self._opmode = opmodes[0] if default_opmode is None else default_opmode
 
         self._metrics = SystemMetrics()
+
+        self._batteries: list[tuple[float, float, Callable[[], float]]] = []
+        self._batt_publish_thread: Thread  = Thread(target=self._update_batteries, daemon=True, name="KevinbotLib.Robot.Battery.Updater")
+        self._batt_publish_interval = battery_publish_timer
 
         if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
             msg = f"Another robot with the class name {self.__class__.__name__} is already running"
@@ -287,6 +300,12 @@ class BaseRobot:
             if not self.comm_client.is_connected():
                 self.comm_client.connect()
             time.sleep(2)
+
+    @final
+    def _update_batteries(self):
+        while True:
+            self.comm_client.set(self._ctrl_batteries_key, AnyListSendable(value=[(batt[0], batt[1], batt[2]()) for batt in self._batteries]))
+            time.sleep(self._batt_publish_interval)
 
     @final
     def _signal_usr1_capture(self, _, __):

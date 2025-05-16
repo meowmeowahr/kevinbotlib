@@ -21,7 +21,7 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
-from PySide6.QtGui import QIcon, QCloseEvent
+from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -93,6 +93,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_controller_key = "%ControlConsole/joystick/{0}"
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
+        self._ctrl_batteries_key = "%ControlConsole/batteries"
 
         self.client = RedisCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
@@ -121,7 +122,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.heartbeat_timer.timeout.connect(self.heartbeat_worker.send_heartbeat)
         self.heartbeat_timer.start()
 
-
         self.latency_timer = QTimer()
         self.latency_timer.setInterval(1000)
         self.latency_timer.timeout.connect(self.update_latency)
@@ -149,7 +149,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab = ControlConsoleSettingsTab(self.settings, self)
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
-        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
+        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key)
         self.controllers_tab = ControlConsoleControllersTab()
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 

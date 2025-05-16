@@ -2,7 +2,7 @@ from collections.abc import Callable
 from enum import Enum
 from typing import Any
 
-from PySide6.QtCore import QItemSelection, Qt, QTimer
+from PySide6.QtCore import QItemSelection, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QCheckBox,
     QGridLayout,
@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps.control_console.widgets import Battery, BatteryManager
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
@@ -46,13 +47,16 @@ class StateManager:
 
 
 class ControlConsoleControlTab(QWidget):
-    def __init__(self, client: RedisCommClient, status_key: str, request_key: str):
+    battery_update = Signal(list)
+
+    def __init__(self, client: RedisCommClient, status_key: str, request_key: str, batteries_key: str):
         super().__init__()
 
         self.client = client
 
         self.status_key = status_key
         self.request_key = request_key
+        self.batteries_key = batteries_key
 
         self.client.add_hook(
             CommPath(self.status_key) / "opmodes",
@@ -64,6 +68,11 @@ class ControlConsoleControlTab(QWidget):
             CommPath(self.status_key) / "enabled",
             BooleanSendable,
             self.on_enabled_update,
+        )
+        self.client.add_hook(
+            CommPath(self.batteries_key),
+            AnyListSendable,
+            self.on_battery_update,
         )
 
         self.opmodes = []
@@ -122,10 +131,17 @@ class ControlConsoleControlTab(QWidget):
 
         root_layout.addSpacing(32)
 
+        state_layout = QVBoxLayout()
+        root_layout.addLayout(state_layout)
+
         self.robot_state = QLabel("Communication\nDown")
         self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.robot_state.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        root_layout.addWidget(self.robot_state)
+        state_layout.addWidget(self.robot_state)
+
+        self.battery_manager = BatteryManager()
+        state_layout.addWidget(self.battery_manager)
+        self.battery_update.connect(self.battery_manager.set)
 
         root_layout.addSpacing(32)
 
@@ -192,7 +208,6 @@ class ControlConsoleControlTab(QWidget):
     def estop_request(self):
         if not self.client.is_connected():
             self.state_label_timer.start(100)
-            # return
             # don't return - maybe something went wrong with is_connected and estop is still possible
 
         self.client.set(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
@@ -242,6 +257,12 @@ class ControlConsoleControlTab(QWidget):
                 break
         if ready:
             self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+
+    def on_battery_update(self, _: str, sendable: AnyListSendable | None):
+        if not sendable:
+            return
+        print([Battery(v[2], v[0], v[1]) for v in sendable.value])
+        self.battery_update.emit([Battery(v[2], v[0], v[1]) for v in sendable.value])
 
     def periodic_dependency_check(self):
         ready = True
