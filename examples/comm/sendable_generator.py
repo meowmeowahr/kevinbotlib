@@ -3,8 +3,8 @@ import time
 
 from kevinbotlib.comm import (
     BaseSendable,
-    CommunicationClient,
     IntegerSendable,
+    RedisCommClient,
     SendableGenerator,
 )
 from kevinbotlib.logger import Logger, LoggerConfiguration
@@ -12,7 +12,7 @@ from kevinbotlib.logger import Logger, LoggerConfiguration
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = CommunicationClient()
+client = RedisCommClient()
 client.connect()
 client.wait_until_connected()
 
@@ -26,7 +26,7 @@ generator = TestGenerator()
 
 try:
     while True:
-        client.send("example/hierarchy/test", generator)
+        client.set("example/hierarchy/test", generator)
         time.sleep(0.5)
 except KeyboardInterrupt:
-    client.disconnect()
+    client.close()

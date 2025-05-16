@@ -19,9 +19,8 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
-    CommunicationClient,
-    CommunicationServer,
     DictSendable,
+    RedisCommClient,
     StringSendable,
 )
 from kevinbotlib.exceptions import (
@@ -142,7 +141,7 @@ class InstanceLocker:
 
 
 class BaseRobot:
-    estop_hooks: list[Callable[[], Any]] = []
+    estop_hooks: list[Callable[[], Any]] = []  # noqa: RUF012
 
     @staticmethod
     def add_basic_metrics(robot: "BaseRobot", update_interval: float = 2.0):
@@ -161,19 +160,26 @@ class BaseRobot:
         threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
 
     @staticmethod
+    def add_battery(robot: "BaseRobot", min_voltage: int, max_voltage: int, source: Callable[[], float]):
+        robot._batteries.append((min_voltage, max_voltage, source))  # noqa: SLF001
+        if not robot._batt_publish_thread.is_alive():  # noqa: SLF001
+            robot._batt_publish_thread.start()  # noqa: SLF001
+
+    @staticmethod
     def register_estop_hook(hook: Callable[[], Any]):
         BaseRobot.estop_hooks.append(hook)
 
     def __init__(
         self,
         opmodes: list[str],
-        serve_port: int = 8765,
+        serve_port: int = 6379,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
         metrics_publish_timer: float = 5.0,
+        battery_publish_timer: float = 0.1,
         *,
         allow_enable_without_console: bool = False,
     ):
@@ -189,6 +195,7 @@ class BaseRobot:
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
             log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
             metrics_publish_timer (float, optional): How often to **publish** system metrics. This is separate from `BaseRobot.add_basic_metrics()` update_interval. Set to 0 to disable metrics publishing. Defaults to 5.0.
+            battery_publish_timer (float, optional): How often to **publish** battery voltages.  Set to 0 to disable battery publishing. Defaults to 0.1.
             allow_enable_without_console (bool, optional): Allow the robot to be enabled without an active control console. Defaults to False.
         """
 
@@ -210,9 +217,9 @@ class BaseRobot:
         self._ctrl_heartbeat_key = "%ControlConsole/heartbeat"
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
+        self._ctrl_batteries_key = "%ControlConsole/batteries"
 
-        self.comm_server = CommunicationServer(port=serve_port)
-        self.comm_client = CommunicationClient(port=serve_port)
+        self.comm_client = RedisCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level
@@ -236,6 +243,12 @@ class BaseRobot:
 
         self._metrics = SystemMetrics()
 
+        self._batteries: list[tuple[float, float, Callable[[], float]]] = []
+        self._batt_publish_thread: Thread = Thread(
+            target=self._update_batteries, daemon=True, name="KevinbotLib.Robot.Battery.Updater"
+        )
+        self._batt_publish_interval = battery_publish_timer
+
         if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
             msg = f"Another robot with the class name {self.__class__.__name__} is already running"
             raise RobotLockedException(msg)
@@ -254,13 +267,9 @@ class BaseRobot:
             CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
         )
 
-        Thread(
-            target=self.comm_server.serve,
-            daemon=True,
-            name=f"KevinbotLib.Robot.{self.__class__.__name__}.CommServer",
-        ).start()
-        self.comm_server.wait_until_serving()
         self.comm_client.connect()
+        self._comm_connection_check_thread = Thread(target=self._comm_connection_check, daemon=True)
+        self._comm_connection_check_thread.start()
 
         self.fileserver.start()
 
@@ -277,6 +286,7 @@ class BaseRobot:
             timer.start()
 
         self.comm_client.wait_until_connected()
+        self.comm_client.wipeall()
         self.log_sender.start()
         self._update_console_enabled(False)
         self._update_console_opmodes(self._opmodes)
@@ -285,6 +295,22 @@ class BaseRobot:
     @property
     def metrics(self):
         return self._metrics
+
+    @final
+    def _comm_connection_check(self):
+        while True:
+            if not self.comm_client.is_connected():
+                self.comm_client.connect()
+            time.sleep(2)
+
+    @final
+    def _update_batteries(self):
+        while True:
+            self.comm_client.publish(
+                self._ctrl_batteries_key,
+                AnyListSendable(value=[(batt[0], batt[1], batt[2]()) for batt in self._batteries]),
+            )
+            time.sleep(self._batt_publish_interval)
 
     @final
     def _signal_usr1_capture(self, _, __):
@@ -324,7 +350,7 @@ class BaseRobot:
     @final
     def _metrics_pub_internal(self):
         if self._metrics.getall():
-            self.comm_client.send(
+            self.comm_client.set(
                 CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall())
             )
             self.telemetry.trace(f"Published system metrics to {self._ctrl_metrics_key}")
@@ -342,7 +368,7 @@ class BaseRobot:
     @final
     def _update_console_enabled(self, enabled: bool):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "enabled",
             BooleanSendable(value=enabled, struct={}),
         )
@@ -350,7 +376,7 @@ class BaseRobot:
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmodes",
             AnyListSendable(value=opmodes, struct={}),
         )
@@ -358,7 +384,7 @@ class BaseRobot:
     @final
     def _update_console_opmode(self, opmode: str):
         # we don't want to allow dashbaord visibility - set struct to {}
-        return self.comm_client.send(
+        return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmode",
             StringSendable(value=opmode, struct={}),
         )
@@ -417,23 +443,23 @@ class BaseRobot:
                             self._opmode = current_opmode
                             self._update_console_opmode(current_opmode)
                             self.opmode_init(current_opmode, self._current_enabled)
+                            self._prev_opmode = current_opmode
 
                         # Handle enable/disable transitions
-                        elif self._prev_enabled != self._current_enabled:
+                        if self._prev_enabled != self._current_enabled:
                             self._update_console_enabled(self._current_enabled)
                             if self._prev_enabled is not None:  # Not first iteration
                                 self.opmode_exit(self._opmode, self._prev_enabled)
                             self.opmode_init(self._opmode, self._current_enabled)
+                            self._prev_enabled = self._current_enabled
 
                         self.robot_periodic(self._opmode, self._current_enabled)
-
-                        self._prev_enabled = self._current_enabled
-                        self._prev_opmode = current_opmode
 
                     time.sleep(1 / self._cycle_hz)
             except RobotStoppedException:
                 sys.exit(64)
             except RobotEmergencyStoppedException:
+                self.telemetry.critical("Running E-Stop hooks...")
                 stop_threads: list[Thread] = []
                 for hook in BaseRobot.estop_hooks:
                     t = Thread(target=hook, name="KevinbotLib.Robot.EstopAction")
@@ -443,6 +469,8 @@ class BaseRobot:
                 for t in stop_threads:
                     t.join()
 
+                time.sleep(1)
+                self.comm_client.close()
                 sys.exit(65)
             finally:
                 if not self._estop:

@@ -1,13 +1,13 @@
 import time
 
-from kevinbotlib.comm import CommunicationClient
+from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.joystick import RemoteXboxController
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-client = CommunicationClient(on_update=None)
+client = RedisCommClient()
 client.connect()
 client.wait_until_connected()
 

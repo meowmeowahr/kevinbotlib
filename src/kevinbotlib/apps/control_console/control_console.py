@@ -1,12 +1,27 @@
+import datetime
 import sys
+import time
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
+from threading import Thread
 
 import ansi2html
 import qtawesome as qta
-from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, QSize, Qt, QTimer
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import (
+    QCommandLineOption,
+    QCommandLineParser,
+    QCoreApplication,
+    QObject,
+    QSettings,
+    QSize,
+    Qt,
+    QThread,
+    QTimer,
+    Signal,
+    Slot,
+)
+from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QLabel,
@@ -24,11 +39,30 @@ from kevinbotlib.apps.control_console.pages.control import (
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import CommPath, CommunicationClient, StringSendable
+from kevinbotlib.comm import AnyListSendable, CommPath, RedisCommClient, StringSendable
 from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
+
+
+class HeartbeatWorker(QObject):
+    send_heartbeat = Signal()
+
+    def __init__(self, client: RedisCommClient, key: str):
+        super().__init__()
+        self.client = client
+        self.key = key
+        self.send_heartbeat.connect(self.heartbeat)
+
+    @Slot()
+    def heartbeat(self):
+        if not self.client.is_connected():
+            return
+        self.client.set(
+            CommPath(self.key) / "heartbeat",
+            StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
+        )
 
 
 class ControlConsoleApplicationWindow(QMainWindow):
@@ -60,8 +94,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_controller_key = "%ControlConsole/joystick/{0}"
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
+        self._ctrl_batteries_key = "%ControlConsole/batteries"
 
-        self.client = CommunicationClient(
+        self.client = RedisCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
             port=int(self.settings.value("network.port", 8765, int)),  # type: ignore
             on_connect=self.on_connect,
@@ -69,7 +104,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         )
 
         self.logrx = ANSILogReceiver(self.on_log, self.client, self._ctrl_logs_key)
-        self.logrx.start()
 
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
@@ -79,9 +113,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
             sender.stop()
             self.joystick_senders.append(sender)
 
+        self.heartbeat_thread = QThread(self)
+        self.heartbeat_worker = HeartbeatWorker(self.client, self._ctrl_heartbeat_key)
+        self.heartbeat_worker.moveToThread(self.heartbeat_thread)
+        self.heartbeat_thread.start()
+
         self.heartbeat_timer = QTimer()
-        self.heartbeat_timer.setInterval(100)
-        self.heartbeat_timer.timeout.connect(self.heartbeat)
+        self.heartbeat_timer.setInterval(200)
+        self.heartbeat_timer.timeout.connect(self.heartbeat_worker.send_heartbeat)
         self.heartbeat_timer.start()
 
         self.latency_timer = QTimer()
@@ -111,7 +150,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab = ControlConsoleSettingsTab(self.settings, self)
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
-        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key)
+        self.control = ControlConsoleControlTab(
+            self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key
+        )
         self.controllers_tab = ControlConsoleControllersTab()
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 
@@ -121,12 +162,21 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
-        self.client.connect()
+        self.connection_governor_thread = Thread(target=self.connection_governor, daemon=True)
+        self.connection_governor_thread.start()
 
         self.log_timer = QTimer()
         self.log_timer.setInterval(250)
         self.log_timer.timeout.connect(self.update_logs)
         self.log_timer.start()
+
+    def connection_governor(self):
+        while True:
+            if not self.client.is_connected():
+                for sender in self.joystick_senders:
+                    sender.stop()
+                self.client.connect()
+            time.sleep(2)
 
     def get_joystick(self, index: int):
         controllers = list(self.controllers_tab.ordered_controllers.values())
@@ -169,9 +219,17 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.client.port = int(self.settings.value("network.port", 8765, int))  # type: ignore
 
     def on_connect(self):
+        self.logger.info("Comms are up!")
         self.control.state.set(AppState.WAITING)
         for sender in self.joystick_senders:
             sender.start()
+        self.logger.info("Started robot log session")
+        self.logrx.start()
+        self.client.subscribe(
+            CommPath(self._ctrl_batteries_key),
+            AnyListSendable,
+            self.control.on_battery_update,
+        )
 
     def on_disconnect(self):
         self.control.clear_opmodes()
@@ -180,22 +238,18 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control.state.set(AppState.NO_COMMS)
         self.metrics_tab.text.clear()
 
-    def heartbeat(self):
-        if not self.client.is_connected():
-            return
-
-        ws = self.client.websocket
-        if ws:
-            self.client.send(
-                CommPath(self._ctrl_heartbeat_key) / "heartbeat",
-                StringSendable(value=str(ws.id), timeout=0.25),
-            )
-        else:
-            self.client.delete(CommPath(self._ctrl_heartbeat_key) / "heartbeat")
-
     def update_latency(self):
-        if self.client.websocket:
-            self.latency_status.setText(f"Latency: {self.client.websocket.latency*1000:.2f}ms")
+        latency = self.client.get_latency()
+        if latency:
+            self.latency_status.setText(f"Latency: {latency:.2f}ms")
+        else:
+            self.latency_status.setText("Latency: --.--ms")
+
+    def closeEvent(self, event: QCloseEvent):  # noqa: N802
+        self.heartbeat_timer.stop()
+        self.heartbeat_thread.quit()
+        self.heartbeat_thread.moveToThread(self.thread())
+        event.accept()
 
 
 @dataclass

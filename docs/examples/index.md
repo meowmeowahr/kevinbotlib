@@ -16,7 +16,7 @@ All examples can be found on the project's [GitHub repo](https://github.com/meow
 
     ---
 
-    View examples using KevinbotLib's Websocket-based communication system
+    View examples using KevinbotLib's Redis communication system
 
     [:octicons-arrow-right-24: View Examples](comm.md)
 

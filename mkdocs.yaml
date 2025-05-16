@@ -104,8 +104,6 @@ nav:
     - reference/hardwareinterface.md
     - reference/hardwarecontroller.md
     - reference/ui.md
-  - Advanced:
-    - advanced/websocket.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
 

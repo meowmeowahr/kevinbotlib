@@ -26,7 +26,7 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 
 ### The Communication System
 
-* Based on [websockets](https://github.com/python-websockets/websockets)
+* Uses Redis for data store
 * Data can be easily sent from robot to client or vice-versa
 * Data is synchronized between all clients
 * Out-of-the-box ready-made sendables for builtin primitive types

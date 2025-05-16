@@ -1,4 +1,4 @@
-from kevinbotlib.comm import CommunicationClient
+from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.logger import FileLoggerConfig, Logger, LoggerConfiguration
 from kevinbotlib.vision import (
     CameraByIndex,
@@ -11,7 +11,7 @@ from kevinbotlib.vision import (
 logger = Logger()
 logger.configure(LoggerConfiguration(file_logger=FileLoggerConfig()))
 
-client = CommunicationClient()
+client = RedisCommClient()
 VisionCommUtils.init_comms_types(client)
 
 client.connect()
@@ -26,7 +26,11 @@ while True:
     ok, frame = pipeline.run()
     if ok:
         encoded = FrameEncoders.encode_jpg(frame, 100)
-        client.send(
+        client.set(
             "streams/camera0",
+            MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]),
+        )
+        client.set(
+            "streams/camera1",
             MjpegStreamSendable(value=encoded, quality=100, resolution=frame.shape[:2]),
         )

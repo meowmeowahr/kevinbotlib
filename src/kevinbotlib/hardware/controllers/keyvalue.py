@@ -38,8 +38,10 @@ class RawKeyValueSerialController:
         if not self._iface.is_open:
             return None
 
-        line = self._iface.readline()
+        line = self._iface.read_until(self._terminator)
 
+        if self._delimiter not in line:
+            return (line.rstrip(self._terminator), b"")
         if line and self._delimiter in line:
             key, value = line.split(self._delimiter, 1)
             value = value.rstrip(self._terminator)
