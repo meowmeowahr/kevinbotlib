@@ -3,10 +3,12 @@ import sys
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
+from threading import Thread
+import time
 
 import ansi2html
 import qtawesome as qta
-from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, QSize, Qt, QTimer
+from PySide6.QtCore import QCommandLineOption, QCommandLineParser, QCoreApplication, QSettings, QSize, Qt, QTimer, Signal, Slot, QObject, QThread
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
@@ -31,6 +33,24 @@ from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
+
+class HeartbeatWorker(QObject):
+    send_heartbeat = Signal()
+
+    def __init__(self, client: RedisCommClient, key: str):
+        super().__init__()
+        self.client = client
+        self.key = key
+        self.send_heartbeat.connect(self.heartbeat)
+
+    @Slot()
+    def heartbeat(self):
+        if not self.client.is_connected():
+            return
+        self.client.set(
+            CommPath(self.key) / "heartbeat",
+            StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
+        )
 
 class ControlConsoleApplicationWindow(QMainWindow):
     def __init__(self, logger: Logger):
@@ -79,10 +99,16 @@ class ControlConsoleApplicationWindow(QMainWindow):
             sender.stop()
             self.joystick_senders.append(sender)
 
+        self.heartbeat_thread = QThread(self)
+        self.heartbeat_worker = HeartbeatWorker(self.client, self._ctrl_heartbeat_key)
+        self.heartbeat_worker.moveToThread(self.heartbeat_thread)
+        self.heartbeat_thread.start()
+
         self.heartbeat_timer = QTimer()
-        self.heartbeat_timer.setInterval(100)
-        self.heartbeat_timer.timeout.connect(self.heartbeat)
+        self.heartbeat_timer.setInterval(200)
+        self.heartbeat_timer.timeout.connect(self.heartbeat_worker.send_heartbeat)
         self.heartbeat_timer.start()
+
 
         self.latency_timer = QTimer()
         self.latency_timer.setInterval(1000)
@@ -121,12 +147,21 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
-        self.client.connect()
+        self.connection_governor_thread = Thread(target=self.connection_governor, daemon=True)
+        self.connection_governor_thread.start()
 
         self.log_timer = QTimer()
         self.log_timer.setInterval(250)
         self.log_timer.timeout.connect(self.update_logs)
         self.log_timer.start()
+
+    def connection_governor(self):
+        while True:
+            if not self.client.is_connected():
+                for sender in self.joystick_senders:
+                    sender.stop()
+                self.client.connect()
+            time.sleep(2)
 
     def get_joystick(self, index: int):
         controllers = list(self.controllers_tab.ordered_controllers.values())
@@ -169,6 +204,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.client.port = int(self.settings.value("network.port", 8765, int))  # type: ignore
 
     def on_connect(self):
+        self.logger.info("Comms are up!")
         self.control.state.set(AppState.WAITING)
         for sender in self.joystick_senders:
             sender.start()
@@ -181,15 +217,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
             sender.stop()
         self.control.state.set(AppState.NO_COMMS)
         self.metrics_tab.text.clear()
-
-    def heartbeat(self):
-        if not self.client.is_connected():
-            return
-
-        self.client.set(
-            CommPath(self._ctrl_heartbeat_key) / "heartbeat",
-            StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
-        )
 
     def update_latency(self):
         latency = self.client.get_latency()

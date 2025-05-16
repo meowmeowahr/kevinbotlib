@@ -354,18 +354,22 @@ class RedisCommClient:
     def _listen_loop(self):
         if not self.pubsub:
             return
-        for message in self.pubsub.listen():
-            if not self.running:
-                break
-            if message["type"] == "message":
-                channel = message["channel"]
-                try:
-                    data = orjson.loads(message["data"])
-                    callback = self.sub_callbacks.get(channel)
-                    if callback:
-                        callback[1](channel, callback[0](**data))
-                except Exception as e:
-                    _Logger().error(f"Failed to process message: {repr(e)}")
+        try:
+            for message in self.pubsub.listen():
+                if not self.running:
+                    break
+                if message["type"] == "message":
+                    channel = message["channel"]
+                    try:
+                        data = orjson.loads(message["data"])
+                        callback = self.sub_callbacks.get(channel)
+                        if callback:
+                            callback[1](channel, callback[0](**data))
+                    except Exception as e:
+                        _Logger().error(f"Failed to process message: {repr(e)}")
+        except redis.exceptions.ConnectionError:
+            pass
+            
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
         if isinstance(key, CommPath):
@@ -468,7 +472,13 @@ class RedisCommClient:
 
     def is_connected(self) -> bool:
         """Check if the Redis connection is established."""
-        return self.redis is not None and self.redis.connection_pool is not None
+        try:
+            if not self.redis:
+                return False
+            self.redis.ping()
+            return True
+        except redis.exceptions.ConnectionError:
+            return False
 
     def get_latency(self) -> float | None:
         """Measure the round-trip latency to the Redis server in milliseconds."""

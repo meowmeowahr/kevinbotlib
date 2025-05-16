@@ -253,6 +253,8 @@ class BaseRobot:
         )
 
         self.comm_client.connect()
+        self._comm_connection_check_thread = Thread(target=self._comm_connection_check, daemon=True)
+        self._comm_connection_check_thread.start()
 
         self.fileserver.start()
 
@@ -278,6 +280,13 @@ class BaseRobot:
     @property
     def metrics(self):
         return self._metrics
+
+    @final
+    def _comm_connection_check(self):
+        while True:
+            if not self.comm_client.is_connected():
+                self.comm_client.connect()
+            time.sleep(2)
 
     @final
     def _signal_usr1_capture(self, _, __):
