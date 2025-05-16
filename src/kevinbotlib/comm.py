@@ -349,18 +349,17 @@ class RedisCommClient:
                         callback = self.sub_callbacks.get(channel)
                         if callback:
                             callback[1](channel, callback[0](**data))
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         _Logger().error(f"Failed to process message: {e!r}")
         except (redis.exceptions.ConnectionError, ValueError, AttributeError):
             pass
-
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
         if isinstance(key, CommPath):
             key = str(key)
         with self._lock:
             key_str = str(key)
-            self.sub_callbacks[key_str] = (data_type, callback) # type: ignore
+            self.sub_callbacks[key_str] = (data_type, callback)  # type: ignore
             if self.pubsub:
                 self.pubsub.subscribe(key_str)
             else:
@@ -460,9 +459,10 @@ class RedisCommClient:
             if not self.redis:
                 return False
             self.redis.ping()
-            return True
         except redis.exceptions.ConnectionError:
             return False
+        else:
+            return True
 
     def get_latency(self) -> float | None:
         """Measure the round-trip latency to the Redis server in milliseconds."""

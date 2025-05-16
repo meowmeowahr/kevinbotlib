@@ -69,11 +69,6 @@ class ControlConsoleControlTab(QWidget):
             BooleanSendable,
             self.on_enabled_update,
         )
-        self.client.add_hook(
-            CommPath(self.batteries_key),
-            AnyListSendable,
-            self.on_battery_update,
-        )
 
         self.opmodes = []
         self.opmode = None
@@ -261,7 +256,6 @@ class ControlConsoleControlTab(QWidget):
     def on_battery_update(self, _: str, sendable: AnyListSendable | None):
         if not sendable:
             return
-        print([Battery(v[2], v[0], v[1]) for v in sendable.value])
         self.battery_update.emit([Battery(v[2], v[0], v[1]) for v in sendable.value])
 
     def periodic_dependency_check(self):

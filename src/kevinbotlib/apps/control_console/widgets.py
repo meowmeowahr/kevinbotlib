@@ -1,8 +1,9 @@
 from collections import deque
 from dataclasses import dataclass
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget, QVBoxLayout
-from PySide6.QtGui import QPainter, QPainterPath, QColor, QPen, QBrush
-from PySide6.QtCore import Qt, QRectF, Slot
+
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 
 class SettingsSeparatorWidget(QWidget):
@@ -56,7 +57,7 @@ class BatteryGrapher(QWidget):
     def value_to_color(self, value):
         """Return QColor from red (low) → yellow (mid) → green (high)."""
         ratio = (value - self.y_min) / (self.y_max - self.y_min)
-        if ratio < 0.5:
+        if ratio < 0.5:  # noqa: PLR2004
             # Red to Yellow
             r = 255
             g = int(2 * ratio * 255)
@@ -68,7 +69,7 @@ class BatteryGrapher(QWidget):
             b = 0
         return QColor(r, g, b)
 
-    def paintEvent(self, event):
+    def paintEvent(self, _):  # noqa: N802
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -113,6 +114,7 @@ class BatteryGrapher(QWidget):
         painter.setPen(QPen(self.border_color, 3))
         painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.drawPath(path)
+
 
 @dataclass
 class Battery:

@@ -160,10 +160,10 @@ class BaseRobot:
         threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
 
     @staticmethod
-    def add_battery(robot: "BaseRobot", min: int, max: int, source: Callable[[], float], update_interval: float = 0.1):
-        robot._batteries.append((min, max, source))
-        if not robot._batt_publish_thread.is_alive():
-            robot._batt_publish_thread.start()
+    def add_battery(robot: "BaseRobot", min_voltage: int, max_voltage: int, source: Callable[[], float]):
+        robot._batteries.append((min_voltage, max_voltage, source))  # noqa: SLF001
+        if not robot._batt_publish_thread.is_alive():  # noqa: SLF001
+            robot._batt_publish_thread.start()  # noqa: SLF001
 
     @staticmethod
     def register_estop_hook(hook: Callable[[], Any]):
@@ -244,7 +244,9 @@ class BaseRobot:
         self._metrics = SystemMetrics()
 
         self._batteries: list[tuple[float, float, Callable[[], float]]] = []
-        self._batt_publish_thread: Thread  = Thread(target=self._update_batteries, daemon=True, name="KevinbotLib.Robot.Battery.Updater")
+        self._batt_publish_thread: Thread = Thread(
+            target=self._update_batteries, daemon=True, name="KevinbotLib.Robot.Battery.Updater"
+        )
         self._batt_publish_interval = battery_publish_timer
 
         if InstanceLocker.is_locked(f"{self.__class__.__name__}.lock"):
@@ -304,7 +306,10 @@ class BaseRobot:
     @final
     def _update_batteries(self):
         while True:
-            self.comm_client.set(self._ctrl_batteries_key, AnyListSendable(value=[(batt[0], batt[1], batt[2]()) for batt in self._batteries]))
+            self.comm_client.publish(
+                self._ctrl_batteries_key,
+                AnyListSendable(value=[(batt[0], batt[1], batt[2]()) for batt in self._batteries]),
+            )
             time.sleep(self._batt_publish_interval)
 
     @final

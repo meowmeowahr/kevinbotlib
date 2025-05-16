@@ -39,7 +39,7 @@ from kevinbotlib.apps.control_console.pages.control import (
 from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import CommPath, RedisCommClient, StringSendable
+from kevinbotlib.comm import AnyListSendable, CommPath, RedisCommClient, StringSendable
 from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
@@ -63,6 +63,7 @@ class HeartbeatWorker(QObject):
             CommPath(self.key) / "heartbeat",
             StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
         )
+
 
 class ControlConsoleApplicationWindow(QMainWindow):
     def __init__(self, logger: Logger):
@@ -149,7 +150,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab = ControlConsoleSettingsTab(self.settings, self)
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
-        self.control = ControlConsoleControlTab(self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key)
+        self.control = ControlConsoleControlTab(
+            self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key
+        )
         self.controllers_tab = ControlConsoleControllersTab()
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 
@@ -222,6 +225,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
             sender.start()
         self.logger.info("Started robot log session")
         self.logrx.start()
+        self.client.subscribe(
+            CommPath(self._ctrl_batteries_key),
+            AnyListSendable,
+            self.control.on_battery_update,
+        )
 
     def on_disconnect(self):
         self.control.clear_opmodes()
@@ -237,7 +245,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         else:
             self.latency_status.setText("Latency: --.--ms")
 
-    def closeEvent(self, event: QCloseEvent):
+    def closeEvent(self, event: QCloseEvent):  # noqa: N802
         self.heartbeat_timer.stop()
         self.heartbeat_thread.quit()
         self.heartbeat_thread.moveToThread(self.thread())

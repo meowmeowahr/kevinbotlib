@@ -1,4 +1,5 @@
 import random
+
 from kevinbotlib.logger import Level
 from kevinbotlib.robot import BaseRobot
 
@@ -14,7 +15,7 @@ class DemoRobot(BaseRobot):
             metrics_publish_timer=5.0,  # how often to publish new system metrics to the control console
         )
         BaseRobot.add_basic_metrics(self, update_interval=2.0)
-        BaseRobot.add_battery(self, 6, 22, lambda: random.randrange(5, 20), update_interval=0.1)
+        BaseRobot.add_battery(self, 6, 22, lambda: random.randrange(5, 20))
 
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()
