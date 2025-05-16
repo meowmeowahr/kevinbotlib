@@ -3,7 +3,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from typing import Any, ClassVar, TypeVar
+from typing import Any, ClassVar, TypeVar, final
 
 import orjson
 import redis
@@ -496,17 +496,19 @@ class RedisCommClient:
         if self.on_disconnect:
             self.on_disconnect()
 
-    @property
-    def host(self) -> str:
-        return self._host
+    @final
+    def _redis_connection_check(self):
+        try:
+            if not self.redis:
+                return
+            self.redis.ping()
+            if self.on_connect:
+                self.on_connect()
+        except redis.exceptions.ConnectionError:
+            return
 
-    @property
-    def port(self) -> int:
-        return self._port
-
-    @host.setter
-    def host(self, value: str):
-        self._host = value
+    def reset_connection(self):
+        """Reset the connection to the Redis server"""
         if self.redis:
             self.redis.connection_pool.connection_kwargs["host"] = value
         if self.running:
@@ -523,31 +525,20 @@ class RedisCommClient:
             checker.setName("KevinbotLib.Redis.ConnCheck")
             checker.start()
 
+    @property
+    def host(self) -> str:
+        return self._host
+
+    @property
+    def port(self) -> int:
+        return self._port
+
+    @host.setter
+    def host(self, value: str):
+        self._host = value
+        self.reset_connection()
+
     @port.setter
     def port(self, value: int):
         self._port = value
-        if self.redis:
-            self.redis.connection_pool.connection_kwargs["port"] = value
-        if self.running:
-            self.close()
-            if self.pubsub:
-                self.pubsub.close()
-            self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True)
-            self.pubsub = self.redis.pubsub()
-            self._start_hooks()
-            if self._listener_thread and not self._listener_thread.is_alive():
-                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
-                self._listener_thread.start()
-            checker = threading.Thread(target=self._redis_connection_check, daemon=True)
-            checker.setName("KevinbotLib.Redis.ConnCheck")
-            checker.start()
-
-    def _redis_connection_check(self):
-        try:
-            if not self.redis:
-                return
-            self.redis.ping()
-            if self.on_connect:
-                self.on_connect()
-        except redis.exceptions.ConnectionError:
-            return
+        self.reset_connection()
