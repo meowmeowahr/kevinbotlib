@@ -509,8 +509,6 @@ class RedisCommClient:
 
     def reset_connection(self):
         """Reset the connection to the Redis server"""
-        if self.redis:
-            self.redis.connection_pool.connection_kwargs["host"] = value
         if self.running:
             self.close()
             if self.pubsub:
@@ -536,9 +534,13 @@ class RedisCommClient:
     @host.setter
     def host(self, value: str):
         self._host = value
+        if self.redis:
+            self.redis.connection_pool.connection_kwargs["host"] = value
         self.reset_connection()
 
     @port.setter
     def port(self, value: int):
         self._port = value
+        if self.redis:
+            self.redis.connection_pool.connection_kwargs["port"] = value
         self.reset_connection()
