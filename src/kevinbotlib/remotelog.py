@@ -25,7 +25,7 @@ class ANSILogSender:
 
     def hook(self, message):
         with contextlib.suppress(Exception) and Logger.suppress():
-            self.client.set(self.key, StringSendable(value=message))
+            self.client.publish(self.key, StringSendable(value=message))
         pass
 
 
@@ -39,7 +39,7 @@ class ANSILogReceiver:
     def start(self) -> None:
         if self._is_started:
             return
-        self.client.add_hook(
+        self.client.subscribe(
             self.key, StringSendable, lambda _, sendable: self.callback(sendable.value) if sendable else None
         )
         self._is_started = True

@@ -7,6 +7,7 @@ from typing import Any, ClassVar, TypeVar
 
 import orjson
 import redis
+import redis.client
 import redis.exceptions
 from pydantic import BaseModel, ValidationError
 
@@ -241,6 +242,11 @@ class RedisCommClient:
         self.sub_thread: threading.Thread | None = None
         self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable], None]]] = []
 
+        self.pubsub = None
+        self.sub_callbacks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable], None]]] = {}
+        self._lock = threading.Lock()
+        self._listener_thread: threading.Thread | None = None
+
     def register_type(self, data_type: type[BaseSendable]):
         self.SENDABLE_TYPES[data_type.model_fields["data_id"].default] = data_type
         _Logger().trace(
@@ -328,6 +334,50 @@ class RedisCommClient:
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
 
+    def publish(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
+        """Publish a sendable in the Redis database."""
+        if not self.running or not self.redis:
+            _Logger().error(f"Cannot publish to {key}: client is not started")
+            return
+
+        if isinstance(sendable, SendableGenerator):
+            sendable = sendable.generate_sendable()
+
+        data = sendable.get_dict()
+        try:
+            if sendable.timeout:
+                _Logger().warning("Publishing a Sendable with a timeout. Pub/Sub does not support this.")
+            self.redis.publish(str(key), orjson.dumps(data))
+        except redis.exceptions.ConnectionError as e:
+            _Logger().error(f"Cannot publish to {key}: {e}")
+
+    def _listen_loop(self):
+        if not self.pubsub:
+            return
+        for message in self.pubsub.listen():
+            if not self.running:
+                break
+            if message["type"] == "message":
+                channel = message["channel"]
+                try:
+                    data = orjson.loads(message["data"])
+                    callback = self.sub_callbacks.get(channel)
+                    if callback:
+                        callback[1](channel, callback[0](**data))
+                except Exception as e:
+                    _Logger().error(f"Failed to process message: {repr(e)}")
+
+    def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
+        if isinstance(key, CommPath):
+            key = str(key)
+        with self._lock:
+            key_str = str(key)
+            self.sub_callbacks[key_str] = (data_type, callback) # type: ignore
+            if self.pubsub:
+                self.pubsub.subscribe(key_str)
+            else:
+                _Logger().error(f"Can't subscribe to {key}, Pub/Sub is not running")
+
     def wipeall(self) -> None:
         """Delete all keys in the Redis database."""
         if not self.redis:
@@ -401,6 +451,7 @@ class RedisCommClient:
 
     def connect(self) -> None:
         self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True)
+        self.pubsub = self.redis.pubsub()
         self._start_hooks()
         try:
             self.redis.ping()
@@ -412,6 +463,8 @@ class RedisCommClient:
             if self.on_disconnect:
                 self.on_disconnect()
             return
+        self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
+        self._listener_thread.start()
 
     def is_connected(self) -> bool:
         """Check if the Redis connection is established."""
@@ -446,6 +499,8 @@ class RedisCommClient:
         self.running = False
         if self.redis:
             self.redis.close()
+            if self.pubsub:
+                self.pubsub.close()
             self.redis = None
         if self.sub_thread:
             self.sub_thread.join()
@@ -467,8 +522,14 @@ class RedisCommClient:
             self.redis.connection_pool.connection_kwargs["host"] = value
         if self.running:
             self.close()
+            if self.pubsub:
+                self.pubsub.close()
             self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True)
+            self.pubsub = self.redis.pubsub()
             self._start_hooks()
+            if self._listener_thread and not self._listener_thread.is_alive():
+                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
+                self._listener_thread.start()
 
     @port.setter
     def port(self, value: int):
@@ -477,5 +538,11 @@ class RedisCommClient:
             self.redis.connection_pool.connection_kwargs["port"] = value
         if self.running:
             self.close()
+            if self.pubsub:
+                self.pubsub.close()
             self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True)
+            self.pubsub = self.redis.pubsub()
             self._start_hooks()
+            if self._listener_thread and not self._listener_thread.is_alive():
+                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
+                self._listener_thread.start()

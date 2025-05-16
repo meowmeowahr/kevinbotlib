@@ -70,7 +70,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
         )
 
         self.logrx = ANSILogReceiver(self.on_log, self.client, self._ctrl_logs_key)
-        self.logrx.start()
 
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
@@ -173,6 +172,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control.state.set(AppState.WAITING)
         for sender in self.joystick_senders:
             sender.start()
+        self.logger.info("Started robot log session")
+        self.logrx.start()
 
     def on_disconnect(self):
         self.control.clear_opmodes()
