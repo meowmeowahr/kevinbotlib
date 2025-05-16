@@ -300,7 +300,7 @@ class RedisCommClient:
             _Logger().error(f"Cannot get raw {key}: {e}")
             return None
 
-    def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
+    def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator, *, pub_mode: bool = False):
         """Set a sendable in the Redis database."""
         if not self.running or not self.redis:
             _Logger().error(f"Cannot publish to {key}: client is not started")
@@ -311,29 +311,24 @@ class RedisCommClient:
 
         data = sendable.get_dict()
         try:
-            if sendable.timeout:
-                self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
+            if pub_mode:
+                if sendable.timeout:
+                    _Logger().warning("Publishing a Sendable with a timeout. Pub/Sub does not support this.")
+                self.redis.publish(str(key), orjson.dumps(data))
             else:
-                self.redis.set(str(key), orjson.dumps(data))
+                if sendable.timeout:
+                    self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
+                else:
+                    self.redis.set(str(key), orjson.dumps(data))
         except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
 
+    def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
+        self._apply(key, sendable, pub_mode=False)
+
     def publish(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """Publish a sendable in the Redis database."""
-        if not self.running or not self.redis:
-            _Logger().error(f"Cannot publish to {key}: client is not started")
-            return
-
-        if isinstance(sendable, SendableGenerator):
-            sendable = sendable.generate_sendable()
-
-        data = sendable.get_dict()
-        try:
-            if sendable.timeout:
-                _Logger().warning("Publishing a Sendable with a timeout. Pub/Sub does not support this.")
-            self.redis.publish(str(key), orjson.dumps(data))
-        except redis.exceptions.ConnectionError as e:
-            _Logger().error(f"Cannot publish to {key}: {e}")
+        self._apply(key, sendable, pub_mode=True)
 
     def _listen_loop(self):
         if not self.pubsub:
