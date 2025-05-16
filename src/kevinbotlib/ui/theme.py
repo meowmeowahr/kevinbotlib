@@ -45,19 +45,19 @@ class Theme:
 
             context = {
                 "is_dark": self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark()),
-                "bg1": "#1a2326"
+                "bg1": "#0a1316"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#eeeeee",
-                "bg2": "#1e272a"
+                "bg2": "#0e171a"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#ffffff",
-                "bg3": "#252d31"
+                "bg3": "#151d21"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#e6e6e6",
-                "bg4": "#30383b"
+                "bg4": "#20282b"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#dcdcdc",
-                "bg5": "#40484c"
+                "bg5": "#30383c"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#c5c5c5",
                 "border": "#2d3639"

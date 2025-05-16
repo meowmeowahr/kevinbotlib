@@ -448,9 +448,6 @@ class BaseRobot:
                         # Handle enable/disable transitions
                         if self._prev_enabled != self._current_enabled:
                             self._update_console_enabled(self._current_enabled)
-                            if self._prev_enabled is not None:  # Not first iteration
-                                self.opmode_exit(self._opmode, self._prev_enabled)
-                            self.opmode_init(self._opmode, self._current_enabled)
                             self._prev_enabled = self._current_enabled
 
                         self.robot_periodic(self._opmode, self._current_enabled)

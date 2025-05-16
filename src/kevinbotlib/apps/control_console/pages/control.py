@@ -129,15 +129,20 @@ class ControlConsoleControlTab(QWidget):
         state_layout = QVBoxLayout()
         root_layout.addLayout(state_layout)
 
+        state_layout.addStretch()
+
         self.robot_state = QLabel("Communication\nDown")
         self.robot_state.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.robot_state.setAlignment(Qt.AlignmentFlag.AlignCenter)
         state_layout.addWidget(self.robot_state)
 
         self.battery_manager = BatteryManager()
+        self.battery_manager.setFixedHeight(150)
         state_layout.addWidget(self.battery_manager)
         self.battery_update.connect(self.battery_manager.set)
 
+        state_layout.addStretch()
+        
         root_layout.addSpacing(32)
 
         self.logs_layout = QVBoxLayout()
