@@ -288,22 +288,6 @@ class RedisCommClient:
             _Logger().error(f"Cannot get keys: {e}")
             return []
 
-    def get_all(self) -> dict[str, BaseSendable] | None:
-        """Retrieve all sendables in the database, deserialized."""
-        if not self.redis:
-            _Logger().error("Cannot get all: client is not started")
-            return None
-        keys = self.get_keys()
-        result = {}
-        try:
-            for key in keys:
-                sendable = self.get(key)
-                result[key] = sendable
-        except redis.exceptions.ConnectionError as e:
-            _Logger().error(f"Error retrieving all sendables: {e}")
-            return None
-        return result
-
     def get_raw(self, key: CommPath | str) -> dict | None:
         """Retrieve the raw JSON for a key."""
         if not self.redis:
