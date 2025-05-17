@@ -15,7 +15,7 @@
 
 **The KevinbotLib Robot Development Framework**
 
-KevinbotLib includes many utility classes for developing robots, such as communication, joystick input, logging, and more.
+KevinbotLib includes many utility classes for developing robots, such as communication, joystick input, logging, and more. KevinbotLib also includes out-of-the-box applications to interact and control KevinbotLib robots.
 
 ## Table of Contents
 
