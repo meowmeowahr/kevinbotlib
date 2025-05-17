@@ -137,7 +137,7 @@ class ControlConsoleControlTab(QWidget):
         state_layout.addWidget(self.robot_state)
 
         self.battery_manager = BatteryManager()
-        self.battery_manager.setFixedHeight(150)
+        self.battery_manager.setFixedHeight(128)
         state_layout.addWidget(self.battery_manager)
         self.battery_update.connect(self.battery_manager.set)
 

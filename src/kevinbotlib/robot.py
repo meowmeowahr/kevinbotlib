@@ -434,6 +434,7 @@ class BaseRobot:
 
                     if not self._get_console_heartbeat_present() and not self._allow_enable_without_console:
                         self._current_enabled = False
+                        self.telemetry.warning("Robot disabled due to CC timeout")
 
                     if self._ready_for_periodic:
                         # Handle opmode change

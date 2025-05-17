@@ -1,5 +1,6 @@
 from collections import deque
 from dataclasses import dataclass
+import math
 
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
@@ -96,7 +97,7 @@ class BatteryGrapher(QWidget):
         if self.data_points:
             graph_width = width - 2 * margin
             max_x = max(x for x, _ in self.data_points)
-            bar_width = graph_width / self.max_points * 0.9  # Leave a gap between bars
+            bar_width = math.ceil(graph_width / self.max_points)  # Leave a gap between bars
 
             for x, y in self.data_points:
                 norm_x = margin + (x - (max_x - self.max_points)) * graph_width / self.max_points

@@ -240,7 +240,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         if self.client.host != str(self.settings.value("network.ip", "10.0.0.2", str)):
             self.client.host = str(self.settings.value("network.ip", "10.0.0.2", str))
-        if self.client.port != int(self.settings.value("network.port", 6379, int)):
+        if self.client.port != int(self.settings.value("network.port", 6379, int)):  # type: ignore
             self.client.port = int(self.settings.value("network.port", 6379, int))  # type: ignore
 
     def on_connect(self):
