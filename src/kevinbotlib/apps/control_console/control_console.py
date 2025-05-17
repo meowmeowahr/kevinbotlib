@@ -64,6 +64,7 @@ class HeartbeatWorker(QObject):
             StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
         )
 
+
 class LatencyWorker(QObject):
     get_latency = Signal()
     latency = Signal(float)
@@ -182,7 +183,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
-        self.connection_governor_thread = Thread(target=self.connection_governor, daemon=True, name="KevinbotLib.Console.Connection.Governor")
+        self.connection_governor_thread = Thread(
+            target=self.connection_governor, daemon=True, name="KevinbotLib.Console.Connection.Governor"
+        )
         self.connection_governor_thread.start()
 
         self.log_timer = QTimer()

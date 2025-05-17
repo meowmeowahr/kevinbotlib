@@ -142,7 +142,7 @@ class ControlConsoleControlTab(QWidget):
         self.battery_update.connect(self.battery_manager.set)
 
         state_layout.addStretch()
-        
+
         root_layout.addSpacing(32)
 
         self.logs_layout = QVBoxLayout()

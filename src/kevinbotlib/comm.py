@@ -315,11 +315,10 @@ class RedisCommClient:
                 if sendable.timeout:
                     _Logger().warning("Publishing a Sendable with a timeout. Pub/Sub does not support this.")
                 self.redis.publish(str(key), orjson.dumps(data))
+            elif sendable.timeout:
+                self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
             else:
-                if sendable.timeout:
-                    self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
-                else:
-                    self.redis.set(str(key), orjson.dumps(data))
+                self.redis.set(str(key), orjson.dumps(data))
         except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
 
@@ -420,10 +419,10 @@ class RedisCommClient:
                                 pass
                     previous_values[key] = message
                 redis_connection_error = False
-            except redis.exceptions.ConnectionError as e:
+            except redis.exceptions.ConnectionError:
                 if not redis_connection_error:
                     return
-            except (redis.exceptions.ConnectionError, AttributeError, ValueError) as e:
+            except (AttributeError, ValueError) as e:
                 _Logger().error(f"Something went wrong while processing hooks: {e!r}")
             if not self.running:
                 break
@@ -443,7 +442,9 @@ class RedisCommClient:
             if self.on_disconnect:
                 self.on_disconnect()
             return
-        self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
+        self._listener_thread = threading.Thread(
+            target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
+        )
         self._listener_thread.start()
 
     def is_connected(self) -> bool:
@@ -485,7 +486,7 @@ class RedisCommClient:
         """Close the Redis connection and stop the pubsub thread."""
         self.running = False
         if self.redis:
-            self.redis.close
+            self.redis.close()
             self.redis = None
         if self.on_disconnect:
             self.on_disconnect()
@@ -500,7 +501,9 @@ class RedisCommClient:
                 self.on_connect()
 
             if not self._listener_thread or not self._listener_thread.is_alive():
-                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
+                self._listener_thread = threading.Thread(
+                    target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
+                )
                 self._listener_thread.start()
         except redis.exceptions.ConnectionError:
             return
@@ -525,7 +528,9 @@ class RedisCommClient:
 
             self._start_hooks()
 
-            self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
+            self._listener_thread = threading.Thread(
+                target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
+            )
             self._listener_thread.start()
 
             checker = threading.Thread(target=self._redis_connection_check, daemon=True)
