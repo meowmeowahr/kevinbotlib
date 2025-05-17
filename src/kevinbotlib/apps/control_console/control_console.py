@@ -64,6 +64,20 @@ class HeartbeatWorker(QObject):
             StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
         )
 
+class LatencyWorker(QObject):
+    get_latency = Signal()
+    latency = Signal(float)
+
+    def __init__(self, client: RedisCommClient):
+        super().__init__()
+        self.client = client
+        self.get_latency.connect(self.get)
+
+    @Slot()
+    def get(self):
+        latency = self.client.get_latency()
+        self.latency.emit(latency)
+
 
 class ControlConsoleApplicationWindow(QMainWindow):
     def __init__(self, logger: Logger):
@@ -84,7 +98,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         if "network.ip" not in self.settings.allKeys():
             self.settings.setValue("network.ip", "10.0.0.2")
         if "network.port" not in self.settings.allKeys():
-            self.settings.setValue("network.port", 8765)
+            self.settings.setValue("network.port", 6379)
         if "application.theme" not in self.settings.allKeys():
             self.settings.setValue("application.theme", "System")
 
@@ -98,7 +112,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.client = RedisCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
-            port=int(self.settings.value("network.port", 8765, int)),  # type: ignore
+            port=int(self.settings.value("network.port", 6379, int)),  # type: ignore
             on_connect=self.on_connect,
             on_disconnect=self.on_disconnect,
         )
@@ -123,9 +137,15 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.heartbeat_timer.timeout.connect(self.heartbeat_worker.send_heartbeat)
         self.heartbeat_timer.start()
 
+        self.latency_thread = QThread(self)
+        self.latency_worker = LatencyWorker(self.client)
+        self.latency_worker.moveToThread(self.latency_thread)
+        self.latency_thread.start()
+        self.latency_worker.latency.connect(self.update_latency)
+
         self.latency_timer = QTimer()
         self.latency_timer.setInterval(1000)
-        self.latency_timer.timeout.connect(self.update_latency)
+        self.latency_timer.timeout.connect(self.latency_worker.get_latency.emit)
         self.latency_timer.start()
 
         self.theme = Theme(ThemeStyle.Dark)
@@ -162,7 +182,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
         self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
 
-        self.connection_governor_thread = Thread(target=self.connection_governor, daemon=True)
+        self.connection_governor_thread = Thread(target=self.connection_governor, daemon=True, name="KevinbotLib.Console.Connection.Governor")
         self.connection_governor_thread.start()
 
         self.log_timer = QTimer()
@@ -215,8 +235,10 @@ class ControlConsoleApplicationWindow(QMainWindow):
     def settings_changed(self):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))
 
-        self.client.host = str(self.settings.value("network.ip", "10.0.0.2", str))
-        self.client.port = int(self.settings.value("network.port", 8765, int))  # type: ignore
+        if self.client.host != str(self.settings.value("network.ip", "10.0.0.2", str)):
+            self.client.host = str(self.settings.value("network.ip", "10.0.0.2", str))
+        if self.client.port != int(self.settings.value("network.port", 6379, int)):
+            self.client.port = int(self.settings.value("network.port", 6379, int))  # type: ignore
 
     def on_connect(self):
         self.logger.info("Comms are up!")
@@ -238,8 +260,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control.state.set(AppState.NO_COMMS)
         self.metrics_tab.text.clear()
 
-    def update_latency(self):
-        latency = self.client.get_latency()
+    def update_latency(self, latency: float | None):
         if latency:
             self.latency_status.setText(f"Latency: {latency:.2f}ms")
         else:
@@ -249,6 +270,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.heartbeat_timer.stop()
         self.heartbeat_thread.quit()
         self.heartbeat_thread.moveToThread(self.thread())
+        self.latency_timer.stop()
+        self.latency_thread.quit()
+        self.latency_thread.moveToThread(self.thread())
         event.accept()
 
 

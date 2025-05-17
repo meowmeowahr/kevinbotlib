@@ -36,8 +36,6 @@ class ANSILogReceiver:
         self._is_started = False
 
     def start(self) -> None:
-        if self._is_started:
-            return
         self.client.subscribe(
             self.key, StringSendable, lambda _, sendable: self.callback(sendable.value) if sendable else None
         )

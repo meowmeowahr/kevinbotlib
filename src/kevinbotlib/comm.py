@@ -348,6 +348,7 @@ class RedisCommClient:
                         _Logger().error(f"Failed to process message: {e!r}")
         except (redis.exceptions.ConnectionError, ValueError, AttributeError):
             pass
+        _Logger().warning("Listener loop ended")
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
         if isinstance(key, CommPath):
@@ -384,7 +385,7 @@ class RedisCommClient:
     def _start_hooks(self) -> None:
         if not self.running:
             self.running = True
-            self.sub_thread = threading.Thread(target=self._run_hooks, daemon=True)
+            self.sub_thread = threading.Thread(target=self._run_hooks, daemon=True, name="KevinbotLib.Redis.Hooks")
             self.sub_thread.start()
 
     def _run_hooks(self):
@@ -421,11 +422,8 @@ class RedisCommClient:
                 redis_connection_error = False
             except redis.exceptions.ConnectionError as e:
                 if not redis_connection_error:
-                    _Logger().error(f"Redis connection error: {e}")
-                    if self.on_disconnect:
-                        self.on_disconnect()
-                    redis_connection_error = True
-            except (AttributeError, ValueError) as e:
+                    return
+            except (redis.exceptions.ConnectionError, AttributeError, ValueError) as e:
                 _Logger().error(f"Something went wrong while processing hooks: {e!r}")
             if not self.running:
                 break
@@ -445,7 +443,7 @@ class RedisCommClient:
             if self.on_disconnect:
                 self.on_disconnect()
             return
-        self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
+        self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
         self._listener_thread.start()
 
     def is_connected(self) -> bool:
@@ -454,7 +452,7 @@ class RedisCommClient:
             if not self.redis:
                 return False
             self.redis.ping()
-        except redis.exceptions.ConnectionError:
+        except (redis.exceptions.ConnectionError, ValueError, AttributeError):
             return False
         else:
             return True
@@ -487,12 +485,8 @@ class RedisCommClient:
         """Close the Redis connection and stop the pubsub thread."""
         self.running = False
         if self.redis:
-            self.redis.close()
-            if self.pubsub:
-                self.pubsub.close()
+            self.redis.close
             self.redis = None
-        if self.sub_thread:
-            self.sub_thread.join()
         if self.on_disconnect:
             self.on_disconnect()
 
@@ -504,21 +498,36 @@ class RedisCommClient:
             self.redis.ping()
             if self.on_connect:
                 self.on_connect()
+
+            if not self._listener_thread or not self._listener_thread.is_alive():
+                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
+                self._listener_thread.start()
         except redis.exceptions.ConnectionError:
             return
 
     def reset_connection(self):
         """Reset the connection to the Redis server"""
         if self.running:
-            self.close()
+            # get subs
+            subscriptions = {}
             if self.pubsub:
-                self.pubsub.close()
+                subscriptions = self.pubsub.channels
+
+            self.close()
+
             self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True)
             self.pubsub = self.redis.pubsub()
+            for sub in subscriptions.values():
+                try:
+                    self.pubsub.subscribe(sub)
+                except redis.exceptions.ConnectionError:
+                    _Logger().warning(f"Failed to re-subscribe to {sub}, client is not connected")
+
             self._start_hooks()
-            if self._listener_thread and not self._listener_thread.is_alive():
-                self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True)
-                self._listener_thread.start()
+
+            self._listener_thread = threading.Thread(target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener")
+            self._listener_thread.start()
+
             checker = threading.Thread(target=self._redis_connection_check, daemon=True)
             checker.setName("KevinbotLib.Redis.ConnCheck")
             checker.start()
