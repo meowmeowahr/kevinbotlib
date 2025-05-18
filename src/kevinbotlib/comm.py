@@ -449,14 +449,7 @@ class RedisCommClient:
 
     def is_connected(self) -> bool:
         """Check if the Redis connection is established."""
-        try:
-            if not self.redis:
-                return False
-            self.redis.ping()
-        except (redis.exceptions.ConnectionError, ValueError, AttributeError):
-            return False
-        else:
-            return True
+        return self.redis is not None and self.redis.connection_pool is not None
 
     def get_latency(self) -> float | None:
         """Measure the round-trip latency to the Redis server in milliseconds."""

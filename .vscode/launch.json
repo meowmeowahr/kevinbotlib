@@ -24,6 +24,13 @@
             "request": "launch",
             "program": "examples/robot/joystick_robot.py",
             "console": "integratedTerminal"
-        }
+        },
+        {
+            "name": "App - Dashboard",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/kevinbotlib/apps/dashboard/app.py",
+            "console": "integratedTerminal"
+        },
     ]
 }

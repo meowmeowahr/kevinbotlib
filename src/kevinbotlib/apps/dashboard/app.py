@@ -1,12 +1,15 @@
 import functools
+import sys
+import time
 from collections.abc import Callable
+from dataclasses import dataclass
+from threading import Thread
 from typing import override
 
-from kevinbotlib.comm import RedisCommClient, BaseSendable
-from kevinbotlib.logger import Logger
-from kevinbotlib.ui.theme import Theme, ThemeStyle
-
 from PySide6.QtCore import (
+    QCommandLineOption,
+    QCommandLineParser,
+    QCoreApplication,
     QItemSelection,
     QModelIndex,
     QObject,
@@ -17,12 +20,14 @@ from PySide6.QtCore import (
     QSettings,
     QSize,
     Qt,
+    QThread,
     QTimer,
     Signal,
     Slot,
 )
 from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator
 from PySide6.QtWidgets import (
+    QApplication,
     QDialog,
     QFormLayout,
     QFrame,
@@ -36,21 +41,39 @@ from PySide6.QtWidgets import (
     QMenu,
     QMessageBox,
     QPushButton,
+    QRadioButton,
+    QSizePolicy,
     QSpinBox,
     QStackedWidget,
     QStyleOptionGraphicsItem,
     QTreeView,
     QVBoxLayout,
     QWidget,
-    QRadioButton,
-    QSizePolicy,
-    QApplication,
 )
 
+from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.toast import Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets import Divider
+from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.ui.theme import Theme, ThemeStyle
+
+
+class LatencyWorker(QObject):
+    get_latency = Signal()
+    latency = Signal(float)
+
+    def __init__(self, client: RedisCommClient):
+        super().__init__()
+        self.client = client
+        self.get_latency.connect(self.get)
+
+    @Slot()
+    def get(self):
+        latency = self.client.get_latency()
+        self.latency.emit(latency)
 
 
 class WidgetItem(QGraphicsObject):
@@ -417,7 +440,7 @@ class WidgetGridController(QObject):
 class WidgetPalette(QWidget):
     def __init__(self, graphics_view, client: RedisCommClient, parent=None):
         super().__init__(parent)
-        
+
         self.client = client
 
         self.graphics_view = graphics_view
@@ -507,7 +530,7 @@ class UiColorSettingsSwitcher(QFrame):
         self,
         settings: QSettings,
         key: str,
-        main_window: 'Application',
+        main_window: "Application",
     ):
         super().__init__()
         self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
@@ -545,6 +568,7 @@ class UiColorSettingsSwitcher(QFrame):
         self.settings.sync()
         self.main_window.apply_theme()
 
+
 class TopicStatusPanel(QStackedWidget):
     def __init__(self, client: RedisCommClient):
         super().__init__()
@@ -579,7 +603,7 @@ class TopicStatusPanel(QStackedWidget):
         if not data:
             self.setCurrentIndex(0)
             return
-        
+
         self.setCurrentIndex(1)
 
         self.data_topic.setText(data)
@@ -587,14 +611,89 @@ class TopicStatusPanel(QStackedWidget):
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
 
 
+class TreeUpdateWorker(QObject):
+    result_ready = Signal(dict, list, list)
+
+    def __init__(self, client, model, tree, get_index_path):
+        super().__init__()
+        self.client = client
+        self.model = model
+        self.tree = tree
+        self.get_index_path = get_index_path
+
+    @Slot()
+    def run(self):
+        if not self.client.is_connected():
+            return
+
+        data_store = self.client.get_keys()
+        data = {}
+
+        for key, value in [(key, self.client.get_raw(key)) for key in data_store]:
+            if not value:
+                continue
+
+            if "struct" in value and "dashboard" in value["struct"]:
+                structured = {}
+                for viewable in value["struct"]["dashboard"]:
+                    display = ""
+                    if "element" in viewable:
+                        raw = value[viewable["element"]]
+                        if "format" in viewable:
+                            fmt = viewable["format"]
+                            if fmt == "percent":
+                                display = f"{raw * 100:.2f}%"
+                            elif fmt == "degrees":
+                                display = f"{raw}°"
+                            elif fmt == "radians":
+                                display = f"{raw} rad"
+                            elif fmt.startswith("limit:"):
+                                limit = int(fmt.split(":")[1])
+                                display = raw[:limit]
+                            else:
+                                display = raw
+
+                    structured[viewable["element"]] = display
+                data[key] = structured
+
+        def to_hierarchical_dict(flat_dict: dict):
+            hierarchical_dict = {}
+            for key, value in flat_dict.items():
+                parts = key.split("/")
+                d = hierarchical_dict
+                for part in parts[:-1]:
+                    d = d.setdefault(part, {})
+                d[parts[-1]] = {"items": value, "key": key}
+            return hierarchical_dict
+
+        hierarchical = to_hierarchical_dict(data)
+
+        expanded_indexes = []
+
+        def store_expansion(parent):
+            for row in range(self.model.rowCount(parent)):
+                index = self.model.index(row, 0, parent)
+                if self.tree.isExpanded(index):
+                    expanded_indexes.append((self.get_index_path(index), True))
+                store_expansion(index)
+
+        store_expansion(QModelIndex())
+
+        selected_paths = [
+            self.get_index_path(index) for index in self.tree.selectionModel().selectedIndexes() if index.column() == 0
+        ]
+
+        self.result_ready.emit(hierarchical, expanded_indexes, selected_paths)
+
+
 class Application(QMainWindow):
-    def __init__(self, app: QApplication):
+    def __init__(self, _app: QApplication, logger: Logger):
         super().__init__()
         self.setWindowTitle("KevinbotLib Dashboard")
 
         self.settings = QSettings("kevinbotlib", "dashboard")
 
-        self.logger = Logger()
+        self.logger = logger
 
         self.client = RedisCommClient(
             host=self.settings.value("ip", "10.0.0.2", str),  # type: ignore
@@ -647,14 +746,31 @@ class Application(QMainWindow):
         layout.addWidget(self.graphics_view)
         layout.addWidget(palette)
 
+        self.latency_thread = QThread(self)
+        self.latency_worker = LatencyWorker(self.client)
+        self.latency_worker.moveToThread(self.latency_thread)
+        self.latency_thread.start()
+        self.latency_worker.latency.connect(self.update_latency)
+
         self.latency_timer = QTimer()
         self.latency_timer.setInterval(1000)
-        self.latency_timer.timeout.connect(self.update_latency)
+        self.latency_timer.timeout.connect(self.latency_worker.get_latency.emit)
         self.latency_timer.start()
+
+        self.tree_worker_thread = QThread(self)
+        self.tree_worker = TreeUpdateWorker(
+            client=self.client,
+            model=self.model,
+            tree=self.tree,
+            get_index_path=self.get_index_path,
+        )
+        self.tree_worker.moveToThread(self.tree_worker_thread)
+        self.tree_worker.result_ready.connect(self._apply_tree_update)
+        self.tree_worker_thread.start()
 
         self.update_timer = QTimer()
         self.update_timer.setInterval(100)
-        self.update_timer.timeout.connect(self.update_tree)
+        self.update_timer.timeout.connect(self.tree_worker.run)
         self.update_timer.start()
 
         self.controller = WidgetGridController(self.graphics_view)
@@ -665,8 +781,17 @@ class Application(QMainWindow):
 
         self.theme = Theme(ThemeStyle.System)
         self.apply_theme()
-        
-        self.client.connect()
+
+        self.connection_governor_thread = Thread(
+            target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
+        )
+        self.connection_governor_thread.start()
+
+    def connection_governor(self):
+        while True:
+            if not self.client.is_connected():
+                self.client.connect()
+            time.sleep(2)
 
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
@@ -684,89 +809,30 @@ class Application(QMainWindow):
                 self.graphics_view.set_theme(GridThemes.Light)
         self.theme.apply(self)
 
+    def update_latency(self, latency: float | None):
+        if latency:
+            self.latency_status.setText(f"Latency: {latency:.2f}ms")
+        else:
+            self.latency_status.setText("Latency: --.--ms")
 
-    def update_latency(self):
-        if self.client.is_connected():
-            self.latency_status.setText(f"Latency: {self.client.get_latency():.2f}ms")
+    @Slot(dict, list, list)
+    def _apply_tree_update(self, hierarchical_data, expanded_indexes, selected_paths):
+        self.model.update_data(hierarchical_data)
 
-    @Slot()
+        for path, was_expanded in expanded_indexes:
+            index = self.get_index_from_path(path)
+            if index.isValid() and was_expanded:
+                self.tree.setExpanded(index, True)
+
+        selection_model = self.tree.selectionModel()
+        selection_model.clear()
+        for path in selected_paths:
+            index = self.get_index_from_path(path)
+            if index.isValid():
+                selection_model.select(index, selection_model.SelectionFlag.Select | selection_model.SelectionFlag.Rows)
+
     def update_tree(self):
-        # Get the latest data
-        data_store = self.client.get_keys()
-        data = {}
-
-        # here we process what data can be displayed
-        for key, value in [(key, self.client.get_raw(key)) for key in data_store]:
-            if not value:
-                continue
-
-            if "struct" in value and "dashboard" in value["struct"]:
-                structured = {}
-                for viewable in value["struct"]["dashboard"]:
-                    display = ""
-                    if "element" in viewable:
-                        raw = value[viewable["element"]]
-                        if "format" in viewable:
-                            fmt = viewable["format"]
-                            if fmt == "percent":
-                                display = f"{raw * 100:.2f}%"
-                            elif fmt == "degrees":
-                                display = f"{raw}°"
-                            elif fmt == "radians":
-                                display = f"{raw} rad"
-                            elif fmt.startswith("limit:"):
-                                limit = int(fmt.split(":")[1])
-                                display = raw[:limit]
-                            else:
-                                display = raw
-
-                    structured[viewable["element"]] = display
-                data[key] = structured
-            else:
-                self.logger.trace(f"Could not display {key}, it dosen't contain a structure")
-
-        def to_hierarchical_dict(flat_dict: dict):
-            """Convert a flat dictionary into a hierarchical one based on '/'."""
-            hierarchical_dict = {}
-            for key, value in flat_dict.items():
-                parts = key.split("/")
-                d = hierarchical_dict
-                for part in parts[:-1]:
-                    d = d.setdefault(part, {})
-                d[parts[-1]] = {"items": value, "key": key}
-            return hierarchical_dict
-
-        # Convert flat dictionary to hierarchical
-
-        expanded_indexes = []
-
-        def store_expansion(parent):
-            for row in range(self.model.rowCount(parent)):
-                index = self.model.index(row, 0, parent)
-                if self.tree.isExpanded(index):
-                    expanded_indexes.append((self.get_index_path(index), True))
-                store_expansion(index)
-
-        store_expansion(QModelIndex())
-
-        # Store selection
-        selected_paths = self.get_selection_paths()
-
-        # Update data...
-        h = to_hierarchical_dict(data)
-        self.model.update_data(h)
-
-        # Restore states
-        def restore_expansion():
-            for path, was_expanded in expanded_indexes:
-                index = self.get_index_from_path(path)
-                if index.isValid() and was_expanded:
-                    self.tree.setExpanded(index, True)
-
-        restore_expansion()
-
-        # Restore selection
-        self.restore_selection(selected_paths)
+        self.tree_worker.run()
 
     def get_selection_paths(self):
         return [
@@ -804,8 +870,10 @@ class Application(QMainWindow):
     def refresh_settings(self):
         self.settings.setValue("ip", self.settings_window.net_ip.text())
         self.settings.setValue("port", self.settings_window.net_port.value())
-        self.client.host = self.settings.value("ip", "10.0.0.2", str)  # type: ignore
-        self.client.port = self.settings.value("port", 8765, int)  # type: ignore
+        if self.client.host != self.settings.value("ip", "10.0.0.2", str):  # type: ignore
+            self.client.host = self.settings.value("ip", "10.0.0.2", str)  # type: ignore
+        if self.client.port != self.settings.value("port", 6379, int):  # type: ignore
+            self.client.port = self.settings.value("port", 6379, int)  # type: ignore
 
         self.ip_status.setText(str(self.settings.value("ip", "10.0.0.2", str)))
 
@@ -857,3 +925,64 @@ class Application(QMainWindow):
 
     def open_settings(self):
         self.settings_window.show()
+
+
+@dataclass
+class DashboardApplicationStartupArguments:
+    verbose: bool = False
+    trace: bool = True
+
+
+class DashboardApplicationRunner:
+    def __init__(self, args: DashboardApplicationStartupArguments | None = None):
+        self.logger = Logger()
+        self.app = QApplication(sys.argv)
+        self.app.setApplicationName("KevinbotLib Dashboard")
+        self.app.setApplicationVersion(__version__)
+        self.app.setStyle("Fusion")  # can solve some platform-specific issues
+
+        self.configure_logger(args)
+        self.window = None
+
+    def configure_logger(self, args: DashboardApplicationStartupArguments | None):
+        if args is None:
+            parser = QCommandLineParser()
+            parser.addHelpOption()
+            parser.addVersionOption()
+            parser.addOption(QCommandLineOption(["V", "verbose"], "Enable verbose (DEBUG) logging"))
+            parser.addOption(
+                QCommandLineOption(
+                    ["T", "trace"],
+                    QCoreApplication.translate("main", "Enable tracing (TRACE logging)"),
+                )
+            )
+            parser.process(self.app)
+
+            log_level = Level.INFO
+            if parser.isSet("verbose"):
+                log_level = Level.DEBUG
+            elif parser.isSet("trace"):
+                log_level = Level.TRACE
+        else:
+            log_level = Level.INFO
+            if args.verbose:
+                log_level = Level.DEBUG
+            elif args.trace:
+                log_level = Level.TRACE
+
+        self.logger.configure(LoggerConfiguration(level=log_level))
+
+    def run(self):
+        # kevinbotlib.apps.dashboard.resources_rc.qInitResources()
+        self.window = Application(self.app, self.logger)
+        self.window.show()
+        sys.exit(self.app.exec())
+
+
+def execute(args: DashboardApplicationStartupArguments | None):
+    runner = DashboardApplicationRunner(args)
+    runner.run()
+
+
+if __name__ == "__main__":
+    execute(None)

@@ -1,6 +1,6 @@
+import math
 from collections import deque
 from dataclasses import dataclass
-import math
 
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
