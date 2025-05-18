@@ -595,6 +595,9 @@ class TopicStatusPanel(QStackedWidget):
         self.data_type = QLabel("Data Type: Unknown")
         data_layout.addWidget(self.data_type)
 
+        self.data_known = QLabel("Data Compatible: Unknown")
+        data_layout.addWidget(self.data_known)
+
         data_layout.addStretch()
 
         self.set_data(None)
@@ -609,6 +612,7 @@ class TopicStatusPanel(QStackedWidget):
         self.data_topic.setText(data)
         raw = self.client.get_raw(data)
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
+        self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
 
 
 class TreeUpdateWorker(QObject):
