@@ -78,6 +78,8 @@ class LatencyWorker(QObject):
 
     @Slot()
     def get(self):
+        if not self.client.is_connected():
+            return
         latency = self.client.get_latency()
         self.latency.emit(latency)
 
@@ -197,6 +199,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def connection_governor(self):
         while True:
+            print(self.client.is_connected())
             if self.control.state.get() == AppState.EMERGENCY_STOPPED:
                 return
             if not self.client.is_connected():
