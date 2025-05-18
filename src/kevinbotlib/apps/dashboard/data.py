@@ -1,11 +1,3 @@
-def raw_to_string(raw: dict | None):
-    if not raw:
-        return "Error"
-    if "value" in raw:
-        return str(raw["value"])
-    return "Error"
-
-
 def get_structure_text(value: dict | None):
     if not value:
         return ""
@@ -25,7 +17,7 @@ def get_structure_text(value: dict | None):
                         display = f"{raw} rad"
                     elif fmt.startswith("limit:"):
                         limit = int(fmt.split(":")[1])
-                        display = raw[:limit]
+                        display = raw[:limit] + "..."
                     else:
                         display = raw
             out += str(display)

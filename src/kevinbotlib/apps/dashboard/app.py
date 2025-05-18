@@ -64,7 +64,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.__about__ import __version__
-from kevinbotlib.apps.dashboard.data import get_structure_text, raw_to_string
+from kevinbotlib.apps.dashboard.data import get_structure_text
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.json_editor import JsonEditor
 from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
@@ -73,6 +73,7 @@ from kevinbotlib.apps.dashboard.widgets import Divider
 from kevinbotlib.comm import AnyListSendable, BinarySendable, BooleanSendable, DictSendable, FloatSendable, IntegerSendable, RedisCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
+from kevinbotlib.vision import VisionCommUtils
 
 
 class LatencyWorker(QObject):
@@ -912,6 +913,8 @@ class TopicStatusPanel(QStackedWidget):
         data_view_layout.addWidget(self.data_known)
 
         self.value = QLabel("Value: Dashboard Error")
+        self.value.setWordWrap(True)
+        self.value.setMaximumWidth(1024)
         data_view_layout.addWidget(self.value)
 
         data_view_layout.addStretch()
@@ -954,7 +957,7 @@ class TopicStatusPanel(QStackedWidget):
             return
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
         self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
-        self.value.setText(f"Value: {raw_to_string(raw)}")
+        self.value.setText(f"Value: {get_structure_text(raw)}")
         # Update raw view with formatted raw data
         raw_content = json.dumps(raw, indent=2) if raw else "No raw data available"
         if raw_content != self.raw_text.document().toPlainText():
@@ -966,7 +969,11 @@ class TopicStatusPanel(QStackedWidget):
             self.add_layout.removeItem(litem)
             widget.setParent(None)
 
-        for name, wtype in determine_widget_types(raw["did"]).items():
+        wt = determine_widget_types(raw["did"])
+        if not wt:
+            return
+
+        for name, wtype in wt.items():
             button = QToolButton()
             button.setText(f"Add {name}")
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
@@ -1083,6 +1090,7 @@ class Application(QMainWindow):
             on_disconnect=self.on_disconnect,
             on_connect=self.on_connect,
         )
+        VisionCommUtils.init_comms_types(self.client)
 
         self.notifier = Notifier(self)
 
