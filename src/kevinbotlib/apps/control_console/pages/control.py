@@ -31,6 +31,7 @@ class AppState(Enum):
     CODE_ERROR = "Robot Code\nError"
     ROBOT_DISABLED = "{0}\nDisabled"
     ROBOT_ENABLED = "{0}\nEnabled"
+    EMERGENCY_STOPPED = "Emergency\nStopped"
 
 
 class StateManager:
@@ -95,6 +96,7 @@ class ControlConsoleControlTab(QWidget):
         self.setLayout(root_layout)
 
         self.opmode_selector = QListWidget()
+        self.opmode_selector.setMinimumWidth(150)
         self.opmode_selector.setMaximumWidth(200)
         self.opmode_selector.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         self.opmode_selector.setSelectionBehavior(QListWidget.SelectionBehavior.SelectItems)
@@ -151,6 +153,7 @@ class ControlConsoleControlTab(QWidget):
         self.logs = QTextEdit(readOnly=True)
         self.logs.document().setMaximumBlockCount(10000)  # limit log length
         self.logs.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        self.logs.setMinimumWidth(500)
         self.logs.setObjectName("LogView")
 
         log_controls_layout = QHBoxLayout()
@@ -211,6 +214,8 @@ class ControlConsoleControlTab(QWidget):
             # don't return - maybe something went wrong with is_connected and estop is still possible
 
         self.client.set(CommPath(self.request_key) / "estop", BooleanSendable(value=True))
+        self.state.set(AppState.EMERGENCY_STOPPED)
+        self.client.close()
 
     def on_opmodes_update(self, _: str, sendable: AnyListSendable | None):  # these are for non-initial updates
         if not sendable:

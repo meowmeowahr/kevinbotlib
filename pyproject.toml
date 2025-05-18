@@ -44,6 +44,7 @@ dependencies = [
   "qtpy>=2.4.3",
   "deprecated>=1.2.18",
   "redis>=6.1.0",
+  "wakepy>=0.10.2.post1",
 ]
 
 [project.optional-dependencies]

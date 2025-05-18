@@ -16,13 +16,18 @@ import click
     is_flag=True,
     help="Enable tracing (TRACE) logging",
 )
-def controlconsole(verbose: bool, trace: bool):
+@click.option(
+    "--no-lock",
+    is_flag=True,
+    help="Disable screen lock inhibitor",
+)
+def controlconsole(verbose: bool, trace: bool, no_lock: bool):
     """APP: The KevinbotLib Control Console"""
     from kevinbotlib.apps.control_console.control_console import (
         ControlConsoleApplicationRunner,
         ControlConsoleApplicationStartupArguments,
     )
 
-    args = ControlConsoleApplicationStartupArguments(verbose=verbose, trace=trace)
+    args = ControlConsoleApplicationStartupArguments(verbose=verbose, trace=trace, nolock=no_lock)
     runner = ControlConsoleApplicationRunner(args)
     runner.run()

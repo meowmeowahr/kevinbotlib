@@ -1,3 +1,4 @@
+import contextlib
 import datetime
 import sys
 import time
@@ -8,6 +9,7 @@ from threading import Thread
 
 import ansi2html
 import qtawesome as qta
+import wakepy
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -195,6 +197,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def connection_governor(self):
         while True:
+            if self.control.state.get() == AppState.EMERGENCY_STOPPED:
+                return
             if not self.client.is_connected():
                 for sender in self.joystick_senders:
                     sender.stop()
@@ -260,7 +264,8 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control.clear_opmodes()
         for sender in self.joystick_senders:
             sender.stop()
-        self.control.state.set(AppState.NO_COMMS)
+        if self.control.state.get() != AppState.EMERGENCY_STOPPED:
+            self.control.state.set(AppState.NO_COMMS)
         self.metrics_tab.text.clear()
 
     def update_latency(self, latency: float | None):
@@ -283,10 +288,12 @@ class ControlConsoleApplicationWindow(QMainWindow):
 class ControlConsoleApplicationStartupArguments:
     verbose: bool = False
     trace: bool = True
+    nolock: bool = False
 
 
 class ControlConsoleApplicationRunner:
     def __init__(self, args: ControlConsoleApplicationStartupArguments | None = None):
+        self.args = args if args else ControlConsoleApplicationStartupArguments()
         self.logger = Logger()
         self.app = QApplication(sys.argv)
         self.app.setApplicationName("KevinbotLib Dashboard")
@@ -325,10 +332,11 @@ class ControlConsoleApplicationRunner:
         self.logger.configure(LoggerConfiguration(level=log_level))
 
     def run(self):
-        kevinbotlib.apps.control_console.resources_rc.qInitResources()
-        self.window = ControlConsoleApplicationWindow(self.logger)
-        self.window.show()
-        sys.exit(self.app.exec())
+        with wakepy.keep.running() if not self.args.nolock else contextlib.nullcontext():
+            kevinbotlib.apps.control_console.resources_rc.qInitResources()
+            self.window = ControlConsoleApplicationWindow(self.logger)
+            self.window.show()
+            sys.exit(self.app.exec())
 
 
 def execute(args: ControlConsoleApplicationStartupArguments | None):

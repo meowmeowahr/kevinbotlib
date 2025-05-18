@@ -231,6 +231,15 @@ wheels = [
 ]
 
 [[package]]
+name = "jeepney"
+version = "0.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/6f/357efd7602486741aa73ffc0617fb310a29b588ed0fd69c2399acbb85b0c/jeepney-0.9.0.tar.gz", hash = "sha256:cf0e9e845622b81e4a28df94c40345400256ec608d0e55bb8a3feaa9163f5732", size = 106758 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b2/a3/e137168c9c44d18eff0376253da9f1e9234d0239e0ee230d2fee6cea8e55/jeepney-0.9.0-py3-none-any.whl", hash = "sha256:97e5714520c16fc0a45695e5365a2e11b81ea79bba796e26f9f1d178cb182683", size = 49010 },
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -265,6 +274,7 @@ dependencies = [
     { name = "qtawesome" },
     { name = "qtpy" },
     { name = "redis" },
+    { name = "wakepy" },
 ]
 
 [package.optional-dependencies]
@@ -300,6 +310,7 @@ requires-dist = [
     { name = "qtawesome", specifier = ">=1.4.0" },
     { name = "qtpy", specifier = ">=2.4.3" },
     { name = "redis", specifier = ">=6.1.0" },
+    { name = "wakepy", specifier = ">=0.10.2.post1" },
 ]
 
 [[package]]
@@ -1203,6 +1214,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e7/44/8126f9f0c44319b2efc65feaad589cadef4d77ece200ae3c9133d58464d0/verspec-0.1.0.tar.gz", hash = "sha256:c4504ca697b2056cdb4bfa7121461f5a0e81809255b41c03dda4ba823637c01e", size = 27123 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/ce/3b6fee91c85626eaf769d617f1be9d2e15c1cca027bbdeb2e0d751469355/verspec-0.1.0-py3-none-any.whl", hash = "sha256:741877d5633cc9464c45a469ae2a31e801e6dbbaa85b9675d481cda100f11c31", size = 19640 },
+]
+
+[[package]]
+name = "wakepy"
+version = "0.10.2.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jeepney", marker = "platform_system == 'DragonFly' or platform_system == 'FreeBSD' or platform_system == 'Minix' or platform_system == 'NetBSD' or platform_system == 'OpenBSD' or platform_system == 'SunOS' or sys_platform == 'aix' or sys_platform == 'linux'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/26/caf88d7975e1b6e181d91cbb624b63b3a455231aff50eb2cba206c7e7bd9/wakepy-0.10.2.post1.tar.gz", hash = "sha256:c968b8b7061d30ab193747ce7fb5226bc61c26b005e4a2792a19211f83cf71ac", size = 159393 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/f0/1816a95fb64a574d30160e1dccc2fdee00530c9f0fc119ae8286b5e7bd02/wakepy-0.10.2.post1-py3-none-any.whl", hash = "sha256:c3fd13bb6b362decd0a2d83807fb3146a3ef5ca9b1959241bb0c06d0b35b029e", size = 56499 },
 ]
 
 [[package]]
