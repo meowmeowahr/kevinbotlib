@@ -1,4 +1,5 @@
-from typing import Any, override
+from typing import Any
+
 from PySide6.QtCore import QAbstractItemModel, QModelIndex, QPersistentModelIndex, Qt
 
 
@@ -21,9 +22,7 @@ class TreeItem:
                 # Don't populate child_items, as it's sendable
             else:
                 # Precompute children with their row index
-                self.child_items = [
-                    TreeItem(v, k, self, i) for i, (k, v) in enumerate(data.items())
-                ]
+                self.child_items = [TreeItem(v, k, self, i) for i, (k, v) in enumerate(data.items())]
 
     def child(self, row: int) -> "TreeItem | None":
         if 0 <= row < len(self.child_items):
@@ -45,7 +44,7 @@ class DictTreeModel(QAbstractItemModel):
         super().__init__()
         self.root_item = TreeItem(data)
 
-    def index(self, row: int, column: int, parent: QModelIndex = QModelIndex()) -> QModelIndex:
+    def index(self, row: int, column: int, parent: QModelIndex = QModelIndex()) -> QModelIndex:  # noqa: B008
         if not self.hasIndex(row, column, parent):
             return QModelIndex()
 
@@ -67,19 +66,16 @@ class DictTreeModel(QAbstractItemModel):
 
         return self.createIndex(parent_item.row(), 0, parent_item)
 
-    @override
-    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
+    def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:  # noqa: N802, B008
         if parent.column() > 0:
             return 0
 
         parent_item = self.root_item if not parent.isValid() else parent.internalPointer()
         return parent_item.child_count()
 
-    @override
-    def columnCount(self, parent: QModelIndex | QPersistentModelIndex = QModelIndex()) -> int:
+    def columnCount(self, parent: QModelIndex | QPersistentModelIndex = QModelIndex()) -> int:  # noqa: N802, B008, ARG002
         return 1
 
-    @override
     def data(self, index: QModelIndex, role: int = Qt.ItemDataRole.DisplayRole) -> Any:
         if not index.isValid():
             return None

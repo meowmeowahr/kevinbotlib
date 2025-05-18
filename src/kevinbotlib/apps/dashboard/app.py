@@ -2,6 +2,7 @@ import functools
 import json
 import sys
 import time
+from abc import abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
 from queue import Queue
@@ -30,7 +31,7 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
-from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator, QTextOption
+from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator, QTextOption, QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -59,16 +60,17 @@ from PySide6.QtWidgets import (
     QTreeView,
     QVBoxLayout,
     QWidget,
+    QGraphicsTextItem,
 )
 
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.data import get_structure_text, raw_to_string
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.json_editor import JsonEditor
-from kevinbotlib.apps.dashboard.toast import Notifier, Severity
+from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets import Divider
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm import RedisCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -91,7 +93,16 @@ class LatencyWorker(QObject):
 class WidgetItem(QGraphicsObject):
     item_deleted = Signal(object)
 
-    def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data=None):
+    def __init__(
+        self,
+        title: str,
+        key: str,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        data=None,
+        _client: RedisCommClient | None = None,
+    ):
         if data is None:
             data = {}
         super().__init__()
@@ -242,13 +253,23 @@ class WidgetItem(QGraphicsObject):
     def delete_self(self):
         self.item_deleted.emit(self)
 
+    @abstractmethod
     def update_data(self, data: dict):
         if self.scene():
             self.scene().update(self.sceneBoundingRect())
 
 
 class LabelWidgetItem(WidgetItem):
-    def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data: dict | None = None):
+    def __init__(
+        self,
+        title: str,
+        key: str,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        data: dict | None = None,
+        _client: RedisCommClient | None = None,
+    ):
         super().__init__(title, key, grid, span_x, span_y, data)
         self.kind = "text"
 
@@ -281,10 +302,100 @@ class LabelWidgetItem(WidgetItem):
         super().update_data(data)
         self.label.setText(get_structure_text(data))
         self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+        label_margin = self.margin + 30  # 30 is the title bar height
+        self.proxy.setGeometry(
+            self.margin, label_margin, self.width - 2 * self.margin, self.height - label_margin - self.margin
+        )
+
+class TextEditWidgetItem(WidgetItem):
+    setdata = Signal(str)
+
+    def __init__(
+        self,
+        title: str,
+        key: str,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        data: dict | None = None,
+        client: RedisCommClient | None = None,
+    ):
+        super().__init__(title, key, grid, span_x, span_y, data)
+        self.kind = "textedit"
+        self.raw_data = data
+        self.client = client
+
+        # Create QGraphicsTextItem instead of QLineEdit
+        self.label = QGraphicsTextItem(get_structure_text(data), self)
+        self.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextEditorInteraction)
+        self.label.setDefaultTextColor(self.view.theme.value.foreground)
+        self.label.document().contentsChanged.connect(self.commit)
+
+        self.setdata.connect(self.set_text)
+        self.update_label_geometry()
+
+    def update_label_geometry(self):
+        label_margin = self.margin + 30
+        text_rect = self.label.boundingRect()
+        self.label.setPos(self.margin, label_margin)
+        self.label.setTextWidth(self.boundingRect().width() - 8)
+
+    def set_span(self, x, y):
+        super().set_span(x, y)
+        self.update_label_geometry()
+
+    def prepareGeometryChange(self):  # noqa: N802
+        super().prepareGeometryChange()
+        self.update_label_geometry()
+
+    def set_text(self, text: str):
+        # Save current cursor selection range
+        cursor = self.label.textCursor()
+        anchor = cursor.anchor()
+        position = cursor.position()
+
+        self.label.setPlainText(text)
+
+        # Restore cursor position and selection
+        doc = self.label.document()
+        new_cursor = self.label.textCursor()
+        
+        # Make sure we clamp indices to valid range
+        max_pos = doc.characterCount() - 1
+        anchor = max(0, min(anchor, max_pos))
+        position = max(0, min(position, max_pos))
+
+        new_cursor.setPosition(anchor)
+        new_cursor.setPosition(position, QTextCursor.MoveMode.KeepAnchor)
+        self.label.setTextCursor(new_cursor)
+
+
+    def update_data(self, data: dict):
+        super().update_data(data)
+        self.raw_data = data
+        self.setdata.emit(get_structure_text(data))
+
+    def commit(self):
+        text = self.label.toPlainText()
+        self.commit_edit(text)
+
+    def commit_edit(self, text: str):
+        if not self.client or not self.client.is_connected() or not self.raw_data:
+            return
+
+        self.client.set(
+            self.key,
+            StringSendable(
+                value=text,
+                struct=self.raw_data["struct"],
+                timeout=self.raw_data["timeout"],
+                flags=self.raw_data.get("flags", []),
+            ),
+        )
 
 
 def determine_widget_types(_did: str):
-    return {"Basic Text": LabelWidgetItem}
+    return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem}
 
 
 class GridGraphicsView(QGraphicsView):
@@ -488,13 +599,13 @@ class WidgetGridController(QObject):
                 }
                 widgets.append(widget_info)
         return widgets
-    
+
     def update_widgets_data(self, raw_data):
         """Update all widgets with fresh data and force view refresh"""
         for item in self.get_items():
             if item.key in raw_data:
                 item.update_data(raw_data[item.key])
-                
+
         # Force the view to update after all widget updates
         self.view.viewport().update()
 
@@ -541,7 +652,10 @@ class WidgetPalette(QWidget):
                 widget_info[1].split("/")[-1],
                 self.panel.current_key if self.panel.current_key else "",
                 self.graphics_view,
-                data=widget_info[2],
+                1,
+                1,
+                widget_info[2],
+                self.client,
             )
         )
 
@@ -564,6 +678,8 @@ class SettingsWindow(QDialog):
         self.root_layout.addLayout(self.form)
 
         self.form.addRow(Divider("Theme"))
+
+        self.form.addRow(NotificationWidget("Warning", "A restart is required to fully apply the theme", Severity.Warning.value, 0, bg=False))
 
         self.theme = UiColorSettingsSwitcher(settings, "theme", parent)
         self.form.addRow("Theme", self.theme)
@@ -593,7 +709,9 @@ class SettingsWindow(QDialog):
 
         self.form.addRow(Divider("Polling"))
 
-        self.poll_rate = QSpinBox(minimum=100, maximum=2500, singleStep=50, value=self.settings.value("rate", 200, int), suffix="ms")  # type: ignore
+        self.poll_rate = QSpinBox(
+            minimum=100, maximum=2500, singleStep=50, value=self.settings.value("rate", 200, int), suffix="ms"
+        )  # type: ignore
         self.form.addRow("Polling Rate", self.poll_rate)
 
         self.button_layout = QHBoxLayout()
@@ -844,13 +962,24 @@ class PollingWorker(QObject):
 
 
 class Application(QMainWindow):
-    def __init__(self, _app: QApplication, logger: Logger):
+    def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
+        self.app = app
         self.setWindowTitle("KevinbotLib Dashboard")
 
         self.settings = QSettings("kevinbotlib", "dashboard")
 
         self.logger = logger
+
+        self.theme = Theme(ThemeStyle.System)
+
+        self.graphics_view = GridGraphicsView(
+            grid_size=self.settings.value("grid", 48, int),  # type: ignore
+            rows=self.settings.value("rows", 10, int),  # type: ignore
+            cols=self.settings.value("cols", 10, int),  # type: ignore
+            theme=GridThemes.Dark,
+        )
+        self.apply_theme()
 
         self.client = RedisCommClient(
             host=self.settings.value("ip", "10.0.0.2", str),  # type: ignore
@@ -895,13 +1024,6 @@ class Application(QMainWindow):
 
         main_layout = QHBoxLayout()
         root_layout.addLayout(main_layout, 999)
-
-        self.graphics_view = GridGraphicsView(
-            grid_size=self.settings.value("grid", 48, int),  # type: ignore
-            rows=self.settings.value("rows", 10, int),  # type: ignore
-            cols=self.settings.value("cols", 10, int),  # type: ignore
-            theme=GridThemes.Dark,
-        )
         palette = WidgetPalette(self.graphics_view, self.client)
         self.model = palette.model
         self.tree = palette.tree
@@ -982,15 +1104,12 @@ class Application(QMainWindow):
         self.tree_worker_thread.start()
 
         self.update_timer = QTimer()
-        self.update_timer.setInterval(self.settings.value("rate", 200, int)) # type: ignore
+        self.update_timer.setInterval(self.settings.value("rate", 200, int))  # type: ignore
         self.update_timer.timeout.connect(self.tree_worker.run)
         self.update_timer.start()
 
         self.settings_window = SettingsWindow(self, self.settings)
         self.settings_window.on_applied.connect(self.refresh_settings)
-
-        self.theme = Theme(ThemeStyle.System)
-        self.apply_theme()
 
         self.connection_governor_thread = Thread(
             target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
@@ -1021,16 +1140,20 @@ class Application(QMainWindow):
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
         if theme_name == "Dark":
+            qta.dark(self.app)
             self.theme.set_style(ThemeStyle.Dark)
             self.graphics_view.set_theme(GridThemes.Dark)
         elif theme_name == "Light":
+            qta.light(self.app)
             self.theme.set_style(ThemeStyle.Light)
             self.graphics_view.set_theme(GridThemes.Light)
         else:
             self.theme.set_style(ThemeStyle.System)
             if self.theme.is_dark():
+                qta.dark(self.app)
                 self.graphics_view.set_theme(GridThemes.Dark)
             else:
+                qta.light(self.app)
                 self.graphics_view.set_theme(GridThemes.Light)
         self.theme.apply(self)
 
@@ -1115,8 +1238,7 @@ class Application(QMainWindow):
             self.settings.setValue("cols", self.graphics_view.cols)
 
         self.settings.setValue("rate", self.settings_window.poll_rate.value())
-        self.update_timer.setInterval(self.settings.value("rate", 200, int)) # type: ignore
-
+        self.update_timer.setInterval(self.settings.value("rate", 200, int))  # type: ignore
 
     def item_loader(self, item: dict) -> WidgetItem:
         kind = item["kind"]
@@ -1127,9 +1249,11 @@ class Application(QMainWindow):
         key = item["key"] if "key" in item else item["title"]
         match kind:
             case "base":
-                return WidgetItem(title, key, self.graphics_view, span_x, span_y, data)
+                return WidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
             case "text":
-                return LabelWidgetItem(title, key, self.graphics_view, span_x, span_y, data)
+                return LabelWidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
+            case "textedit":
+                return TextEditWidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
 
         return WidgetItem(title, key, self.graphics_view, span_x, span_y)
 

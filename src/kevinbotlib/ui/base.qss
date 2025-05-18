@@ -1,4 +1,4 @@
-QMainWindow, QDialog {
+QMainWindow, QDialog, QWidget#notification {
     background-color: {{bg1}};
 }
 

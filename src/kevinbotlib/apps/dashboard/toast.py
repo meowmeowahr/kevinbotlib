@@ -24,12 +24,13 @@ class Severity(Enum):
 class NotificationWidget(QWidget):
     closed = Signal()
 
-    def __init__(self, title: str, text: str, severity: CustomSeverity, duration: int, parent=None):
+    def __init__(self, title: str, text: str, severity: CustomSeverity, duration: int, parent=None, bg: bool = True):
         super().__init__(parent)
         self.duration = duration
         self.setup_ui(title, text, severity)
-        self.setup_animations()
-        self.setAutoFillBackground(True)
+        if not duration == 0:
+            self.setup_animations()
+        self.setAutoFillBackground(bg)
 
     def setup_ui(self, title: str, text: str, severity: CustomSeverity):
         # Main layout
@@ -43,7 +44,7 @@ class NotificationWidget(QWidget):
 
         # Icon
         icon_label = qta.IconWidget()
-        icon_label.setIconSize(38)
+        icon_label.setIconSize(32)
         icon_label.setIcon(qta.icon(severity.icon, color=severity.color.name()))
         content_layout.addWidget(icon_label)
 
@@ -70,7 +71,6 @@ class NotificationWidget(QWidget):
         """)
 
         # Set fixed width but dynamic height
-        self.setFixedWidth(300)
         self.adjustSize()
 
     def setup_animations(self):
@@ -122,6 +122,7 @@ class Notifier(QObject):
             severity = severity.value
 
         notification = NotificationWidget(title, text, severity, duration, self.parent())
+        notification.setFixedWidth(300)
         notification.closed.connect(lambda: self._remove_notification(notification))
 
         # Calculate position
