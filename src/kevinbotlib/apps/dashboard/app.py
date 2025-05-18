@@ -1,13 +1,14 @@
 import functools
 import json
-from queue import Queue
 import sys
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
+from queue import Queue
 from threading import Thread
 from typing import override
 
+import ansi2html
 import qtawesome as qta
 from PySide6.QtCore import (
     QCommandLineOption,
@@ -17,6 +18,7 @@ from PySide6.QtCore import (
     QModelIndex,
     QObject,
     QPointF,
+    QPropertyAnimation,
     QRect,
     QRectF,
     QRegularExpression,
@@ -27,9 +29,8 @@ from PySide6.QtCore import (
     QTimer,
     Signal,
     Slot,
-    QPropertyAnimation,
 )
-from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator
+from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator, QTextOption
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -53,14 +54,12 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QStyleOptionGraphicsItem,
     QTabWidget,
+    QTextEdit,
     QToolButton,
     QTreeView,
     QVBoxLayout,
     QWidget,
-    QTextEdit,
 )
-
-import ansi2html
 
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.data import get_structure_text, raw_to_string
@@ -244,7 +243,8 @@ class WidgetItem(QGraphicsObject):
         self.item_deleted.emit(self)
 
     def update_data(self, data: dict):
-        pass
+        if self.scene():
+            self.scene().update(self.sceneBoundingRect())
 
 
 class LabelWidgetItem(WidgetItem):
@@ -488,6 +488,15 @@ class WidgetGridController(QObject):
                 }
                 widgets.append(widget_info)
         return widgets
+    
+    def update_widgets_data(self, raw_data):
+        """Update all widgets with fresh data and force view refresh"""
+        for item in self.get_items():
+            if item.key in raw_data:
+                item.update_data(raw_data[item.key])
+                
+        # Force the view to update after all widget updates
+        self.view.viewport().update()
 
     def get_items(self) -> list[WidgetItem]:
         return [item for item in self.view.scene().items() if isinstance(item, WidgetItem)]
@@ -528,7 +537,12 @@ class WidgetPalette(QWidget):
 
     def add_widget(self, widget_info: tuple[type[WidgetItem], str, dict]):
         self.controller.add(
-            widget_info[0](widget_info[1], self.panel.current_key if self.panel.current_key else "", self.graphics_view, data=widget_info[2])
+            widget_info[0](
+                widget_info[1].split("/")[-1],
+                self.panel.current_key if self.panel.current_key else "",
+                self.graphics_view,
+                data=widget_info[2],
+            )
         )
 
     def remove_widget(self, widget):
@@ -913,6 +927,8 @@ class Application(QMainWindow):
 
         self.log_view = QTextEdit(placeholderText="No logs yet")
         self.log_view.setReadOnly(True)
+        self.log_view.setWordWrapMode(QTextOption.WrapMode.NoWrap)
+        self.log_view.document().setMaximumBlockCount(100)
         log_layout.addWidget(self.log_view)
 
         log_collapse = QToolButton()
