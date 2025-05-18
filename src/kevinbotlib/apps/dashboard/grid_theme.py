@@ -14,8 +14,8 @@ class ThemeOptions:
 
 class Themes(Enum):
     Dark = ThemeOptions(
-        background="#1e272a",
-        item_background="#30383b",
+        background="#0a1316",
+        item_background="#151d21",
         foreground="#d0d8d8",
         primary="#4682b4",
         border="#2d3639",

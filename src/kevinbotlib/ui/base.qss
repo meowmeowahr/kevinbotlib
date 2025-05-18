@@ -407,7 +407,7 @@ QScrollBar::right-arrow:horizontal {
 }
 
 QMenu {
-    background-color: {{bg2}};
+    background-color: {{bg3}};
     border-radius: 2px;
     margin: 2px;
     color: {{fg}};
@@ -417,11 +417,22 @@ QMenu::item:selected {
     background-color: {{bg5}};
 }
 
+QMenuBar {
+    background-color: {{bg2}};
+    color: {{fg}};
+}
+
 QFrame[frameShape=Panel],
 QFrame[frameShape=VLine],
 QFrame[frameShape=HLine] {
     color: {{border}};
 }
+
+QTreeView {
+    background-color: {{bg2}};
+    color: {{fg}};
+}
+
 
 /* QCheckBox Styling */
 QCheckBox {
