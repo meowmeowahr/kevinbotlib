@@ -169,7 +169,8 @@ QLabel {
 }
 
 /* QPushButton Styling */
-QPushButton {
+QPushButton,
+QToolButton {
     background-color: {{bg3}};
     color: {{fg}};
     border: 1px solid {{border}};
@@ -178,21 +179,35 @@ QPushButton {
     margin: 1px;
 }
 
-QPushButton:hover {
+QPushButton:hover,
+QToolButton:hover {
     background-color: {{bg4}};
     border-color: {{primary1}};
 }
 
-QPushButton:pressed {
+QPushButton:pressed,
+QToolButton:pressed {
     background-color: {{bg5}};
     border-color: {{primary2}};
 }
 
-QPushButton:disabled {
+QPushButton:disabled,
+QToolButton:disabled {
     background-color: {{bg2}};
     color: {{fg}}50; /* 50% opacity of foreground color */
     border-color: {{border}}80; /* 80% opacity of border color */
 }
+
+/* QSplitter Styling */ QSplitter { background-color: transparent; }
+
+QSplitter::handle { background-color: transparent; border: none;}
+
+QSplitter::handle:horizontal { width: 2px; margin: 4px 0px; border-radius: 2px; image: url({{":/theme_icons/splitter-grip-vertical-dark.svg" if is_dark else ":/theme_icons/splitter-grip-vertical-light.svg"}}); image-position: center; }
+
+QSplitter::handle:vertical { height: 2px; margin: 0px 4px; border-radius: 2px; image: url({{":/theme_icons/splitter-grip-horizontal-dark.svg" if is_dark else ":/theme_icons/splitter-grip-horizontal-light.svg"}}); image-position: center; }
+
+/* Disabled state */ QSplitter::handle:disabled { border-color: {{border}}80; opacity: 0.5; }
+
 
 /* Specific QPushButton Styling */
 #EnableButton {

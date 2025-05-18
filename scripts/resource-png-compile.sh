@@ -33,6 +33,10 @@ SVG_FILES=(
     "checkbox-indeterminate-hover-light.svg"
     "checkbox-indeterminate-disabled-dark.svg"
     "checkbox-indeterminate-disabled-light.svg"
+    "splitter-grip-horizontal-dark.svg"
+    "splitter-grip-horizontal-light.svg"
+    "splitter-grip-vertical-dark.svg"
+    "splitter-grip-vertical-light.svg"
 )
 
 # Base width (in pixels) at 1x - adjust as needed

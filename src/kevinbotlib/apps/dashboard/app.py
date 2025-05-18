@@ -49,9 +49,14 @@ from PySide6.QtWidgets import (
     QTreeView,
     QVBoxLayout,
     QWidget,
+    QToolButton,
+    QSplitter,
 )
 
+import qtawesome as qta
+
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.apps.dashboard.data import raw_to_string
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.toast import Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
@@ -452,14 +457,14 @@ class WidgetPalette(QWidget):
 
         self.tree = QTreeView()
         self.tree.setHeaderHidden(True)
-        layout.addWidget(self.tree)
+        layout.addWidget(self.tree, 2)
 
         self.model = DictTreeModel({})
         self.tree.setModel(self.model)
         self.tree.selectionChanged = self._tree_select
 
         self.panel = TopicStatusPanel(self.client)
-        layout.addWidget(self.panel)
+        layout.addWidget(self.panel, 1)
 
     def _tree_select(self, selected: QItemSelection, _: QItemSelection):
         self.panel.set_data(selected.indexes()[0].data(Qt.ItemDataRole.UserRole))
@@ -592,11 +597,30 @@ class TopicStatusPanel(QStackedWidget):
 
         data_layout.addWidget(QFrame(frameShape=QFrame.Shape.HLine))
 
+        data_layout.addStretch()
+
         self.data_type = QLabel("Data Type: Unknown")
         data_layout.addWidget(self.data_type)
 
         self.data_known = QLabel("Data Compatible: Unknown")
         data_layout.addWidget(self.data_known)
+
+        self.value = QLabel("Value: Dashboard Error")
+        data_layout.addWidget(self.value)
+
+        data_layout.addStretch()
+
+        add_layout = QHBoxLayout()
+        data_layout.addLayout(add_layout)
+
+        self.add = QToolButton()
+        self.add.setText("Add to Layout")
+        self.add.setIconSize(QSize(72, 72))
+        self.add.setIcon(qta.icon("mdi6.card-plus"))
+        self.add.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        add_layout.addWidget(self.add)
+
+        data_layout.addStretch()
 
         data_layout.addStretch()
 
@@ -612,7 +636,8 @@ class TopicStatusPanel(QStackedWidget):
         self.data_topic.setText(data)
         raw = self.client.get_raw(data)
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
-        self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
+        self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}") # only registered types are compatible with dashboard
+        self.value.setText(f"Value: {raw_to_string(raw)}")
 
 
 class TreeUpdateWorker(QObject):
@@ -747,8 +772,14 @@ class Application(QMainWindow):
         self.model = palette.model
         self.tree = palette.tree
 
-        layout.addWidget(self.graphics_view)
-        layout.addWidget(palette)
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+        splitter.addWidget(self.graphics_view)
+        splitter.addWidget(palette)
+        
+        splitter.setStretchFactor(0, 4)
+        splitter.setStretchFactor(1, 1)
+        
+        layout.addWidget(splitter)
 
         self.latency_thread = QThread(self)
         self.latency_worker = LatencyWorker(self.client)

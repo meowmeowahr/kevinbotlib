@@ -17,5 +17,9 @@
         <file>theme_icons/checkbox-indeterminate-hover-light-2x.png</file>
         <file>theme_icons/checkbox-indeterminate-disabled-dark-2x.png</file>
         <file>theme_icons/checkbox-indeterminate-disabled-light-2x.png</file>
+        <file>theme_icons/splitter-grip-horizontal-dark.svg</file>
+        <file>theme_icons/splitter-grip-horizontal-light.svg</file>
+        <file>theme_icons/splitter-grip-vertical-dark.svg</file>
+        <file>theme_icons/splitter-grip-vertical-light.svg</file>
     </qresource>
 </RCC>

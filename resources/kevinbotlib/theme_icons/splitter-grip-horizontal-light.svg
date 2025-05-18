@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10" width="20" height="10">
+  <!-- Horizontal splitter handle dots (for vertical splitter) -->
+  <g id="grip-horizontal">
+    <!-- Column 1 -->
+    <circle cx="5" cy="5" r="1" fill="#2d3639" opacity="0.5" />
+    <!-- Column 2 -->
+    <circle cx="10" cy="5" r="1" fill="#2d3639" opacity="0.5" />
+    <!-- Column 3 -->
+    <circle cx="15" cy="5" r="1" fill="#2d3639" opacity="0.5" />
+  </g>
+</svg>
