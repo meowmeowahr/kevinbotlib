@@ -16,12 +16,24 @@ QTabWidget::tab-bar {
     left: 8px;
 }
 
-QTabBar::tab {
+QTabBar::tab:top {
     background: {{bg3}};
     border: 1px solid {{border}};
     border-bottom: none;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
+    padding: 6px 12px;
+    min-width: 10ex;
+    margin-right: 2px;
+    color: {{fg}};
+}
+
+QTabBar::tab:bottom {
+    background: {{bg3}};
+    border: 1px solid {{border}};
+    border-top: none;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
     padding: 6px 12px;
     min-width: 10ex;
     margin-right: 2px;
@@ -37,10 +49,18 @@ QTabBar::tab:hover:!selected {
     background: {{bg4}};
 }
 
-QTabBar::tab:selected {
+QTabBar::tab::top:selected {
     background: {{bg5}};
     border: 1px solid {{border}};
     border-bottom: 2px solid {{primary1}};
+    color: {{fg_highlight}};
+    font-weight: 500;
+}
+
+QTabBar::tab::bottom:selected {
+    background: {{bg5}};
+    border: 1px solid {{border}};
+    border-top: 2px solid {{primary1}};
     color: {{fg_highlight}};
     font-weight: 500;
 }

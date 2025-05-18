@@ -1,5 +1,6 @@
 import functools
 import json
+from queue import Queue
 import sys
 import time
 from collections.abc import Callable
@@ -26,6 +27,7 @@ from PySide6.QtCore import (
     QTimer,
     Signal,
     Slot,
+    QPropertyAnimation,
 )
 from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator
 from PySide6.QtWidgets import (
@@ -55,7 +57,10 @@ from PySide6.QtWidgets import (
     QTreeView,
     QVBoxLayout,
     QWidget,
+    QTextEdit,
 )
+
+import ansi2html
 
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.data import get_structure_text, raw_to_string
@@ -246,35 +251,27 @@ class LabelWidgetItem(WidgetItem):
     def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data: dict | None = None):
         super().__init__(title, key, grid, span_x, span_y, data)
         self.kind = "text"
+        self.raw_data = {}
 
-        self.label = QLabel(get_structure_text(data))
-        self.label.setWordWrap(True)
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.label.setStyleSheet("background: transparent;")
-
-        self.proxy = QGraphicsProxyWidget(self)
-        self.proxy.setWidget(self.label)
-
-        self.update_label_geometry()
-
-    def update_label_geometry(self):
+    def paint(self, painter: QPainter, _option: QStyleOptionGraphicsItem, /, _widget: QWidget | None = None):
+        super().paint(painter, _option, _widget)
         # Position the label below the title bar
         label_margin = self.margin + 30  # 30 is the title bar height
-        self.proxy.setGeometry(
+        title_rect = QRect(
             self.margin, label_margin, self.width - 2 * self.margin, self.height - label_margin - self.margin
         )
+        painter.drawText(title_rect, Qt.AlignmentFlag.AlignCenter, get_structure_text(self.raw_data))
 
     def set_span(self, x, y):
         super().set_span(x, y)
-        self.update_label_geometry()
 
     def prepareGeometryChange(self):  # noqa: N802
         super().prepareGeometryChange()
-        self.update_label_geometry()
 
     def update_data(self, data: dict):
         super().update_data(data)
-        self.label.setText(get_structure_text(data))
+        self.raw_data = data
+        self.update()
 
 
 def determine_widget_types(_did: str):
@@ -522,7 +519,7 @@ class WidgetPalette(QWidget):
 
     def add_widget(self, widget_info: tuple[type[WidgetItem], str, dict]):
         self.controller.add(
-            widget_info[0](widget_info[1], self.panel.current_key, self.graphics_view, data=widget_info[2])
+            widget_info[0](widget_info[1], self.panel.current_key if self.panel.current_key else "", self.graphics_view, data=widget_info[2])
         )
 
     def remove_widget(self, widget):
@@ -711,6 +708,8 @@ class TopicStatusPanel(QStackedWidget):
         self.data_topic.setText(data)
         self.current_key = data
         raw = self.client.get_raw(data)
+        if not raw:
+            return
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
         self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
         self.value.setText(f"Value: {raw_to_string(raw)}")
@@ -864,7 +863,10 @@ class Application(QMainWindow):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
 
-        layout = QHBoxLayout(main_widget)
+        root_layout = QVBoxLayout(main_widget)
+
+        main_layout = QHBoxLayout()
+        root_layout.addLayout(main_layout, 999)
 
         self.graphics_view = GridGraphicsView(
             grid_size=self.settings.value("grid", 48, int),  # type: ignore
@@ -883,7 +885,45 @@ class Application(QMainWindow):
         splitter.setStretchFactor(0, 4)
         splitter.setStretchFactor(1, 1)
 
-        layout.addWidget(splitter)
+        main_layout.addWidget(splitter)
+
+        self.log_queue: Queue[str] = Queue(1000)
+        self.logger.add_hook_ansi(self.log_hook)
+
+        self.log_timer = QTimer()
+        self.log_timer.setInterval(250)
+        self.log_timer.timeout.connect(self.update_logs)
+        self.log_timer.start()
+
+        self.log_widget = QWidget()
+        self.log_widget.setContentsMargins(0, 0, 0, 0)
+        root_layout.addWidget(self.log_widget)
+
+        log_layout = QVBoxLayout(self.log_widget)
+        log_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.log_view = QTextEdit(placeholderText="No logs yet")
+        self.log_view.setReadOnly(True)
+        log_layout.addWidget(self.log_view)
+
+        log_collapse = QToolButton()
+        log_collapse.setText("Logs")
+        log_collapse.setStyleSheet("padding: 2px;")
+        log_collapse.setFixedHeight(24)
+        log_collapse.clicked.connect(self.toggle_logs)
+        root_layout.addWidget(log_collapse, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.log_open_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")
+        self.log_open_animation.setStartValue(0)
+        self.log_open_animation.setEndValue(200)
+        self.log_open_animation.setDuration(100)
+
+        self.log_close_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")
+        self.log_close_animation.setStartValue(200)
+        self.log_close_animation.setEndValue(0)
+        self.log_close_animation.setDuration(100)
+        self.log_close_animation.start()
+        self.log_close_animation.finished.connect(self.log_widget.hide)
 
         self.latency_thread = QThread(self)
         self.latency_worker = LatencyWorker(self.client)
@@ -926,6 +966,21 @@ class Application(QMainWindow):
             target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
         )
         self.connection_governor_thread.start()
+
+    def log_hook(self, data: str):
+        self.log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
+
+    def update_logs(self):
+        while not self.log_queue.empty():
+            self.log_view.append(self.log_queue.get())
+
+    def toggle_logs(self):
+        if not self.log_widget.isVisible():
+            self.log_widget.show()
+            self.log_open_animation.start()
+        else:
+            # noinspection PyAttributeOutsideInit
+            self.log_close_animation.start()
 
     def connection_governor(self):
         while True:

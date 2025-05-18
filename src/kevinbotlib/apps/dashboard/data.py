@@ -1,4 +1,6 @@
-def raw_to_string(raw: dict):
+def raw_to_string(raw: dict | None):
+    if not raw:
+        return "Error"
     if "value" in raw:
         return str(raw["value"])
     return "Error"
