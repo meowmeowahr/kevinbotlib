@@ -842,6 +842,9 @@ class Application(QMainWindow):
         self.save_action = self.file_menu.addAction("Save Layout", self.save_slot)
         self.save_action.setShortcut("Ctrl+S")
 
+        self.quit_action = self.file_menu.addAction("Quit", self.close)
+        self.quit_action.setShortcut("Alt+F4")
+
         self.edit_menu = self.menu.addMenu("&Edit")
 
         self.settings_action = self.edit_menu.addAction("Settings", self.open_settings)
@@ -1052,8 +1055,12 @@ class Application(QMainWindow):
 
         if reply == QMessageBox.StandardButton.Yes:
             self.save_slot()
+            self.tree_worker_thread.quit()
+            self.latency_thread.quit()
             event.accept()
         elif reply == QMessageBox.StandardButton.No:
+            self.tree_worker_thread.quit()
+            self.latency_thread.quit()
             event.accept()
         else:
             event.ignore()
