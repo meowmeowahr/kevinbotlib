@@ -34,6 +34,7 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QFrame,
     QGraphicsObject,
+    QGraphicsProxyWidget,
     QGraphicsScene,
     QGraphicsView,
     QHBoxLayout,
@@ -57,7 +58,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.__about__ import __version__
-from kevinbotlib.apps.dashboard.data import raw_to_string
+from kevinbotlib.apps.dashboard.data import get_structure_text, raw_to_string
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.json_editor import JsonEditor
 from kevinbotlib.apps.dashboard.toast import Notifier, Severity
@@ -86,7 +87,7 @@ class LatencyWorker(QObject):
 class WidgetItem(QGraphicsObject):
     item_deleted = Signal(object)
 
-    def __init__(self, title: str, grid: "GridGraphicsView", span_x=1, span_y=1, data=None):
+    def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data=None):
         if data is None:
             data = {}
         super().__init__()
@@ -95,6 +96,7 @@ class WidgetItem(QGraphicsObject):
         self.kind = "base"
 
         self.title = title
+        self.key = key
         self.grid_size = grid.grid_size
         self.span_x = span_x
         self.span_y = span_y
@@ -235,6 +237,48 @@ class WidgetItem(QGraphicsObject):
 
     def delete_self(self):
         self.item_deleted.emit(self)
+
+    def update_data(self, data: dict):
+        pass
+
+
+class LabelWidgetItem(WidgetItem):
+    def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data: dict | None = None):
+        super().__init__(title, key, grid, span_x, span_y, data)
+        self.kind = "text"
+
+        self.label = QLabel(get_structure_text(data))
+        self.label.setWordWrap(True)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label.setStyleSheet("background: transparent;")
+
+        self.proxy = QGraphicsProxyWidget(self)
+        self.proxy.setWidget(self.label)
+
+        self.update_label_geometry()
+
+    def update_label_geometry(self):
+        # Position the label below the title bar
+        label_margin = self.margin + 30  # 30 is the title bar height
+        self.proxy.setGeometry(
+            self.margin, label_margin, self.width - 2 * self.margin, self.height - label_margin - self.margin
+        )
+
+    def set_span(self, x, y):
+        super().set_span(x, y)
+        self.update_label_geometry()
+
+    def prepareGeometryChange(self):  # noqa: N802
+        super().prepareGeometryChange()
+        self.update_label_geometry()
+
+    def update_data(self, data: dict):
+        super().update_data(data)
+        self.label.setText(get_structure_text(data))
+
+
+def determine_widget_types(_did: str):
+    return {"Basic Text": LabelWidgetItem}
 
 
 class GridGraphicsView(QGraphicsView):
@@ -423,7 +467,7 @@ class WidgetGridController(QObject):
     def remove_widget(self, widget):
         self.view.scene().removeItem(widget)
 
-    def get_widgets(self) -> list:
+    def get_widgets(self) -> list[dict]:
         widgets = []
         for item in self.view.scene().items():
             if isinstance(item, WidgetItem):
@@ -434,9 +478,13 @@ class WidgetGridController(QObject):
                     "info": item.info,
                     "kind": item.kind,
                     "title": item.title,
+                    "key": item.key,
                 }
                 widgets.append(widget_info)
         return widgets
+
+    def get_items(self) -> list[WidgetItem]:
+        return [item for item in self.view.scene().items() if isinstance(item, WidgetItem)]
 
     def load(self, item_loader: Callable[[dict], WidgetItem], items: list[dict]):
         for item in items:
@@ -466,13 +514,16 @@ class WidgetPalette(QWidget):
         self.tree.selectionChanged = self._tree_select
 
         self.panel = TopicStatusPanel(self.client)
+        self.panel.added.connect(self.add_widget)
         layout.addWidget(self.panel, 1)
 
     def _tree_select(self, selected: QItemSelection, _: QItemSelection):
         self.panel.set_data(selected.indexes()[0].data(Qt.ItemDataRole.UserRole))
 
-    def add_widget(self, widget_name):
-        self.controller.add(WidgetItem(widget_name, self.graphics_view))
+    def add_widget(self, widget_info: tuple[type[WidgetItem], str, dict]):
+        self.controller.add(
+            widget_info[0](widget_info[1], self.panel.current_key, self.graphics_view, data=widget_info[2])
+        )
 
     def remove_widget(self, widget):
         self.graphics_view.scene().removeItem(widget)
@@ -577,11 +628,14 @@ class UiColorSettingsSwitcher(QFrame):
 
 
 class TopicStatusPanel(QStackedWidget):
+    added = Signal(tuple)
+
     def __init__(self, client: RedisCommClient):
         super().__init__()
         self.setFrameShape(QFrame.Shape.Panel)
 
         self.client = client
+        self.current_key: str | None = None
 
         # No data widget
         no_data_label = QLabel("Select a topic for more info", alignment=Qt.AlignmentFlag.AlignCenter)
@@ -623,15 +677,8 @@ class TopicStatusPanel(QStackedWidget):
 
         data_view_layout.addStretch()
 
-        add_layout = QHBoxLayout()
-        data_view_layout.addLayout(add_layout)
-
-        self.add = QToolButton()
-        self.add.setText("Add to Layout")
-        self.add.setIconSize(QSize(72, 72))
-        self.add.setIcon(qta.icon("mdi6.card-plus"))
-        self.add.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        add_layout.addWidget(self.add)
+        self.add_layout = QHBoxLayout()
+        data_view_layout.addLayout(self.add_layout)
 
         data_view_layout.addStretch()
 
@@ -662,6 +709,7 @@ class TopicStatusPanel(QStackedWidget):
         self.setCurrentIndex(1)
 
         self.data_topic.setText(data)
+        self.current_key = data
         raw = self.client.get_raw(data)
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
         self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
@@ -671,15 +719,30 @@ class TopicStatusPanel(QStackedWidget):
         if raw_content != self.raw_text.document().toPlainText():
             self.raw_text.setText(raw_content)
 
+        for item in reversed(range(self.add_layout.count())):
+            litem = self.add_layout.itemAt(item)
+            widget = litem.widget()
+            self.add_layout.removeItem(litem)
+            widget.setParent(None)
 
-class TreeUpdateWorker(QObject):
+        for name, wtype in determine_widget_types(raw["did"]).items():
+            button = QToolButton()
+            button.setText(f"Add {name}")
+            button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            button.setIcon(qta.icon("mdi6.card-plus"))
+            button.pressed.connect(functools.partial(self.added.emit, (wtype, data, raw)))
+            self.add_layout.addWidget(button)
+
+
+class PollingWorker(QObject):
     result_ready = Signal(dict, list, list)
 
-    def __init__(self, client, model, tree, get_index_path):
+    def __init__(self, client, model, tree, get_index_path, controller: WidgetGridController):
         super().__init__()
         self.client = client
         self.model = model
         self.tree = tree
+        self.controller = controller
         self.get_index_path = get_index_path
 
     @Slot()
@@ -689,8 +752,10 @@ class TreeUpdateWorker(QObject):
 
         data_store = self.client.get_keys()
         data = {}
+        raw_data = {}
 
         for key, value in [(key, self.client.get_raw(key)) for key in data_store]:
+            raw_data[key] = value
             if not value:
                 continue
 
@@ -743,6 +808,10 @@ class TreeUpdateWorker(QObject):
         selected_paths = [
             self.get_index_path(index) for index in self.tree.selectionModel().selectedIndexes() if index.column() == 0
         ]
+
+        for widget in self.controller.get_items():
+            if widget.key in data_store:
+                widget.update_data(raw_data[widget.key])
 
         self.result_ready.emit(hierarchical, expanded_indexes, selected_paths)
 
@@ -824,12 +893,16 @@ class Application(QMainWindow):
         self.latency_timer.timeout.connect(self.latency_worker.get_latency.emit)
         self.latency_timer.start()
 
+        self.controller = WidgetGridController(self.graphics_view)
+        self.controller.load(self.item_loader, self.settings.value("layout", [], type=list))  # type: ignore
+
         self.tree_worker_thread = QThread(self)
-        self.tree_worker = TreeUpdateWorker(
+        self.tree_worker = PollingWorker(
             client=self.client,
             model=self.model,
             tree=self.tree,
             get_index_path=self.get_index_path,
+            controller=self.controller,
         )
         self.tree_worker.moveToThread(self.tree_worker_thread)
         self.tree_worker.result_ready.connect(self._apply_tree_update)
@@ -839,9 +912,6 @@ class Application(QMainWindow):
         self.update_timer.setInterval(100)
         self.update_timer.timeout.connect(self.tree_worker.run)
         self.update_timer.start()
-
-        self.controller = WidgetGridController(self.graphics_view)
-        self.controller.load(self.item_loader, self.settings.value("layout", [], type=list))  # type: ignore
 
         self.settings_window = SettingsWindow(self, self.settings)
         self.settings_window.on_applied.connect(self.refresh_settings)
@@ -962,12 +1032,14 @@ class Application(QMainWindow):
         span_x = item["span_x"]
         span_y = item["span_y"]
         data = item["info"]
-
+        key = item["key"] if "key" in item else item["title"]
         match kind:
             case "base":
-                return WidgetItem(title, self.graphics_view, span_x, span_y, data)
+                return WidgetItem(title, key, self.graphics_view, span_x, span_y, data)
+            case "text":
+                return LabelWidgetItem(title, key, self.graphics_view, span_x, span_y, data)
 
-        return WidgetItem(title, self.graphics_view, span_x, span_y)
+        return WidgetItem(title, key, self.graphics_view, span_x, span_y)
 
     @override
     def closeEvent(self, event: QCloseEvent):

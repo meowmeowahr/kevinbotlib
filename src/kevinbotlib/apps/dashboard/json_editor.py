@@ -18,10 +18,10 @@ class JsonHighlighter(QSyntaxHighlighter):
         keyword_format.setFontWeight(QFont.Weight.Bold)
 
         string_format = QTextCharFormat()
-        string_format.setForeground(QColor("#CE9178"))
+        string_format.setForeground(QColor("#EE9178"))
 
         number_format = QTextCharFormat()
-        number_format.setForeground(QColor("#B5CEA8"))
+        number_format.setForeground(QColor("#B5DEA8"))
 
         punctuation_format = QTextCharFormat()
         punctuation_format.setForeground(QColor("#D4D4D4"))
@@ -55,7 +55,7 @@ class JsonEditor(QTextEdit):
         self.highlighter = JsonHighlighter(self.document())
         self.setStyleSheet("""
             QTextEdit {
-                background-color: #1E1E1E;
+                background-color: #1E1E20;
                 color: #D4D4D4;
                 border: 1px solid #404040;
             }
@@ -70,7 +70,7 @@ class JsonEditor(QTextEdit):
             json.loads(text)
             self.setStyleSheet("""
                 QTextEdit {
-                    background-color: #1E1E1E;
+                    background-color: #1E1E20;
                     color: #D4D4D4;
                     border: 1px solid #404040;
                 }
@@ -78,7 +78,7 @@ class JsonEditor(QTextEdit):
         except json.JSONDecodeError:
             self.setStyleSheet("""
                 QTextEdit {
-                    background-color: #2E1E1E;
+                    background-color: #2E1E20;
                     color: #D4D4D4;
                     border: 1px solid #FF4040;
                 }
