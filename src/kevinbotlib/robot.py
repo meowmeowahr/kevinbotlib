@@ -367,26 +367,23 @@ class BaseRobot:
 
     @final
     def _update_console_enabled(self, enabled: bool):
-        # we don't want to allow dashbaord visibility - set struct to {}
         return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "enabled",
-            BooleanSendable(value=enabled, struct={}),
+            BooleanSendable(value=enabled),
         )
 
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
-        # we don't want to allow dashbaord visibility - set struct to {}
         return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmodes",
-            AnyListSendable(value=opmodes, struct={}),
+            AnyListSendable(value=opmodes),
         )
 
     @final
     def _update_console_opmode(self, opmode: str):
-        # we don't want to allow dashbaord visibility - set struct to {}
         return self.comm_client.set(
             CommPath(self._ctrl_status_root_key) / "opmode",
-            StringSendable(value=opmode, struct={}),
+            StringSendable(value=opmode),
         )
 
     @final
