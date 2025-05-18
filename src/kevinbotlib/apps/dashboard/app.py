@@ -114,7 +114,8 @@ def determine_widget_types(did: str):
         case "kevinbotlib.dtype.bin":
             return {"Basic Text": LabelWidgetItem}
         case "kevinbotlib.vision.dtype.mjpeg":
-            return {"Basic Text": MjpegCameraStreamWidgetItem}
+            return {"MJPEG Stream": MjpegCameraStreamWidgetItem}
+    return {}
 
 
 class GridGraphicsView(QGraphicsView):
@@ -387,7 +388,7 @@ class WidgetPalette(QWidget):
 class SettingsWindow(QDialog):
     on_applied = Signal()
 
-    def __init__(self, parent, settings: QSettings):
+    def __init__(self, parent: "Application", settings: QSettings):
         super().__init__(parent=parent)
 
         self.settings = settings
@@ -435,8 +436,12 @@ class SettingsWindow(QDialog):
         self.form.addRow(Divider("Polling"))
 
         self.poll_rate = QSpinBox(
-            minimum=100, maximum=2500, singleStep=50, value=self.settings.value("rate", 200, int), suffix="ms"
-        )  # type: ignore
+            minimum=100,
+            maximum=2500,
+            singleStep=50,
+            value=self.settings.value("rate", 200, int),
+            suffix="ms",  # type: ignore
+        )
         self.form.addRow("Polling Rate", self.poll_rate)
 
         self.button_layout = QHBoxLayout()
@@ -632,8 +637,6 @@ class PollingWorker(QObject):
 
         data_store = self.client.get_keys()
         data = {}
-        raw_data = {}
-
         raw_data = self.client.get_all_raw()
         if raw_data is None:
             return
@@ -668,12 +671,12 @@ class PollingWorker(QObject):
 
         def to_hierarchical_dict(flat_dict: dict):
             hierarchical_dict = {}
-            for key, value in flat_dict.items():
-                parts = key.split("/")
+            for k, v in flat_dict.items():
+                parts = k.split("/")
                 d = hierarchical_dict
                 for part in parts[:-1]:
                     d = d.setdefault(part, {})
-                d[parts[-1]] = {"items": value, "key": key}
+                d[parts[-1]] = {"items": v, "key": k}
             return hierarchical_dict
 
         hierarchical = to_hierarchical_dict(data)
@@ -805,12 +808,12 @@ class Application(QMainWindow):
         log_collapse.clicked.connect(self.toggle_logs)
         root_layout.addWidget(log_collapse, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        self.log_open_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")
+        self.log_open_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")  # type: ignore
         self.log_open_animation.setStartValue(0)
         self.log_open_animation.setEndValue(200)
         self.log_open_animation.setDuration(100)
 
-        self.log_close_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")
+        self.log_close_animation = QPropertyAnimation(self.log_widget, b"maximumHeight")  # type: ignore
         self.log_close_animation.setStartValue(200)
         self.log_close_animation.setEndValue(0)
         self.log_close_animation.setDuration(100)
@@ -972,8 +975,9 @@ class Application(QMainWindow):
 
         self.graphics_view.set_grid_size(self.settings.value("grid", 48, int))  # type: ignore
         if not self.graphics_view.resize_grid(
-            self.settings.value("rows", 10, int), self.settings.value("cols", 10, int)
-        ):  # type: ignore
+            self.settings.value("rows", 10, int),
+            self.settings.value("cols", 10, int),  # type: ignore
+        ):
             QMessageBox.critical(self.settings_window, "Error", "Cannot resize grid to the specified dimensions.")
             self.settings.setValue("rows", self.graphics_view.rows)
             self.settings.setValue("cols", self.graphics_view.cols)

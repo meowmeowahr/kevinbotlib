@@ -112,3 +112,6 @@ class TextEditWidgetItem(WidgetItem):
                 flags=self.raw_data.get("flags", []),
             ),
         )
+
+    def close(self):
+        pass
