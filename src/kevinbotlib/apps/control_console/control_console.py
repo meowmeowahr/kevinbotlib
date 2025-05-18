@@ -199,7 +199,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def connection_governor(self):
         while True:
-            print(self.client.is_connected())
             if self.control.state.get() == AppState.EMERGENCY_STOPPED:
                 return
             if not self.client.is_connected():

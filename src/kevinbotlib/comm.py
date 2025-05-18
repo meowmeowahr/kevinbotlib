@@ -288,11 +288,12 @@ class RedisCommClient:
         try:
             keys = self.redis.keys("*")
             self._dead = False
-            return keys
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get keys: {e}")
             self._dead = True
             return []
+        else:
+            return keys
 
     def get_raw(self, key: CommPath | str) -> dict | None:
         """Retrieve the raw JSON for a key."""
@@ -303,7 +304,7 @@ class RedisCommClient:
             raw = self.redis.get(str(key))
             self._dead = False
             return orjson.loads(raw) if raw else None
-        except (redis.exceptions.ConnectionError) as e:
+        except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get raw {key}: {e}")
             self._dead = True
             return None
@@ -331,7 +332,6 @@ class RedisCommClient:
         except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
             self._dead = True
-            pass
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         self._apply(key, sendable, pub_mode=False)

@@ -1,4 +1,5 @@
 import functools
+import json
 import sys
 import time
 from collections.abc import Callable
@@ -6,6 +7,7 @@ from dataclasses import dataclass
 from threading import Thread
 from typing import override
 
+import qtawesome as qta
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -44,20 +46,20 @@ from PySide6.QtWidgets import (
     QRadioButton,
     QSizePolicy,
     QSpinBox,
+    QSplitter,
     QStackedWidget,
     QStyleOptionGraphicsItem,
+    QTabWidget,
+    QToolButton,
     QTreeView,
     QVBoxLayout,
     QWidget,
-    QToolButton,
-    QSplitter,
 )
-
-import qtawesome as qta
 
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.data import raw_to_string
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
+from kevinbotlib.apps.dashboard.json_editor import JsonEditor
 from kevinbotlib.apps.dashboard.toast import Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets import Divider
@@ -581,10 +583,12 @@ class TopicStatusPanel(QStackedWidget):
 
         self.client = client
 
+        # No data widget
         no_data_label = QLabel("Select a topic for more info", alignment=Qt.AlignmentFlag.AlignCenter)
         no_data_label.setContentsMargins(16, 16, 16, 16)
         self.addWidget(no_data_label)
 
+        # Main data widget with tabs
         data_widget = QWidget()
         self.addWidget(data_widget)
 
@@ -597,21 +601,30 @@ class TopicStatusPanel(QStackedWidget):
 
         data_layout.addWidget(QFrame(frameShape=QFrame.Shape.HLine))
 
-        data_layout.addStretch()
+        # Tab widget for switching views
+        self.tab_widget = QTabWidget()
+        data_layout.addWidget(self.tab_widget)
+
+        # Data view (existing content)
+        data_view = QWidget()
+        data_view_layout = QVBoxLayout()
+        data_view.setLayout(data_view_layout)
+
+        data_view_layout.addStretch()
 
         self.data_type = QLabel("Data Type: Unknown")
-        data_layout.addWidget(self.data_type)
+        data_view_layout.addWidget(self.data_type)
 
         self.data_known = QLabel("Data Compatible: Unknown")
-        data_layout.addWidget(self.data_known)
+        data_view_layout.addWidget(self.data_known)
 
         self.value = QLabel("Value: Dashboard Error")
-        data_layout.addWidget(self.value)
+        data_view_layout.addWidget(self.value)
 
-        data_layout.addStretch()
+        data_view_layout.addStretch()
 
         add_layout = QHBoxLayout()
-        data_layout.addLayout(add_layout)
+        data_view_layout.addLayout(add_layout)
 
         self.add = QToolButton()
         self.add.setText("Add to Layout")
@@ -620,15 +633,30 @@ class TopicStatusPanel(QStackedWidget):
         self.add.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         add_layout.addWidget(self.add)
 
-        data_layout.addStretch()
+        data_view_layout.addStretch()
 
-        data_layout.addStretch()
+        self.tab_widget.addTab(data_view, "Data View")
 
-        self.set_data(None)
+        # Raw view
+        raw_view = QWidget()
+        raw_view_layout = QVBoxLayout()
+        raw_view.setLayout(raw_view_layout)
+
+        self.raw_text = JsonEditor()
+        self.raw_text.setReadOnly(True)
+        self.raw_text.setPlaceholderText("Raw data will appear here")
+        raw_view_layout.addWidget(self.raw_text)
+
+        self.tab_widget.addTab(raw_view, "Raw View")
 
     def set_data(self, data: str | None):
         if not data:
             self.setCurrentIndex(0)
+            self.data_topic.setText("")
+            self.data_type.setText("Data Type: Unknown")
+            self.data_known.setText("Data Compatible: Unknown")
+            self.value.setText("Value: Dashboard Error")
+            self.raw_text.setText("")
             return
 
         self.setCurrentIndex(1)
@@ -636,8 +664,12 @@ class TopicStatusPanel(QStackedWidget):
         self.data_topic.setText(data)
         raw = self.client.get_raw(data)
         self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
-        self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}") # only registered types are compatible with dashboard
+        self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
         self.value.setText(f"Value: {raw_to_string(raw)}")
+        # Update raw view with formatted raw data
+        raw_content = json.dumps(raw, indent=2) if raw else "No raw data available"
+        if raw_content != self.raw_text.document().toPlainText():
+            self.raw_text.setText(raw_content)
 
 
 class TreeUpdateWorker(QObject):
@@ -775,10 +807,10 @@ class Application(QMainWindow):
         splitter = QSplitter(Qt.Orientation.Horizontal)
         splitter.addWidget(self.graphics_view)
         splitter.addWidget(palette)
-        
+
         splitter.setStretchFactor(0, 4)
         splitter.setStretchFactor(1, 1)
-        
+
         layout.addWidget(splitter)
 
         self.latency_thread = QThread(self)
