@@ -308,6 +308,34 @@ class RedisCommClient:
             self._dead = True
             return None
 
+    def get_all_raw(self) -> dict[str, dict] | None:
+        """Retrieve all raw JSON values as a dictionary of key to raw value."""
+        if not self.redis:
+            _Logger().error("Cannot get all raw: client is not started")
+            return None
+        try:
+            # Get all keys from Redis
+            keys = self.redis.keys("*")
+            if not keys:
+                self._dead = False
+                return {}
+
+            # Retrieve all values using mget for efficiency
+            values = self.redis.mget(keys)
+            self._dead = False
+
+            # Construct result dictionary, decoding JSON values
+            result = {}
+            for key, value in zip(keys, values, strict=False):
+                if value:
+                    result[key] = orjson.loads(value)
+        except redis.exceptions.ConnectionError as e:
+            _Logger().error(f"Cannot get all raw: {e}")
+            self._dead = True
+            return None
+        else:
+            return result
+
     def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator, *, pub_mode: bool = False):
         """Set a sendable in the Redis database."""
         if not self.running or not self.redis:

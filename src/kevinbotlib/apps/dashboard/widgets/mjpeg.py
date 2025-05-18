@@ -1,0 +1,123 @@
+from typing import TYPE_CHECKING
+
+import pybase64
+from PySide6.QtCore import QObject, Qt, QThread, QTimer, Signal, Slot
+from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtWidgets import QGraphicsProxyWidget, QLabel
+
+from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
+from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.logger import Logger
+
+if TYPE_CHECKING:
+    from kevinbotlib.apps.dashboard.app import GridGraphicsView
+
+
+class FrameDecodeWorker(QObject):
+    finished = Signal(QPixmap)
+    error = Signal(str)
+
+    @Slot(str, int, int)
+    def process(self, base64_data: str, width: int, height: int):
+        try:
+            decoded = pybase64.b64decode(base64_data)
+            image = QImage.fromData(decoded, "JPG")  # type: ignore
+            if image.isNull():
+                return
+
+            scaled = image.scaled(
+                width,
+                height,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.FastTransformation,
+            )
+            pixmap = QPixmap.fromImage(scaled)
+            self.finished.emit(pixmap)
+        except ValueError as e:
+            self.error.emit(str(e))
+
+
+class MjpegCameraStreamWidgetItem(WidgetItem):
+    def __init__(
+        self,
+        title: str,
+        key: str,
+        options: dict,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        data: dict | None = None,
+        _client: RedisCommClient | None = None,
+    ):
+        super().__init__(title, key, options, grid, span_x, span_y, data)
+        self.kind = "cameramjpeg"
+
+        self.label = QLabel()
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label.setStyleSheet("background: black;")
+
+        self.proxy = QGraphicsProxyWidget(self)
+        self.proxy.setWidget(self.label)
+
+        self.pending_data = None
+        self.update_label_geometry()
+
+        # Throttle to configured FPS
+        self.frame_timer = QTimer(self)
+        self.frame_timer.timeout.connect(self._apply_pending_frame)
+        self.frame_timer.start(1000 / options.get("fps", 15))
+
+        # Set up worker thread
+        self.worker_thread = QThread(self)
+        self.worker = FrameDecodeWorker()
+        self.worker.moveToThread(self.worker_thread)
+        self.worker.finished.connect(self._on_frame_ready)
+        self.worker.error.connect(self._on_worker_error)
+        self.worker_thread.start()
+
+    def update_label_geometry(self):
+        label_margin = self.margin + 30  # Leave room for title
+        self.label_rect = (
+            self.margin,
+            label_margin,
+            self.width - 2 * self.margin,
+            self.height - label_margin - self.margin,
+        )
+        self.proxy.setGeometry(*self.label_rect)
+
+    def set_span(self, x, y):
+        super().set_span(x, y)
+        self.update_label_geometry()
+
+    def prepareGeometryChange(self):  # noqa: N802
+        super().prepareGeometryChange()
+        self.update_label_geometry()
+
+    def update_data(self, data: dict):
+        super().update_data(data)
+        self.pending_data = data  # Throttled display
+
+    def _apply_pending_frame(self):
+        if not self.pending_data:
+            return
+
+        base64_data = self.pending_data.get("value", "")
+        width = self.label_rect[2]
+        height = self.label_rect[3]
+        self.pending_data = None
+        QTimer.singleShot(0, lambda: self.worker.process(base64_data, width, height))
+
+    @Slot(QPixmap)
+    def _on_frame_ready(self, pixmap: QPixmap):
+        self.label.setPixmap(pixmap)
+
+    @Slot(str)
+    def _on_worker_error(self, error: str):
+        Logger().error(f"Error processing video stream: {error}")
+
+    def close(self):
+        self.worker_thread.quit()
+        self.worker_thread.wait()
+        self.worker.deleteLater()
+        self.worker_thread.deleteLater()
+        super().close()

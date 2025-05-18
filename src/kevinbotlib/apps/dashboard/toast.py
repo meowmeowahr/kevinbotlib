@@ -24,11 +24,11 @@ class Severity(Enum):
 class NotificationWidget(QWidget):
     closed = Signal()
 
-    def __init__(self, title: str, text: str, severity: CustomSeverity, duration: int, parent=None, bg: bool = True):
+    def __init__(self, title: str, text: str, severity: CustomSeverity, duration: int, parent=None, *, bg: bool = True):
         super().__init__(parent)
         self.duration = duration
         self.setup_ui(title, text, severity)
-        if not duration == 0:
+        if duration != 0:
             self.setup_animations()
         self.setAutoFillBackground(bg)
 

@@ -22,3 +22,17 @@ def get_structure_text(value: dict | None):
                         display = raw
             out += str(display)
     return out
+
+
+def find_diff_indices(old: str, new: str) -> tuple[int, int, int, int]:
+    start = 0
+    while start < len(old) and start < len(new) and old[start] == new[start]:
+        start += 1
+
+    end_old = len(old)
+    end_new = len(new)
+    while end_old > start and end_new > start and old[end_old - 1] == new[end_new - 1]:
+        end_old -= 1
+        end_new -= 1
+
+    return start, end_old, start, end_new
