@@ -31,7 +31,7 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
-from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator, QTextOption, QTextCursor
+from PySide6.QtGui import QAction, QBrush, QCloseEvent, QColor, QPainter, QPen, QRegularExpressionValidator, QTextOption, QTextCursor, QFontMetrics, QFont
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -70,7 +70,7 @@ from kevinbotlib.apps.dashboard.json_editor import JsonEditor
 from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets import Divider
-from kevinbotlib.comm import RedisCommClient, StringSendable
+from kevinbotlib.comm import AnyListSendable, BinarySendable, BooleanSendable, DictSendable, FloatSendable, IntegerSendable, RedisCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
@@ -307,6 +307,88 @@ class LabelWidgetItem(WidgetItem):
             self.margin, label_margin, self.width - 2 * self.margin, self.height - label_margin - self.margin
         )
 
+class BigLabelWidgetItem(WidgetItem):
+    def __init__(
+        self,
+        title: str,
+        key: str,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        data: dict | None = None,
+        _client: RedisCommClient | None = None,
+    ):
+        super().__init__(title, key, grid, span_x, span_y, data)
+        self.kind = "bigtext"
+
+        self.label = QLabel(get_structure_text(data))
+        self.label.setWordWrap(False)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+
+        self.proxy = QGraphicsProxyWidget(self)
+        self.proxy.setWidget(self.label)
+
+        self.update_label_geometry()
+        self.adjust_font_size_to_fit()
+
+    def update_label_geometry(self):
+        label_margin = self.margin + 30  # 30 is the title bar height
+        self.label_rect = (
+            self.margin,
+            label_margin,
+            self.width - 2 * self.margin,
+            self.height - label_margin - self.margin,
+        )
+        self.proxy.setGeometry(*self.label_rect)
+
+    def set_span(self, x, y):
+        super().set_span(x, y)
+        self.adjust_font_size_to_fit()
+        self.update_label_geometry()
+
+    def prepareGeometryChange(self):  # noqa: N802
+        super().prepareGeometryChange()
+        self.adjust_font_size_to_fit()
+        self.update_label_geometry()
+
+    def update_data(self, data: dict):
+        super().update_data(data)
+        self.label.setText(get_structure_text(data))
+        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+        self.adjust_font_size_to_fit()
+
+    def adjust_font_size_to_fit(self):
+        if not self.label.text():
+            return
+
+        max_width = self.label_rect[2]
+        max_height = self.label_rect[3]
+        text = self.label.text()
+
+        font = QFont(self.label.font())
+        min_size = 4
+        max_size = 200
+
+        best_size = min_size
+
+        # Binary search for optimal font size
+        while min_size <= max_size:
+            mid = (min_size + max_size) // 2
+            font.setPointSize(mid)
+            metrics = QFontMetrics(font)
+            rect = metrics.boundingRect(text)
+
+            if rect.width() <= max_width and rect.height() <= max_height:
+                best_size = mid
+                min_size = mid + 1
+            else:
+                max_size = mid - 1
+
+        font.setPointSize(best_size - 2)
+        self.label.setFont(font)
+
+
 class TextEditWidgetItem(WidgetItem):
     setdata = Signal(str)
 
@@ -394,8 +476,22 @@ class TextEditWidgetItem(WidgetItem):
         )
 
 
-def determine_widget_types(_did: str):
-    return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem}
+def determine_widget_types(did: str):
+    match did:
+        case "kevinbotlib.dtype.int":
+            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.float":
+            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.str":
+            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.bool":
+            return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.list.any":
+            return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.dict":
+            return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem}
+        case "kevinbotlib.dtype.bin":
+            return {"Basic Text": LabelWidgetItem}
 
 
 class GridGraphicsView(QGraphicsView):
@@ -1252,6 +1348,8 @@ class Application(QMainWindow):
                 return WidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
             case "text":
                 return LabelWidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
+            case "bigtext":
+                return BigLabelWidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
             case "textedit":
                 return TextEditWidgetItem(title, key, self.graphics_view, span_x, span_y, data, self.client)
 

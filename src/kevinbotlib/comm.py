@@ -7,7 +7,6 @@ from typing import Any, ClassVar, TypeVar, final
 
 import orjson
 import redis
-import redis.client
 import redis.exceptions
 from pydantic import BaseModel, ValidationError
 
