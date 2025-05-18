@@ -251,27 +251,36 @@ class LabelWidgetItem(WidgetItem):
     def __init__(self, title: str, key: str, grid: "GridGraphicsView", span_x=1, span_y=1, data: dict | None = None):
         super().__init__(title, key, grid, span_x, span_y, data)
         self.kind = "text"
-        self.raw_data = {}
 
-    def paint(self, painter: QPainter, _option: QStyleOptionGraphicsItem, /, _widget: QWidget | None = None):
-        super().paint(painter, _option, _widget)
+        self.label = QLabel(get_structure_text(data))
+        self.label.setWordWrap(True)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+
+        self.proxy = QGraphicsProxyWidget(self)
+        self.proxy.setWidget(self.label)
+
+        self.update_label_geometry()
+
+    def update_label_geometry(self):
         # Position the label below the title bar
         label_margin = self.margin + 30  # 30 is the title bar height
-        title_rect = QRect(
+        self.proxy.setGeometry(
             self.margin, label_margin, self.width - 2 * self.margin, self.height - label_margin - self.margin
         )
-        painter.drawText(title_rect, Qt.AlignmentFlag.AlignCenter, get_structure_text(self.raw_data))
 
     def set_span(self, x, y):
         super().set_span(x, y)
+        self.update_label_geometry()
 
     def prepareGeometryChange(self):  # noqa: N802
         super().prepareGeometryChange()
+        self.update_label_geometry()
 
     def update_data(self, data: dict):
         super().update_data(data)
-        self.raw_data = data
-        self.update()
+        self.label.setText(get_structure_text(data))
+        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
 
 
 def determine_widget_types(_did: str):
