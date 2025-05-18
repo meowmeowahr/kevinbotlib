@@ -93,8 +93,9 @@ nav:
     - examples/fileserver.md
     - examples/hardwareinterface.md
     - examples/hardwarecontroller.md
-  - The KevinbotLib Control Console:
-    - console/index.md
+  - Applications:
+    - apps/console.md
+    - apps/dashboard.md
   - Command Line Tools:
     - cli/index.md
   - commandscheduler.md
