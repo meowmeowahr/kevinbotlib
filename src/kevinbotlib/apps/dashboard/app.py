@@ -591,6 +591,11 @@ class SettingsWindow(QDialog):
         self.net_port = QSpinBox(minimum=1024, maximum=65535, value=self.settings.value("port", 8765, int))  # type: ignore
         self.form.addRow("Port", self.net_port)
 
+        self.form.addRow(Divider("Polling"))
+
+        self.poll_rate = QSpinBox(minimum=100, maximum=2500, singleStep=50, value=self.settings.value("rate", 200, int), suffix="ms")  # type: ignore
+        self.form.addRow("Polling Rate", self.poll_rate)
+
         self.button_layout = QHBoxLayout()
         self.button_layout.addStretch()
         self.root_layout.addLayout(self.button_layout)
@@ -977,7 +982,7 @@ class Application(QMainWindow):
         self.tree_worker_thread.start()
 
         self.update_timer = QTimer()
-        self.update_timer.setInterval(100)
+        self.update_timer.setInterval(self.settings.value("rate", 200, int)) # type: ignore
         self.update_timer.timeout.connect(self.tree_worker.run)
         self.update_timer.start()
 
@@ -1108,6 +1113,10 @@ class Application(QMainWindow):
             QMessageBox.critical(self.settings_window, "Error", "Cannot resize grid to the specified dimensions.")
             self.settings.setValue("rows", self.graphics_view.rows)
             self.settings.setValue("cols", self.graphics_view.cols)
+
+        self.settings.setValue("rate", self.settings_window.poll_rate.value())
+        self.update_timer.setInterval(self.settings.value("rate", 200, int)) # type: ignore
+
 
     def item_loader(self, item: dict) -> WidgetItem:
         kind = item["kind"]
