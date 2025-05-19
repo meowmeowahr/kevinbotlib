@@ -28,6 +28,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QCloseEvent,
+    QIcon,
     QRegularExpressionValidator,
     QTextOption,
 )
@@ -55,6 +56,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+import kevinbotlib.apps.dashboard.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.dashboard.card_types import determine_widget_types
 from kevinbotlib.apps.dashboard.grid import (
@@ -64,7 +66,7 @@ from kevinbotlib.apps.dashboard.grid import (
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.json_editor import JsonEditor
-from kevinbotlib.apps.dashboard.qwidgets import Divider
+from kevinbotlib.apps.dashboard.qwidgets import AboutDialog, Divider
 from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
@@ -509,6 +511,10 @@ class Application(QMainWindow):
         self.settings_action = self.edit_menu.addAction("Settings", self.open_settings)
         self.settings_action.setShortcut("Ctrl+,")
 
+        self.help_menu = self.menu.addMenu("&Help")
+
+        self.about_action = self.help_menu.addAction("About", self.show_about)
+
         self.status = self.statusBar()
 
         self.connection_status = QLabel("Robot Disconnected")
@@ -615,10 +621,15 @@ class Application(QMainWindow):
         self.settings_window = SettingsWindow(self, self.settings)
         self.settings_window.on_applied.connect(self.refresh_settings)
 
+        self.about_window = AboutDialog("KevinbotLib Dashboard", "Robot Dashboard for KevinbotLib", __version__, QIcon(":/app_icons/dashboard.svg"), "Copyright © 2025 Kevin Ahr and contributors", self)
+
         self.connection_governor_thread = Thread(
             target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
         )
         self.connection_governor_thread.start()
+
+    def show_about(self):
+        self.about_window.show()
 
     def _exc_hook(self, _: type, exc_value: BaseException, __: TracebackType, *_args):
         self.logger.log(
@@ -855,7 +866,7 @@ class DashboardApplicationRunner:
         self.logger.configure(LoggerConfiguration(level=log_level))
 
     def run(self):
-        # kevinbotlib.apps.dashboard.resources_rc.qInitResources()
+        kevinbotlib.apps.dashboard.resources_rc.qInitResources()
         self.window = Application(self.app, self.logger)
         self.window.show()
         sys.exit(self.app.exec())

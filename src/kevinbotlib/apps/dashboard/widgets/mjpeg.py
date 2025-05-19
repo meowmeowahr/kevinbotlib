@@ -2,16 +2,16 @@ from typing import TYPE_CHECKING
 
 import pybase64
 from PySide6.QtCore import QObject, Qt, QThread, QTimer, Signal, Slot
-from PySide6.QtGui import QImage, QPixmap, QAction
+from PySide6.QtGui import QAction, QImage, QPixmap
 from PySide6.QtWidgets import (
-    QGraphicsProxyWidget,
-    QLabel,
     QDialog,
-    QVBoxLayout,
     QFormLayout,
-    QSpinBox,
-    QPushButton,
+    QGraphicsProxyWidget,
     QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSpinBox,
+    QVBoxLayout,
 )
 
 from kevinbotlib.apps.dashboard.qwidgets import Divider
@@ -46,10 +46,11 @@ class FrameDecodeWorker(QObject):
         except ValueError as e:
             self.error.emit(str(e))
 
+
 class MjpegCameraStreamWidgetSettings(QDialog):
     options_changed = Signal(dict)
 
-    def __init__(self, options: dict | None = None,  parent=None):
+    def __init__(self, options: dict | None = None, parent=None):
         super().__init__(parent)
         if not options:
             options = {}
@@ -66,9 +67,7 @@ class MjpegCameraStreamWidgetSettings(QDialog):
 
         self.form.addRow(Divider("Frame Rate"))
 
-        self.fps = QSpinBox(
-            minimum=1, maximum=20, value=self.options.get("fps", 15)
-        )
+        self.fps = QSpinBox(minimum=1, maximum=20, value=self.options.get("fps", 15))
         self.fps.valueChanged.connect(self.set_fps)
         self.form.addRow("FPS", self.fps)
 
@@ -103,6 +102,7 @@ class MjpegCameraStreamWidgetItem(WidgetItem):
         _client: RedisCommClient | None = None,
     ):
         super().__init__(title, key, options, grid, span_x, span_y)
+        self.label_rect = None
         self.kind = "cameramjpeg"
 
         self.settings = MjpegCameraStreamWidgetSettings(self.options, grid)

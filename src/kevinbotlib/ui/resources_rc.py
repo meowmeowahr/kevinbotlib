@@ -3340,7 +3340,7 @@ imestamp\x002025-05\
 -18T04:16:14+00:\
 00\x9f\xae0{\x00\x00\x00\x00IEND\xaeB\
 `\x82\
-\x00\x00\x01\xd2\
+\x00\x00\x01\xc3\
 <\
 svg xmlns=\x22http:\
 //www.w3.org/200\
@@ -3356,22 +3356,21 @@ rip-horizontal\x22>\
 \x0a    <!-- Column\
  1 -->\x0a    <circ\
 le cx=\x225\x22 cy=\x225\x22\
- r=\x221\x22 fill=\x22cur\
-rentColor\x22 opaci\
-ty=\x220.5\x22 />\x0a    \
-<!-- Column 2 --\
->\x0a    <circle cx\
-=\x2210\x22 cy=\x225\x22 r=\x22\
-1\x22 fill=\x22current\
-Color\x22 opacity=\x22\
-0.5\x22 />\x0a    <!--\
- Column 3 -->\x0a  \
-  <circle cx=\x2215\
-\x22 cy=\x225\x22 r=\x221\x22 f\
-ill=\x22currentColo\
-r\x22 opacity=\x220.5\x22\
- />\x0a  </g>\x0a</svg\
->\
+ r=\x221\x22 fill=\x22#2d\
+3639\x22 opacity=\x220\
+.5\x22 />\x0a    <!-- \
+Column 2 -->\x0a   \
+ <circle cx=\x2210\x22\
+ cy=\x225\x22 r=\x221\x22 fi\
+ll=\x22#2d3639\x22 opa\
+city=\x220.5\x22 />\x0a  \
+  <!-- Column 3 \
+-->\x0a    <circle \
+cx=\x2215\x22 cy=\x225\x22 r\
+=\x221\x22 fill=\x22#2d36\
+39\x22 opacity=\x220.5\
+\x22 />\x0a  </g>\x0a</sv\
+g>\
 "
 
 qt_resource_name = b"\
@@ -3527,7 +3526,7 @@ qt_resource_struct = b"\
 \x00\x00\x04P\x00\x00\x00\x00\x00\x01\x00\x00\x8cZ\
 \x00\x00\x01\x96\xe1\x9bN\xd1\
 \x00\x00\x05\x8e\x00\x00\x00\x00\x00\x01\x00\x00\xcd\x9f\
-\x00\x00\x01\x96\xe1\x95\xfc\xb8\
+\x00\x00\x01\x96\xe1\xa8M\xaf\
 \x00\x00\x03\xf4\x00\x00\x00\x00\x00\x01\x00\x00\x80C\
 \x00\x00\x01\x96\xe1\x9bO\x81\
 \x00\x00\x02\xcc\x00\x00\x00\x00\x00\x01\x00\x00`$\
@@ -3540,13 +3539,10 @@ qt_resource_struct = b"\
 \x00\x00\x01\x96\xe1\x9bO\x17\
 "
 
-
 def qInitResources():
     QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
 
-
 def qCleanupResources():
     QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
-
 
 qInitResources()

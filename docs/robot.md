@@ -8,13 +8,12 @@
 
     It is **always** recommended to add a physical emergency stop system to your robot.
 
-The KevinbotLib main robot class is the starting point for your robotics project. It integrates many components of KevinbotLib together to make it easy to design your own robot.
+The KevinbotLib main robot class is the starting point for your robotics project. It integrates many components of KevinbotLib to make it easy to design your own robot.
 
 ## Features
 
 The KevinbotLib Robot class sets up some components of KevinbotLib to make designing a robot easier. The components are listed below.
 
-* Communication Server
 * Communication Client
 * Logging Configuration
 * Periodic log file rotations
@@ -28,7 +27,7 @@ The KevinbotLib Robot class sets up some components of KevinbotLib to make desig
 
 * Extend the [BaseRobot](reference/index.md#kevinbotlib.robot.BaseRobot) class and add your own code.
 * Call `YourRobotClassName().run()` to start the robot's execution
-* All of the components listed above will be started up automatically 😀
+* All the components listed above will be started up automatically 😀
 
 !!! warning
     It is not recommended to override the `run` method, or any other private method marked with the `@final` decorator.
