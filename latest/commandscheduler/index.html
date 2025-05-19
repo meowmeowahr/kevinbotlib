@@ -737,6 +737,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    The Command Scheduler
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -748,6 +761,43 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Diagram
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-use-the-command-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why use the command scheduler?
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -930,6 +980,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Diagram
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-use-the-command-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why use the command scheduler?
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -953,7 +1029,14 @@
 
 
 <h1 id="the-command-scheduler">The Command Scheduler</h1>
-<p>wip</p>
+<h2 id="architecture-diagram">Architecture Diagram</h2>
+<p><img alt="scheduler-diagram-dark.svg" src="../media/scheduler-diagram-dark.svg#only-dark" />
+<img alt="scheduler-diagram-light.svg" src="../media/scheduler-diagram-light.svg#only-light" /></p>
+<h2 id="why-use-the-command-scheduler">Why use the command scheduler?</h2>
+<p>The command scheduler offers a unique way to run commands in a robot program. 
+Commands can be run in parallel, sequentially, or in the main scheduler FIFO queue.
+This allows for more flexibility when compared with traditional linear programming.
+Commands may be scheduled using a trigger.</p>
 
 
 
