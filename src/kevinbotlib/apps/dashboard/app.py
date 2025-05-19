@@ -145,6 +145,7 @@ class SettingsWindow(QDialog):
 
     def __init__(self, parent: "Application", settings: QSettings):
         super().__init__(parent=parent)
+        self.setModal(True)
 
         self.settings = settings
 
@@ -194,8 +195,8 @@ class SettingsWindow(QDialog):
             minimum=50,
             maximum=2500,
             singleStep=50,
-            value=self.settings.value("rate", 200, int),
-            suffix="ms",  # type: ignore
+            value=self.settings.value("rate", 200, int),  # type: ignore
+            suffix="ms",
         )
         self.form.addRow("Polling Rate", self.poll_rate)
 
@@ -206,6 +207,10 @@ class SettingsWindow(QDialog):
         self.apply_button = QPushButton("Apply")
         self.apply_button.clicked.connect(self.apply)
         self.button_layout.addWidget(self.apply_button)
+
+        self.exit_button = QPushButton("Exit")
+        self.exit_button.clicked.connect(self.close)
+        self.button_layout.addWidget(self.exit_button)
 
     def apply(self):
         self.on_applied.emit()

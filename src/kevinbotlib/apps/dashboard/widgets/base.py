@@ -155,7 +155,7 @@ class WidgetItem(QGraphicsObject):
         new_y = max(0, min(new_y, (rows - self.span_y) * grid_size))
         self.setPos(new_x, new_y)
 
-    def contextMenuEvent(self, event):  # noqa: N802
+    def create_context_menu(self):
         menu = QMenu(self.view)
         delete_action = QAction("Delete", self)
         delete_action.triggered.connect(self.delete_self)
@@ -165,7 +165,10 @@ class WidgetItem(QGraphicsObject):
         menu.addAction(delete_action)
         menu.addAction(edit_title_action)
 
-        menu.exec(event.screenPos())
+        return menu
+
+    def contextMenuEvent(self, event):  # noqa: N802
+        self.create_context_menu().exec(event.screenPos())
 
     def edit_title(self):
         new_title, ok = QInputDialog.getText(self.view, "Edit Title", "Enter new title:", text=self.title)
