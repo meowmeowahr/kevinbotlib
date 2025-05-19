@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QTextCursor
-from PySide6.QtWidgets import QGraphicsTextItem
+from PySide6.QtWidgets import QGraphicsProxyWidget, QLineEdit
 
 from kevinbotlib.apps.dashboard.helpers import find_diff_indices, get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
@@ -36,64 +35,43 @@ class TextEditWidgetItem(WidgetItem):
         self.raw_data = {}
         self.client = client
 
-        # Create QGraphicsTextItem instead of QLineEdit
-        self.label = QGraphicsTextItem("", self)
-        self.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextEditorInteraction)
-        self.label.setDefaultTextColor(self.view.theme.value.foreground)
-        self.label.document().contentsChanged.connect(self.commit)
+        self.line_edit = QLineEdit()
+        self.line_edit.setStyleSheet(self.view.window().styleSheet())
+        self.line_edit.setPlaceholderText("Enter text...")
+        self.line_edit.editingFinished.connect(self.commit)
+
+        self.proxy = QGraphicsProxyWidget(self)
+        self.proxy.setWidget(self.line_edit)
 
         self.setdata.connect(self.set_text)
-        self.update_label_geometry()
+        self.update_line_edit_geometry()
 
-    def update_label_geometry(self):
-        label_margin: int = self.margin + 30
-        self.label.setPos(self.margin, label_margin)
-        self.label.setTextWidth(self.boundingRect().width() - 8)
+    def update_line_edit_geometry(self):
+        if not self.proxy or not self.line_edit:
+            return
+
+        br = self.boundingRect()
+        le_size = self.proxy.size()
+
+        # Center horizontally and vertically
+        x = (br.width() - le_size.width()) / 2
+        y = (br.height() + 30 - le_size.height()) / 2
+        self.proxy.setPos(x, y)
 
     def set_span(self, x, y):
         super().set_span(x, y)
-        self.update_label_geometry()
+        self.update_line_edit_geometry()
 
     def prepareGeometryChange(self):  # noqa: N802
         super().prepareGeometryChange()
-        self.update_label_geometry()
+        self.update_line_edit_geometry()
 
     def set_text(self, text: str):
-        old = self.label.toPlainText()
-        if text == old:
-            return
-
-        self.label.document().setUndoRedoEnabled(False)
-        self.label.document().blockSignals(True)
-
-        cursor = self.label.textCursor()
-        anchor = cursor.anchor()
-        position = cursor.position()
-
-        start_old, end_old, start_new, end_new = find_diff_indices(old, text)
-        if start_old == end_old and start_new == end_new:
-            return  # Already equal
-
-        doc = self.label.document()
-        edit_cursor = QTextCursor(doc)
-
-        edit_cursor.beginEditBlock()
-        edit_cursor.setPosition(start_old)
-        edit_cursor.setPosition(end_old, QTextCursor.MoveMode.KeepAnchor)
-        edit_cursor.insertText(text[start_new:end_new])
-        edit_cursor.endEditBlock()
-
-        # Restore original cursor position (approximate)
-        new_cursor = self.label.textCursor()
-        max_pos = doc.characterCount() - 1
-        anchor = max(0, min(anchor, max_pos))
-        position = max(0, min(position, max_pos))
-        new_cursor.setPosition(anchor)
-        new_cursor.setPosition(position, QTextCursor.MoveMode.KeepAnchor)
-        self.label.setTextCursor(new_cursor)
-
-        self.label.document().setUndoRedoEnabled(True)
-        self.label.document().blockSignals(False)
+        old = self.line_edit.text()
+        if text != old:
+            self.line_edit.blockSignals(True)
+            self.line_edit.setText(text)
+            self.line_edit.blockSignals(False)
 
     def update_data(self, data: dict):
         super().update_data(data)
@@ -101,46 +79,49 @@ class TextEditWidgetItem(WidgetItem):
         self.setdata.emit(get_structure_text(data))
 
     def commit(self):
-        text = self.label.toPlainText()
+        text = self.line_edit.text()
         self.commit_edit(text)
 
     def commit_edit(self, text: str):
         if not self.client or not self.client.is_connected() or not self.raw_data:
             return
 
-        match self.raw_data["did"]:
-            case "kevinbotlib.dtype.str":
-                self.client.set(
-                    self.key,
-                    StringSendable(
-                        value=text,
-                        struct=self.raw_data["struct"],
-                        timeout=self.raw_data["timeout"],
-                        flags=self.raw_data.get("flags", []),
-                    ),
-                )
-            case "kevinbotlib.dtype.int":
-                self.client.set(
-                    self.key,
-                    IntegerSendable(
-                        value=int(text),
-                        struct=self.raw_data["struct"],
-                        timeout=self.raw_data["timeout"],
-                        flags=self.raw_data.get("flags", []),
-                    ),
-                )
-            case "kevinbotlib.dtype.float":
-                self.client.set(
-                    self.key,
-                    FloatSendable(
-                        value=float(text),
-                        struct=self.raw_data["struct"],
-                        timeout=self.raw_data["timeout"],
-                        flags=self.raw_data.get("flags", []),
-                    ),
-                )
-            case _:
-                Logger().error(f"Unsupported dtype for editing: {self.raw_data['did']}")
+        try:
+            match self.raw_data["did"]:
+                case "kevinbotlib.dtype.str":
+                    self.client.set(
+                        self.key,
+                        StringSendable(
+                            value=text,
+                            struct=self.raw_data["struct"],
+                            timeout=self.raw_data["timeout"],
+                            flags=self.raw_data.get("flags", []),
+                        ),
+                    )
+                case "kevinbotlib.dtype.int":
+                    self.client.set(
+                        self.key,
+                        IntegerSendable(
+                            value=int(text),
+                            struct=self.raw_data["struct"],
+                            timeout=self.raw_data["timeout"],
+                            flags=self.raw_data.get("flags", []),
+                        ),
+                    )
+                case "kevinbotlib.dtype.float":
+                    self.client.set(
+                        self.key,
+                        FloatSendable(
+                            value=float(text),
+                            struct=self.raw_data["struct"],
+                            timeout=self.raw_data["timeout"],
+                            flags=self.raw_data.get("flags", []),
+                        ),
+                    )
+                case _:
+                    Logger().error(f"Unsupported dtype for editing: {self.raw_data['did']}")
+        except ValueError:
+            Logger().warning(f"Invalid value for type '{self.raw_data['did']}': {text}")
 
     def close(self):
         pass
