@@ -22,14 +22,10 @@ class WidgetItem(QGraphicsObject):
         grid: "GridGraphicsView",
         span_x=1,
         span_y=1,
-        data=None,
         _client: RedisCommClient | None = None,
     ):
-        if data is None:
-            data = {}
         super().__init__()
 
-        self.info = data
         self.kind = "base"
         self.options = options
 

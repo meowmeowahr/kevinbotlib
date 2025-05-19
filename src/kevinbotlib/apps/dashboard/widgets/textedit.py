@@ -29,12 +29,11 @@ class TextEditWidgetItem(WidgetItem):
         grid: "GridGraphicsView",
         span_x=1,
         span_y=1,
-        data: dict | None = None,
         client: RedisCommClient | None = None,
     ):
-        super().__init__(title, key, options, grid, span_x, span_y, data)
+        super().__init__(title, key, options, grid, span_x, span_y)
         self.kind = "textedit"
-        self.raw_data = data
+        self.raw_data = {}
         self.client = client
 
         # Create QGraphicsTextItem instead of QLineEdit

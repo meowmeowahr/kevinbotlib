@@ -21,10 +21,9 @@ class BigLabelWidgetItem(WidgetItem):
         grid: "GridGraphicsView",
         span_x=1,
         span_y=1,
-        data: dict | None = None,
         _client: RedisCommClient | None = None,
     ):
-        super().__init__(title, key, options, grid, span_x, span_y, data)
+        super().__init__(title, key, options, grid, span_x, span_y)
         self.kind = "bigtext"
 
         self.label = QLabel()
