@@ -470,6 +470,7 @@ class Application(QMainWindow):
         super().__init__()
         self.app = app
         self.setWindowTitle("KevinbotLib Dashboard")
+        self.setWindowIcon(QIcon(":/app_icons/dashboard-small.svg"))
 
         self.settings = QSettings("kevinbotlib", "dashboard")
 

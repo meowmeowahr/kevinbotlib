@@ -2,5 +2,6 @@
 <RCC version="1.0">
     <qresource>
     <file>app_icons/dashboard.svg</file>
+    <file>app_icons/dashboard-small.svg</file>
     </qresource>
 </RCC>
