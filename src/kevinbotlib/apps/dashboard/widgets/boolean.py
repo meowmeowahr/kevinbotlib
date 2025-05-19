@@ -27,6 +27,9 @@ class BooleanWidgetItem(WidgetItem):
     ):
         super().__init__(title, key, options, grid, span_x, span_y, data)
         self.kind = "boolean"
+        self.min_width = self.grid_size  # Minimum width in pixels
+        self.min_height = self.grid_size * 2  # Minimum height in pixels
+
         self.raw_data = data
         self.client = client
 
