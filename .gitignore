@@ -166,3 +166,6 @@ cython_debug/
 
 # Line Profiler
 *.lprof
+
+# Valkey/Redis
+dump.rdb
