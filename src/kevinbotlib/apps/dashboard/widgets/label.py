@@ -26,7 +26,7 @@ class LabelWidgetItem(WidgetItem):
         super().__init__(title, key, options, grid, span_x, span_y, data)
         self.kind = "text"
 
-        self.label = QLabel(get_structure_text(data))
+        self.label = QLabel()
         self.label.setWordWrap(True)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")

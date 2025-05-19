@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QRect, QRectF, Qt, Signal
 from PySide6.QtGui import QAction, QBrush, QColor, QPainter, QPen
-from PySide6.QtWidgets import QGraphicsObject, QMenu, QStyleOptionGraphicsItem, QWidget
+from PySide6.QtWidgets import QGraphicsObject, QMenu, QStyleOptionGraphicsItem, QWidget, QInputDialog
 
 from kevinbotlib.comm import RedisCommClient
 
@@ -163,9 +163,19 @@ class WidgetItem(QGraphicsObject):
         menu = QMenu(self.view)
         delete_action = QAction("Delete", self)
         delete_action.triggered.connect(self.delete_self)
+        edit_title_action = QAction("Edit Title", self)
+        edit_title_action.triggered.connect(self.edit_title)
+
         menu.addAction(delete_action)
+        menu.addAction(edit_title_action)
 
         menu.exec(event.screenPos())
+
+    def edit_title(self):
+        new_title, ok = QInputDialog.getText(self.view, "Edit Title", "Enter new title:", text=self.title)
+        if ok and new_title:
+            self.title = new_title
+            self.update()
 
     @abstractmethod
     def close(self):

@@ -32,7 +32,7 @@ class TextEditWidgetItem(WidgetItem):
         self.client = client
 
         # Create QGraphicsTextItem instead of QLineEdit
-        self.label = QGraphicsTextItem(get_structure_text(data), self)
+        self.label = QGraphicsTextItem("", self)
         self.label.setTextInteractionFlags(Qt.TextInteractionFlag.TextEditorInteraction)
         self.label.setDefaultTextColor(self.view.theme.value.foreground)
         self.label.document().contentsChanged.connect(self.commit)
