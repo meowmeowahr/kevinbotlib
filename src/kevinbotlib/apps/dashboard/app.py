@@ -133,7 +133,6 @@ class WidgetPalette(QWidget):
                 self.graphics_view,
                 1,
                 1,
-                widget_info[2],
                 self.client,
             )
         )
