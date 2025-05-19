@@ -72,6 +72,7 @@ from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
+from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
@@ -808,6 +809,8 @@ class Application(QMainWindow):
                 return BooleanWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
             case "cameramjpeg":
                 return MjpegCameraStreamWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            case "color":
+                return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
 
         return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
 

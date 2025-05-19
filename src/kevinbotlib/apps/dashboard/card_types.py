@@ -1,5 +1,6 @@
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
+from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
@@ -12,7 +13,7 @@ def determine_widget_types(did: str):
         case "kevinbotlib.dtype.float":
             return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
         case "kevinbotlib.dtype.str":
-            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem, "Color": ColorWidgetItem}
         case "kevinbotlib.dtype.bool":
             return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem, "Boolean": BooleanWidgetItem}
         case "kevinbotlib.dtype.list.any":
