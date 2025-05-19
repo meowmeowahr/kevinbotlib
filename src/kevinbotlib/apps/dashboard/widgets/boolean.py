@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter
+from PySide6.QtGui import QPainter, QColor
 from PySide6.QtWidgets import QStyleOptionGraphicsItem, QWidget
 
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
@@ -38,9 +38,9 @@ class BooleanWidgetItem(WidgetItem):
 
         # Draw boolean as a rectangle of red or green
         if self.raw_data.get("value", False):
-            painter.setBrush(Qt.GlobalColor.green)
+            painter.setBrush(QColor(self.options.get("true_color", "#46b346")))
         else:
-            painter.setBrush(Qt.GlobalColor.red)
+            painter.setBrush(QColor(self.options.get("false_color", "#b34646")))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(self.boundingRect().adjusted(10, 40, -10, -10), 5, 5)
 
