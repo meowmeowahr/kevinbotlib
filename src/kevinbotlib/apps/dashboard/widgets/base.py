@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QRect, QRectF, Qt, Signal
 from PySide6.QtGui import QAction, QBrush, QColor, QPainter, QPen
-from PySide6.QtWidgets import QGraphicsObject, QMenu, QStyleOptionGraphicsItem, QWidget, QInputDialog
+from PySide6.QtWidgets import QGraphicsObject, QInputDialog, QMenu, QStyleOptionGraphicsItem, QWidget
 
 from kevinbotlib.comm import RedisCommClient
 

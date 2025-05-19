@@ -1243,6 +1243,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+
 def get_licenses() -> dict[str, str]:
     """Return all licenses of KevinbotLib and it's dependencies
 

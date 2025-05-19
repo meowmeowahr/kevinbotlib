@@ -6,7 +6,13 @@ from PySide6.QtWidgets import QGraphicsTextItem
 
 from kevinbotlib.apps.dashboard.helpers import find_diff_indices, get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import RedisCommClient, StringSendable
+from kevinbotlib.comm import (
+    FloatSendable,
+    IntegerSendable,
+    RedisCommClient,
+    StringSendable,
+)
+from kevinbotlib.logger import Logger
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
@@ -103,15 +109,39 @@ class TextEditWidgetItem(WidgetItem):
         if not self.client or not self.client.is_connected() or not self.raw_data:
             return
 
-        self.client.set(
-            self.key,
-            StringSendable(
-                value=text,
-                struct=self.raw_data["struct"],
-                timeout=self.raw_data["timeout"],
-                flags=self.raw_data.get("flags", []),
-            ),
-        )
+        match self.raw_data["did"]:
+            case "kevinbotlib.dtype.str":
+                self.client.set(
+                    self.key,
+                    StringSendable(
+                        value=text,
+                        struct=self.raw_data["struct"],
+                        timeout=self.raw_data["timeout"],
+                        flags=self.raw_data.get("flags", []),
+                    ),
+                )
+            case "kevinbotlib.dtype.int":
+                self.client.set(
+                    self.key,
+                    IntegerSendable(
+                        value=int(text),
+                        struct=self.raw_data["struct"],
+                        timeout=self.raw_data["timeout"],
+                        flags=self.raw_data.get("flags", []),
+                    ),
+                )
+            case "kevinbotlib.dtype.float":
+                self.client.set(
+                    self.key,
+                    FloatSendable(
+                        value=float(text),
+                        struct=self.raw_data["struct"],
+                        timeout=self.raw_data["timeout"],
+                        flags=self.raw_data.get("flags", []),
+                    ),
+                )
+            case _:
+                Logger().error(f"Unsupported dtype for editing: {self.raw_data['did']}")
 
     def close(self):
         pass

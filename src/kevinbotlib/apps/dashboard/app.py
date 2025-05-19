@@ -6,6 +6,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from queue import Queue
 from threading import Thread
+from types import TracebackType
 from typing import override
 
 import ansi2html
@@ -73,11 +74,12 @@ from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Sever
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
+from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 from kevinbotlib.comm import RedisCommClient
-from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration, LoggerWriteOpts
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 from kevinbotlib.vision import VisionCommUtils
 
@@ -106,7 +108,7 @@ def determine_widget_types(did: str):
         case "kevinbotlib.dtype.str":
             return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
         case "kevinbotlib.dtype.bool":
-            return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem}
+            return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem, "Boolean": BooleanWidgetItem}
         case "kevinbotlib.dtype.list.any":
             return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem}
         case "kevinbotlib.dtype.dict":
@@ -782,6 +784,7 @@ class Application(QMainWindow):
 
         self.log_queue: Queue[str] = Queue(1000)
         self.logger.add_hook_ansi(self.log_hook)
+        sys.excepthook = self._exc_hook
 
         self.log_timer = QTimer()
         self.log_timer.setInterval(250)
@@ -802,7 +805,7 @@ class Application(QMainWindow):
         log_layout.addWidget(self.log_view)
 
         log_collapse = QToolButton()
-        log_collapse.setText("Logs")
+        log_collapse.setText("Dashboard Logs")
         log_collapse.setStyleSheet("padding: 2px;")
         log_collapse.setFixedHeight(24)
         log_collapse.clicked.connect(self.toggle_logs)
@@ -858,6 +861,13 @@ class Application(QMainWindow):
             target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
         )
         self.connection_governor_thread.start()
+
+    def _exc_hook(self, _: type, exc_value: BaseException, __: TracebackType, *_args):
+        self.logger.log(
+            Level.CRITICAL,
+            "Dashboard exception",
+            LoggerWriteOpts(exception=exc_value),
+        )
 
     def log_hook(self, data: str):
         self.log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
@@ -975,7 +985,7 @@ class Application(QMainWindow):
 
         self.graphics_view.set_grid_size(self.settings.value("grid", 48, int))  # type: ignore
         if not self.graphics_view.resize_grid(
-            self.settings.value("rows", 10, int),
+            self.settings.value("rows", 10, int),  # type: ignore
             self.settings.value("cols", 10, int),  # type: ignore
         ):
             QMessageBox.critical(self.settings_window, "Error", "Cannot resize grid to the specified dimensions.")
@@ -1002,6 +1012,8 @@ class Application(QMainWindow):
                 return BigLabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, data, self.client)
             case "textedit":
                 return TextEditWidgetItem(title, key, options, self.graphics_view, span_x, span_y, data, self.client)
+            case "boolean":
+                return BooleanWidgetItem(title, key, options, self.graphics_view, span_x, span_y, data, self.client)
             case "cameramjpeg":
                 return MjpegCameraStreamWidgetItem(
                     title, key, options, self.graphics_view, span_x, span_y, data, self.client
