@@ -272,6 +272,8 @@ class TopicStatusPanel(QStackedWidget):
         self.raw_data = {}
         self.current_key: str | None = None
 
+        self._add_buttons: list[QToolButton] = []  # New: persistent buttons
+
         # No data widget
         no_data_label = QLabel("Select a topic for more info", alignment=Qt.AlignmentFlag.AlignCenter)
         no_data_label.setContentsMargins(16, 16, 16, 16)
@@ -341,19 +343,22 @@ class TopicStatusPanel(QStackedWidget):
             self.data_known.setText("Data Compatible: Unknown")
             self.value.setText("Value: Dashboard Error")
             self.raw_text.setText("")
+            self._hide_all_buttons()
             return
 
         self.setCurrentIndex(1)
 
         self.data_topic.setText(data)
         self.current_key = data
-        raw = self.raw_data[data] if data in self.raw_data else self.client.get_raw(data)
+        raw = self.raw_data.get(data) or self.client.get_raw(data)
         if not raw:
+            self._hide_all_buttons()
             return
-        self.data_type.setText(f"Data Type: {raw['did'] if raw else 'Unknown'}")
+
+        self.data_type.setText(f"Data Type: {raw.get('did', 'Unknown')}")
         self.data_known.setText(f"Data Compatible: {raw['did'] in self.client.SENDABLE_TYPES}")
         self.value.setText(f"Value: {get_structure_text(raw)}")
-        # Update raw view with formatted raw data
+
         raw_content = json.dumps(raw, indent=2) if raw else "No raw data available"
         if self.tab_widget.currentIndex() == 1:
             if raw_content != self.raw_text.document().toPlainText():
@@ -361,23 +366,42 @@ class TopicStatusPanel(QStackedWidget):
         elif self.raw_text.toPlainText() != "Raw data will appear here":
             self.raw_text.setText("Raw data will appear here")
 
-        for item in reversed(range(self.add_layout.count())):
-            litem = self.add_layout.itemAt(item)
-            widget = litem.widget()
-            self.add_layout.removeItem(litem)
-            widget.setParent(None)
+        self._update_add_buttons(raw)
 
+    def _hide_all_buttons(self):
+        for button in self._add_buttons:
+            button.hide()
+
+    def _update_add_buttons(self, raw: dict):
         wt = determine_widget_types(raw["did"])
         if not wt:
+            self._hide_all_buttons()
             return
 
-        for name, wtype in wt.items():
+        needed = len(wt)
+        # Create more buttons if not enough
+        while len(self._add_buttons) < needed:
             button = QToolButton()
-            button.setText(f"Add {name}")
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             button.setIcon(qta.icon("mdi6.card-plus"))
-            button.pressed.connect(functools.partial(self.added.emit, (wtype, data, raw)))
             self.add_layout.addWidget(button)
+            self._add_buttons.append(button)
+
+        # Update button properties and show them
+        for i, (name, wtype) in enumerate(wt.items()):
+            button = self._add_buttons[i]
+            button.setText(f"Add {name}")
+            try:
+                button.pressed.disconnect()  # Prevent duplicate signal connections
+            except TypeError:
+                pass
+            button.pressed.connect(functools.partial(self.added.emit, (wtype, self.current_key, raw)))
+            button.show()
+
+        # Hide any extra buttons
+        for i in range(len(wt), len(self._add_buttons)):
+            self._add_buttons[i].hide()
+
 
 
 class PollingWorker(QObject):
