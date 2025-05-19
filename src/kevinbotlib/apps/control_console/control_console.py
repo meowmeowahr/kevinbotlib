@@ -223,8 +223,6 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         while not self.console_log_queue.empty():
             self.control.logs.append(self.console_log_queue.get())
-            if self.control.autoscroll_checkbox.isChecked():
-                self.control.logs.verticalScrollBar().setValue(self.control.logs.verticalScrollBar().maximum())
 
     def apply_theme(self):
         theme_name = self.settings.value("application.theme", "Dark")

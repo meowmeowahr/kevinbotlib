@@ -161,10 +161,6 @@ class ControlConsoleControlTab(QWidget):
         self.clear_button.clicked.connect(self.logs.clear)
         log_controls_layout.addWidget(self.clear_button)
 
-        self.autoscroll_checkbox = QCheckBox("Autoscroll")
-        self.autoscroll_checkbox.setChecked(True)
-        log_controls_layout.addWidget(self.autoscroll_checkbox)
-
         log_controls_layout.addStretch()
 
         self.logs_layout.addLayout(log_controls_layout)
