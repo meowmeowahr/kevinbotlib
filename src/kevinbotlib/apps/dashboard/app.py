@@ -421,15 +421,17 @@ class PollingWorker(QObject):
         if self.running:
             return
 
-        self.running = True
-
         if not self.client.is_connected():
             return
+
+        self.running = True
 
         data = {}
         raw_data = self.client.get_all_raw()
         if raw_data is None:
+            self.running = False
             return
+
         for key in raw_data.keys():
             value = raw_data.get(key)
             raw_data[key] = value
