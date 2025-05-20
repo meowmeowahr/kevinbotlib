@@ -21,7 +21,7 @@ class GridGraphicsView(QGraphicsView):
 
         self.setScene(QGraphicsScene(self))
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
-        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.BoundingRectViewportUpdate)
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
         self.setBackgroundBrush(QColor(theme.value.background))
 
         self.grid_lines = []
