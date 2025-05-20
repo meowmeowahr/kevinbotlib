@@ -432,7 +432,7 @@ class PollingWorker(QObject):
             self.running = False
             return
 
-        for key in raw_data.keys():
+        for key in raw_data:
             value = raw_data.get(key)
             raw_data[key] = value
             if not value:
@@ -489,7 +489,7 @@ class PollingWorker(QObject):
         ]
 
         for widget in self.controller.get_items():
-            if widget.key in raw_data.keys():
+            if widget.key in raw_data:
                 widget.update_data(raw_data[widget.key])
 
         self.result_ready.emit(hierarchical, expanded_indexes, selected_paths, raw_data)

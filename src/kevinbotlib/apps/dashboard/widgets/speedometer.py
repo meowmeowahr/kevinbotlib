@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QPushButton,
     QVBoxLayout,
+    QDoubleSpinBox,
 )
 
 from kevinbotlib.apps.dashboard.gradient import GradientEditor
@@ -71,6 +72,22 @@ class SpeedometerWidgetSettings(QDialog):
         self.scale_gradient.gradient_changed.connect(self.set_scale)
         self.form.addRow(self.scale_gradient)
 
+        self.form.addRow(Divider("Range"))
+
+        self.min_value = QDoubleSpinBox()
+        self.min_value.setValue(self.options.get("min", 0))
+        self.min_value.setRange(-2_147_483_648, 2_147_483_647)
+        self.min_value.setDecimals(2)
+        self.min_value.valueChanged.connect(self.set_min_value)
+        self.form.addRow("Min Value", self.min_value)
+
+        self.max_value = QDoubleSpinBox()
+        self.max_value.setValue(self.options.get("max", 100))
+        self.max_value.setRange(-2_147_483_648, 2_147_483_647)
+        self.max_value.setDecimals(2)
+        self.max_value.valueChanged.connect(self.set_max_value)
+        self.form.addRow("Max Value", self.max_value)
+
         self.button_layout = QHBoxLayout()
         self.button_layout.addStretch()
         self.root_layout.addLayout(self.button_layout)
@@ -97,6 +114,12 @@ class SpeedometerWidgetSettings(QDialog):
 
     def set_scale(self, value: list):
         self.options["scale"] = value
+
+    def set_min_value(self, value: float):
+        self.options["min"] = value
+
+    def set_max_value(self, value: float):
+        self.options["max"] = value
 
     def apply(self):
         self.options_changed.emit(self.options)
@@ -127,8 +150,8 @@ class SpeedometerWidgetItem(WidgetItem):
         self.speedometer.set_enable_big_scaled_grid(options.get("coarse_tick_display", True))
         self.speedometer.set_enable_scale(options.get("scale_display", True))
         self.speedometer.set_scale_polygon_colors(options.get("scale", self.speedometer.scale_polygon_colors))
-        self.speedometer.set_min_value(-1)
-        self.speedometer.set_max_value(1)
+        self.speedometer.set_min_value(options.get("min", 0))
+        self.speedometer.set_max_value(options.get("max", 100))
         self.speedometer.setStyleSheet("background: transparent;")
 
         self.settings = SpeedometerWidgetSettings(self.speedometer, self.options, grid)
@@ -206,6 +229,8 @@ class SpeedometerWidgetItem(WidgetItem):
         self.speedometer.set_enable_big_scaled_grid(options.get("coarse_tick_display", True))
         self.speedometer.set_enable_scale(options.get("scale_display", True))
         self.speedometer.set_scale_polygon_colors(options.get("scale", self.speedometer.scale_polygon_colors))
+        self.speedometer.set_min_value(options.get("min", 0))
+        self.speedometer.set_max_value(options.get("max", 100))
 
     def close(self):
         pass

@@ -23,7 +23,9 @@ class GridGraphicsView(QGraphicsView):
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
         self.setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground)
-        self.setOptimizationFlags(QGraphicsView.OptimizationFlag.IndirectPainting | QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing)
+        self.setOptimizationFlags(
+            QGraphicsView.OptimizationFlag.IndirectPainting | QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing
+        )
         self.setBackgroundBrush(QColor(theme.value.background))
 
         self.grid_lines = []

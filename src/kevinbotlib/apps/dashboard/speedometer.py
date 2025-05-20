@@ -5,7 +5,7 @@ A copy of the license is included in the third_party/ folder of this repository.
 
 import math
 
-from PySide6.QtCore import QObject, QPoint, QPointF, QRect, QSize, Qt, QTimer, Signal
+from PySide6.QtCore import QObject, QPoint, QPointF, QRect, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QConicalGradient, QFont, QFontMetrics, QPainter, QPen, QPolygon, QPolygonF
 from PySide6.QtWidgets import QWidget
 
@@ -22,16 +22,10 @@ class Speedometer(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.use_timer_event = False
-        self.black = QColor(0, 0, 0, 255)
-
         self.NeedleColor = QColor(50, 50, 50, 255)
         self.ScaleValueColor = QColor(50, 50, 50, 255)
         self.DisplayValueColor = QColor(50, 50, 50, 255)
         self.CenterPointColor = QColor(50, 50, 50, 255)
-
-        # self.valueColor = black
-        # self.black = QColor(0, 0, 0, 255)
 
         self.value_needle_count = 1
         self.value_needle = QObject
@@ -87,12 +81,7 @@ class Speedometer(QWidget):
 
         self.needle_scale_factor = 0.6
 
-        if self.use_timer_event:
-            timer = QTimer(self)
-            timer.timeout.connect(self.update)
-            timer.start(10)
-        else:
-            self.update()
+        self.update()
 
         self.rescale_method()
 
@@ -127,8 +116,7 @@ class Speedometer(QWidget):
         self.value_needle = []
         for i in design:
             self.value_needle.append(i)
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def update_value(self, value):
         if value <= self.value_min:
@@ -139,13 +127,11 @@ class Speedometer(QWidget):
             self.value = value
 
         self.value_changed.emit(int(value))
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def update_angle_offset(self, offset):
         self.angle_offset = offset
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def center_horizontal(self, value):
         self.center_horizontal_value = value
@@ -156,64 +142,54 @@ class Speedometer(QWidget):
     def set_needle_color(self, color: QColor):
         self.NeedleColor = color
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_scale_value_color(self, color: QColor):
         self.ScaleValueColor = color
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_display_value_color(self, color: QColor):
         self.DisplayValueColor = color
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_center_point_color(self, color: QColor):
         self.CenterPointColor = color
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_enable_scale(self, enable: bool):
         self.enable_scale = enable
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_enable_scale_text(self, enable):
         self.enable_scale_text = enable
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_enable_value_text(self, enable):
         self.enable_value_text = enable
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_enable_big_scaled_grid(self, enable):
         self.enable_big_scaled_marker = enable
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_enable_fine_scaled_marker(self, enable):
         self.enable_fine_scaled_marker = enable
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_scala_main_count(self, count):
         if count < 1:
             count = 1
         self.scala_main_count = count
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_min_value(self, minval: float):
         if self.value < minval:
@@ -223,8 +199,7 @@ class Speedometer(QWidget):
         else:
             self.value_min = minval
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_max_value(self, maxval: float):
         if self.value > maxval:
@@ -234,33 +209,28 @@ class Speedometer(QWidget):
         else:
             self.value_max = maxval
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_start_scale_angle(self, value):
         # Value range in DEG: 0 - 360
         self.scale_angle_start_value = value
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_total_scale_angle_size(self, value):
         self.scale_angle_size = value
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_gauge_color_outer_radius_factor(self, value):
         self.gauge_color_outer_radius_factor = float(value) / 1000
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_gauge_color_inner_radius_factor(self, value):
         self.gauge_color_inner_radius_factor = float(value) / 1000
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     def set_scale_polygon_colors(self, color_array):
         # print(type(color_array))
@@ -271,8 +241,7 @@ class Speedometer(QWidget):
         else:
             self.scale_polygon_colors = [[0.0, Qt.transparent]]
 
-        if not self.use_timer_event:
-            self.update()
+        self.update()
 
     ###############################################################################################
     # Get Methods
@@ -287,20 +256,12 @@ class Speedometer(QWidget):
 
     def create_polygon_pie(self, outer_radius, inner_raduis, start, lenght):
         polygon_pie = QPolygonF()
-        # start = self.scale_angle_start_value
-        # start = 0
-        # lenght = self.scale_angle_size
-        # lenght = 180
-        # inner_raduis = self.width()/4
-        # print(start)
         n = 360  # angle steps size for full circle
         # changing n value will causes drawing issues
         w = 360 / n  # angle per step
         # create outer circle line from "start"-angle to "start + lenght"-angle
         x = 0
         y = 0
-
-        # mymax = 0
 
         for i in range(lenght + 1):  # add the points of polygon
             t = w * i + start - self.angle_offset
@@ -356,7 +317,7 @@ class Speedometer(QWidget):
         # Koordinatenursprung in die Mitte der Flaeche legen
         my_painter.translate(self.width() / 2, self.height() / 2)
 
-        self.pen = QPen(QColor(0, 0, 0, 255))
+        self.pen = QPen(self.ScaleValueColor)
         self.pen.setWidth(2)
         my_painter.setPen(self.pen)
 
@@ -407,7 +368,7 @@ class Speedometer(QWidget):
         # Koordinatenursprung in die Mitte der Flaeche legen
         my_painter.translate(self.width() / 2, self.height() / 2)
 
-        my_painter.setPen(Qt.black)
+        my_painter.setPen(self.ScaleValueColor)
         my_painter.rotate(self.scale_angle_start_value - self.angle_offset)
         steps_size = float(self.scale_angle_size) / float(self.scala_main_count * self.scala_subdiv_count)
         scale_line_outer_start = self.widget_diameter / 2
