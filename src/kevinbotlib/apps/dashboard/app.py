@@ -1,3 +1,4 @@
+import contextlib
 import functools
 import json
 import sys
@@ -75,6 +76,7 @@ from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
+from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration, LoggerWriteOpts
@@ -392,17 +394,14 @@ class TopicStatusPanel(QStackedWidget):
         for i, (name, wtype) in enumerate(wt.items()):
             button = self._add_buttons[i]
             button.setText(f"Add {name}")
-            try:
+            with contextlib.suppress(TypeError):
                 button.pressed.disconnect()  # Prevent duplicate signal connections
-            except TypeError:
-                pass
             button.pressed.connect(functools.partial(self.added.emit, (wtype, self.current_key, raw)))
             button.show()
 
         # Hide any extra buttons
         for i in range(len(wt), len(self._add_buttons)):
             self._add_buttons[i].hide()
-
 
 
 class PollingWorker(QObject):
@@ -415,18 +414,23 @@ class PollingWorker(QObject):
         self.tree = tree
         self.controller = controller
         self.get_index_path = get_index_path
+        self.running = False
 
     @Slot()
     def run(self):
+        if self.running:
+            return
+
+        self.running = True
+
         if not self.client.is_connected():
             return
 
-        data_store = self.client.get_keys()
         data = {}
         raw_data = self.client.get_all_raw()
         if raw_data is None:
             return
-        for key in data_store:
+        for key in raw_data.keys():
             value = raw_data.get(key)
             raw_data[key] = value
             if not value:
@@ -483,10 +487,11 @@ class PollingWorker(QObject):
         ]
 
         for widget in self.controller.get_items():
-            if widget.key in data_store:
+            if widget.key in raw_data.keys():
                 widget.update_data(raw_data[widget.key])
 
         self.result_ready.emit(hierarchical, expanded_indexes, selected_paths, raw_data)
+        self.running = False
 
 
 class Application(QMainWindow):
@@ -646,7 +651,14 @@ class Application(QMainWindow):
         self.settings_window = SettingsWindow(self, self.settings)
         self.settings_window.on_applied.connect(self.refresh_settings)
 
-        self.about_window = AboutDialog("KevinbotLib Dashboard", "Robot Dashboard for KevinbotLib", __version__, QIcon(":/app_icons/dashboard.svg"), "Copyright © 2025 Kevin Ahr and contributors", self)
+        self.about_window = AboutDialog(
+            "KevinbotLib Dashboard",
+            "Robot Dashboard for KevinbotLib",
+            __version__,
+            QIcon(":/app_icons/dashboard.svg"),
+            "Copyright © 2025 Kevin Ahr and contributors",
+            self,
+        )
 
         self.connection_governor_thread = Thread(
             target=self.connection_governor, daemon=True, name="KevinbotLib.Dashboard.Connection.Governor"
@@ -811,6 +823,8 @@ class Application(QMainWindow):
                 return MjpegCameraStreamWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
             case "color":
                 return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            case "speedometer":
+                return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
 
         return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
 
@@ -831,10 +845,14 @@ class Application(QMainWindow):
             self.save_slot()
             self.tree_worker_thread.quit()
             self.latency_thread.quit()
+            for widget in self.controller.get_items():
+                widget.close()
             event.accept()
         elif reply == QMessageBox.StandardButton.No:
             self.tree_worker_thread.quit()
             self.latency_thread.quit()
+            for widget in self.controller.get_items():
+                widget.close()
             event.accept()
         else:
             event.ignore()

@@ -4,7 +4,6 @@ from typing import Any
 
 from PySide6.QtCore import QItemSelection, Qt, QTimer, Signal
 from PySide6.QtWidgets import (
-    QCheckBox,
     QGridLayout,
     QHBoxLayout,
     QLabel,

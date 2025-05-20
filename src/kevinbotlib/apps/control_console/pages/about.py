@@ -3,18 +3,14 @@ from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication,
-    QDialog,
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QTabWidget,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 from kevinbotlib import __about__
-from kevinbotlib.licenses import get_licenses
 from kevinbotlib.ui.theme import Theme
 from kevinbotlib.ui.widgets import LicenseDialog
 

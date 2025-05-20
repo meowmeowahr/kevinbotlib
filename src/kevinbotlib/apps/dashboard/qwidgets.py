@@ -1,5 +1,6 @@
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
+    QApplication,
     QDialog,
     QFrame,
     QHBoxLayout,
@@ -8,7 +9,6 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QVBoxLayout,
     QWidget,
-    QApplication,
 )
 
 from kevinbotlib.ui.widgets import LicenseDialog
@@ -29,8 +29,17 @@ class Divider(QWidget):
         self.line.setFrameShape(QFrame.Shape.HLine)
         _layout.addWidget(self.line)
 
+
 class AboutDialog(QDialog):
-    def __init__(self, app_name: str, app_description: str, app_version: str, app_icon: QIcon | None = None, cright: str = None, parent=None):
+    def __init__(
+        self,
+        app_name: str,
+        app_description: str,
+        app_version: str,
+        app_icon: QIcon | None = None,
+        cright: str | None = None,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle(f"About {app_name}")
         self.setModal(True)

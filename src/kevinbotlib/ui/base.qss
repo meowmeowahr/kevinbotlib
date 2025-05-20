@@ -134,7 +134,7 @@ QRadioButton::indicator:checked:hover {
 }
 
 /* QSpinBox Styling */
-QSpinBox {
+QSpinBox, QDoubleSpinBox {
     background-color: {{bg3}};
     color: {{fg}};
     border: 1px solid {{border}};
@@ -145,32 +145,37 @@ QSpinBox {
     selection-color: {{fg}};
 }
 
-QSpinBox:focus {
+QSpinBox:focus, QDoubleSpinBox:focus {
     border: 1px solid {{primary1}};
 }
 
-QSpinBox::up-button, QSpinBox::down-button {
+QSpinBox::up-button, QSpinBox::down-button,
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
     background-color: {{bg3}};
     border: none;
     width: 16px;
     margin-right: 2px;
 }
 
-QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+QSpinBox::up-button:hover, QSpinBox::down-button:hover,
+QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
     background-color: {{bg4}};
 }
 
-QSpinBox::up-button:pressed, QSpinBox::down-button:pressed {
+QSpinBox::up-button:pressed, QSpinBox::down-button:pressed,
+QDoubleSpinBox::up-button:pressed, QDoubleSpinBox::down-button:pressed {
     background-color: {{bg5}};
 }
 
-QSpinBox::up-arrow {
+QSpinBox::up-arrow,
+QDoubleSpinBox::up-arrow {
     image: url({{":/theme_icons/spinbox-caret-up-dark.png" if is_dark else ":/theme_icons/spinbox-caret-up-light.png"}});
     width: 12px;
     height: 10px;
 }
 
-QSpinBox::down-arrow {
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow {
     image: url({{":/theme_icons/spinbox-caret-down-dark.png" if is_dark else ":/theme_icons/spinbox-caret-down-light.png"}});
     width: 12px;
     height: 10px;

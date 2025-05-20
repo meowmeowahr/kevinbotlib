@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QGraphicsProxyWidget, QLineEdit
 
-from kevinbotlib.apps.dashboard.helpers import find_diff_indices, get_structure_text
+from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm import (
     FloatSendable,

@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QPushButton, QTextEdit, QTabWidget, QVBoxLayout, QDialog
+from PySide6.QtWidgets import QDialog, QPushButton, QTabWidget, QTextEdit, QVBoxLayout
 
 from kevinbotlib.licenses import get_licenses
 

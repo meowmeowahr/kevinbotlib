@@ -3,17 +3,33 @@ from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
+from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 
 
 def determine_widget_types(did: str):
     match did:
         case "kevinbotlib.dtype.int":
-            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+            return {
+                "Basic Text": LabelWidgetItem,
+                "Text Edit": TextEditWidgetItem,
+                "Big Text": BigLabelWidgetItem,
+                "Speedometer": SpeedometerWidgetItem,
+            }
         case "kevinbotlib.dtype.float":
-            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem}
+            return {
+                "Basic Text": LabelWidgetItem,
+                "Text Edit": TextEditWidgetItem,
+                "Big Text": BigLabelWidgetItem,
+                "Speedometer": SpeedometerWidgetItem,
+            }
         case "kevinbotlib.dtype.str":
-            return {"Basic Text": LabelWidgetItem, "Text Edit": TextEditWidgetItem, "Big Text": BigLabelWidgetItem, "Color": ColorWidgetItem}
+            return {
+                "Basic Text": LabelWidgetItem,
+                "Text Edit": TextEditWidgetItem,
+                "Big Text": BigLabelWidgetItem,
+                "Color": ColorWidgetItem,
+            }
         case "kevinbotlib.dtype.bool":
             return {"Basic Text": LabelWidgetItem, "Big Text": BigLabelWidgetItem, "Boolean": BooleanWidgetItem}
         case "kevinbotlib.dtype.list.any":

@@ -125,6 +125,7 @@ class MjpegCameraStreamWidgetItem(WidgetItem):
 
         # Set up a worker thread
         self.worker_thread = QThread(self)
+        self.worker_thread.setObjectName("MjpegWorker")
         self.worker = FrameDecodeWorker()
         self.worker.moveToThread(self.worker_thread)
         self.worker.finished.connect(self._on_frame_ready)
