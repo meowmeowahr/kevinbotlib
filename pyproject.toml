@@ -45,6 +45,7 @@ dependencies = [
   "deprecated>=1.2.18",
   "redis>=6.1.0",
   "wakepy>=0.10.2.post1",
+  "superqt>=0.7.3",
 ]
 
 [project.optional-dependencies]

@@ -11,6 +11,7 @@ from typing import override
 
 import ansi2html
 import qtawesome as qta
+import superqt.utils
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -29,6 +30,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QCloseEvent,
+    QFont,
     QIcon,
     QRegularExpressionValidator,
     QTextOption,
@@ -56,6 +58,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from superqt import QFlowLayout
 
 import kevinbotlib.apps.dashboard.resources_rc
 from kevinbotlib.__about__ import __version__
@@ -66,7 +69,6 @@ from kevinbotlib.apps.dashboard.grid import (
 )
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
-from kevinbotlib.apps.dashboard.json_editor import JsonEditor
 from kevinbotlib.apps.dashboard.qwidgets import AboutDialog, Divider
 from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
@@ -319,7 +321,7 @@ class TopicStatusPanel(QStackedWidget):
 
         data_view_layout.addStretch()
 
-        self.add_layout = QHBoxLayout()
+        self.add_layout = QFlowLayout()
         data_view_layout.addLayout(self.add_layout)
 
         data_view_layout.addStretch()
@@ -331,7 +333,9 @@ class TopicStatusPanel(QStackedWidget):
         raw_view_layout = QVBoxLayout()
         raw_view.setLayout(raw_view_layout)
 
-        self.raw_text = JsonEditor()
+        self.raw_text = QTextEdit()
+        self.raw_text.setFont(QFont("monospace", 10))
+        self.raw_syntax = superqt.utils.CodeSyntaxHighlight(self.raw_text, "json", "monokai")
         self.raw_text.setReadOnly(True)
         self.raw_text.setPlaceholderText("Raw data will appear here")
         raw_view_layout.addWidget(self.raw_text)

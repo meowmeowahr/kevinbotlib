@@ -5,12 +5,12 @@ from PySide6.QtGui import QAction, QColor
 from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
+    QDoubleSpinBox,
     QFormLayout,
     QGraphicsProxyWidget,
     QHBoxLayout,
     QPushButton,
     QVBoxLayout,
-    QDoubleSpinBox,
 )
 
 from kevinbotlib.apps.dashboard.gradient import GradientEditor
