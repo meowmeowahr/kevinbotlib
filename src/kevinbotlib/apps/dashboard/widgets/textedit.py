@@ -1,7 +1,15 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QGraphicsProxyWidget, QLineEdit
+from PySide6.QtCore import Signal, QSize
+from PySide6.QtWidgets import (
+    QGraphicsProxyWidget,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+    QHBoxLayout,
+)
+import qtawesome as qta
 
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
@@ -34,20 +42,51 @@ class TextEditWidgetItem(WidgetItem):
         self.kind = "textedit"
         self.raw_data = {}
         self.client = client
+        self.current_value = ""
+
+        self.container_widget = QWidget()
+        self.container_widget.setStyleSheet("background: transparent;")
+        self.container_layout = QVBoxLayout(self.container_widget)
+        self.container_layout.setContentsMargins(0, 0, 0, 0)
+        self.container_layout.setSpacing(2)
+
+        self.line_layout = QHBoxLayout()
+        self.container_layout.addLayout(self.line_layout)
 
         self.line_edit = QLineEdit()
         self.line_edit.setStyleSheet(self.view.window().styleSheet())
         self.line_edit.setPlaceholderText("Enter text...")
-        self.line_edit.editingFinished.connect(self.commit)
+        self.line_edit.textEdited.connect(self.on_text_edited)
+        self.line_layout.addWidget(self.line_edit)
+
+        self.validate_icon = qta.IconWidget()
+        self.validate_icon.setIconSize(QSize(24, 24))
+        self.validate_icon.setIcon(qta.icon("mdi6.close", color="#b34646"))
+        self.line_layout.addWidget(self.validate_icon)
+
+        self.actions_layout = QHBoxLayout()
+        self.container_layout.addLayout(self.actions_layout)
+
+        self.submit_button = QPushButton("Submit")
+        self.submit_button.setStyleSheet(self.view.window().styleSheet())
+        self.submit_button.clicked.connect(self.submit_clicked)
+        self.submit_button.setIcon(qta.icon("mdi6.send"))
+        self.actions_layout.addWidget(self.submit_button)
+
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.setStyleSheet(self.view.window().styleSheet())
+        self.cancel_button.clicked.connect(self.cancel_clicked)
+        self.cancel_button.setIcon(qta.icon("mdi6.cancel"))
+        self.actions_layout.addWidget(self.cancel_button)
 
         self.proxy = QGraphicsProxyWidget(self)
-        self.proxy.setWidget(self.line_edit)
+        self.proxy.setWidget(self.container_widget)
 
-        self.setdata.connect(self.set_text)
+        self.setdata.connect(self.update_text)
         self.update_line_edit_geometry()
 
     def update_line_edit_geometry(self):
-        if not self.proxy or not self.line_edit:
+        if not self.proxy or not self.container_widget:
             return
 
         br = self.boundingRect()
@@ -67,20 +106,32 @@ class TextEditWidgetItem(WidgetItem):
         self.update_line_edit_geometry()
 
     def set_text(self, text: str):
-        old = self.line_edit.text()
-        if text != old:
-            self.line_edit.blockSignals(True)
-            self.line_edit.setText(text)
-            self.line_edit.blockSignals(False)
+        self.current_value = text
+        self.line_edit.blockSignals(True)
+        self.line_edit.setText(text)
+        self.line_edit.blockSignals(False)
+        self.validate_icon.setIcon(qta.icon("mdi6.check", color="#46b346"))
+
+    def update_text(self, text: str):
+        if self.current_value != self.line_edit.text():
+            return
+        self.set_text(text)
 
     def update_data(self, data: dict):
         super().update_data(data)
         self.raw_data = data
         self.setdata.emit(get_structure_text(data))
 
-    def commit(self):
-        text = self.line_edit.text()
-        self.commit_edit(text)
+    def on_text_edited(self, new_text: str):
+        self.validate_icon.setIcon(qta.icon("mdi6.close", color="#b34646"))
+
+    def submit_clicked(self):
+        new_text = self.line_edit.text()
+        if new_text != self.current_value:
+            self.commit_edit(new_text)
+
+    def cancel_clicked(self):
+        self.set_text(self.current_value)
 
     def commit_edit(self, text: str):
         if not self.client or not self.client.is_connected() or not self.raw_data:
@@ -120,6 +171,7 @@ class TextEditWidgetItem(WidgetItem):
                     )
                 case _:
                     Logger().error(f"Unsupported dtype for editing: {self.raw_data['did']}")
+            self.set_text(text)  # Update current value after successful commit
         except ValueError:
             Logger().warning(f"Invalid value for type '{self.raw_data['did']}': {text}")
 
