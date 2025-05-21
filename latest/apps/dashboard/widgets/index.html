@@ -11,25 +11,25 @@
       
       
       
-        <link rel="prev" href="../robot/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../logger/">
+        <link rel="next" href="../../../cli/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>Communication Examples - KevinbotLib Docs</title>
+        <title>Widgets - KevinbotLib Docs</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,11 +48,11 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#communication-examples" class="md-skip">
+        <a href="#widgets" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="KevinbotLib Docs" class="md-header__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
+    <a href="../../.." title="KevinbotLib Docs" class="md-header__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Communication Examples
+              Widgets
             
           </span>
         </div>
@@ -244,7 +244,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="KevinbotLib Docs" class="md-nav__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
+    <a href="../../.." title="KevinbotLib Docs" class="md-nav__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -274,7 +274,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -296,7 +296,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../../../installation/" class="md-nav__link">
         
   
   
@@ -315,8 +315,6 @@
       
   
   
-    
-  
   
   
     
@@ -346,15 +344,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../../examples/" class="md-nav__link ">
               
   
   
@@ -373,7 +371,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -389,7 +387,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../robot/" class="md-nav__link">
+      <a href="../../../examples/robot/" class="md-nav__link">
         
   
   
@@ -409,32 +407,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Communication Examples
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../examples/comm/" class="md-nav__link">
         
   
   
@@ -445,62 +421,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setter" class="md-nav__link">
-    <span class="md-ellipsis">
-      Setter
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getter" class="md-nav__link">
-    <span class="md-ellipsis">
-      Getter
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getter-with-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Getter with Hooks
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sendable-generator" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sendable Generator
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -513,7 +433,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../logger/" class="md-nav__link">
+      <a href="../../../examples/logger/" class="md-nav__link">
         
   
   
@@ -536,7 +456,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../joystick/" class="md-nav__link">
+      <a href="../../../examples/joystick/" class="md-nav__link">
         
   
   
@@ -559,7 +479,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../system/" class="md-nav__link">
+      <a href="../../../examples/system/" class="md-nav__link">
         
   
   
@@ -582,7 +502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fileserver/" class="md-nav__link">
+      <a href="../../../examples/fileserver/" class="md-nav__link">
         
   
   
@@ -605,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hardwareinterface/" class="md-nav__link">
+      <a href="../../../examples/hardwareinterface/" class="md-nav__link">
         
   
   
@@ -628,7 +548,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hardwarecontroller/" class="md-nav__link">
+      <a href="../../../examples/hardwarecontroller/" class="md-nav__link">
         
   
   
@@ -655,8 +575,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -668,11 +590,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
@@ -688,7 +610,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Applications
@@ -702,7 +624,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/" class="md-nav__link">
+      <a href="../../console/" class="md-nav__link">
         
   
   
@@ -722,6 +644,8 @@
                 
   
   
+    
+  
   
   
     
@@ -737,15 +661,15 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../apps/dashboard/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -764,7 +688,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4_2">
             <span class="md-nav__icon md-icon"></span>
             Dashboard
@@ -777,10 +701,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../apps/dashboard/widgets/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Widgets
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -791,6 +737,263 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#base-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Base Widget
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#text-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Text Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#big-text-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Big Text Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Big Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editable-text-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Editable Text Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Editable Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boolean-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Boolean Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Boolean Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#color-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Color Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Color Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-string-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported String Formats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mjpeg-streamer-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      MJPEG Streamer Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MJPEG Streamer Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#battery-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Battery Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Battery Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#speedometer-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speedometer Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Speedometer Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -836,7 +1039,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../cli/" class="md-nav__link ">
+            <a href="../../../cli/" class="md-nav__link ">
               
   
   
@@ -873,7 +1076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commandscheduler/" class="md-nav__link">
+      <a href="../../../commandscheduler/" class="md-nav__link">
         
   
   
@@ -895,7 +1098,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../robot/" class="md-nav__link">
+      <a href="../../../robot/" class="md-nav__link">
         
   
   
@@ -941,7 +1144,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/" class="md-nav__link ">
+            <a href="../../../reference/" class="md-nav__link ">
               
   
   
@@ -976,7 +1179,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/hardwareinterface/" class="md-nav__link">
+      <a href="../../../reference/hardwareinterface/" class="md-nav__link">
         
   
   
@@ -999,7 +1202,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/hardwarecontroller/" class="md-nav__link">
+      <a href="../../../reference/hardwarecontroller/" class="md-nav__link">
         
   
   
@@ -1022,7 +1225,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/ui/" class="md-nav__link">
+      <a href="../../../reference/ui/" class="md-nav__link">
         
   
   
@@ -1072,38 +1275,239 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setter" class="md-nav__link">
+  <a href="#base-widget" class="md-nav__link">
     <span class="md-ellipsis">
-      Setter
+      Base Widget
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#getter" class="md-nav__link">
+  <a href="#text-widget" class="md-nav__link">
     <span class="md-ellipsis">
-      Getter
+      Text Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#getter-with-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      Getter with Hooks
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sendable-generator" class="md-nav__link">
+  <a href="#big-text-widget" class="md-nav__link">
     <span class="md-ellipsis">
-      Sendable Generator
+      Big Text Widget
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Big Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#editable-text-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Editable Text Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Editable Text Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boolean-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Boolean Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Boolean Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#color-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Color Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Color Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-string-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported String Formats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mjpeg-streamer-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      MJPEG Streamer Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MJPEG Streamer Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#battery-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Battery Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Battery Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#speedometer-widget" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speedometer Widget
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Speedometer Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-options_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatible-data-types_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatible Data Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1123,7 +1527,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/comm.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/apps/dashboard/widgets.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1131,203 +1535,150 @@
   
 
 
-<h1 id="communication-examples">Communication Examples</h1>
-<h2 id="setter">Setter</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/comm/setter.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span><span class="p">,</span> <span class="n">StringSendable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
-
-<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;demo </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="getter">Getter</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/comm/getter.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span><span class="p">,</span> <span class="n">StringSendable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">))</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="getter-with-hooks">Getter with Hooks</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/comm/getter_hooks.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">hook</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received message from </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-
-<span class="n">client</span><span class="o">.</span><span class="n">add_hook</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">hook</span><span class="p">)</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="sendable-generator">Sendable Generator</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/comm/sendable_generator.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BaseSendable</span><span class="p">,</span>
-    <span class="n">IntegerSendable</span><span class="p">,</span>
-    <span class="n">RedisCommClient</span><span class="p">,</span>
-    <span class="n">SendableGenerator</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">TestGenerator</span><span class="p">(</span><span class="n">SendableGenerator</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">generate_sendable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseSendable</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-
-
-<span class="n">generator</span> <span class="o">=</span> <span class="n">TestGenerator</span><span class="p">()</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">generator</span><span class="p">)</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
+<h1 id="widgets">Widgets</h1>
+<h2 id="base-widget">Base Widget</h2>
+<p><img alt="base-dark.png" src="../../../media/dashboard/base-dark.png#only-dark" width="192px" />
+<img alt="base-light.png" src="../../../media/dashboard/base-light.png#only-light" width="192px" /></p>
+<p>This widget is used internally within KevinbotLib Dashboard.
+It cannot be added from a network sendable. 
+It may replace a widget in the case of an error.</p>
+<h2 id="text-widget">Text Widget</h2>
+<p><img alt="text-dark.png" src="../../../media/dashboard/text-dark.png#only-dark" width="192px" />
+<img alt="text-light.png" src="../../../media/dashboard/text-light.png#only-light" width="192px" /></p>
+<p>This is the most basic widget. 
+It will display text from a sendable structure. 
+Each dashboard structure element will be displayed in a new line.</p>
+<h3 id="compatible-data-types">Compatible Data Types</h3>
+<ul>
+<li><code>StringSendable</code></li>
+<li><code>IntegerSendable</code></li>
+<li><code>FloatSendable</code></li>
+<li><code>BooleanSendable</code></li>
+<li><code>AnyListSendable</code></li>
+<li><code>DictSendable</code></li>
+<li><code>BinarySendable</code></li>
+</ul>
+<h2 id="big-text-widget">Big Text Widget</h2>
+<p><img alt="bigtext-dark.png" src="../../../media/dashboard/bigtext-dark.png#only-dark" width="192px" />
+<img alt="bigtext-light.png" src="../../../media/dashboard/bigtext-light.png#only-light" width="192px" /></p>
+<p>This widget functions the same as the <a href="#text-widget">Text Widget</a>, but with larger text. 
+The text size will automatically adjust to its content and grid span.</p>
+<h3 id="compatible-data-types_1">Compatible Data Types</h3>
+<ul>
+<li><code>StringSendable</code></li>
+<li><code>IntegerSendable</code></li>
+<li><code>FloatSendable</code></li>
+<li><code>BooleanSendable</code></li>
+<li><code>AnyListSendable</code></li>
+<li><code>DictSendable</code></li>
+</ul>
+<h2 id="editable-text-widget">Editable Text Widget</h2>
+<p><img alt="textedit-dark.png" src="../../../media/dashboard/textedit-dark.png#only-dark" width="192px" />
+<img alt="textedit-light.png" src="../../../media/dashboard/textedit-light.png#only-light" width="192px" /></p>
+<p>This widget allows for the editing of text, integers, and floating-point values. </p>
+<p>Editing the text line will cause the widget to enter "edit mode," indicated by a red cross by the text line. 
+While in edit mode, new data received will not be displayed.</p>
+<p>Pressing the "Submit" button will repackage the last sendable received with the updated text, and send it back to the robot.
+This will also exit "edit mode."</p>
+<p>Pressing the "Cancel" button will exit "edit mode," and cause the data to reset.</p>
+<h3 id="compatible-data-types_2">Compatible Data Types</h3>
+<ul>
+<li><code>StringSendable</code></li>
+<li><code>IntegerSendable</code></li>
+<li><code>FloatSendable</code></li>
+</ul>
+<h2 id="boolean-widget">Boolean Widget</h2>
+<p><img alt="boolean-off-dark.png" src="../../../media/dashboard/boolean-off-dark.png#only-dark" width="192px" />
+<img alt="boolean-off-light.png" src="../../../media/dashboard/boolean-off-light.png#only-light" width="192px" />
+<img alt="boolean-on-dark.png" src="../../../media/dashboard/boolean-on-dark.png#only-dark" width="192px" />
+<img alt="boolean-on-light.png" src="../../../media/dashboard/boolean-on-light.png#only-light" width="192px" /></p>
+<p>This widget can display boolean data as a colored rectangle. 
+The widget will default to False/red if there is no data.</p>
+<h3 id="compatible-data-types_3">Compatible Data Types</h3>
+<ul>
+<li><code>BooleanSendable</code></li>
+</ul>
+<h2 id="color-widget">Color Widget</h2>
+<p><img alt="color-dark.png" src="../../../media/dashboard/color-dark.png#only-dark" width="192px" />
+<img alt="color-light.png" src="../../../media/dashboard/color-light.png#only-light" width="192px" /></p>
+<p>This widget can display color strings as a colored rectangle.</p>
+<h3 id="supported-string-formats">Supported String Formats</h3>
+<ul>
+<li><code>#RGB</code> (each of R, G, and B is a single hex digit)</li>
+<li><code>#RRGGBB</code></li>
+<li><code>#AARRGGBB</code></li>
+<li><code>#RRRGGGBBB</code></li>
+<li><code>#RRRRGGGGBBBB</code></li>
+<li>A name from the list of colors defined in the list of SVG color keyword names provided by the World Wide Web Consortium; for example, "steelblue" or "gainsboro".</li>
+<li><code>transparent</code> - representing the absence of a color.</li>
+</ul>
+<h3 id="compatible-data-types_4">Compatible Data Types</h3>
+<ul>
+<li><code>StringSendable</code></li>
+</ul>
+<h2 id="mjpeg-streamer-widget">MJPEG Streamer Widget</h2>
+<p><img alt="mjpeg-dark.png" src="../../../media/dashboard/mjpeg-dark.png#only-dark" width="576px" />
+<img alt="mjpeg-light.png" src="../../../media/dashboard/mjpeg-light.png#only-light" width="576px" /></p>
+<p>This widget can display an MJPEG stream from a video source. 
+The resolution will automatically adjust as needed.</p>
+<h3 id="configuration-options">Configuration Options</h3>
+<p><img alt="mjpeg-config.png" src="../../../media/dashboard/mjpeg-config.png" width="280px" /></p>
+<p>The MJPEG stream allows for frame rate configuration from 1 to 20 FPS.
+Reduced frame rates will improve the overall dashboard performance.</p>
+<h3 id="compatible-data-types_5">Compatible Data Types</h3>
+<ul>
+<li><code>kevinbotlib.vision.MjpegStreamSendable</code></li>
+</ul>
+<h2 id="battery-widget">Battery Widget</h2>
+<p><img alt="battery-dark.png" src="../../../media/dashboard/battery-dark.png#only-dark" width="192px" />
+<img alt="battery-light.png" src="../../../media/dashboard/battery-light.png#only-light" width="192px" /></p>
+<p>This widget can display battery voltages in a simple and efficient graph.</p>
+<h3 id="configuration-options_1">Configuration Options</h3>
+<p><img alt="battery-config.png" src="../../../media/dashboard/battery-config.png" width="280px" /></p>
+<p>The graphing range can be configured in the widget's settings.</p>
+<h3 id="compatible-data-types_6">Compatible Data Types</h3>
+<ul>
+<li><code>FloatSendable</code></li>
+</ul>
+<h2 id="speedometer-widget">Speedometer Widget</h2>
+<p><img alt="speedometer-dark.png" src="../../../media/dashboard/speedometer-dark.png#only-dark" width="384px" />
+<img alt="speedometer-light.png" src="../../../media/dashboard/speedometer-light.png#only-light" width="384px" /></p>
+<p>The speedometer widget can be used to display integers or floats in a highly configurable gauge.</p>
+<h3 id="configuration-options_2">Configuration Options</h3>
+<p><img alt="speedometer-settings.png" src="../../../media/dashboard/speedometer-settings.png" width="280px" /></p>
+<ul>
+<li>
+<p>Display Value</p>
+<p>This defines whether to display the large text value at the bottom of the widget.</p>
+</li>
+<li>
+<p>Display Fine Tick Markers</p>
+<p>This defines whether to display fine ticks on the gauge scale.</p>
+</li>
+<li>
+<p>Display Coarse Tick Markers</p>
+<p>This defines whether to display coarse ticks on the gauge scale.</p>
+</li>
+<li>
+<p>Display Scale</p>
+<p>This defines whether to display the colored scale on the gauge.</p>
+</li>
+<li>
+<p>Scale Gradient</p>
+<p>These settings change the gradient pattern displayed on the gauge.</p>
+<p>Clicking add or edit to add a gradient stop will open the stop editor below:</p>
+<p><img alt="speedometer-color-edit.png" src="../../../media/dashboard/speedometer-color-edit.png" width="200px" /></p>
+</li>
+<li>
+<p>Range</p>
+<p>The range options change the scale range from left-to-right.</p>
+</li>
+</ul>
+<h3 id="compatible-data-types_7">Compatible Data Types</h3>
+<ul>
+<li><code>IntegerSendable</code></li>
+<li><code>FloatSendable</code></li>
+</ul>
 
 
 
@@ -1365,7 +1716,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../robot/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Robot Examples">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: KevinbotLib Dashboard">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1375,20 +1726,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Robot Examples
+                KevinbotLib Dashboard
               </div>
             </div>
           </a>
         
         
           
-          <a href="../logger/" class="md-footer__link md-footer__link--next" aria-label="Next: Logging Examples">
+          <a href="../../../cli/" class="md-footer__link md-footer__link--next" aria-label="Next: Command Line Tools">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Logging Examples
+                Command Line Tools
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1426,10 +1777,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
     
   </body>
