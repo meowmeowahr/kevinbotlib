@@ -1,4 +1,3 @@
-import argparse
 import base64
 import importlib
 import math
@@ -57,10 +56,10 @@ CONFIG: typing.Final = {
             "data": [{"value": "Demo", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
         },
         {
-            "out": "docs/media/dashboard/biglabel-{0}.png",
+            "out": "docs/media/dashboard/bigtext-{0}.png",
             "mod": "kevinbotlib.apps.dashboard.widgets.biglabel",
             "class": "BigLabelWidgetItem",
-            "title": "Big Label",
+            "title": "Big Text",
             "span": [1, 1],
             "data": [{"value": "Demo", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
         },
@@ -89,7 +88,7 @@ CONFIG: typing.Final = {
             "data": [{"value": "#0000ff", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
         },
         {
-            "out": "docs/media/dashboard/color-{0}.png",
+            "out": "docs/media/dashboard/speedometer-{0}.png",
             "mod": "kevinbotlib.apps.dashboard.widgets.speedometer",
             "class": "SpeedometerWidgetItem",
             "title": "Speedometer",
@@ -118,17 +117,6 @@ CONFIG: typing.Final = {
         },
     ],
 }
-
-
-def parse_arguments():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Create and capture a QGraphicsScene screenshot.")
-    parser.add_argument("--width", type=int, default=800, help="Width of the output image in pixels")
-    parser.add_argument("--height", type=int, default=600, help="Height of the output image in pixels")
-    parser.add_argument("--output", type=str, default="scene_screenshot.png", help="Output file path")
-    parser.add_argument("--bg-color", type=str, default="F0F0F0", help="Background color as RGB hex (without #)")
-    return parser.parse_args()
-
 
 def create_scene(mod: str, cls: str, title: str, data: list[dict], theme: Themes, rows: int, cols: int):
     """Create a QGraphicsScene with various items."""

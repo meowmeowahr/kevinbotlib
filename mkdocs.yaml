@@ -19,14 +19,14 @@ theme:
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
-      primary: blue
+      primary: #60a5fa
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      primary: blue
+      primary: #60a5fa
       scheme: default 
       toggle:
         icon: material/brightness-7
@@ -34,7 +34,7 @@ theme:
 
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
-      primary: blue
+      primary: #60a5fa
       scheme: slate
       toggle:
         icon: material/brightness-4
@@ -95,7 +95,9 @@ nav:
     - examples/hardwarecontroller.md
   - Applications:
     - apps/console.md
-    - apps/dashboard.md
+    - Dashboard:
+      - apps/dashboard/index.md
+      - apps/dashboard/widgets.md
   - Command Line Tools:
     - cli/index.md
   - commandscheduler.md
@@ -107,3 +109,6 @@ nav:
     - reference/ui.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
+
+extra_css:
+  - stylesheets/extra.css
