@@ -1,3 +1,4 @@
+from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
@@ -22,6 +23,7 @@ def determine_widget_types(did: str):
                 "Text Edit": TextEditWidgetItem,
                 "Big Text": BigLabelWidgetItem,
                 "Speedometer": SpeedometerWidgetItem,
+                "Battery": BatteryWidgetItem,
             }
         case "kevinbotlib.dtype.str":
             return {

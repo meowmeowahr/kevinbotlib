@@ -73,6 +73,7 @@ from kevinbotlib.apps.dashboard.qwidgets import AboutDialog, Divider
 from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
+from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
@@ -831,6 +832,8 @@ class Application(QMainWindow):
                 return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
             case "speedometer":
                 return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            case "battery":
+                return BatteryWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
 
         return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
 

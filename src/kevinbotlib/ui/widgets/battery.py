@@ -77,12 +77,13 @@ class BatteryGrapher(QWidget):
         painter.setClipPath(path)
 
         # Draw bars
-        if self.data_points:
+        dp = self.data_points.copy()
+        if dp:
             graph_width = width - 2 * margin
-            max_x = max(x for x, _ in self.data_points)
+            max_x = max(x for x, _ in dp)
             bar_width = math.ceil(graph_width / self.max_points)  # Leave a gap between bars
 
-            for x, y in self.data_points:
+            for x, y in dp:
                 norm_x = margin + (x - (max_x - self.max_points)) * graph_width / self.max_points
                 norm_y = body_top + (1 - (y - self.y_min) / (self.y_max - self.y_min)) * body_height
                 bar_height = body_top + body_height - norm_y
