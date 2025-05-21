@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Signal, QSize
+import qtawesome as qta
+from PySide6.QtCore import QSize, Signal
 from PySide6.QtWidgets import (
     QGraphicsProxyWidget,
+    QHBoxLayout,
     QLineEdit,
     QPushButton,
     QVBoxLayout,
     QWidget,
-    QHBoxLayout,
 )
-import qtawesome as qta
 
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
@@ -122,7 +122,7 @@ class TextEditWidgetItem(WidgetItem):
         self.raw_data = data
         self.setdata.emit(get_structure_text(data))
 
-    def on_text_edited(self, new_text: str):
+    def on_text_edited(self, _new_text: str):
         self.validate_icon.setIcon(qta.icon("mdi6.close", color="#b34646"))
 
     def submit_clicked(self):

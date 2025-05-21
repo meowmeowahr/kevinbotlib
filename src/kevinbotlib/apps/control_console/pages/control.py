@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from kevinbotlib.apps.control_console.widgets import Battery, BatteryManager
 from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
@@ -22,6 +21,7 @@ from kevinbotlib.comm import (
     RedisCommClient,
     StringSendable,
 )
+from kevinbotlib.ui.widgets import Battery, BatteryManager
 
 
 class AppState(Enum):

@@ -2,6 +2,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QPushButton, QTabWidget, QTextEdit, QVBoxLayout
 
 from kevinbotlib.licenses import get_licenses
+from kevinbotlib.ui.widgets.battery import Battery, BatteryGrapher, BatteryManager
 
 
 class LicenseDialog(QDialog):
@@ -26,3 +27,6 @@ class LicenseDialog(QDialog):
         close_btn = QPushButton("Close")
         close_btn.clicked.connect(self.accept)
         layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignRight)
+
+
+__all__ = ["Battery", "BatteryGrapher", "BatteryManager", "LicenseDialog"]
