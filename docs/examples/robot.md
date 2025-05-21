@@ -29,3 +29,9 @@
 ```python title="examples/robot/dynamic_robot.py" linenums="1"
 --8<-- "examples/robot/dynamic_robot.py"
 ```
+
+## Robot Controller using Redis Comms
+
+```python title="examples/robot/comms_robot.py" linenums="1"
+--8<-- "examples/robot/comms_robot.py"
+```
