@@ -3,16 +3,16 @@ from typing import TYPE_CHECKING
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
+    QDialog,
+    QDoubleSpinBox,
+    QFormLayout,
     QGraphicsProxyWidget,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
-    QLabel,
-    QSizePolicy,
-    QDialog,
-    QFormLayout,
-    QDoubleSpinBox,
-    QHBoxLayout,
-    QPushButton,
 )
 
 from kevinbotlib.apps.dashboard.qwidgets import Divider
@@ -22,6 +22,7 @@ from kevinbotlib.ui.widgets import BatteryGrapher
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
+
 
 class BatteryWidgetSettings(QDialog):
     options_changed = Signal(dict)
