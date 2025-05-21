@@ -94,9 +94,18 @@ nav:
     - examples/hardwareinterface.md
     - examples/hardwarecontroller.md
   - Applications:
-    - apps/console.md
+    - Control Console:
+      - apps/console/index.md
+      - apps/console/launching.md
+      - apps/console/run.md
+      - apps/console/controllers.md
+      - apps/console/metrics.md
+      - apps/console/settings.md
     - Dashboard:
       - apps/dashboard/index.md
+      - apps/dashboard/launching.md
+      - apps/dashboard/adding.md
+      - apps/dashboard/settings.md
       - apps/dashboard/widgets.md
   - Command Line Tools:
     - cli/index.md
