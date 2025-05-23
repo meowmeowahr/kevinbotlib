@@ -17,3 +17,9 @@
 ```python title="examples/logger/stdout_redirector.py" linenums="1"
 --8<-- "examples/logger/stdout_redirector.py"
 ```
+
+## Log Suppressor
+
+```python title="examples/logger/logger_suppress.py" linenums="1"
+--8<-- "examples/logger/logger_suppress.py"
+```
