@@ -7,7 +7,7 @@ The KevinbotLib command-line tools are automatically installed using [`pip`](../
 
 ## `console`
 
-[KevinbotLib Control Console](../apps/console/console.md) can be launched with the below command:
+[KevinbotLib Control Console](../apps/console/index.md) can be launched with the below command:
 
 ```console
 kevinbotlib console
