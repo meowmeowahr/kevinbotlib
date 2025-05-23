@@ -355,6 +355,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#install-with-pipx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install with pipx
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#verify-installation" class="md-nav__link">
     <span class="md-ellipsis">
       Verify installation
@@ -681,13 +690,76 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../apps/console/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../apps/console/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
     Control Console
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Control Console
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/console/launching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Launching
     
   </span>
   
@@ -704,11 +776,117 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../apps/console/run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Run Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/console/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Controllers Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/console/metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Metrics Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/console/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
         
           
+        
+      
+        
+      
+        
+      
         
       
         
@@ -751,6 +929,75 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/dashboard/launching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Launching
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/dashboard/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    User Interface
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../apps/dashboard/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1061,6 +1308,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#install-with-pipx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install with pipx
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#verify-installation" class="md-nav__link">
     <span class="md-ellipsis">
       Verify installation
@@ -1109,6 +1365,21 @@
 <div class="highlight"><pre><span></span><code><span class="go">sudo usermod -a -G dialout $USER</span>
 </code></pre></div></p>
 </div>
+<h2 id="install-with-pipx">Install with pipx</h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>pipx installation will only install command-line tools, and GUI applications.
+Use the regular pip installation if you want any development modules.</p>
+</div>
+<ol>
+<li>Install pipx <a href="https://pipx.pypa.io/latest/installation/">here</a></li>
+<li>
+<p>Install KevinbotLib</p>
+<p>Run the follwoing:
+<div class="highlight"><pre><span></span><code><span class="go">pipx install kevinbotlib</span>
+</code></pre></div></p>
+</li>
+</ol>
 <h2 id="verify-installation">Verify installation</h2>
 <p>You can check the installed version of KevinbotLb by running the following command:</p>
 <div class="highlight"><pre><span></span><code><span class="go">kevinbotlib --version</span>

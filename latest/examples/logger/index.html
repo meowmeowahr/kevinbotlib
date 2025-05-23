@@ -511,6 +511,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#log-suppressor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Log Suppressor
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -692,13 +701,76 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../apps/console/" class="md-nav__link">
+    
+    
+      
         
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../apps/console/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
     Control Console
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Control Console
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/console/launching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Launching
     
   </span>
   
@@ -715,11 +787,117 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../apps/console/run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Run Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/console/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Controllers Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/console/metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Metrics Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/console/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings Tab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     
     
       
         
           
+        
+      
+        
+      
+        
+      
         
       
         
@@ -762,6 +940,75 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/dashboard/launching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Launching
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/dashboard/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    User Interface
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/dashboard/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1089,6 +1336,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#log-suppressor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Log Suppressor
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1222,6 +1478,25 @@
 <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello from KevinbotLib!&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This will be converted to a logging entry&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="log-suppressor">Log Suppressor</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/logger/logger_suppress.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span><span class="p">,</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">))</span>  <span class="c1"># lowest available level</span>
+
+<span class="k">with</span> <span class="n">Logger</span><span class="o">.</span><span class="n">suppress</span><span class="p">():</span>
+    <span class="n">Logger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;You shouldn&#39;t see this!&quot;</span><span class="p">)</span>
+
+<span class="n">Logger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;You should see this!&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 
 
