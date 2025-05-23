@@ -275,14 +275,14 @@ class BaseRobot:
 
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.daemon = True
+            timer.name = "KevinbotLib.Cleanup.LogCleanup"
             timer.start()
 
         if self._metrics_timer_interval != 0:
             timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Robot.Metrics.Updater")
+            timer.daemon = True
+            timer.name = "KevinbotLib.Robot.Metrics.Updater"
             timer.start()
 
         self.comm_client.wait_until_connected()
@@ -343,8 +343,8 @@ class BaseRobot:
         self.telemetry.trace("Cleaned up logs")
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._log_timer_interval, self._log_cleanup_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Cleanup.LogCleanup")
+            timer.daemon = True
+            timer.name = "KevinbotLib.Cleanup.LogCleanup"
             timer.start()
 
     @final
@@ -361,8 +361,8 @@ class BaseRobot:
 
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
-            timer.setDaemon(True)
-            timer.setName("KevinbotLib.Robot.Metrics.Publish")
+            timer.daemon = True
+            timer.name = "KevinbotLib.Robot.Metrics.Publish"
             timer.start()
 
     @final
@@ -467,10 +467,6 @@ class BaseRobot:
                 time.sleep(1)
                 self.comm_client.close()
                 sys.exit(65)
-            finally:
-                if not self._estop:
-                    self.robot_end()
-                # this will be a pre-mature exit to estop as fast as possible
 
     def robot_start(self) -> None:
         """Run after the robot is initialized"""
