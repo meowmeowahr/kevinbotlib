@@ -1,6 +1,8 @@
 import datetime
 from dataclasses import dataclass
+
 import orjson
+
 
 @dataclass
 class LogEntry:
@@ -18,10 +20,10 @@ class LogParser:
     @staticmethod
     def parse(data: str) -> list[LogEntry]:
         entries = []
-        for line in data.splitlines():
-            if not line:
+        for entry in data.splitlines():
+            if not entry:
                 continue
-            record = orjson.loads(line).get("record", {})
+            record = orjson.loads(entry).get("record", {})
 
             time = record.get("time", {})
             timestamp = time.get("timestamp", 0.0)
@@ -37,5 +39,16 @@ class LogParser:
 
             message = record.get("message", "")
 
-            entries.append(LogEntry(datetime.datetime.fromtimestamp(timestamp), modname, function, line, level_no, level_name, level_icon, message))
+            entries.append(
+                LogEntry(
+                    datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc),
+                    modname,
+                    function,
+                    line,
+                    level_no,
+                    level_name,
+                    level_icon,
+                    message,
+                )
+            )
         return entries

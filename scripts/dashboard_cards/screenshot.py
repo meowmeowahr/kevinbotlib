@@ -118,6 +118,7 @@ CONFIG: typing.Final = {
     ],
 }
 
+
 def create_scene(mod: str, cls: str, title: str, data: list[dict], theme: Themes, rows: int, cols: int):
     """Create a QGraphicsScene with various items."""
     scene = GridGraphicsView(rows=cols, cols=rows, grid_size=CONFIG["grid_size"], theme=theme)

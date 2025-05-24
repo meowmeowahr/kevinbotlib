@@ -1,11 +1,11 @@
 from PySide6.QtCore import QSettings
 from PySide6.QtWidgets import (
     QFrame,
-    QSizePolicy,
     QHBoxLayout,
-    QRadioButton,
-    QWidget,
     QLabel,
+    QRadioButton,
+    QSizePolicy,
+    QWidget,
 )
 
 from kevinbotlib.apps.common.abc import ThemableWindow
@@ -53,6 +53,7 @@ class UiColorSettingsSwitcher(QFrame):
         self.settings.setValue(self.key, value)
         self.settings.sync()
         self.main_window.apply_theme()
+
 
 class Divider(QWidget):
     def __init__(self, text: str):

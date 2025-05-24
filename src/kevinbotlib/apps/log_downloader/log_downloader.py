@@ -1,9 +1,10 @@
 import sys
 from dataclasses import dataclass
 
+import qtawesome as qta
 from PySide6.QtCore import (
-    QCommandLineParser,
     QCommandLineOption,
+    QCommandLineParser,
     QCoreApplication,
     QSettings,
     Signal,
@@ -11,22 +12,22 @@ from PySide6.QtCore import (
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
+    QDialog,
+    QFormLayout,
     QHBoxLayout,
     QPushButton,
-    QDialog,
     QVBoxLayout,
-    QFormLayout,
 )
-import qtawesome as qta
 
 import kevinbotlib.apps.log_downloader.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.common.abc import ThemableWindow
-from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.about import AboutDialog
+from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
-from kevinbotlib.logger import Logger, Level, LoggerConfiguration
-from kevinbotlib.ui.theme import ThemeStyle, Theme
+from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.ui.theme import Theme, ThemeStyle
+
 
 class SettingsWindow(QDialog):
     on_applied = Signal()
@@ -68,6 +69,7 @@ class SettingsWindow(QDialog):
 
     def apply(self):
         self.on_applied.emit()
+
 
 class Application(ThemableWindow):
     def __init__(self, app: QApplication, logger: Logger):
@@ -129,6 +131,7 @@ class Application(ThemableWindow):
 
     def show_about(self):
         self.about_window.show()
+
 
 @dataclass
 class LogDownloaderApplicationStartupArguments:

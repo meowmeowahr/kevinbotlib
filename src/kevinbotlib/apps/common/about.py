@@ -1,13 +1,13 @@
-from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
+    QApplication,
     QDialog,
-    QVBoxLayout,
+    QFrame,
     QHBoxLayout,
     QLabel,
-    QFrame,
     QPushButton,
     QSizePolicy,
-    QApplication,
+    QVBoxLayout,
 )
 
 from kevinbotlib.ui.widgets import LicenseDialog

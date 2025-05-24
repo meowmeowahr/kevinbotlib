@@ -1,6 +1,6 @@
-import paramiko
-from typing import List
 import os
+
+import paramiko
 
 from kevinbotlib.exceptions import SshNotConnectedException
 from kevinbotlib.logger.parser import LogEntry, LogParser
@@ -44,14 +44,27 @@ class RemoteLogDownloader:
 
         return self._resolved_log_dir
 
-    def connect_with_password(self, host: str, username: str, password: str, port: int = 22, missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy):
+    def connect_with_password(
+        self,
+        host: str,
+        username: str,
+        password: str,
+        port: int = 22,
+        missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
+    ):
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
         self.ssh_connection.connect(hostname=host, username=username, password=password, port=port)
         self.sftp_client = self.ssh_connection.open_sftp()
         self._resolved_log_dir = None
 
-    def connect_with_key(self, host: str, key: paramiko.RSAKey, port: int = 22, missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy):
+    def connect_with_key(
+        self,
+        host: str,
+        key: paramiko.RSAKey,
+        port: int = 22,
+        missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
+    ):
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
         self.ssh_connection.connect(hostname=host, pkey=key, port=port)
@@ -66,13 +79,13 @@ class RemoteLogDownloader:
             self.sftp_client.close()
             self.sftp_client = None
 
-    def get_logfiles(self) -> List[str]:
+    def get_logfiles(self) -> list[str]:
         if not self.ssh_connection or not self.sftp_client:
             msg = "SFTP is not connected"
             raise SshNotConnectedException(msg)
 
         resolved_path = self._resolve_log_dir()
-        files =  self.sftp_client.listdir(resolved_path)
+        files = self.sftp_client.listdir(resolved_path)
         for file in reversed(files):
             if not file.endswith(".log"):
                 files.remove(file)

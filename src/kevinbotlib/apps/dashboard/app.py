@@ -61,7 +61,9 @@ from superqt import QFlowLayout
 import kevinbotlib.apps.dashboard.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.common.abc import ThemableWindow
-from kevinbotlib.apps.common.settings_rows import UiColorSettingsSwitcher, Divider
+from kevinbotlib.apps.common.about import AboutDialog
+from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
+from kevinbotlib.apps.common.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.card_types import determine_widget_types
 from kevinbotlib.apps.dashboard.grid import (
     GridGraphicsView,
@@ -69,8 +71,6 @@ from kevinbotlib.apps.dashboard.grid import (
 )
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
-from kevinbotlib.apps.common.about import AboutDialog
-from kevinbotlib.apps.common.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
@@ -221,6 +221,7 @@ class SettingsWindow(QDialog):
 
     def apply(self):
         self.on_applied.emit()
+
 
 class TopicStatusPanel(QStackedWidget):
     added = Signal(tuple)
