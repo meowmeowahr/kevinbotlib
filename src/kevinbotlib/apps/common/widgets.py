@@ -1,22 +1,21 @@
-from PySide6.QtWidgets import (
-    QWidget, QScrollArea, QVBoxLayout, QStackedWidget, QLabel, QProgressBar
-)
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QLabel, QProgressBar, QScrollArea, QStackedWidget, QVBoxLayout, QWidget
+
 
 class QWidgetList(QScrollArea):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self):
+        super().__init__()
 
         self.setWidgetResizable(True)
-        self.container = QWidget()
-        self.container.setStyleSheet("background-color: transparent; border: none;")
+        self.container = QWidget(self)
+        self.container.setStyleSheet("QWidget {background: transparent;}")
+        self.setWidget(self.container)
         self.root_layout = QVBoxLayout(self.container)
         self.root_layout.setSpacing(5)
         self.root_layout.setContentsMargins(0, 0, 0, 0)
 
         self.stack = QStackedWidget()
         self.root_layout.addWidget(self.stack)
-        self.setWidget(self.container)
 
         # --- List view
         self.list_widget = QWidget()

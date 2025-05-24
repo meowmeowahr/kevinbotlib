@@ -1,5 +1,5 @@
+import socket
 import sys
-import traceback
 from dataclasses import dataclass
 
 import paramiko
@@ -20,10 +20,10 @@ from PySide6.QtWidgets import (
     QDialog,
     QFormLayout,
     QHBoxLayout,
+    QMessageBox,
     QPushButton,
     QStackedWidget,
     QVBoxLayout,
-    QMessageBox
 )
 
 import kevinbotlib.apps.log_downloader.resources_rc
@@ -104,6 +104,9 @@ class ConnectionWorker(QObject):
         except TimeoutError:
             self.error.emit("Connection timed out")
             return
+        except socket.gaierror as e:
+            self.error.emit(f"Could not resolve hostname: {e!r}")
+            return
         self.connected.emit()
 
     @Slot(str, int, str, str)
@@ -116,8 +119,10 @@ class ConnectionWorker(QObject):
         except TimeoutError:
             self.error.emit("Connection timed out")
             return
+        except socket.gaierror as e:
+            self.error.emit(f"Could not resolve hostname: {e!r}")
+            return
         self.connected.emit()
-
 
 
 class Application(ThemableWindow):
@@ -213,9 +218,7 @@ class Application(ThemableWindow):
         self.connect_thread.finished.connect(self.connect_thread.deleteLater)
 
         # Trigger `run_password()` inside the worker thread
-        self.connect_thread.started.connect(
-            lambda: self.connect_worker.start_password.emit(host, port, user, password)
-        )
+        self.connect_thread.started.connect(lambda: self.connect_worker.start_password.emit(host, port, user, password))
 
         self.connect_thread.start()
 
@@ -226,7 +229,6 @@ class Application(ThemableWindow):
         msg.setWindowTitle("Connection Error")
         msg.setIcon(QMessageBox.Icon.Critical)
         msg.exec()
-
 
     @Slot()
     def on_connected(self):

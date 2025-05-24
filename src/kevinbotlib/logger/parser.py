@@ -1,5 +1,6 @@
 import datetime
 from dataclasses import dataclass
+from typing import Self, Iterator
 
 import orjson
 
@@ -16,9 +17,64 @@ class LogEntry:
     message: str
 
 
+class Log(list):
+    def __init__(self, entries: list[LogEntry] | None = None):
+        if entries is None:
+            entries = []
+        elif isinstance(entries, Log):
+            entries = list(entries)
+        elif isinstance(entries, list):
+            if not all(isinstance(entry, LogEntry) for entry in entries):
+                raise TypeError("All entries must be LogEntry instances")
+        else:
+            raise TypeError(f"Expected list[LogEntry], Log, or None, got {type(entries).__name__}")
+
+        super().__init__(entries)
+
+    def append(self, item: LogEntry) -> None:
+        if not isinstance(item, LogEntry):
+            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+        super().append(item)
+
+    def extend(self, items: 'list[LogEntry] | Log') -> None:
+        if isinstance(items, Log):
+            items = list(items)
+        if not isinstance(items, list):
+            raise TypeError(f"Expected list[LogEntry] or Log, got {type(items).__name__}")
+        if not all(isinstance(item, LogEntry) for item in items):
+            raise TypeError("All items must be LogEntry instances")
+        super().extend(items)
+
+    def insert(self, index: int, item: LogEntry) -> None:
+        if not isinstance(item, LogEntry):
+            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+        super().insert(index, item)
+
+    def __setitem__(self, index: int, item: LogEntry) -> None:
+        if not isinstance(item, LogEntry):
+            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+        super().__setitem__(index, item)
+
+    def __iadd__(self, items: 'list[LogEntry] | Log') -> Self:
+        if isinstance(items, Log):
+            items = list(items)
+        if not isinstance(items, list):
+            raise TypeError(f"Expected list[LogEntry] or Log, got {type(items).__name__}")
+        if not all(isinstance(item, LogEntry) for item in items):
+            raise TypeError("All items must be LogEntry instances")
+        super().__iadd__(items)
+        return self
+
+    def __iter__(self) -> Iterator[LogEntry]:
+        return super().__iter__()
+
+    def convert(self):
+        raise NotImplementedError
+
+
 class LogParser:
     @staticmethod
-    def parse(data: str) -> list[LogEntry]:
+    def parse(data: str) -> Log:
         entries = []
         for entry in data.splitlines():
             if not entry:
@@ -51,4 +107,4 @@ class LogParser:
                     message,
                 )
             )
-        return entries
+        return Log(entries)

@@ -1,11 +1,15 @@
 import datetime
 import os
+import tempfile
+from collections.abc import Callable, Generator
+from contextlib import contextmanager
+from typing import Any
 
 import paramiko
 
 from kevinbotlib.exceptions import SshNotConnectedException
 from kevinbotlib.logger import Logger
-from kevinbotlib.logger.parser import LogEntry, LogParser
+from kevinbotlib.logger.parser import Log, LogParser
 
 
 class RemoteLogDownloader:
@@ -36,14 +40,14 @@ class RemoteLogDownloader:
 
         # If the path starts with ~, resolve the home directory
         if self._log_dir.startswith("~"):
-            # Get the absolute path of the home directory
             home_dir = self.sftp_client.normalize(".")
-            # Replace ~ with the actual home directory path
             relative_path = self._log_dir[1:].lstrip("/")
             self._resolved_log_dir = os.path.join(home_dir, relative_path)
         else:
             self._resolved_log_dir = self._log_dir
 
+        # Verify the directory exists
+        self.sftp_client.stat(self._resolved_log_dir)
         return self._resolved_log_dir
 
     def connect_with_password(
@@ -55,6 +59,7 @@ class RemoteLogDownloader:
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
         Logger().debug("Attempting Password connection")
+
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
         self.ssh_connection.connect(hostname=host, username=username, password=password, port=port, timeout=10)
@@ -70,6 +75,7 @@ class RemoteLogDownloader:
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
         Logger().debug("Attempting RSAKey connection")
+
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
         self.ssh_connection.connect(hostname=host, username=username, pkey=key, port=port, timeout=10)
@@ -79,10 +85,10 @@ class RemoteLogDownloader:
     def disconnect(self):
         if self.ssh_connection:
             self.ssh_connection.close()
-            self.ssh_connection = None
+        self.ssh_connection = None
         if self.sftp_client:
             self.sftp_client.close()
-            self.sftp_client = None
+        self.sftp_client = None
 
     def get_logfiles(self) -> list[str]:
         if not self.ssh_connection or not self.sftp_client:
@@ -91,27 +97,46 @@ class RemoteLogDownloader:
 
         resolved_path = self._resolve_log_dir()
         files = self.sftp_client.listdir(resolved_path)
-        for file in reversed(files):
-            if not file.endswith(".log"):
-                files.remove(file)
-        return files
+        return [file for file in files if file.endswith(".log")]
 
-    def get_raw_log(self, logfile: str) -> str:
+    @contextmanager
+    def _download_with_progress(
+        self, remote_path: str, progress_callback: Callable[[float], None] | None = None
+    ) -> Generator[str, Any, None]:
+        """Download a remote file to a temporary local file with optional progress callback."""
         if not self.ssh_connection or not self.sftp_client:
             msg = "SFTP is not connected"
             raise SshNotConnectedException(msg)
 
-        resolved_path = self._resolve_log_dir()
-        return self.sftp_client.open(os.path.join(resolved_path, logfile)).read().decode("utf-8")
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            try:
 
-    def get_log(self, logfile: str) -> list[LogEntry]:
-        if not self.ssh_connection or not self.sftp_client:
-            msg = "SFTP is not connected"
-            raise SshNotConnectedException(msg)
+                def callback(transferred: int, total: int):
+                    if progress_callback and total > 0:
+                        progress_percent = (transferred / total) * 100.0
+                        progress_callback(progress_percent)
 
+                self.sftp_client.get(remote_path, temp_file.name, callback=callback if progress_callback else None)
+
+                with open(temp_file.name, encoding="utf-8") as f:
+                    yield f.read()
+            finally:
+                try:
+                    os.unlink(temp_file.name)
+                except OSError as e:
+                    Logger().warning(f"Failed to delete temporary file {temp_file.name}: {e!s}")
+
+    def get_raw_log(self, logfile: str, progress_callback: Callable[[float], None] | None = None) -> str:
         resolved_path = self._resolve_log_dir()
-        raw = self.sftp_client.open(os.path.join(resolved_path, logfile)).read().decode("utf-8")
-        return LogParser.parse(raw)
+        remote_path = os.path.join(resolved_path, logfile)
+        with self._download_with_progress(remote_path, progress_callback) as content:
+            return content
+
+    def get_log(self, logfile: str, progress_callback: Callable[[float], None] | None = None) -> Log:
+        resolved_path = self._resolve_log_dir()
+        remote_path = os.path.join(resolved_path, logfile)
+        with self._download_with_progress(remote_path, progress_callback) as raw:
+            return LogParser.parse(raw)
 
     def get_file_modification_time(self, logfile: str) -> datetime.datetime:
         if not self.ssh_connection or not self.sftp_client:
@@ -119,4 +144,14 @@ class RemoteLogDownloader:
             raise SshNotConnectedException(msg)
 
         resolved_path = self._resolve_log_dir()
-        return datetime.datetime.fromtimestamp(self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_mtime, tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(
+            self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_mtime, tz=datetime.timezone.utc
+        )
+
+    def get_file_size(self, logfile: str) -> int:
+        if not self.ssh_connection or not self.sftp_client:
+            msg = "SFTP is not connected"
+            raise SshNotConnectedException(msg)
+
+        resolved_path = self._resolve_log_dir()
+        return self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_size

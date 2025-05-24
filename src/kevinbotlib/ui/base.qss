@@ -473,7 +473,8 @@ QMenuBar {
 QFrame[frameShape=Panel],
 QFrame[frameShape=VLine],
 QFrame[frameShape=HLine] {
-    color: {{border}};
+    border: 1px solid {{border}};
+    border-radius: 2px;
 }
 
 QTreeView {
