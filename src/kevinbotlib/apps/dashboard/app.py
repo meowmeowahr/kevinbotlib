@@ -46,8 +46,6 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
-    QRadioButton,
-    QSizePolicy,
     QSpinBox,
     QSplitter,
     QStackedWidget,
@@ -62,6 +60,8 @@ from superqt import QFlowLayout
 
 import kevinbotlib.apps.dashboard.resources_rc
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.apps.common.abc import ThemableWindow
+from kevinbotlib.apps.common.settings_rows import UiColorSettingsSwitcher, Divider
 from kevinbotlib.apps.dashboard.card_types import determine_widget_types
 from kevinbotlib.apps.dashboard.grid import (
     GridGraphicsView,
@@ -69,8 +69,8 @@ from kevinbotlib.apps.dashboard.grid import (
 )
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
-from kevinbotlib.apps.dashboard.qwidgets import AboutDialog, Divider
-from kevinbotlib.apps.dashboard.toast import NotificationWidget, Notifier, Severity
+from kevinbotlib.apps.common.about import AboutDialog
+from kevinbotlib.apps.common.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
@@ -221,51 +221,6 @@ class SettingsWindow(QDialog):
 
     def apply(self):
         self.on_applied.emit()
-
-
-class UiColorSettingsSwitcher(QFrame):
-    def __init__(
-        self,
-        settings: QSettings,
-        key: str,
-        main_window: "Application",
-    ):
-        super().__init__()
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
-
-        self.settings = settings
-        self.key = key
-        self.main_window = main_window
-
-        root_layout = QHBoxLayout()
-        self.setLayout(root_layout)
-
-        self.dark_mode = QRadioButton("Dark")
-        self.light_mode = QRadioButton("Light")
-        self.system_mode = QRadioButton("System")
-
-        root_layout.addWidget(self.dark_mode)
-        root_layout.addWidget(self.light_mode)
-        root_layout.addWidget(self.system_mode)
-
-        # Load saved theme setting
-        current_theme = self.settings.value(self.key, "Dark")
-        if current_theme == "Dark":
-            self.dark_mode.setChecked(True)
-        elif current_theme == "Light":
-            self.light_mode.setChecked(True)
-        else:
-            self.system_mode.setChecked(True)
-
-        self.dark_mode.toggled.connect(lambda: self.save_setting("Dark"))
-        self.light_mode.toggled.connect(lambda: self.save_setting("Light"))
-        self.system_mode.toggled.connect(lambda: self.save_setting("System"))
-
-    def save_setting(self, value: str):
-        self.settings.setValue(self.key, value)
-        self.settings.sync()
-        self.main_window.apply_theme()
-
 
 class TopicStatusPanel(QStackedWidget):
     added = Signal(tuple)
@@ -501,7 +456,7 @@ class PollingWorker(QObject):
         self.running = False
 
 
-class Application(QMainWindow):
+class Application(QMainWindow, ThemableWindow):
     def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
         self.app = app

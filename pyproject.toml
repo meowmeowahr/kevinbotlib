@@ -46,6 +46,7 @@ dependencies = [
   "redis>=6.1.0",
   "wakepy>=0.10.2.post1",
   "superqt>=0.7.3",
+  "paramiko>=3.5.1",
 ]
 
 [project.optional-dependencies]

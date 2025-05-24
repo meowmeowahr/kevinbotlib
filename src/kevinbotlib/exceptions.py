@@ -2,10 +2,6 @@ class HandshakeTimeoutException(BaseException):
     """Exception that is produced when the server-up wait times out"""
 
 
-class ServerTimeoutException(BaseException):
-    """Exception that is produced when the connection handshake times out"""
-
-
 class JoystickMissingException(BaseException):
     """Exception that is produced when a requested gamepad is missing"""
 
@@ -34,5 +30,5 @@ class RobotLockedException(BaseException):
     """Exception that is produced when another instance of a robot is running"""
 
 
-class PrimaryDiskNotFoundException(BaseException):
-    """Exception that is produced when SystemPerformanceData can't find a primary system disk"""
+class SshNotConnectedException(BaseException):
+    """Exception that is produced trying to interact with a disconnected SSH client"""
