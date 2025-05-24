@@ -329,6 +329,14 @@ QProgressBar#AxesStateInputBar {
     max-height: 18px;
 }
 
+QScrollArea {
+    background-color: {{bg2}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    color: {{fg}};
+    padding: 2px;
+}
+
 /* QListWidget Styling */
 QListWidget {
     background-color: {{bg2}};

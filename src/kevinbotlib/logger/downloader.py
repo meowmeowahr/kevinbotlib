@@ -1,8 +1,10 @@
+import datetime
 import os
 
 import paramiko
 
 from kevinbotlib.exceptions import SshNotConnectedException
+from kevinbotlib.logger import Logger
 from kevinbotlib.logger.parser import LogEntry, LogParser
 
 
@@ -52,22 +54,25 @@ class RemoteLogDownloader:
         port: int = 22,
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
+        Logger().debug("Attempting Password connection")
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
-        self.ssh_connection.connect(hostname=host, username=username, password=password, port=port)
+        self.ssh_connection.connect(hostname=host, username=username, password=password, port=port, timeout=10)
         self.sftp_client = self.ssh_connection.open_sftp()
         self._resolved_log_dir = None
 
     def connect_with_key(
         self,
         host: str,
+        username: str,
         key: paramiko.RSAKey,
         port: int = 22,
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
+        Logger().debug("Attempting RSAKey connection")
         self.ssh_connection = paramiko.SSHClient()
         self.ssh_connection.set_missing_host_key_policy(missing_host_key_policy)
-        self.ssh_connection.connect(hostname=host, pkey=key, port=port)
+        self.ssh_connection.connect(hostname=host, username=username, pkey=key, port=port, timeout=10)
         self.sftp_client = self.ssh_connection.open_sftp()
         self._resolved_log_dir = None
 
@@ -107,3 +112,11 @@ class RemoteLogDownloader:
         resolved_path = self._resolve_log_dir()
         raw = self.sftp_client.open(os.path.join(resolved_path, logfile)).read().decode("utf-8")
         return LogParser.parse(raw)
+
+    def get_file_modification_time(self, logfile: str) -> datetime.datetime:
+        if not self.ssh_connection or not self.sftp_client:
+            msg = "SFTP is not connected"
+            raise SshNotConnectedException(msg)
+
+        resolved_path = self._resolve_log_dir()
+        return datetime.datetime.fromtimestamp(self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_mtime, tz=datetime.timezone.utc)

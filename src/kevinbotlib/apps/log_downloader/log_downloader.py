@@ -1,13 +1,18 @@
 import sys
+import traceback
 from dataclasses import dataclass
 
+import paramiko
 import qtawesome as qta
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
     QCoreApplication,
+    QObject,
     QSettings,
+    QThread,
     Signal,
+    Slot,
 )
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
@@ -16,7 +21,9 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QPushButton,
+    QStackedWidget,
     QVBoxLayout,
+    QMessageBox
 )
 
 import kevinbotlib.apps.log_downloader.resources_rc
@@ -25,7 +32,11 @@ from kevinbotlib.apps.common.abc import ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
+from kevinbotlib.apps.log_downloader.pages.connecting import ConnectingPage
+from kevinbotlib.apps.log_downloader.pages.connection import ConnectionForm
+from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
+from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -71,11 +82,54 @@ class SettingsWindow(QDialog):
         self.on_applied.emit()
 
 
+class ConnectionWorker(QObject):
+    connected = Signal()
+    error = Signal(str)
+    start_password = Signal(str, int, str, str)
+    start_key = Signal(str, int, str, paramiko.RSAKey)
+
+    def __init__(self, client: RemoteLogDownloader):
+        super().__init__()
+        self.client = client
+        self.start_password.connect(self.run_password)
+        self.start_key.connect(self.run_key)
+
+    @Slot(str, int, str, paramiko.RSAKey)
+    def run_key(self, host: str, port: int, user: str, key: paramiko.RSAKey):
+        try:
+            self.client.connect_with_key(host, user, key, port)
+        except paramiko.AuthenticationException:
+            self.error.emit("Authentication failed")
+            return
+        except TimeoutError:
+            self.error.emit("Connection timed out")
+            return
+        self.connected.emit()
+
+    @Slot(str, int, str, str)
+    def run_password(self, host: str, port: int, user: str, password: str):
+        try:
+            self.client.connect_with_password(host, user, password, port)
+        except paramiko.AuthenticationException:
+            self.error.emit("Authentication failed")
+            return
+        except TimeoutError:
+            self.error.emit("Connection timed out")
+            return
+        self.connected.emit()
+
+
+
 class Application(ThemableWindow):
     def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
         self.app = app
         self.logger = logger
+
+        self.connect_worker = None
+        self.connect_thread = None
+
+        self.downloader = RemoteLogDownloader()
 
         self.setWindowIcon(QIcon(":/app_icons/log-downloader-small.svg"))
 
@@ -110,6 +164,19 @@ class Application(ThemableWindow):
 
         self.about_action = self.help_menu.addAction("About", self.show_about)
 
+        self.root_widget = QStackedWidget()
+        self.setCentralWidget(self.root_widget)
+
+        self.connection_form = ConnectionForm()
+        self.connection_form.auth_pwd.connect(self.connect_pwd)
+        self.root_widget.insertWidget(0, self.connection_form)
+
+        self.connecting = ConnectingPage()
+        self.root_widget.insertWidget(1, self.connecting)
+
+        self.viewer = LogViewer(self.downloader)
+        self.root_widget.insertWidget(2, self.viewer)
+
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
         if theme_name == "Dark":
@@ -131,6 +198,42 @@ class Application(ThemableWindow):
 
     def show_about(self):
         self.about_window.show()
+
+    def connect_pwd(self, host: str, port: int, user: str, password: str):
+        self.root_widget.setCurrentIndex(1)
+
+        self.connect_thread = QThread()
+        self.connect_worker = ConnectionWorker(self.downloader)
+        self.connect_worker.moveToThread(self.connect_thread)
+
+        self.connect_worker.connected.connect(self.on_connected)
+        self.connect_worker.connected.connect(self.connect_thread.quit)
+        self.connect_worker.error.connect(self.connection_error)
+        self.connect_worker.error.connect(self.connect_thread.quit)
+        self.connect_thread.finished.connect(self.connect_thread.deleteLater)
+
+        # Trigger `run_password()` inside the worker thread
+        self.connect_thread.started.connect(
+            lambda: self.connect_worker.start_password.emit(host, port, user, password)
+        )
+
+        self.connect_thread.start()
+
+    def connection_error(self, error: str):
+        self.root_widget.setCurrentIndex(0)
+        msg = QMessageBox(self)
+        msg.setText(f"Connection failed: {error}")
+        msg.setWindowTitle("Connection Error")
+        msg.setIcon(QMessageBox.Icon.Critical)
+        msg.exec()
+
+
+    @Slot()
+    def on_connected(self):
+        self.connect_thread.quit()
+        self.logger.info("Connected successfully")
+        self.root_widget.setCurrentIndex(2)
+        self.viewer.populate()
 
 
 @dataclass

@@ -3,5 +3,6 @@
     <qresource>
     <file>app_icons/log-downloader.svg</file>
     <file>app_icons/log-downloader-small.svg</file>
+    <file>app_icons/log-downloader-128.svg</file>
     </qresource>
 </RCC>

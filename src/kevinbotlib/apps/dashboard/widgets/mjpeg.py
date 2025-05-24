@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from kevinbotlib.apps.dashboard.qwidgets import Divider
+from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.logger import Logger

@@ -43,7 +43,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QMainWindow,
     QMessageBox,
     QPushButton,
     QSpinBox,
@@ -457,7 +456,7 @@ class PollingWorker(QObject):
         self.running = False
 
 
-class Application(QMainWindow, ThemableWindow):
+class Application(ThemableWindow):
     def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
         self.app = app

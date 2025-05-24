@@ -13,9 +13,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.gradient import GradientEditor
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
-from kevinbotlib.apps.dashboard.qwidgets import Divider
 from kevinbotlib.apps.dashboard.speedometer import Speedometer
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm import RedisCommClient
