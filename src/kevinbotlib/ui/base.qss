@@ -470,11 +470,14 @@ QMenuBar {
     color: {{fg}};
 }
 
-QFrame[frameShape=Panel],
-QFrame[frameShape=VLine],
-QFrame[frameShape=HLine] {
+QFrame[frameShape=Panel]{
     border: 1px solid {{border}};
     border-radius: 2px;
+}
+
+QFrame[frameShape=VLine],
+QFrame[frameShape=HLine]  {
+    color: {{border}};
 }
 
 QTreeView {

@@ -47,6 +47,7 @@ dependencies = [
   "wakepy>=0.10.2.post1",
   "superqt>=0.7.3",
   "paramiko>=3.5.1",
+  "pyside6-addons>=6.9.0",
 ]
 
 [project.optional-dependencies]

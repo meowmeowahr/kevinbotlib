@@ -1,3 +1,6 @@
+import sys
+
+
 def fullclassname(o: object) -> str:
     """Get the full name of a class
 
@@ -11,3 +14,7 @@ def fullclassname(o: object) -> str:
     if module == "builtins":
         return o.__qualname__  # avoid outputs like 'builtins.str'
     return module + "." + o.__qualname__
+
+
+def is_binary():
+    return getattr(sys, "frozen", False)

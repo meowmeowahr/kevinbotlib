@@ -34,7 +34,7 @@ from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitch
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
 from kevinbotlib.apps.log_downloader.pages.connecting import ConnectingPage
 from kevinbotlib.apps.log_downloader.pages.connection import ConnectionForm
-from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer
+from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer, setup_url_scheme
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.ui.theme import Theme, ThemeStyle
@@ -247,12 +247,18 @@ class LogDownloaderApplicationStartupArguments:
 class LogDownloaderApplicationRunner:
     def __init__(self, args: LogDownloaderApplicationStartupArguments | None = None):
         self.logger = Logger()
+
+        setup_url_scheme()
         self.app = QApplication(sys.argv)
+
+        self.configure_logger(args)
+
+        self.logger.debug("Custom URL scheme set")
+
         self.app.setApplicationName("KevinbotLib Log Downloader")
         self.app.setApplicationVersion(__version__)
         self.app.setStyle("Fusion")  # can solve some platform-specific issues
 
-        self.configure_logger(args)
         self.window = None
 
     def configure_logger(self, args: LogDownloaderApplicationStartupArguments | None):

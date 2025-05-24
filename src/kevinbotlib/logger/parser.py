@@ -1,6 +1,7 @@
 import datetime
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Self, Iterator
+from typing import Self
 
 import orjson
 
@@ -25,43 +26,52 @@ class Log(list):
             entries = list(entries)
         elif isinstance(entries, list):
             if not all(isinstance(entry, LogEntry) for entry in entries):
-                raise TypeError("All entries must be LogEntry instances")
+                msg = "All entries must be LogEntry instances"
+                raise TypeError(msg)
         else:
-            raise TypeError(f"Expected list[LogEntry], Log, or None, got {type(entries).__name__}")
+            msg = f"Expected list[LogEntry], Log, or None, got {type(entries).__name__}"
+            raise TypeError(msg)
 
         super().__init__(entries)
 
     def append(self, item: LogEntry) -> None:
         if not isinstance(item, LogEntry):
-            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+            msg = f"Expected LogEntry, got {type(item).__name__}"
+            raise TypeError(msg)
         super().append(item)
 
-    def extend(self, items: 'list[LogEntry] | Log') -> None:
+    def extend(self, items: "list[LogEntry] | Log") -> None:
         if isinstance(items, Log):
             items = list(items)
         if not isinstance(items, list):
-            raise TypeError(f"Expected list[LogEntry] or Log, got {type(items).__name__}")
+            msg = f"Expected list[LogEntry] or Log, got {type(items).__name__}"
+            raise TypeError(msg)
         if not all(isinstance(item, LogEntry) for item in items):
-            raise TypeError("All items must be LogEntry instances")
+            msg = "All items must be LogEntry instances"
+            raise TypeError(msg)
         super().extend(items)
 
     def insert(self, index: int, item: LogEntry) -> None:
         if not isinstance(item, LogEntry):
-            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+            msg = f"Expected LogEntry, got {type(item).__name__}"
+            raise TypeError(msg)
         super().insert(index, item)
 
     def __setitem__(self, index: int, item: LogEntry) -> None:
         if not isinstance(item, LogEntry):
-            raise TypeError(f"Expected LogEntry, got {type(item).__name__}")
+            msg = f"Expected LogEntry, got {type(item).__name__}"
+            raise TypeError(msg)
         super().__setitem__(index, item)
 
-    def __iadd__(self, items: 'list[LogEntry] | Log') -> Self:
+    def __iadd__(self, items: "list[LogEntry] | Log") -> Self:
         if isinstance(items, Log):
             items = list(items)
         if not isinstance(items, list):
-            raise TypeError(f"Expected list[LogEntry] or Log, got {type(items).__name__}")
+            msg = f"Expected list[LogEntry] or Log, got {type(items).__name__}"
+            raise TypeError(msg)
         if not all(isinstance(item, LogEntry) for item in items):
-            raise TypeError("All items must be LogEntry instances")
+            msg = "All items must be LogEntry instances"
+            raise TypeError(msg)
         super().__iadd__(items)
         return self
 
