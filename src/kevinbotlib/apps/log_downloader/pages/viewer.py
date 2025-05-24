@@ -1,8 +1,10 @@
 import datetime
+import html
 import locale
 import socket
 from functools import partial
 
+import orjson
 import paramiko
 from PySide6.QtCore import (
     QBuffer,
@@ -40,6 +42,7 @@ from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.logger.parser import Log, LogEntry
 
 URL_SCHEME = "logdata"
+
 
 class LogUrlSchemeHandler(QWebEngineUrlSchemeHandler):
     """URL scheme handler to serve large HTML content for logs."""
@@ -178,6 +181,9 @@ class LogFetchWorker(QRunnable):
         except socket.gaierror as e:
             self.signals.error.emit(f"Could not resolve hostname: {e!r}")
             return
+        except orjson.JSONDecodeError as e:
+            self.signals.error.emit(f"Could not decode log: {e!r}")
+            return
 
     def cancel(self):
         self.is_cancelled = True
@@ -189,7 +195,6 @@ class LogEntryWidget:
         self.entry = entry
 
     def get_level_color(self):
-        """Return background color based on log level with 0.4 opacity (RGBA)."""
         colors = {
             "TRACE": QColor(16, 80, 96),  # Dark teal
             "DEBUG": QColor(16, 64, 96),  # Dark blue
@@ -203,14 +208,12 @@ class LogEntryWidget:
         return color.name(QColor.NameFormat.HexRgb) + "55"  # Returns color in #AARRGGBB format
 
     def get_subtext_color(self):
-        """Get text color from parent's palette for readability."""
         if self.parent:
             palette = self.parent.palette()
             return palette.color(QPalette.ColorRole.Text).name()
         return "#333333"  # Fallback dark gray for text
 
     def get_text_color(self):
-        """Get a lighter text color for timestamp and metadata."""
         if self.parent:
             palette = self.parent.palette()
             text_color = palette.color(QPalette.ColorRole.Text)
@@ -220,12 +223,10 @@ class LogEntryWidget:
         return "#666666"  # Fallback medium gray for subtext
 
     def get_border_color(self):
-        """Get a darker version of the level color for the border."""
         color = self.get_level_color()
         return color[:-2]
 
     def get_html(self):
-        """Generate HTML for the log entry with improved readability."""
         text_color = self.get_text_color()
         subtext_color = self.get_subtext_color()
         bg_color = self.get_level_color()
@@ -235,12 +236,10 @@ class LogEntryWidget:
         <table width="100%" style="margin: 8px 0; border Ascending: true; border: 2px solid {border_color}; border-radius: 6px; background-color: {bg_color};">
             <tr>
                 <td style="padding: 12px;">
-                    <div style="color: {subtext_color}; font-size: 11pt; font-family: 'Segoe UI', Arial, sans-serif; margin-bottom: 6px;">
-                        {self.entry.timestamp.strftime("%Y-%m-%d %H:%M:%S")} • {self.entry.modname}.{self.entry.function}:{self.entry.line}
+                    <div style="color: {subtext_color}; font-size: 11pt; font-family: sans-serif; margin-bottom: 6px;">
+                        {self.entry.level_name} - {self.entry.timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {self.entry.modname}.{self.entry.function}:{self.entry.line}
                     </div>
-                    <div style="color: {text_color}; font-size: 13pt; font-family: 'Segoe UI', Arial, sans-serif;">
-                        {self.entry.message}
-                    </div>
+                    <div style="color: {text_color}; font-size: 13pt; font-family: monospace; white-space: pre-wrap;">{html.escape(self.entry.message.strip("\n\r "))}</div>
                 </td>
             </tr>
         </table>
@@ -342,7 +341,7 @@ class LogPanel(QStackedWidget):
         self.current_worker = None
 
         # Generate HTML content
-        html = ""
+        html = '<meta charset="UTF-8">\n'
         for item in log:
             widget = LogEntryWidget(item, self)
             html += widget.get_html() + "\n"
@@ -361,6 +360,9 @@ class LogPanel(QStackedWidget):
         self.set_loading(False)
         self.progress_bar.hide()
         self.loading_label.setText(f"Error: {error}")
+        self.text_area.setHtml(
+            f"<h3 style='font-family: sans-serif; color: #ef1010;'>Error: Failed to load log content: {error}</h3>"
+        )
         self.current_worker = None
 
 
@@ -368,6 +370,8 @@ class LogViewer(QSplitter):
     def __init__(self, downloader: RemoteLogDownloader, parent=None):
         super().__init__(parent)
         self.setContentsMargins(2, 2, 2, 2)
+        
+        self.thread_pool = QThreadPool.globalInstance()
 
         self.downloader = downloader
 
@@ -397,23 +401,25 @@ class LogViewer(QSplitter):
         self.addWidget(self.log_panel)
 
     def populate(self):
-        self.populate_thread = QThread()
-        self.populate_worker = PopulateWorker(self.downloader)
-        self.populate_worker.moveToThread(self.populate_thread)
+        if self.thread_pool.activeThreadCount() > 0:
+            QMessageBox.warning(
+                self,
+                "Another Operation Running",
+                "Another operation is already running. Please wait before attempting to load another log file.",
+                QMessageBox.StandardButton.Ok,
+            )
+            return
 
-        # Connect worker's finished/updates to UI methods
+        # Create new worker
+        self.populate_worker = PopulateWorker(self.downloader)
         self.populate_worker.finished.connect(self.set_items)
-        self.populate_worker.finished.connect(lambda: self.sidebar_browse.set_loading(False))
+        self.populate_worker.finished.connect(
+            lambda: self.sidebar_browse.set_loading(False)
+        )
         self.populate_worker.progress.connect(self.sidebar_browse.set_progress)
 
-        # Trigger run() via signal (runs in thread)
-        self.populate_thread.started.connect(self.populate_worker.start.emit)
-
-        # Clean up
-        self.populate_worker.finished.connect(self.populate_thread.quit)
-        self.populate_thread.finished.connect(self.populate_thread.deleteLater)
-
-        self.populate_thread.start()
+        # Start worker in thread pool
+        QThreadPool.globalInstance().start(self.populate_worker.run)
 
     def set_items(self, items: list):
         for item in items:

@@ -123,6 +123,7 @@ class Logger:
             self._internal_logger.add(
                 log_file,
                 rotation=config.file_logger.rotation_size,
+                format="{message}",
                 enqueue=True,
                 serialize=True,
                 level=config.file_logger.level.value.no if config.file_logger.level else config.level.value.no,
@@ -137,6 +138,7 @@ class Logger:
             hook,  # type: ignore
             level=self.config.level.value.no if self.config.level else self.config.level.value.no,
             serialize=True,
+            format="{message}",
             colorize=True,
         )
 

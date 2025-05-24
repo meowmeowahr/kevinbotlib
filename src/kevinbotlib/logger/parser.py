@@ -86,10 +86,11 @@ class LogParser:
     @staticmethod
     def parse(data: str) -> Log:
         entries = []
-        for entry in data.splitlines():
-            if not entry:
+        for raw_entry in data.splitlines():
+            if not raw_entry:
                 continue
-            record = orjson.loads(entry).get("record", {})
+            entry = orjson.loads(raw_entry)
+            record = entry.get("record", {})
 
             time = record.get("time", {})
             timestamp = time.get("timestamp", 0.0)
@@ -103,7 +104,7 @@ class LogParser:
             level_no = level.get("no", 0)
             level_icon = level.get("icon", "")
 
-            message = record.get("message", "")
+            message = entry.get("text", "")
 
             entries.append(
                 LogEntry(

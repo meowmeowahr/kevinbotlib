@@ -617,6 +617,7 @@ class Application(ThemableWindow):
             "KevinbotLib Dashboard",
             "Robot Dashboard for KevinbotLib",
             __version__,
+            "\nSource code is licensed under the GNU LGPLv3\nBinaries are licensed under the GNU GPLv3, due to some GPL components",
             QIcon(":/app_icons/dashboard.svg"),
             "Copyright © 2025 Kevin Ahr and contributors",
             self,

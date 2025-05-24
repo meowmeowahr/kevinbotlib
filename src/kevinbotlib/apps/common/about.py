@@ -19,6 +19,7 @@ class AboutDialog(QDialog):
         app_name: str,
         app_description: str,
         app_version: str,
+        app_license: str,
         app_icon: QIcon | None = None,
         cright: str | None = None,
         parent=None,
@@ -62,6 +63,9 @@ class AboutDialog(QDialog):
 
         version_label = QLabel(f"Version: {app_version}")
         layout.addWidget(version_label)
+
+        license_label = QLabel(f"License: {app_license}")
+        layout.addWidget(license_label)
 
         layout.addWidget(QFrame(frameShape=QFrame.Shape.HLine))
 
