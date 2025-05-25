@@ -66,7 +66,7 @@ jobs:
           uv sync --active --extra dev
           hatch build
           bash scripts/resource-rcc-compile.sh
-          bash scripts/build/build_binaries_macos.sh
+          bash scripts/build/build_binaries_mac.sh
 
       - name: Build on Windows
         if: matrix.platform == 'windows'
