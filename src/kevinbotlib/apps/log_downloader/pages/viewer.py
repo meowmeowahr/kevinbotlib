@@ -34,6 +34,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from line_profiler import profile
 
 from kevinbotlib.apps.common.widgets import QWidgetList
 from kevinbotlib.apps.log_downloader.util import sizeof_fmt
@@ -49,20 +50,18 @@ class LogUrlSchemeHandler(QWebEngineUrlSchemeHandler):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.html_data = {}
+        self.html_data = ""
 
-    def store_html(self, key: str, html: str):
+    def store_html(self, html: str):
         """Store HTML content for serving."""
-        self.html_data[key] = html
+        self.html_data = html
 
     def requestStarted(self, job: QWebEngineUrlRequestJob):  # noqa: N802
         """Handle requests for our custom scheme."""
         path = job.requestUrl().path()
 
-        if (data := self.html_data.get(path)) is not None:
-            if not isinstance(data, bytes):
-                data = str(data).encode("utf-8")
-
+        if self.html_data is not None:
+            data = str(self.html_data).encode("utf-8")
             mime = QByteArray(b"text/html")
             buffer = QBuffer(job)
             buffer.setData(data)
@@ -153,9 +152,10 @@ class LogFetchWorkerSignals(QObject):
 class LogFetchWorker(QRunnable):
     """Worker class to fetch a log file in a thread pool."""
 
-    def __init__(self, downloader: RemoteLogDownloader, logfile: str):
+    def __init__(self, downloader: RemoteLogDownloader, logfile: str, palette: QPalette):
         super().__init__()
         self.downloader = downloader
+        self.palette = palette
         self.logfile = logfile
         self.signals = LogFetchWorkerSignals()
         self.is_cancelled = False
@@ -168,10 +168,8 @@ class LogFetchWorker(QRunnable):
 
             log = self.downloader.get_log(
                 self.logfile,
-                progress_callback=lambda p: self.signals.progress.emit(p) if not self.is_cancelled else None,
+                progress_callback=lambda p: self.signals.progress.emit(p/2) if not self.is_cancelled else None,
             )
-            if not self.is_cancelled:
-                self.signals.finished.emit(log)
         except paramiko.AuthenticationException:
             self.signals.error.emit("Authentication failed")
             return
@@ -185,13 +183,39 @@ class LogFetchWorker(QRunnable):
             self.signals.error.emit(f"Could not decode log: {e!r}")
             return
 
+        # Generate HTML content
+        html_data = '<meta charset="UTF-8">\n'
+
+        palette = self.palette
+
+        text_color = self.palette.color(QPalette.ColorRole.Text)
+        # Lighten the text color slightly for subtext
+        text_color = text_color.lighter(150)
+        text_color = text_color.name()
+
+        subtext_color = self.palette.color(QPalette.ColorRole.Text).name()
+
+        total = len(log)
+        for i, item in enumerate(log):
+            widget = LogEntryWidget(item, palette, text_color, subtext_color)
+            html_data += widget.get_html() + "\n"
+            self.signals.progress.emit((i / total * 50) + 50)
+            if self.is_cancelled:
+                break
+
+        if not self.is_cancelled:
+            self.signals.finished.emit(html_data)
+
+
     def cancel(self):
         self.is_cancelled = True
 
 
 class LogEntryWidget:
-    def __init__(self, entry: LogEntry, parent: QObject | None = None):
-        self.parent = parent
+    def __init__(self, entry: LogEntry, palette: QPalette, text_color: str, subtext_color: str):
+        self.palette = palette
+        self.text_color = text_color
+        self.subtext_color = subtext_color
         self.entry = entry
 
     def get_level_color(self):
@@ -207,28 +231,14 @@ class LogEntryWidget:
         color = colors.get(self.entry.level_name, QColor(128, 128, 128))  # Default gray
         return color.name(QColor.NameFormat.HexRgb) + "55"  # Returns color in #AARRGGBB format
 
-    def get_subtext_color(self):
-        if self.parent:
-            palette = self.parent.palette()
-            return palette.color(QPalette.ColorRole.Text).name()
-        return "#333333"  # Fallback dark gray for text
-
-    def get_text_color(self):
-        if self.parent:
-            palette = self.parent.palette()
-            text_color = palette.color(QPalette.ColorRole.Text)
-            # Lighten the text color slightly for subtext
-            text_color = text_color.lighter(150)
-            return text_color.name()
-        return "#666666"  # Fallback medium gray for subtext
-
     def get_border_color(self):
         color = self.get_level_color()
         return color[:-2]
 
+    @profile
     def get_html(self):
-        text_color = self.get_text_color()
-        subtext_color = self.get_subtext_color()
+        text_color = self.text_color
+        subtext_color = self.subtext_color
         bg_color = self.get_level_color()
         border_color = self.get_border_color()
 
@@ -326,29 +336,24 @@ class LogPanel(QStackedWidget):
         self.progress_bar.setValue(0)
 
         # Create and start the worker
-        self.current_worker = LogFetchWorker(self.downloader, name)
+        self.current_worker = LogFetchWorker(self.downloader, name, self.palette())
         self.current_worker.signals.progress.connect(self.progress_bar.setValue)
         self.current_worker.signals.finished.connect(self.set_items)
         self.current_worker.signals.error.connect(self.handle_error)
 
         self.thread_pool.start(self.current_worker)
 
-    def set_items(self, log: Log):
+    @profile
+    def set_items(self, log: str):
         """Update the UI with the loaded log data using URL scheme handler."""
         self.set_loading(False)
         self.progress_bar.hide()
         self.loading_label.setText("Log Loaded")
         self.current_worker = None
 
-        # Generate HTML content
-        html = '<meta charset="UTF-8">\n'
-        for item in log:
-            widget = LogEntryWidget(item, self)
-            html += widget.get_html() + "\n"
-
         # Store HTML in the URL scheme handler
         log_key = f"/log_{id(log)}"  # Use unique key based on log object id
-        self.url_handler.store_html(log_key, html)
+        self.url_handler.store_html(log)
 
         # Load using custom URL scheme
         url = QUrl(log_key)

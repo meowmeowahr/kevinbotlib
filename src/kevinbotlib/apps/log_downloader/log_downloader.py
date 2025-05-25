@@ -137,6 +137,7 @@ class Application(ThemableWindow):
         self.downloader = RemoteLogDownloader()
 
         self.setWindowIcon(QIcon(":/app_icons/log-downloader-small.svg"))
+        self.setWindowIcon(QIcon(":/app_icons/log-downloader-small.svg"))
 
         self.settings = QSettings("kevinbotlib", "logdownloader")
         self.theme = Theme(ThemeStyle.System)
@@ -148,7 +149,7 @@ class Application(ThemableWindow):
             "KevinbotLib Log Downloader",
             "Download and View Logs from a KevinbotLib Robot",
             __version__,
-            "\nSource code is licensed under the GNU LGPLv3\nBinaries are licensed under the GNU GPLv3 due to some GPL components",
+            "\nSource code is licensed under the GNU LGPLv3\nBinaries are licensed under the GNU GPLv3 due to some GPL components\nSee 'Open Source Licenses' for more details...",
             QIcon(":/app_icons/log-downloader.svg"),
             "Copyright © 2025 Kevin Ahr and contributors",
             self,
