@@ -36,4 +36,4 @@ PKNAME="linux-x86-64-glibc-$GLIBC.tar.gz"
 
 tar -czvf dist/$PKNAME -C dist/all/ .
 
-echo $PKNAME >&2
+echo "$PKNAME" >&2

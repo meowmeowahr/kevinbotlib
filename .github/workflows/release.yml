@@ -27,6 +27,9 @@ jobs:
       - name: Build package
         run: hatch build
 
+      - name: Build Linux Dist
+        run: bash scripts/build/build_binaries_linux.sh 2> "$LINUX_FNAME"
+
       - name: Get release tag
         id: tag
         run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
@@ -38,6 +41,7 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
+            dist/all/$LINUX_FNAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
