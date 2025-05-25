@@ -27,3 +27,5 @@ cp -r dist/kevinbotlib_console/_internal/. dist/all/_internal
 cp -r dist/kevinbotlib_log_downloader/_internal/. dist/all/_internal
 cp -r dist/kevinbotlib_log_viewer/_internal/. dist/all/_internal
 cp -r dist/kevinbotlib/_internal/. dist/all/_internal
+
+cp BINARY-LICENSE dist/all/BINARY-LICENSE
