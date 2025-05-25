@@ -28,12 +28,16 @@ jobs:
         run: hatch env create
 
       - name: Source and build
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
         run: |
           source $(hatch env find)/bin/activate
           pip install uv
           uv sync --active --extra dev
           hatch build
           bash scripts/build/build_binaries_linux.sh
+          hatch publish -r test
 
       - name: Get release tag
         id: tag
@@ -48,9 +52,3 @@ jobs:
             dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to TestPyPI
-        env:
-          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
-        run: hatch publish -r test
