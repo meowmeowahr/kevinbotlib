@@ -3,7 +3,7 @@ import os
 import tempfile
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import paramiko
 
@@ -11,13 +11,16 @@ from kevinbotlib.exceptions import SshNotConnectedException
 from kevinbotlib.logger import Logger
 from kevinbotlib.logger.parser import Log, LogParser
 
+if TYPE_CHECKING:
+    from paramiko.sftp_client import SFTPClient
+
 
 class RemoteLogDownloader:
     default_missing_host_key_policy = paramiko.WarningPolicy()
 
     def __init__(self, log_dir: str = "~/.local/share/kevinbotlib/logging/"):
         self.ssh_connection = None
-        self.sftp_client = None
+        self.sftp_client: SFTPClient | None = None
         self._log_dir = log_dir
         self._resolved_log_dir = None
 
@@ -131,6 +134,11 @@ class RemoteLogDownloader:
         remote_path = os.path.join(resolved_path, logfile)
         with self._download_with_progress(remote_path, progress_callback) as content:
             return content
+
+    def delete_log(self, logfile: str):
+        resolved_path = self._resolve_log_dir()
+        remote_path = os.path.join(resolved_path, logfile)
+        self.sftp_client.remove(remote_path)
 
     def get_log(self, logfile: str, progress_callback: Callable[[float], None] | None = None) -> Log:
         resolved_path = self._resolve_log_dir()

@@ -34,7 +34,8 @@ from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitch
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
 from kevinbotlib.apps.log_downloader.pages.connecting import ConnectingPage
 from kevinbotlib.apps.log_downloader.pages.connection import ConnectionForm
-from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer, setup_url_scheme
+from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer
+from kevinbotlib.apps.log_downloader.url_scheme import setup_url_scheme
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.ui.theme import Theme, ThemeStyle

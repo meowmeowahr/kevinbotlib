@@ -6,21 +6,18 @@ from functools import partial
 
 import orjson
 import paramiko
+import qtawesome as qta
 from PySide6.QtCore import (
-    QBuffer,
-    QByteArray,
-    QIODevice,
     QObject,
     QRunnable,
+    QSize,
     Qt,
-    QThread,
     QThreadPool,
     QUrl,
     Signal,
     Slot,
 )
 from PySide6.QtGui import QColor, QFont, QPalette
-from PySide6.QtWebEngineCore import QWebEngineUrlRequestJob, QWebEngineUrlScheme, QWebEngineUrlSchemeHandler
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QFrame,
@@ -33,54 +30,16 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QVBoxLayout,
     QWidget,
+    QFileDialog,
+    QDialog,
 )
-from line_profiler import profile
 
 from kevinbotlib.apps.common.widgets import QWidgetList
+from kevinbotlib.apps.log_downloader.url_scheme import URL_SCHEME, LogUrlSchemeHandler
 from kevinbotlib.apps.log_downloader.util import sizeof_fmt
 from kevinbotlib.logger import Logger
 from kevinbotlib.logger.downloader import RemoteLogDownloader
-from kevinbotlib.logger.parser import Log, LogEntry
-
-URL_SCHEME = "logdata"
-
-
-class LogUrlSchemeHandler(QWebEngineUrlSchemeHandler):
-    """URL scheme handler to serve large HTML content for logs."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.html_data = ""
-
-    def store_html(self, html: str):
-        """Store HTML content for serving."""
-        self.html_data = html
-
-    def requestStarted(self, job: QWebEngineUrlRequestJob):  # noqa: N802
-        """Handle requests for our custom scheme."""
-        path = job.requestUrl().path()
-
-        if self.html_data is not None:
-            data = str(self.html_data).encode("utf-8")
-            mime = QByteArray(b"text/html")
-            buffer = QBuffer(job)
-            buffer.setData(data)
-            buffer.open(QIODevice.OpenModeFlag.ReadOnly)
-            job.reply(mime, buffer)
-        else:
-            Logger().error(f"ERROR: URL scheme request failed: {path!r}")
-            job.fail(QWebEngineUrlRequestJob.Error.UrlNotFound)
-
-
-def setup_url_scheme():
-    """Register the custom URL scheme. MUST be called before QApplication creation!"""
-    scheme = QWebEngineUrlScheme(bytes(URL_SCHEME, "ascii"))
-    scheme.setFlags(
-        QWebEngineUrlScheme.Flag.SecureScheme
-        | QWebEngineUrlScheme.Flag.LocalScheme
-        | QWebEngineUrlScheme.Flag.LocalAccessAllowed
-    )
-    QWebEngineUrlScheme.registerScheme(scheme)
+from kevinbotlib.logger.parser import Log, LogEntry, LogParser
 
 
 class PopulateWorker(QObject):
@@ -112,6 +71,7 @@ class PopulateWorker(QObject):
 
 class LogFileWidget(QFrame):
     clicked = Signal()
+    deleted = Signal()
 
     def __init__(self, name: str, mod_time: datetime.datetime, size: str, parent=None):
         super().__init__(parent)
@@ -119,20 +79,32 @@ class LogFileWidget(QFrame):
         self.mod_time = mod_time
         self.size = size
 
-        self.root_layout = QVBoxLayout()
+        self.root_layout = QHBoxLayout()
         self.setLayout(self.root_layout)
+
+        self.info_layout = QVBoxLayout()
+        self.root_layout.addLayout(self.info_layout)
 
         self.name_label = QLabel(name)
         self.name_label.setFont(QFont(self.font().family(), 12))
-        self.root_layout.addWidget(self.name_label)
+        self.info_layout.addWidget(self.name_label)
 
         self.mod_time_label = QLabel("Modified at: " + mod_time.strftime(locale.nl_langinfo(locale.D_T_FMT)))
         self.mod_time_label.setFont(QFont(self.font().family(), 10))
-        self.root_layout.addWidget(self.mod_time_label)
+        self.info_layout.addWidget(self.mod_time_label)
 
         self.size_label = QLabel(f"File Size: {sizeof_fmt(size)}")
         self.size_label.setFont(QFont(self.font().family(), 10))
-        self.root_layout.addWidget(self.size_label)
+        self.info_layout.addWidget(self.size_label)
+
+        self.root_layout.addStretch()
+
+        self.delete_button = QPushButton()
+        self.delete_button.setIcon(qta.icon("mdi6.delete-forever", color="#d45b5a"))
+        self.delete_button.setIconSize(QSize(24, 24))
+        self.delete_button.setFixedSize(QSize(32, 32))
+        self.delete_button.clicked.connect(self.deleted.emit)
+        self.root_layout.addWidget(self.delete_button)
 
         self.setFrameShape(QFrame.Shape.Panel)
         self.setFixedHeight(self.sizeHint().height() + 2)
@@ -145,7 +117,7 @@ class LogFetchWorkerSignals(QObject):
     """Signal class for LogFetchWorker to emit progress and results."""
 
     progress = Signal(float)
-    finished = Signal(Log)
+    finished = Signal(Log, str, str)
     error = Signal(str)
 
 
@@ -166,10 +138,11 @@ class LogFetchWorker(QRunnable):
             if self.is_cancelled:
                 return
 
-            log = self.downloader.get_log(
+            raw = self.downloader.get_raw_log(
                 self.logfile,
-                progress_callback=lambda p: self.signals.progress.emit(p/2) if not self.is_cancelled else None,
+                progress_callback=lambda p: self.signals.progress.emit(p / 2) if not self.is_cancelled else None,
             )
+            log = LogParser.parse(raw)
         except paramiko.AuthenticationException:
             self.signals.error.emit("Authentication failed")
             return
@@ -204,11 +177,44 @@ class LogFetchWorker(QRunnable):
                 break
 
         if not self.is_cancelled:
-            self.signals.finished.emit(html_data)
-
+            self.signals.finished.emit(html_data, raw, self.logfile.rsplit(".", maxsplit=1)[0])
 
     def cancel(self):
         self.is_cancelled = True
+
+
+class LogDeleteWorkerSignals(QObject):
+    finished = Signal(str)
+    error = Signal(str)
+
+
+class LogDeleteWorker(QRunnable):
+    def __init__(self, downloader: RemoteLogDownloader, logfile: str):
+        super().__init__()
+        self.downloader = downloader
+        self.logfile = logfile
+        self.signals = LogDeleteWorkerSignals()
+        self.is_cancelled = False
+        self.setAutoDelete(True)
+
+    def run(self):
+        if self.is_cancelled:
+            return
+        try:
+            self.downloader.delete_log(self.logfile)
+        except paramiko.AuthenticationException:
+            self.signals.error.emit("Authentication failed")
+            return
+        except TimeoutError:
+            self.signals.error.emit("Connection timed out")
+            return
+        except socket.gaierror as e:
+            self.signals.error.emit(f"Could not resolve hostname: {e!r}")
+            return
+        except orjson.JSONDecodeError as e:
+            self.signals.error.emit(f"Could not decode log: {e!r}")
+            return
+        self.signals.finished.emit(self.logfile)
 
 
 class LogEntryWidget:
@@ -235,7 +241,6 @@ class LogEntryWidget:
         color = self.get_level_color()
         return color[:-2]
 
-    @profile
     def get_html(self):
         text_color = self.text_color
         subtext_color = self.subtext_color
@@ -245,11 +250,11 @@ class LogEntryWidget:
         return f"""
         <table width="100%" style="margin: 8px 0; border Ascending: true; border: 2px solid {border_color}; border-radius: 6px; background-color: {bg_color};">
             <tr>
-                <td style="padding: 12px;">
-                    <div style="color: {subtext_color}; font-size: 11pt; font-family: sans-serif; margin-bottom: 6px;">
+                <td style="padding: 8px;">
+                    <div style="color: {subtext_color}; font-size: 10pt; font-family: sans-serif; margin-bottom: 6px;">
                         {self.entry.level_name} - {self.entry.timestamp.strftime("%Y-%m-%d %H:%M:%S")} - {self.entry.modname}.{self.entry.function}:{self.entry.line}
                     </div>
-                    <div style="color: {text_color}; font-size: 13pt; font-family: monospace; white-space: pre-wrap;">{html.escape(self.entry.message.strip("\n\r "))}</div>
+                    <div style="color: {text_color}; font-size: 11pt; font-family: monospace; white-space: pre-wrap;">{html.escape(self.entry.message.strip("\n\r "))}</div>
                 </td>
             </tr>
         </table>
@@ -263,6 +268,9 @@ class LogPanel(QStackedWidget):
         self.thread_pool = QThreadPool.globalInstance()
         self.current_worker = None  # Track the current worker for cancellation
 
+        self.current_raw_log = None
+        self.current_log_name = None
+
         self.loading_widget = QWidget()
         self.insertWidget(0, self.loading_widget)
 
@@ -272,15 +280,64 @@ class LogPanel(QStackedWidget):
         self.progress_layout.addStretch()
 
         self.progress_bar = QProgressBar()
+        self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.progress_layout.addWidget(self.progress_bar)
 
         self.loading_label = QLabel("Please Wait...")
         self.loading_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.progress_layout.addWidget(self.loading_label)
 
+
         self.progress_layout.addStretch()
 
-        # Create web view with URL scheme handler
+        self.viewer_widget = QWidget()
+        self.insertWidget(1, self.viewer_widget)
+
+        self.viewer_layout = QVBoxLayout()
+        self.viewer_widget.setLayout(self.viewer_layout)
+
+        self.viewer_bar_layout = QHBoxLayout()
+        self.viewer_layout.addLayout(self.viewer_bar_layout)
+
+        self.viewer_file_label = QLabel("Select a Log File")
+        self.viewer_file_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        self.viewer_bar_layout.addWidget(self.viewer_file_label)
+
+        self.log_zoom_in_button = QPushButton()
+        self.log_zoom_in_button.setIcon(qta.icon("mdi6.magnify-plus"))
+        self.log_zoom_in_button.setIconSize(QSize(24, 24))
+        self.log_zoom_in_button.setFixedSize(QSize(32, 32))
+        self.log_zoom_in_button.clicked.connect(lambda: self.text_area.setZoomFactor(self.text_area.zoomFactor() + 0.1))
+        self.viewer_bar_layout.addWidget(self.log_zoom_in_button)
+
+        self.log_zoom_reset_button = QPushButton()
+        self.log_zoom_reset_button.setIcon(qta.icon("mdi6.magnify-close"))
+        self.log_zoom_reset_button.setIconSize(QSize(24, 24))
+        self.log_zoom_reset_button.setFixedSize(QSize(32, 32))
+        self.log_zoom_reset_button.clicked.connect(lambda: self.text_area.setZoomFactor(1))
+        self.viewer_bar_layout.addWidget(self.log_zoom_reset_button)
+
+        self.log_zoom_out_button = QPushButton()
+        self.log_zoom_out_button.setIcon(qta.icon("mdi6.magnify-minus"))
+        self.log_zoom_out_button.setIconSize(QSize(24, 24))
+        self.log_zoom_out_button.setFixedSize(QSize(32, 32))
+        self.log_zoom_out_button.clicked.connect(lambda: self.text_area.setZoomFactor(self.text_area.zoomFactor() - 0.1))
+        self.viewer_bar_layout.addWidget(self.log_zoom_out_button)
+
+        self.log_download_button = QPushButton()
+        self.log_download_button.setIcon(qta.icon("mdi6.download", color="#5ac95a"))
+        self.log_download_button.setIconSize(QSize(24, 24))
+        self.log_download_button.setFixedSize(QSize(32, 32))
+        self.log_download_button.clicked.connect(self.download_log)
+        self.viewer_bar_layout.addWidget(self.log_download_button)
+
+        self.log_close_button = QPushButton()
+        self.log_close_button.setIcon(qta.icon("mdi6.close", color="#d45b5a"))
+        self.log_close_button.setIconSize(QSize(24, 24))
+        self.log_close_button.setFixedSize(QSize(32, 32))
+        self.log_close_button.clicked.connect(self.close_log)
+        self.viewer_bar_layout.addWidget(self.log_close_button)
+
         self.text_area = QWebEngineView()
         self.text_area.setStyleSheet("background-color: transparent;")
         self.text_area.page().setBackgroundColor(QColor(0, 0, 0, 0))
@@ -288,13 +345,10 @@ class LogPanel(QStackedWidget):
         self.text_area.setHtml("Please wait...")
         self.url_handler = LogUrlSchemeHandler(self)
         self.text_area.page().profile().installUrlSchemeHandler(bytes(URL_SCHEME, "ascii"), self.url_handler)
+        self.viewer_layout.addWidget(self.text_area)
 
-        # Handle load failures gracefully
         self.text_area.loadFinished.connect(self.handle_load_finished)
 
-        self.insertWidget(1, self.text_area)
-
-        # Assuming these are defined in QWidgetList
         self.set_loading(True)
         self.progress_bar.hide()
         self.loading_label.setText("Select a Log File")
@@ -311,7 +365,7 @@ class LogPanel(QStackedWidget):
         if loading:
             self.setCurrentWidget(self.loading_widget)
         else:
-            self.setCurrentWidget(self.text_area)
+            self.setCurrentWidget(self.viewer_widget)
 
     def set_progress(self, value: int, text: str = ""):
         """Update progress bar value and optional text."""
@@ -332,6 +386,7 @@ class LogPanel(QStackedWidget):
 
         self.set_loading(True)
         self.loading_label.setText(f"Loading {name}...")
+        self.viewer_file_label.setText(f"Selected Log: {name}")
         self.progress_bar.show()
         self.progress_bar.setValue(0)
 
@@ -343,22 +398,56 @@ class LogPanel(QStackedWidget):
 
         self.thread_pool.start(self.current_worker)
 
-    @profile
-    def set_items(self, log: str):
+    def set_items(self, log: str, raw: str, name: str):
         """Update the UI with the loaded log data using URL scheme handler."""
+        self.current_raw_log = raw
+        self.current_log_name = name
         self.set_loading(False)
         self.progress_bar.hide()
         self.loading_label.setText("Log Loaded")
         self.current_worker = None
 
-        # Store HTML in the URL scheme handler
-        log_key = f"/log_{id(log)}"  # Use unique key based on log object id
+        log_key = f"/log_{id(log)}"
         self.url_handler.store_html(log)
 
-        # Load using custom URL scheme
         url = QUrl(log_key)
         url.setScheme(URL_SCHEME)
         self.text_area.setUrl(url)
+
+    def close_log(self):
+        self.set_loading(True)
+        self.progress_bar.hide()
+        self.loading_label.setText("Log Closed")
+        self.current_worker = None
+        self.viewer_file_label.setText("Select a Log File")
+        self.text_area.setHtml("Please wait...")
+
+    def download_log(self):
+        if self.current_raw_log is None:
+            QMessageBox.warning(
+                self,
+                "No Log Selected",
+                "Please select a log file before attempting to download it.",
+                QMessageBox.StandardButton.Ok,
+            )
+            return
+
+        dialog = QFileDialog()
+        dialog.setFileMode(QFileDialog.FileMode.AnyFile)
+        dialog.setNameFilter("Log Files (*.log)")
+        dialog.setWindowTitle("Download Log")
+        dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
+
+        if self.current_log_name:
+            dialog.selectFile(self.current_log_name)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            filename = dialog.selectedFiles()[0]
+            if not filename.endswith(".log"):
+                filename += ".log"
+
+            with open(filename, "w") as f:
+                f.write(self.current_raw_log)
 
     def handle_error(self, error: str):
         """Handle errors from the worker."""
@@ -375,13 +464,11 @@ class LogViewer(QSplitter):
     def __init__(self, downloader: RemoteLogDownloader, parent=None):
         super().__init__(parent)
         self.setContentsMargins(2, 2, 2, 2)
-        
+
         self.thread_pool = QThreadPool.globalInstance()
+        self.populate_worker = None
 
         self.downloader = downloader
-
-        self.populate_thread = None
-        self.populate_worker = None
 
         self.sidebar_widget = QWidget()
         self.addWidget(self.sidebar_widget)
@@ -418,9 +505,7 @@ class LogViewer(QSplitter):
         # Create new worker
         self.populate_worker = PopulateWorker(self.downloader)
         self.populate_worker.finished.connect(self.set_items)
-        self.populate_worker.finished.connect(
-            lambda: self.sidebar_browse.set_loading(False)
-        )
+        self.populate_worker.finished.connect(lambda: self.sidebar_browse.set_loading(False))
         self.populate_worker.progress.connect(self.sidebar_browse.set_progress)
 
         # Start worker in thread pool
@@ -430,8 +515,24 @@ class LogViewer(QSplitter):
         for item in items:
             widget = LogFileWidget(item["name"], item["mod_time"], item["size"], parent=self.sidebar_browse)
             widget.clicked.connect(partial(self.load_log, item["name"]))
+            widget.deleted.connect(partial(self.delete_log, item["name"]))
             self.sidebar_browse.add_widget(widget)
         self.sidebar_browse.set_loading(False)
+
+    def delete_log(self, logfile: str):
+        if self.thread_pool.activeThreadCount() > 0:
+            QMessageBox.warning(
+                self,
+                "Another Operation Running",
+                "Another operation is already running. Please wait before attempting to load another log file.",
+                QMessageBox.StandardButton.Ok,
+            )
+            return
+
+        worker = LogDeleteWorker(self.downloader, logfile)
+        worker.signals.finished.connect(self.reload)
+        worker.signals.error.connect(lambda e: QMessageBox.critical(self, "Error", f"Error deleting log: {e}"))
+        self.thread_pool.start(worker)
 
     def reload(self):
         self.sidebar_browse.clear_widgets()
