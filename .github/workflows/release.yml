@@ -28,7 +28,7 @@ jobs:
         run: hatch build
 
       - name: Build Linux Dist
-        run: LINUX_FNAME=$(./scripts/build/build_binaries_linux.sh 3>&1 1>/dev/tty)
+        run: bash scripts/build/build_binaries_linux.sh
 
       - name: Get release tag
         id: tag
@@ -41,7 +41,6 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
-            dist/all/$LINUX_FNAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
