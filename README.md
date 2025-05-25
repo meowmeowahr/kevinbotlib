@@ -69,3 +69,5 @@ hatch fmt
 ## License
 
 `kevinbotlib` is distributed under the terms of the [LGPL-3.0-or-later](https://spdx.org/licenses/LGPL-3.0-or-later.html) license.
+
+All KevinbotLib binaries are distributed under the terms of the [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) license due to the inclusion of several GPL dependencies.
