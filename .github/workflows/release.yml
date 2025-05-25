@@ -27,20 +27,13 @@ jobs:
       - name: Create env
         run: hatch env create
 
-      - name: Source env
-        run: source $(hatch env find)/bin/activate
-
-      - name: Install uv
-        run: pip install uv
-
-      - name: Install dev deps
-        run: uv sync --active --extra dev
-
-      - name: Build package
-        run: hatch build
-
-      - name: Build Linux Dist
-        run: bash scripts/build/build_binaries_linux.sh
+      - name: Source and build
+        run: |
+          source $(hatch env find)/bin/activate
+          pip install uv
+          uv sync --active --extra dev
+          hatch build
+          bash scripts/build/build_binaries_linux.sh
 
       - name: Get release tag
         id: tag
