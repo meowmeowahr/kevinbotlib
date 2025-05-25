@@ -28,7 +28,7 @@ jobs:
         run: hatch build
 
       - name: Build Linux Dist
-        run: bash scripts/build/build_binaries_linux.sh 2> "$LINUX_FNAME"
+        run: ./scripts/build/build_binaries_linux.sh 2> "$LINUX_FNAME"
 
       - name: Get release tag
         id: tag
