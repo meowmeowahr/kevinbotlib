@@ -52,5 +52,6 @@ jobs:
             dist/*.whl
             dist/*.tar.gz
             dist/*.zip
+            dist/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
