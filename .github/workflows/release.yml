@@ -65,8 +65,8 @@ jobs:
           pip install uv
           uv sync --active --extra dev
           hatch build
-          pwsh scripts/resource-rcc-compile.ps1
-          pwsh scripts/build/build_binaries_macos_${{ matrix.arch }}.ps1
+          bash scripts/resource-rcc-compile.sh
+          bash scripts/build/build_binaries_macos.sh
 
       - name: Build on Windows
         if: matrix.platform == 'windows'
