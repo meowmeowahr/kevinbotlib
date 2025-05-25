@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+    <file>app_icons/log-viewer.svg</file>
+    <file>app_icons/log-viewer-small.svg</file>
+    <file>app_icons/log-viewer-128.svg</file>
+    </qresource>
+</RCC>

@@ -1,18 +1,13 @@
-import socket
 import sys
 from dataclasses import dataclass
 
-import paramiko
 import qtawesome as qta
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
     QCoreApplication,
-    QObject,
     QSettings,
-    QThread,
     Signal,
-    Slot,
 )
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
@@ -20,24 +15,21 @@ from PySide6.QtWidgets import (
     QDialog,
     QFormLayout,
     QHBoxLayout,
-    QMessageBox,
     QPushButton,
     QStackedWidget,
     QVBoxLayout,
 )
 
-import kevinbotlib.apps.log_downloader.resources_rc
+import kevinbotlib.apps.log_viewer.resources_rc
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.apps.common.abc import ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
 from kevinbotlib.apps.common.url_scheme import setup_url_scheme
-from kevinbotlib.apps.log_downloader.pages.connecting import ConnectingPage
-from kevinbotlib.apps.log_downloader.pages.connection import ConnectionForm
-from kevinbotlib.apps.log_downloader.pages.viewer import LogViewer
+from kevinbotlib.apps.log_viewer.log_panel import LogPanel
+from kevinbotlib.apps.log_viewer.pages.upload import UploadForm
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
-from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -83,49 +75,6 @@ class SettingsWindow(QDialog):
         self.on_applied.emit()
 
 
-class ConnectionWorker(QObject):
-    connected = Signal()
-    error = Signal(str)
-    start_password = Signal(str, int, str, str)
-    start_key = Signal(str, int, str, paramiko.RSAKey)
-
-    def __init__(self, client: RemoteLogDownloader):
-        super().__init__()
-        self.client = client
-        self.start_password.connect(self.run_password)
-        self.start_key.connect(self.run_key)
-
-    @Slot(str, int, str, paramiko.RSAKey)
-    def run_key(self, host: str, port: int, user: str, key: paramiko.RSAKey):
-        try:
-            self.client.connect_with_key(host, user, key, port)
-        except paramiko.AuthenticationException:
-            self.error.emit("Authentication failed")
-            return
-        except TimeoutError:
-            self.error.emit("Connection timed out")
-            return
-        except socket.gaierror as e:
-            self.error.emit(f"Could not resolve hostname: {e!r}")
-            return
-        self.connected.emit()
-
-    @Slot(str, int, str, str)
-    def run_password(self, host: str, port: int, user: str, password: str):
-        try:
-            self.client.connect_with_password(host, user, password, port)
-        except paramiko.AuthenticationException:
-            self.error.emit("Authentication failed")
-            return
-        except TimeoutError:
-            self.error.emit("Connection timed out")
-            return
-        except socket.gaierror as e:
-            self.error.emit(f"Could not resolve hostname: {e!r}")
-            return
-        self.connected.emit()
-
-
 class Application(ThemableWindow):
     def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
@@ -135,23 +84,21 @@ class Application(ThemableWindow):
         self.connect_worker = None
         self.connect_thread = None
 
-        self.downloader = RemoteLogDownloader()
+        self.setWindowIcon(QIcon(":/app_icons/log-viewer-small.svg"))
+        self.setWindowIcon(QIcon(":/app_icons/log-viewer-small.svg"))
 
-        self.setWindowIcon(QIcon(":/app_icons/log-downloader-small.svg"))
-        self.setWindowIcon(QIcon(":/app_icons/log-downloader-small.svg"))
-
-        self.settings = QSettings("kevinbotlib", "logdownloader")
+        self.settings = QSettings("kevinbotlib", "logviewer")
         self.theme = Theme(ThemeStyle.System)
         self.apply_theme()
 
         self.settings_window = SettingsWindow(self, self.settings)
 
         self.about_window = AboutDialog(
-            "KevinbotLib Log Downloader",
-            "Download and View Logs from a KevinbotLib Robot",
+            "KevinbotLib Log Viewer",
+            "View Locally Stored Logs from a KevinbotLib Robot",
             __version__,
             "\nSource code is licensed under the GNU LGPLv3\nBinaries are licensed under the GNU GPLv3 due to some GPL components\nSee 'Open Source Licenses' for more details...",
-            QIcon(":/app_icons/log-downloader.svg"),
+            QIcon(":/app_icons/log-viewer.svg"),
             "Copyright © 2025 Kevin Ahr and contributors",
             self,
         )
@@ -175,16 +122,13 @@ class Application(ThemableWindow):
         self.root_widget = QStackedWidget()
         self.setCentralWidget(self.root_widget)
 
-        self.connection_form = ConnectionForm()
-        self.connection_form.auth_pwd.connect(self.connect_pwd)
+        self.connection_form = UploadForm()
+        self.connection_form.load_file_path.connect(self.load)
         self.root_widget.insertWidget(0, self.connection_form)
 
-        self.connecting = ConnectingPage()
-        self.root_widget.insertWidget(1, self.connecting)
-
-        self.viewer = LogViewer(self.downloader)
-        self.viewer.exited.connect(self.close_connection)
-        self.root_widget.insertWidget(2, self.viewer)
+        self.panel = LogPanel()
+        self.panel.closed.connect(lambda: self.root_widget.setCurrentIndex(0))
+        self.root_widget.insertWidget(1, self.panel)
 
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
@@ -208,52 +152,19 @@ class Application(ThemableWindow):
     def show_about(self):
         self.about_window.show()
 
-    def connect_pwd(self, host: str, port: int, user: str, password: str):
+    def load(self, path: str):
         self.root_widget.setCurrentIndex(1)
-
-        self.connect_thread = QThread()
-        self.connect_worker = ConnectionWorker(self.downloader)
-        self.connect_worker.moveToThread(self.connect_thread)
-
-        self.connect_worker.connected.connect(self.on_connected)
-        self.connect_worker.connected.connect(self.connect_thread.quit)
-        self.connect_worker.error.connect(self.connection_error)
-        self.connect_worker.error.connect(self.connect_thread.quit)
-        self.connect_thread.finished.connect(self.connect_thread.deleteLater)
-
-        # Trigger `run_password()` inside the worker thread
-        self.connect_thread.started.connect(lambda: self.connect_worker.start_password.emit(host, port, user, password))
-
-        self.connect_thread.start()
-
-    def connection_error(self, error: str):
-        self.root_widget.setCurrentIndex(0)
-        msg = QMessageBox(self)
-        msg.setText(f"Connection failed: {error}")
-        msg.setWindowTitle("Connection Error")
-        msg.setIcon(QMessageBox.Icon.Critical)
-        msg.exec()
-
-    @Slot()
-    def on_connected(self):
-        self.connect_thread.quit()
-        self.logger.info("Connected successfully")
-        self.root_widget.setCurrentIndex(2)
-        self.viewer.populate()
-
-    def close_connection(self):
-        self.root_widget.setCurrentIndex(0)
-        self.downloader.disconnect()
+        self.panel.load_local(path)
 
 
 @dataclass
-class LogDownloaderApplicationStartupArguments:
+class LogViewerApplicationStartupArguments:
     verbose: bool = False
     trace: bool = True
 
 
-class LogDownloaderApplicationRunner:
-    def __init__(self, args: LogDownloaderApplicationStartupArguments | None = None):
+class LogViewerApplicationRunner:
+    def __init__(self, args: LogViewerApplicationStartupArguments | None = None):
         self.logger = Logger()
 
         setup_url_scheme()
@@ -263,13 +174,13 @@ class LogDownloaderApplicationRunner:
 
         self.logger.debug("Custom URL scheme set")
 
-        self.app.setApplicationName("KevinbotLib Log Downloader")
+        self.app.setApplicationName("KevinbotLib Log Viewer")
         self.app.setApplicationVersion(__version__)
         self.app.setStyle("Fusion")  # can solve some platform-specific issues
 
         self.window = None
 
-    def configure_logger(self, args: LogDownloaderApplicationStartupArguments | None):
+    def configure_logger(self, args: LogViewerApplicationStartupArguments | None):
         if args is None:
             parser = QCommandLineParser()
             parser.addHelpOption()
@@ -298,14 +209,14 @@ class LogDownloaderApplicationRunner:
         self.logger.configure(LoggerConfiguration(level=log_level))
 
     def run(self):
-        kevinbotlib.apps.log_downloader.resources_rc.qInitResources()
+        kevinbotlib.apps.log_viewer.resources_rc.qInitResources()
         self.window = Application(self.app, self.logger)
         self.window.show()
         sys.exit(self.app.exec())
 
 
-def execute(args: LogDownloaderApplicationStartupArguments | None):
-    runner = LogDownloaderApplicationRunner(args)
+def execute(args: LogViewerApplicationStartupArguments | None):
+    runner = LogViewerApplicationRunner(args)
     runner.run()
 
 

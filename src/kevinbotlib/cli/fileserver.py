@@ -37,7 +37,7 @@ from kevinbotlib.logger import Logger, LoggerConfiguration
     default="localhost",
     help="Host to serve on (default: localhost)",
 )
-def fileserver(verbose: bool, trace: bool, directory: str, port: int, host: str):
+def fileserver(verbose: bool, trace: bool, dir: str, port: int, host: str):  # noqa: A002
     """
     Serve files over HTTP
     """
@@ -55,7 +55,7 @@ def fileserver(verbose: bool, trace: bool, directory: str, port: int, host: str)
 
     server = FileServer(
         http_port=port,
-        directory=directory,
+        directory=dir,
         host=host,
     )
     server.start()

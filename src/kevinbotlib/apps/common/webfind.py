@@ -1,9 +1,10 @@
 from PySide6.QtWebEngineCore import QWebEnginePage
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QCheckBox, QDialog, QHBoxLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 
 class FindDialog(QDialog):
-    def __init__(self, web_view, parent=None):
+    def __init__(self, web_view: QWebEngineView, parent=None):
         super().__init__(parent)
         self.web_view = web_view
         self.setWindowTitle("Find")
@@ -38,14 +39,22 @@ class FindDialog(QDialog):
 
         self.setLayout(layout)
 
-    def find_text(self, *args):
+    def find_text(self):
         text = self.find_input.text()
         if text:
-            flags = QWebEnginePage.FindFlag.FindCaseSensitively if self.case_sensitive.isChecked() else QWebEnginePage.FindFlag(0)
+            flags = (
+                QWebEnginePage.FindFlag.FindCaseSensitively
+                if self.case_sensitive.isChecked()
+                else QWebEnginePage.FindFlag(0)
+            )
             self.web_view.findText(text, flags)
 
     def find_next_text(self):
-        flags = QWebEnginePage.FindFlag.FindCaseSensitively if self.case_sensitive.isChecked() else QWebEnginePage.FindFlag(0)
+        flags = (
+            QWebEnginePage.FindFlag.FindCaseSensitively
+            if self.case_sensitive.isChecked()
+            else QWebEnginePage.FindFlag(0)
+        )
         self.web_view.findText(self.find_input.text(), flags)
 
     def find_prev_text(self):
@@ -53,3 +62,6 @@ class FindDialog(QDialog):
         if self.case_sensitive.isChecked():
             flags |= QWebEnginePage.FindFlag.FindCaseSensitively
         self.web_view.findText(self.find_input.text(), flags)
+
+    def closeEvent(self, arg__1, /):  # noqa: N802
+        self.web_view.findText("")

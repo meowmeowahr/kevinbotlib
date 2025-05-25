@@ -1,8 +1,5 @@
 import html
-import socket
 
-import orjson
-import paramiko
 import qtawesome as qta
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, QUrl, Signal
 from PySide6.QtGui import QColor, QPalette
@@ -21,10 +18,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps.common.url_scheme import URL_SCHEME, LogUrlSchemeHandler
 from kevinbotlib.apps.common.webfind import FindDialog
-from kevinbotlib.apps.log_downloader.url_scheme import URL_SCHEME, LogUrlSchemeHandler
 from kevinbotlib.logger import Logger
-from kevinbotlib.logger.downloader import RemoteLogDownloader
 from kevinbotlib.logger.parser import Log, LogEntry, LogParser
 
 
@@ -83,9 +79,8 @@ class LogFetchWorkerSignals(QObject):
 class LogFetchWorker(QRunnable):
     """Worker class to fetch a log file in a thread pool."""
 
-    def __init__(self, downloader: RemoteLogDownloader, logfile: str, palette: QPalette):
+    def __init__(self, logfile: str, palette: QPalette):
         super().__init__()
-        self.downloader = downloader
         self.palette = palette
         self.logfile = logfile
         self.signals = LogFetchWorkerSignals()
@@ -93,27 +88,10 @@ class LogFetchWorker(QRunnable):
         self.setAutoDelete(True)  # Let QThreadPool manage worker deletion
 
     def run(self):
-        try:
-            if self.is_cancelled:
-                return
-
-            raw = self.downloader.get_raw_log(
-                self.logfile,
-                progress_callback=lambda p: self.signals.progress.emit(p / 2) if not self.is_cancelled else None,
-            )
-            log = LogParser.parse(raw)
-        except paramiko.AuthenticationException:
-            self.signals.error.emit("Authentication failed")
-            return
-        except TimeoutError:
-            self.signals.error.emit("Connection timed out")
-            return
-        except socket.gaierror as e:
-            self.signals.error.emit(f"Could not resolve hostname: {e!r}")
-            return
-        except orjson.JSONDecodeError as e:
-            self.signals.error.emit(f"Could not decode log: {e!r}")
-            return
+        self.signals.progress.emit(0)
+        with open(self.logfile) as f:
+            raw = f.read()
+        log = LogParser.parse(raw)
 
         # Generate HTML content
         html_data = '<meta charset="UTF-8">\n'
@@ -131,7 +109,7 @@ class LogFetchWorker(QRunnable):
         for i, item in enumerate(log):
             widget = LogEntryWidget(item, palette, text_color, subtext_color)
             html_data += widget.get_html() + "\n"
-            self.signals.progress.emit((i / total * 50) + 50)
+            self.signals.progress.emit(i / total * 100)
             if self.is_cancelled:
                 break
 
@@ -143,9 +121,10 @@ class LogFetchWorker(QRunnable):
 
 
 class LogPanel(QStackedWidget):
-    def __init__(self, downloader: RemoteLogDownloader):
+    closed = Signal()
+
+    def __init__(self):
         super().__init__()
-        self.downloader = downloader
         self.thread_pool = QThreadPool.globalInstance()
         self.current_worker = None  # Track the current worker for cancellation
 
@@ -273,7 +252,7 @@ class LogPanel(QStackedWidget):
         if text:
             self.loading_label.setText(text)
 
-    def load_remote(self, name: str):
+    def load_local(self, logfile: str):
         # Cancel any existing task
         if self.thread_pool.activeThreadCount() > 0:
             QMessageBox.warning(
@@ -285,13 +264,13 @@ class LogPanel(QStackedWidget):
             return
 
         self.set_loading(True)
-        self.loading_label.setText(f"Loading {name}...")
-        self.viewer_file_label.setText(f"Selected Log: {name}")
+        self.loading_label.setText(f"Loading {logfile}...")
+        self.viewer_file_label.setText(f"Selected Log: {logfile}")
         self.progress_bar.show()
         self.progress_bar.setValue(0)
 
         # Create and start the worker
-        self.current_worker = LogFetchWorker(self.downloader, name, self.palette())
+        self.current_worker = LogFetchWorker(logfile, self.palette())
         self.current_worker.signals.progress.connect(self.progress_bar.setValue)
         self.current_worker.signals.finished.connect(self.set_items)
         self.current_worker.signals.error.connect(self.handle_error)
@@ -321,6 +300,7 @@ class LogPanel(QStackedWidget):
         self.current_worker = None
         self.viewer_file_label.setText("Select a Log File")
         self.text_area.setHtml("Please wait...")
+        self.closed.emit()
 
     def download_log(self):
         if self.current_raw_log is None:

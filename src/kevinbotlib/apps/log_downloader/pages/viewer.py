@@ -29,7 +29,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.apps.common.widgets import QWidgetList
-from kevinbotlib.apps.log_downloader.panel import LogPanel
+from kevinbotlib.apps.log_downloader.log_panel import LogPanel
 from kevinbotlib.apps.log_downloader.util import sizeof_fmt
 from kevinbotlib.logger.downloader import RemoteLogDownloader
 
