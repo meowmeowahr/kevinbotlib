@@ -1,7 +1,7 @@
 import click
 
 
-@click.command("dashboard")
+@click.command("dashboard", context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
 @click.option(
     "-v",
     "--verbose",

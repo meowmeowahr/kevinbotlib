@@ -3,7 +3,7 @@
 import click
 
 
-@click.command("console")
+@click.command("console", context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
 @click.option(
     "-v",
     "--verbose",

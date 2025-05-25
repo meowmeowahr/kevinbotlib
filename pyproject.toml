@@ -48,6 +48,7 @@ dependencies = [
   "superqt>=0.7.3",
   "paramiko>=3.5.1",
   "pyside6-addons>=6.9.0",
+  "pyside6>=6.9.0",
 ]
 
 [project.optional-dependencies]
@@ -56,6 +57,8 @@ dev = [
   "mkdocs-material",
   "mkdocstrings[python]>=0.18",
   "mike",
+  "pyinstaller",
+  "Pillow",
 ]
 
 

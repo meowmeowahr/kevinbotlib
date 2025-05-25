@@ -1,4 +1,5 @@
 import pathlib
+import sys
 from enum import Enum
 
 import darkdetect
@@ -39,7 +40,12 @@ class Theme:
     def get_stylesheet(self):
         """Get the formatted stylesheet string to apply"""
         try:
-            template_loader = jinja2.FileSystemLoader(searchpath=pathlib.Path(__file__).parent.resolve())
+            # this is needed for PyInstaller - base.qss gets moved to sys._MEIPASS
+            if getattr(sys, "frozen", False):  # Running in a bundle
+                base_path = pathlib.Path(getattr(sys, "_MEIPASS"))
+            else:  # Running from source
+                base_path = pathlib.Path(__file__).parent.resolve()
+            template_loader = jinja2.FileSystemLoader(searchpath=base_path)
             template_env = jinja2.Environment(loader=template_loader, autoescape=True)
             template = template_env.get_template("base.qss")
 
