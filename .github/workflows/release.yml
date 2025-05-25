@@ -61,7 +61,7 @@ jobs:
         if: matrix.platform == 'macos'
         shell: bash
         run: |
-          source $(hatch env find)/bin/activate
+          source "$(hatch env find)/bin/activate"
           pip install uv
           uv sync --active --extra dev
           hatch build
