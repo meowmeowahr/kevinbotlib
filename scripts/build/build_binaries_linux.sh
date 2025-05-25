@@ -29,3 +29,11 @@ cp -r dist/kevinbotlib_log_viewer/_internal/. dist/all/_internal
 cp -r dist/kevinbotlib/_internal/. dist/all/_internal
 
 cp BINARY-LICENSE dist/all/BINARY-LICENSE
+
+GLIBC=$(objdump -T dist/all/kevinbotlib | grep GLIBC | sed 's/.*GLIBC_\([.0-9]*\).*/\1/g' | sort -Vu | tail -n 1)
+
+PKNAME="linux-x86-64-glibc-$GLIBC.tar.gz"
+
+tar -czvf dist/$PKNAME -C dist/all/ .
+
+echo $PKNAME >&2
