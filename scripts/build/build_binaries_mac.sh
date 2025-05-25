@@ -1,3 +1,6 @@
+#!/bin/bash
+
+# Banner
 echo " █████   ████                       ███             █████               █████    █████        ███  █████        ███████████              ███  ████      █████"
 echo "░░███   ███░                       ░░░             ░░███               ░░███    ░░███        ░░░  ░░███        ░░███░░░░░███            ░░░  ░░███     ░░███ "
 echo " ░███  ███     ██████  █████ █████ ████  ████████   ░███████   ██████  ███████   ░███        ████  ░███████     ░███    ░███ █████ ████ ████  ░███   ███████"
@@ -8,29 +11,38 @@ echo " █████ ░░████░░██████   ░░██
 echo "░░░░░   ░░░░  ░░░░░░     ░░░░░    ░░░░░ ░░░░ ░░░░░ ░░░░░░░░   ░░░░░░     ░░░░░  ░░░░░░░░░░░ ░░░░░ ░░░░░░░░     ░░░░░░░░░░░    ░░░░░░░░ ░░░░░ ░░░░░  ░░░░░░░░ "
 echo
 
+# PyInstaller builds
 pyinstaller scripts/build/kevinbotlib_dashboard.spec --noconfirm
 pyinstaller scripts/build/kevinbotlib_console.spec --noconfirm
 pyinstaller scripts/build/kevinbotlib_log_downloader.spec --noconfirm
 pyinstaller scripts/build/kevinbotlib_log_viewer.spec --noconfirm
 pyinstaller scripts/build/kevinbotlib.spec --noconfirm
 
-mkdir dist/all/
-mv dist/kevinbotlib_dashboard/kevinbotlib_dashboard dist/all/kevinbotlib_dashboard
-mv dist/kevinbotlib_console/kevinbotlib_console dist/all/kevinbotlib_console
-mv dist/kevinbotlib_log_downloader/kevinbotlib_log_downloader dist/all/kevinbotlib_log_downloader
-mv dist/kevinbotlib_log_viewer/kevinbotlib_log_viewer dist/all/kevinbotlib_log_viewer
-mv dist/kevinbotlib/kevinbotlib dist/all/kevinbotlib
+# Move builds to dist/all
+mkdir -p dist/all
+mv "dist/KevinbotLib Dashboard.app" dist/all/
+mv "dist/KevinbotLib Control Console.app" dist/all/
+mv "dist/KevinbotLib Log Downloader.app" dist/all/
+mv "dist/KevinbotLib Log Viewer.app" dist/all/
+cp BINARY-LICENSE dist/apps/BINARY-LICENSE
 
-mkdir -p dist/all/_internal
-cp -rv dist/kevinbotlib_dashboard/_internal/. dist/all/_internal
-cp -rv dist/kevinbotlib_console/_internal/. dist/all/_internal
-cp -rv dist/kevinbotlib_log_downloader/_internal/. dist/all/_internal
-cp -rv dist/kevinbotlib_log_viewer/_internal/. dist/all/_internal
-cp -rv dist/kevinbotlib/_internal/. dist/all/_internal
+# CLI binaries
+mkdir -p dist/cli
+mv dist/kevinbotlib/kevinbotlib dist/cli/kevinbotlib
+mv dist/kevinbotlib/_internal dist/cli/_internal
+cp BINARY-LICENSE dist/cli/BINARY-LICENSE
 
-cp BINARY-LICENSE dist/all/BINARY-LICENSE
+# Package CLI as tar.gz
+PKNAMECLI="kevinbotlib-cli-tools-macos-$(arch).tar.gz"
+tar -czvf dist/$PKNAMECLI -C dist/cli/ .
 
-GLIBC=$(objdump -T dist/all/kevinbotlib | grep GLIBC | sed 's/.*GLIBC_\([.0-9]*\).*/\1/g' | sort -Vu | tail -n 1)
-PKNAME="kevinbotlib-linux-x86-64-glibc-$GLIBC.tar.gz"
+# Package Apps as DMG
+PKNAMEAPPS="kevinbotlib-apps-macos-$(arch).dmg"
+mkdir -p dist/apps
+cp -R dist/all/*.app dist/apps/
 
-tar -czvf dist/$PKNAME -C dist/all/ .
+# Create DMG
+hdiutil create -volname "KevinbotLib Apps" -srcfolder dist/apps -ov -format UDZO dist/$PKNAMEAPPS
+
+echo "CLI packaged as $PKNAMECLI"
+echo "Apps packaged as $PKNAMEAPPS"

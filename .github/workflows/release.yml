@@ -36,6 +36,7 @@ jobs:
           pip install uv
           uv sync --active --extra dev
           hatch build
+          bash scripts/resource-rcc-compile.sh
           bash scripts/build/build_binaries_linux.sh
           hatch publish -r test
 
@@ -50,5 +51,6 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
+            dist/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

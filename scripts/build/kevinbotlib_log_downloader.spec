@@ -26,13 +26,13 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['resources/kevinbotlib/app_icons/log-downloader-small.svg'],
+    icon=['../../resources/kevinbotlib/app_icons/log-downloader-small.png'],
 )
 coll = COLLECT(
     exe,
@@ -43,3 +43,7 @@ coll = COLLECT(
     upx_exclude=[],
     name='kevinbotlib_log_downloader',
 )
+app = BUNDLE(coll,
+         name='KevinbotLib Log Downloader.app',
+         icon='../../resources/kevinbotlib/app_icons/log-downloader-small.png',
+         bundle_identifier=None)
