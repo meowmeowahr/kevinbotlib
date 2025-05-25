@@ -6,6 +6,7 @@ import paramiko
 import qtawesome as qta
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, QUrl, Signal
 from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QDialog,
@@ -20,6 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps.common.webfind import FindDialog
 from kevinbotlib.apps.log_downloader.url_scheme import URL_SCHEME, LogUrlSchemeHandler
 from kevinbotlib.logger import Logger
 from kevinbotlib.logger.downloader import RemoteLogDownloader
@@ -181,6 +183,13 @@ class LogPanel(QStackedWidget):
         self.viewer_file_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.viewer_bar_layout.addWidget(self.viewer_file_label)
 
+        self.find_button = QPushButton()
+        self.find_button.setIcon(qta.icon("mdi6.file-find"))
+        self.find_button.setIconSize(QSize(24, 24))
+        self.find_button.setFixedSize(QSize(32, 32))
+        self.find_button.clicked.connect(self.show_find_dialog)
+        self.viewer_bar_layout.addWidget(self.find_button)
+
         self.log_zoom_in_button = QPushButton()
         self.log_zoom_in_button.setIcon(qta.icon("mdi6.magnify-plus"))
         self.log_zoom_in_button.setIconSize(QSize(24, 24))
@@ -220,18 +229,29 @@ class LogPanel(QStackedWidget):
 
         self.text_area = QWebEngineView()
         self.text_area.setStyleSheet("background-color: transparent;")
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, False)
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, False)
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, False)
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, False)
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, False)
+        self.text_area.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, False)
         self.text_area.page().setBackgroundColor(QColor(0, 0, 0, 0))
         self.text_area.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
         self.text_area.setHtml("Please wait...")
         self.url_handler = LogUrlSchemeHandler(self)
         self.text_area.page().profile().installUrlSchemeHandler(bytes(URL_SCHEME, "ascii"), self.url_handler)
         self.viewer_layout.addWidget(self.text_area)
-
         self.text_area.loadFinished.connect(self.handle_load_finished)
+
+        self.find_dialog = FindDialog(self.text_area, self)
 
         self.set_loading(True)
         self.progress_bar.hide()
         self.loading_label.setText("Select a Log File")
+
+    def show_find_dialog(self):
+        self.find_dialog.show()
+        self.find_dialog.find_input.setFocus()
 
     def handle_load_finished(self, ok: bool):
         """Handle case where URL scheme loading fails."""
