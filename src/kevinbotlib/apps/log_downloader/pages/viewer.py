@@ -531,6 +531,7 @@ class LogViewer(QWidget):
         QThreadPool.globalInstance().start(self.populate_worker.run)
 
     def set_items(self, items: list):
+        items.sort(key=lambda i: i["name"], reverse=True)
         for item in items:
             widget = LogFileWidget(item["name"], item["mod_time"], item["size"], parent=self.sidebar_browse)
             widget.clicked.connect(partial(self.load_log, item["name"]))
