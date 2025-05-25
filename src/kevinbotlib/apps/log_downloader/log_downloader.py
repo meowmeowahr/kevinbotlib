@@ -270,6 +270,12 @@ class LogDownloaderApplicationRunner:
         self.window = None
 
     def configure_logger(self, args: LogDownloaderApplicationStartupArguments | None):
+        # this is needed on Windows when using --windowed in PyInstaller
+        if sys.stdout is None:
+            sys.stdout = open(os.devnull, "w")
+        if sys.stderr is None:
+            sys.stderr = open(os.devnull, "w")
+
         if args is None:
             parser = QCommandLineParser()
             parser.addHelpOption()

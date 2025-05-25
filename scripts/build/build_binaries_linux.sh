@@ -31,6 +31,6 @@ cp -rv dist/kevinbotlib/_internal/. dist/all/_internal
 cp BINARY-LICENSE dist/all/BINARY-LICENSE
 
 GLIBC=$(find dist/all/_internal -type f -name '*.so*' -exec objdump -T {} + 2>/dev/null | grep GLIBC_ | sed 's/.*GLIBC_\([.0-9]*\).*/\1/' | sort -Vu | tail -n 1)
-PKNAME="kevinbotlib-linux-x86-64-glibc-$GLIBC.tar.gz"
+PKNAME="kevinbotlib-linux-$(arch)-glibc-$GLIBC.tar.gz"
 
 tar -czvf dist/$PKNAME -C dist/all/ .
