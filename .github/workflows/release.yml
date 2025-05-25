@@ -24,6 +24,12 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dev deps
+        run: uv sync --active --extra dev
+
       - name: Build package
         run: hatch build
 
