@@ -17,7 +17,7 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
-from PySide6.QtGui import QColor, QFont, QPalette
+from PySide6.QtGui import QColor, QFont, QPalette, QAction
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QFrame,
@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QFileDialog,
     QDialog,
+    QToolBar,
 )
 
 from kevinbotlib.apps.common.widgets import QWidgetList
@@ -460,29 +461,41 @@ class LogPanel(QStackedWidget):
         self.current_worker = None
 
 
-class LogViewer(QSplitter):
+class LogViewer(QWidget):
+    exited = Signal()
+
     def __init__(self, downloader: RemoteLogDownloader, parent=None):
         super().__init__(parent)
         self.setContentsMargins(2, 2, 2, 2)
+
+        self.root_layout = QVBoxLayout()
+        self.root_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.root_layout)
+
+        self.toolbar = QToolBar()
+        self.root_layout.addWidget(self.toolbar)
+
+        self.close_connection_action = QAction(qta.icon("mdi6.exit-run", color="#d45b5a"), "Close Connection", self)
+        self.close_connection_action.triggered.connect(self.exit)
+        self.toolbar.addAction(self.close_connection_action)
+
+        self.reload_action = QAction(qta.icon("mdi6.refresh", color="#c9c95a"), "Reload", self)
+        self.reload_action.triggered.connect(self.reload)
+        self.toolbar.addAction(self.reload_action)
 
         self.thread_pool = QThreadPool.globalInstance()
         self.populate_worker = None
 
         self.downloader = downloader
 
+        self.splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.root_layout.addWidget(self.splitter)
+
         self.sidebar_widget = QWidget()
-        self.addWidget(self.sidebar_widget)
+        self.splitter.addWidget(self.sidebar_widget)
 
         self.sidebar_layout = QVBoxLayout()
         self.sidebar_widget.setLayout(self.sidebar_layout)
-
-        self.sidebar_topbar = QHBoxLayout()
-        self.sidebar_topbar.addStretch()
-        self.sidebar_layout.addLayout(self.sidebar_topbar)
-
-        self.reload_button = QPushButton("Reload")
-        self.reload_button.clicked.connect(self.reload)
-        self.sidebar_topbar.addWidget(self.reload_button)
 
         self.sidebar_browse = QWidgetList()
         self.sidebar_browse.set_loading(True)
@@ -490,7 +503,13 @@ class LogViewer(QSplitter):
         self.sidebar_layout.addWidget(self.sidebar_browse)
 
         self.log_panel = LogPanel(self.downloader)
-        self.addWidget(self.log_panel)
+        self.splitter.addWidget(self.log_panel)
+
+    def exit(self):
+        self.sidebar_browse.clear_widgets()
+        self.log_panel.close_log()
+        self.sidebar_browse.set_loading(True)
+        self.exited.emit()
 
     def populate(self):
         if self.thread_pool.activeThreadCount() > 0:

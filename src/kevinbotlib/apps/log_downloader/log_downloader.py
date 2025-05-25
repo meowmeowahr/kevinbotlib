@@ -183,6 +183,7 @@ class Application(ThemableWindow):
         self.root_widget.insertWidget(1, self.connecting)
 
         self.viewer = LogViewer(self.downloader)
+        self.viewer.exited.connect(self.close_connection)
         self.root_widget.insertWidget(2, self.viewer)
 
     def apply_theme(self):
@@ -239,6 +240,10 @@ class Application(ThemableWindow):
         self.logger.info("Connected successfully")
         self.root_widget.setCurrentIndex(2)
         self.viewer.populate()
+
+    def close_connection(self):
+        self.root_widget.setCurrentIndex(0)
+        self.downloader.disconnect()
 
 
 @dataclass
