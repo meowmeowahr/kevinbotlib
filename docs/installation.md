@@ -28,17 +28,30 @@ pip install kevinbotlib
 1. Install pipx [here](https://pipx.pypa.io/latest/installation/)
 2. Install KevinbotLib
 
-    Run the follwoing:
+    Run the follwoing:s
     ```console
     pipx install kevinbotlib
     ```
 
+## Pre-Built Binaries
+
+KevinbotLib Pre-Built Binaries are available from the [GitHub Releases Page](https://github.com/meowmeowahr/kevinbotlib/releases).
+
+Versions for Windows x64, macOS Intel, macOS ARM, and Linux x64 are available.
+
+!!! note
+    macOS builds come in two separate packages, `cli-tools`, and `apps`
+    
+    `cli-tools` includes the `kevinbotlib` command line. The `cli-tools` build also bundles the KevinbotLib Applications, but must be launched manually from a command line.
+    
+    `apps` includes individual macOS applications for each of KevinbotLib's apps.
+
 ## Verify installation
 
-You can check the installed version of KevinbotLb by running the following command:
+You can check the installed version of KevinbotLb by running the following command (does not apply to application-only installation)
 
 ```console
 kevinbotlib --version
 ```
 
-You should see something like this `KevinbotLib, version 1.0.0-alpha.7`
+You should see something like this `KevinbotLib, version 1.0.0-alpha.13`
