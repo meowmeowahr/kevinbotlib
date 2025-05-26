@@ -232,7 +232,6 @@ class ControlConsoleControllersTab(QWidget):
 
         self.selector_layout.addWidget(self.selector)
         self.selector_layout.addWidget(self.refresh_button)
-        self.selector_layout.addStretch()
 
         self.controllers = {}
         self.button_states = {}
@@ -261,7 +260,7 @@ class ControlConsoleControllersTab(QWidget):
         self.content_stack.setCurrentIndex(0)  # default to "no controller"
 
         self.root_layout.addLayout(self.selector_layout)
-        self.root_layout.addWidget(self.content_stack, stretch=1)
+        self.root_layout.addWidget(self.content_stack)
 
         self.update_controller_list()
         self.timer = QTimer()
