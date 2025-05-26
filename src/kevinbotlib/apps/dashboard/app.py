@@ -489,7 +489,7 @@ class Application(ThemableWindow):
         self.notifier = Notifier(self)
 
         self.menu = self.menuBar()
-        self.menu.setNativeMenuBar(False)
+        self.menu.setNativeMenuBar(sys.platform != "Darwin")
 
         self.file_menu = self.menu.addMenu("&File")
 
