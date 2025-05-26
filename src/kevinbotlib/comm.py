@@ -241,7 +241,7 @@ class RedisCommClient:
         self.sub_thread: threading.Thread | None = None
         self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable], None]]] = []
 
-        self.pubsub = None
+        self.pubsub: redis.client.PubSub | None = None
         self.sub_callbacks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable], None]]] = {}
         self._lock = threading.Lock()
         self._listener_thread: threading.Thread | None = None
@@ -371,19 +371,21 @@ class RedisCommClient:
         if not self.pubsub:
             return
         try:
-            for message in self.pubsub.listen():
-                if not self.running:
-                    break
-                if message["type"] == "message":
-                    channel = message["channel"]
-                    try:
-                        data = orjson.loads(message["data"])
-                        callback = self.sub_callbacks.get(channel)
-                        if callback:
-                            callback[1](channel, callback[0](**data))
-                    except Exception as e:  # noqa: BLE001
-                        _Logger().error(f"Failed to process message: {e!r}")
-                self._dead = False
+            while True:
+                for message in self.pubsub.listen():
+                    if not self.running:
+                        break
+                    if message["type"] == "message":
+                        channel = message["channel"]
+                        try:
+                            data = orjson.loads(message["data"])
+                            callback = self.sub_callbacks.get(channel)
+                            if callback:
+                                callback[1](channel, callback[0](**data))
+                        except Exception as e:  # noqa: BLE001
+                            _Logger().error(f"Failed to process message: {e!r}")
+                    self._dead = False
+                time.sleep(1) # 1-second delay if there are no subscriptions
         except (redis.exceptions.ConnectionError, ValueError, AttributeError):
             self._dead = True
         _Logger().warning("Listener loop ended")
