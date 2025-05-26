@@ -19,6 +19,7 @@ class LogEntry:
 
 
 class Log(list):
+    """Class representing a list of LogEntry instances."""
     def __init__(self, entries: list[LogEntry] | None = None):
         if entries is None:
             entries = []
@@ -83,8 +84,10 @@ class Log(list):
 
 
 class LogParser:
+    """Class for parsing log data."""
     @staticmethod
     def parse(data: str) -> Log:
+        """Parse raw log data into a Log object."""
         entries = []
         for raw_entry in data.splitlines():
             if not raw_entry:

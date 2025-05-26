@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class RemoteLogDownloader:
+    """Tool for downloading logs from a remote host using SFTP."""
     default_missing_host_key_policy = paramiko.WarningPolicy()
 
     def __init__(self, log_dir: str = "~/.local/share/kevinbotlib/logging/"):
@@ -61,6 +62,7 @@ class RemoteLogDownloader:
         port: int = 22,
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
+        """Connect to a remote host using a password."""
         Logger().debug("Attempting Password connection")
 
         self.ssh_connection = paramiko.SSHClient()
@@ -77,6 +79,7 @@ class RemoteLogDownloader:
         port: int = 22,
         missing_host_key_policy: paramiko.MissingHostKeyPolicy = default_missing_host_key_policy,
     ):
+        """Connect to a remote host using a Paramiko RSA key."""
         Logger().debug("Attempting RSAKey connection")
 
         self.ssh_connection = paramiko.SSHClient()

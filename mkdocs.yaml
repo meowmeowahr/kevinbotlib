@@ -94,6 +94,7 @@ nav:
     - examples/fileserver.md
     - examples/hardwareinterface.md
     - examples/hardwarecontroller.md
+    - examples/scheduler.md
   - Applications:
     - Control Console:
       - apps/console/index.md
@@ -123,6 +124,8 @@ nav:
   - robot.md
   - KevinbotLib Reference:
     - reference/index.md
+    - reference/logging.md
+    - reference/fileserver.md
     - reference/hardwareinterface.md
     - reference/hardwarecontroller.md
     - reference/ui.md

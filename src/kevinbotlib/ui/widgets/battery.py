@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 
 class BatteryGrapher(QWidget):
+    """Qt widget to plot battery voltage over time."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.data_points = deque()
@@ -109,6 +110,7 @@ class Battery:
 
 
 class BatteryManager(QWidget):
+    """Qt widget to display multiple BatteryGraphers and voltage labels."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.hlayout = QHBoxLayout(self)
@@ -117,6 +119,7 @@ class BatteryManager(QWidget):
         self.graph_widgets = []
 
     def set(self, batts: list[Battery]):
+        """Set the battery voltages and ranges for each BatteryGrapher."""
         # Resize graph_widgets if needed
         while len(self.graph_widgets) < len(batts):
             graph = BatteryGrapher()
