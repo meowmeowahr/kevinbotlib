@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../logger/">
+        <link rel="prev" href="../hardwarecontroller/">
       
       
-        <link rel="next" href="../system/">
+        <link rel="next" href="../../apps/console/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Joystick Examples - KevinbotLib Docs</title>
+        <title>Command Scheduler Examples - KevinbotLib Docs</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#joystick-examples" class="md-skip">
+        <a href="#command-scheduler-examples" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Joystick Examples
+              Command Scheduler Examples
             
           </span>
         </div>
@@ -448,31 +448,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Joystick Examples
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../joystick/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -482,80 +461,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#local-controller-query" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Controller Query
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-raw-polling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Raw Polling
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#local-xbox-polling" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Xbox Polling
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sending-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sending Joystick Data with a KevinbotCommClient
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#receiving-raw-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Receiving Raw Joystick Data with a KevinbotCommClient
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#receiving-xbox-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Receiving Xbox Joystick Data with a KevinbotCommClient
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -653,10 +558,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../scheduler/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Command Scheduler Examples
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -666,6 +592,62 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sequential-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequential Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xbox-controller-command-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xbox Controller Command Trigger
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1609,54 +1591,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#local-controller-query" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Local Controller Query
+      Basic Usage
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-raw-polling" class="md-nav__link">
+  <a href="#parallel-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Local Raw Polling
+      Parallel Commands
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#local-xbox-polling" class="md-nav__link">
+  <a href="#sequential-commands" class="md-nav__link">
     <span class="md-ellipsis">
-      Local Xbox Polling
+      Sequential Commands
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sending-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
+  <a href="#xbox-controller-command-trigger" class="md-nav__link">
     <span class="md-ellipsis">
-      Sending Joystick Data with a KevinbotCommClient
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#receiving-raw-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Receiving Raw Joystick Data with a KevinbotCommClient
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#receiving-xbox-joystick-data-with-a-kevinbotcommclient" class="md-nav__link">
-    <span class="md-ellipsis">
-      Receiving Xbox Joystick Data with a KevinbotCommClient
+      Xbox Controller Command Trigger
     </span>
   </a>
   
@@ -1678,7 +1642,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/joystick.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/scheduler.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1686,167 +1650,9 @@
   
 
 
-<h1 id="joystick-examples">Joystick Examples</h1>
-<h2 id="local-controller-query">Local Controller Query</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_query.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalJoystickIdentifiers</span>
-
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="n">LocalJoystickIdentifiers</span><span class="o">.</span><span class="n">get_count</span><span class="p">()</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="n">LocalJoystickIdentifiers</span><span class="o">.</span><span class="n">get_names</span><span class="p">()</span>
-    <span class="n">guids</span> <span class="o">=</span> <span class="n">LocalJoystickIdentifiers</span><span class="o">.</span><span class="n">get_guids</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> joysticks present&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joystick Names: </span><span class="si">{</span><span class="n">names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joystick GUIDs: </span><span class="si">{</span><span class="n">guids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="local-raw-polling">Local Raw Polling</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_polling.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RawLocalJoystickDevice</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">controller</span> <span class="o">=</span> <span class="n">RawLocalJoystickDevice</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buttons:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POV:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_pov_direction</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Axes:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_axes</span><span class="p">())</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="local-xbox-polling">Local Xbox Polling</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/local_xbox_polling.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalXboxController</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">controller</span> <span class="o">=</span> <span class="n">LocalXboxController</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">controller2</span> <span class="o">=</span> <span class="n">LocalXboxController</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
-<span class="n">controller2</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Held buttons:&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">btn</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">btn</span> <span class="ow">in</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">()])</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POV Direction:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_pov_direction</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trigger Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_triggers</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Left Stick Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_left_stick</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Right Stick Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_right_stick</span><span class="p">())</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="sending-joystick-data-with-a-kevinbotcommclient">Sending Joystick Data with a <code>KevinbotCommClient</code></h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/sender.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoystickSender</span><span class="p">,</span> <span class="n">LocalXboxController</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-<span class="n">controller</span> <span class="o">=</span> <span class="n">LocalXboxController</span><span class="p">(</span>
-    <span class="mi">0</span>
-<span class="p">)</span>  <span class="c1"># it doesn&#39;t matter what type of controller is being sent - all values will be converted to raw anyway</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
-
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
-
-<span class="n">sender</span> <span class="o">=</span> <span class="n">JoystickSender</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="s2">&quot;joysticks/0&quot;</span><span class="p">)</span>
-<span class="n">sender</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="receiving-raw-joystick-data-with-a-kevinbotcommclient">Receiving Raw Joystick Data with a <code>KevinbotCommClient</code></h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/rx_raw.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<h1 id="command-scheduler-examples">Command Scheduler Examples</h1>
+<h2 id="basic-usage">Basic Usage</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/basic_example.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1870,34 +1676,36 @@
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteRawJoystickDevice</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrintCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">controller</span> <span class="o">=</span> <span class="n">RemoteRawJoystickDevice</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;joysticks/0&quot;</span><span class="p">)</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buttons:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POV:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_pov_direction</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Axes:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_axes</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">is_connected</span><span class="p">())</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span>
+
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">PrintCommand</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">PrintCommand</span><span class="p">(</span><span class="s2">&quot;Test2&quot;</span><span class="p">))</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
-<h2 id="receiving-xbox-joystick-data-with-a-kevinbotcommclient">Receiving Xbox Joystick Data with a <code>KevinbotCommClient</code></h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/joystick/rx_xbox.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<h2 id="parallel-commands">Parallel Commands</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/parallel.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1923,33 +1731,251 @@
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteXboxController</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span><span class="p">,</span> <span class="n">ParallelCommand</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">ParallelCommand</span><span class="p">([</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 1&quot;</span><span class="p">),</span> <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 2&quot;</span><span class="p">)]))</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="sequential-commands">Sequential Commands</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/sequential.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span><span class="p">,</span> <span class="n">SequentialCommand</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">SequentialCommand</span><span class="p">([</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 1&quot;</span><span class="p">),</span> <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 2&quot;</span><span class="p">)]))</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="xbox-controller-command-trigger">Xbox Controller Command Trigger</h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/xbox_trigger.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalXboxController</span><span class="p">,</span> <span class="n">XboxControllerButtons</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span><span class="p">,</span> <span class="n">Trigger</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
 
-<span class="n">controller</span> <span class="o">=</span> <span class="n">RemoteXboxController</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;joysticks/0&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrintCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
+
+<span class="n">controller</span> <span class="o">=</span> <span class="n">LocalXboxController</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
 
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buttons:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;POV:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_pov_direction</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trigger Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_triggers</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Left Stick Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_left_stick</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Right Stick Values:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_right_stick</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected:&quot;</span><span class="p">,</span> <span class="n">controller</span><span class="o">.</span><span class="n">is_connected</span><span class="p">())</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-    <span class="n">controller</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="n">Trigger</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">XboxControllerButtons</span><span class="o">.</span><span class="n">A</span> <span class="ow">in</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">(),</span> <span class="n">scheduler</span><span class="p">)</span><span class="o">.</span><span class="n">while_true</span><span class="p">(</span>
+    <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;A Button Command&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">Trigger</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">XboxControllerButtons</span><span class="o">.</span><span class="n">B</span> <span class="ow">in</span> <span class="n">controller</span><span class="o">.</span><span class="n">get_buttons</span><span class="p">(),</span> <span class="n">scheduler</span><span class="p">)</span><span class="o">.</span><span class="n">on_true</span><span class="p">(</span>
+    <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;B Button Command&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
 
 
@@ -1988,7 +2014,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../logger/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Logging Examples">
+          <a href="../hardwarecontroller/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hardware Controller Examples">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1998,20 +2024,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Logging Examples
+                Hardware Controller Examples
               </div>
             </div>
           </a>
         
         
           
-          <a href="../system/" class="md-footer__link md-footer__link--next" aria-label="Next: System Examples">
+          <a href="../../apps/console/" class="md-footer__link md-footer__link--next" aria-label="Next: Control Console">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                System Examples
+                Control Console
               </div>
             </div>
             <div class="md-footer__button md-icon">

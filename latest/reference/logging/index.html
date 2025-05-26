@@ -11,8 +11,10 @@
       
       
       
-        <link rel="prev" href="../hardwarecontroller/">
+        <link rel="prev" href="../">
       
+      
+        <link rel="next" href="../fileserver/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +22,7 @@
     
     
       
-        <title>KevinbotLib UI Reference - KevinbotLib Docs</title>
+        <title>KevinbotLib Logging Reference - KevinbotLib Docs</title>
       
     
     
@@ -76,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#kevinbotlib-ui-reference" class="md-skip">
+        <a href="#kevinbotlib-logging-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              KevinbotLib UI Reference
+              KevinbotLib Logging Reference
             
           </span>
         </div>
@@ -1372,10 +1374,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../logging/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    KevinbotLib Logging Reference
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1385,6 +1408,332 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;logger
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" logger">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Level
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Level">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.TRACE" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TRACE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.DEBUG" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;DEBUG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.INFO" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;INFO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.WARNING" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;WARNING
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.ERROR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;ERROR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.SECURITY" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SECURITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.CRITICAL" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;CRITICAL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Logger
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Logger">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Logger.configure" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;configure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Logger.log" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;log
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LoggerDirectories
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" LoggerDirectories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories.get_logger_directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_logger_directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories.cleanup_logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;cleanup_logs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories.get_directory_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_directory_size
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.StreamRedirector" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;StreamRedirector
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;remotelog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" remotelog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog.ANSILogSender" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ANSILogSender
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog.ANSILogReceiver" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ANSILogReceiver
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;downloader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" downloader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RemoteLogDownloader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" RemoteLogDownloader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_password" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;connect_with_password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;connect_with_key
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.parser" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;parser
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" parser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.parser.Log" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Log
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.parser.LogParser" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogParser
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" LogParser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.parser.LogParser.parse" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;parse
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1460,31 +1809,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    KevinbotLib UI Reference
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ui/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1494,257 +1822,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" theme">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" ThemeStyle">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Theme">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" widgets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryGrapher">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.value_to_color" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;value_to_color
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" delegates">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1784,47 +1861,83 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
+  <a href="#kevinbotlib.logger" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;logger
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" theme">
+    <nav class="md-nav" aria-label=" logger">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Level" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Level
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" ThemeStyle">
+    <nav class="md-nav" aria-label=" Level">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Level.TRACE" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TRACE
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Level.DEBUG" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;DEBUG
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Level.INFO" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;INFO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.WARNING" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;WARNING
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.ERROR" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;ERROR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.SECURITY" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;SECURITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.Level.CRITICAL" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;CRITICAL
     </span>
   </a>
   
@@ -1836,46 +1949,160 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Logger" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Logger
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" Theme">
+    <nav class="md-nav" aria-label=" Logger">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Logger.configure" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;configure
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
+  <a href="#kevinbotlib.logger.Logger.log" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;log
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LoggerDirectories
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" LoggerDirectories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.LoggerDirectories.get_logger_directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_logger_directory
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
+  <a href="#kevinbotlib.logger.LoggerDirectories.cleanup_logs" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;cleanup_logs
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
+  <a href="#kevinbotlib.logger.LoggerDirectories.get_directory_size" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_directory_size
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.StreamRedirector" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;StreamRedirector
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;remotelog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" remotelog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog.ANSILogSender" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ANSILogSender
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.remotelog.ANSILogReceiver" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ANSILogReceiver
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;downloader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" downloader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RemoteLogDownloader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" RemoteLogDownloader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_password" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;connect_with_password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_key" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;connect_with_key
     </span>
   </a>
   
@@ -1892,47 +2119,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
+  <a href="#kevinbotlib.logger.parser" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;parser
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" widgets">
+    <nav class="md-nav" aria-label=" parser">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
+  <a href="#kevinbotlib.logger.parser.Log" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryGrapher">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Log
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
+  <a href="#kevinbotlib.logger.parser.LogParser" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LogParser
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label=" LogParser">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.value_to_color" class="md-nav__link">
+  <a href="#kevinbotlib.logger.parser.LogParser.parse" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;value_to_color
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;parse
     </span>
   </a>
   
@@ -1940,72 +2158,6 @@
         
       </ul>
     </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" delegates">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
-    </span>
-  </a>
   
 </li>
         
@@ -2030,7 +2182,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/ui.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/logging.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2038,15 +2190,15 @@
   
 
 
-<h1 id="kevinbotlib-ui-reference">KevinbotLib UI Reference</h1>
+<h1 id="kevinbotlib-logging-reference">KevinbotLib Logging Reference</h1>
 
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="kevinbotlib.ui.theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.theme</code>
+<h2 id="kevinbotlib.logger" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.logger</code>
 
 
 </h2>
@@ -2074,8 +2226,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.ThemeStyle" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.ThemeStyle</code>
+<h3 id="kevinbotlib.logger.Level" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.Level</code>
 
 
 </h3>
@@ -2086,7 +2238,7 @@
               Bases: <code><span title="enum.Enum">Enum</span></code></p>
 
 
-        <p>Theme options for the KevinbotLib UI theme</p>
+        <p>Logging levels</p>
 
 
 
@@ -2109,8 +2261,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Light" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Light</span> <span class="o">=</span> <span class="mi">0</span></code>
+<h4 id="kevinbotlib.logger.Level.TRACE" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">TRACE</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;TRACE&#39;</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2122,7 +2274,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Light mode</p>
+        <p>Trace level logging - used for more detailed info than DEBUG - level no. 5</p>
 
     </div>
 
@@ -2132,8 +2284,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Dark</span> <span class="o">=</span> <span class="mi">1</span></code>
+<h4 id="kevinbotlib.logger.Level.DEBUG" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">DEBUG</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2145,7 +2297,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Dark mode</p>
+        <p>Debug level logging - used for debugging info - level no. 10</p>
 
     </div>
 
@@ -2155,8 +2307,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.System" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">System</span> <span class="o">=</span> <span class="mi">2</span></code>
+<h4 id="kevinbotlib.logger.Level.INFO" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">INFO</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2168,7 +2320,99 @@
 
     <div class="doc doc-contents ">
 
-        <p>System theme, uses GTK on Linux, and system preference on Windows/macOS</p>
+        <p>Debug level logging - used for regular info - level no. 20</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.logger.Level.WARNING" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">WARNING</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;WARNING&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Warnng level logging - used for warnings and recommended fixes - level no. 30</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.logger.Level.ERROR" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">ERROR</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;ERROR&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Error level logging - used for non-critical and recoverable errors - level no. 40</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.logger.Level.SECURITY" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">SECURITY</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;SECURITY&#39;</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="s1">&#39;&lt;bg 202&gt;&lt;bold&gt;&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Security level logging - used for non-application-breaking secutiry issues/threats - level no. 45</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.logger.Level.CRITICAL" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">CRITICAL</span> <span class="o">=</span> <span class="n">_internal_logger</span><span class="o">.</span><span class="n">level</span><span class="p">(</span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Error level logging - used for critical and non-recoverable errors - level no. 50</p>
 
     </div>
 
@@ -2188,8 +2432,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.Theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.Theme</code>
+<h3 id="kevinbotlib.logger.Logger" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.Logger</code>
 
 
 </h3>
@@ -2198,8 +2442,6 @@
     <div class="doc doc-contents ">
 
 
-        <p>Qt theming engine for the KevinbotLib UI style</p>
-
 
 
 
@@ -2222,15 +2464,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.theme.Theme.is_dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">is_dark</span><span class="p">()</span></code>
+<h4 id="kevinbotlib.logger.Logger.configure" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Detect if the currently applied style is dark</p>
+        <p>Configures file-based logging with rotation and cleanup.</p>
 
 
     </div>
@@ -2240,51 +2482,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.theme.Theme.get_stylesheet" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_stylesheet</span><span class="p">()</span></code>
+<h4 id="kevinbotlib.logger.Logger.log" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">opts</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Get the formatted stylesheet string to apply</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.apply" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">apply</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Apply the theme to an application of window</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.set_style" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Update the current style</p>
+        <p>Log a message with a specified level</p>
 
 
     </div>
@@ -2298,62 +2504,20 @@
     </div>
 
 </div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="kevinbotlib.ui.widgets" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.widgets</code>
-
-
-</h2>
-
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
 
 <div class="doc doc-object doc-class">
 
 
 
-<h3 id="kevinbotlib.ui.widgets.BatteryGrapher" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryGrapher</code>
+<h3 id="kevinbotlib.logger.LoggerDirectories" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.LoggerDirectories</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
 
-
-        <p>Qt widget to plot battery voltage over time.</p>
 
 
 
@@ -2377,15 +2541,19 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.add" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.logger.LoggerDirectories.get_logger_directory" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_logger_directory</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">ensure_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Add a new data point, scroll left if necessary.</p>
+        <p>Returns the log directory path and ensures its existence if needed.</p>
 
 
     </div>
@@ -2395,15 +2563,19 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_range</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.logger.LoggerDirectories.cleanup_logs" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">cleanup_logs</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">max_size_mb</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Set the y-axis range for the graph.</p>
+        <p>Deletes oldest log files if the total log directory exceeds max_size_mb.</p>
 
 
     </div>
@@ -2413,15 +2585,19 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.value_to_color" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">value_to_color</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.logger.LoggerDirectories.get_directory_size" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_directory_size</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Return QColor from red (low) → yellow (mid) → green (high).</p>
+        <p>Returns the size of the directory in MB.</p>
 
 
     </div>
@@ -2440,71 +2616,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.widgets.BatteryManager" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryManager</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
-
-
-        <p>Qt widget to display multiple BatteryGraphers and voltage labels.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.BatteryManager.set" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="nb">set</span><span class="p">(</span><span class="n">batts</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Set the battery voltages and ranges for each BatteryGrapher.</p>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.LicenseDialog" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.LicenseDialog</code>
+<h3 id="kevinbotlib.logger.StreamRedirector" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.StreamRedirector</code>
 
 
 </h3>
@@ -2512,10 +2625,10 @@
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QDialog">QDialog</span></code></p>
+              Bases: <code><span title="typing.IO">IO</span></code></p>
 
 
-        <p>Qt Dialog for viewing KevinbotLib's internal licenses.</p>
+        <p>Redirect a stream to logging</p>
 
 
 
@@ -2557,8 +2670,8 @@
 
 
 
-<h2 id="kevinbotlib.ui.delegates" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.delegates</code>
+<h2 id="kevinbotlib.remotelog" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.remotelog</code>
 
 
 </h2>
@@ -2586,19 +2699,17 @@
 
 
 
-<h3 id="kevinbotlib.ui.delegates.NoFocusDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.NoFocusDelegate</code>
+<h3 id="kevinbotlib.remotelog.ANSILogSender" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.remotelog.ANSILogSender</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
 
 
-        <p>Qt QStyledItemDelegate that removes the focus indicator</p>
+        <p>Class to send ANSI-formatted log entries over Redis Pub/Sub</p>
 
 
 
@@ -2631,19 +2742,17 @@
 
 
 
-<h3 id="kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.ComboBoxNoTextDelegate</code>
+<h3 id="kevinbotlib.remotelog.ANSILogReceiver" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.remotelog.ANSILogReceiver</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
 
 
-        <p>Qt QStyledItemDelegate that removes text from QComboBox</p>
+        <p>Class to receive ANSI-formatted log entries over Redis Pub/Sub</p>
 
 
 
@@ -2663,6 +2772,271 @@
 
 
 
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="kevinbotlib.logger.downloader" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.logger.downloader</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.logger.downloader.RemoteLogDownloader" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.downloader.RemoteLogDownloader</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Tool for downloading logs from a remote host using SFTP.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_password" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">connect_with_password</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">missing_host_key_policy</span><span class="o">=</span><span class="n">default_missing_host_key_policy</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Connect to a remote host using a password.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.logger.downloader.RemoteLogDownloader.connect_with_key" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">connect_with_key</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">missing_host_key_policy</span><span class="o">=</span><span class="n">default_missing_host_key_policy</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Connect to a remote host using a Paramiko RSA key.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="kevinbotlib.logger.parser" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.logger.parser</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.logger.parser.Log" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.parser.Log</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="list">list</span></code></p>
+
+
+        <p>Class representing a list of LogEntry instances.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.logger.parser.LogParser" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.logger.parser.LogParser</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Class for parsing log data.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.logger.parser.LogParser.parse" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Parse raw log data into a Log object.</p>
+
+
+    </div>
+
+</div>
 
 
 
@@ -2717,7 +3091,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../hardwarecontroller/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hardware Controller Reference">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: KevinbotLib Reference">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2727,11 +3101,27 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Hardware Controller Reference
+                KevinbotLib Reference
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../fileserver/" class="md-footer__link md-footer__link--next" aria-label="Next: KevinbotLib File Server Reference">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                KevinbotLib File Server Reference
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     
