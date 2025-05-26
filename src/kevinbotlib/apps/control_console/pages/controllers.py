@@ -2,10 +2,9 @@ from functools import partial
 from typing import override
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QPainter
+from PySide6.QtGui import QColor, QPainter, QFont
 from PySide6.QtWidgets import (
     QFrame,
-    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -13,11 +12,11 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QProgressBar,
     QPushButton,
-    QSizePolicy,
     QStackedWidget,
     QStyledItemDelegate,
     QVBoxLayout,
     QWidget,
+    QTextEdit,
 )
 
 from kevinbotlib.exceptions import JoystickMissingException
@@ -33,108 +32,13 @@ class ActiveItemDelegate(QStyledItemDelegate):
         super().paint(painter, option, index)
 
 
-class ButtonGridWidget(QGroupBox):
-    def __init__(self, max_buttons: int = 32):
-        super().__init__("Buttons")
-        self.max_buttons = max_buttons
-        self.button_count = 0
-        self.button_labels = []
-        self.init_ui()
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-
-    def init_ui(self):
-        self.root_layout = QGridLayout()
-        self.root_layout.setSpacing(4)
-        self.setLayout(self.root_layout)
-
-        square_size = 12
-        for _ in range(self.max_buttons):
-            label = QLabel()
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setFixedSize(square_size, square_size)
-            label.setObjectName("ButtonInputStateBoxInactive")
-            label.setVisible(False)
-            self.button_labels.append(label)
-
-        self.update_grid_layout()
-
-    def set_button_count(self, count: int):
-        self.button_count = min(count, self.max_buttons)
-        for i in range(self.max_buttons):
-            self.button_labels[i].setVisible(i < self.button_count)
-        self.update_grid_layout()
-
-    def set_button_state(self, button_id: int, state: bool):
-        if 0 <= button_id < self.button_count:
-            self.button_labels[button_id].setObjectName(
-                "ButtonInputStateBoxActive" if state else "ButtonInputStateBoxInactive"
-            )
-            self.style().polish(self.button_labels[button_id])
-
-    def update_grid_layout(self):
-        if self.button_count == 0:
-            return
-        for i in range(self.button_count):
-            row = i % 8
-            col = i // 8
-            self.root_layout.addWidget(self.button_labels[i], row, col)
-
-
-class POVGridWidget(QGroupBox):
-    def __init__(self):
-        super().__init__("POV")
-        self.pov_labels = {}
-        self.init_ui()
-
-    def init_ui(self):
-        self.root = QVBoxLayout()
-        self.setLayout(self.root)
-
-        self.root.addStretch()
-
-        self.grid = QGridLayout()
-        self.grid.setSpacing(4)
-        self.root.addLayout(self.grid)
-
-        self.root.addStretch()
-
-        square_size = 16  # Slightly larger for visibility
-        # Define the 3x3 grid positions for POV directions
-        pov_positions = {
-            0: (0, 1),
-            45: (0, 2),
-            90: (1, 2),
-            135: (2, 2),
-            180: (2, 1),
-            215: (2, 0),
-            270: (1, 0),
-            315: (0, 0),
-            -1: (1, 1),  # Center
-        }
-
-        # Create labels for each direction
-        for direction, (row, col) in pov_positions.items():
-            label = QLabel()
-            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            label.setFixedSize(square_size, square_size)
-            label.setObjectName("ButtonInputStateBoxInactive")
-            self.grid.addWidget(label, row, col)
-            self.pov_labels[direction] = label
-
-    def set_pov_state(self, direction: int):
-        """Update the POV grid to highlight the active direction."""
-        for d, label in self.pov_labels.items():
-            label.setObjectName("ButtonInputStateBoxActive" if d == direction else "ButtonInputStateBoxInactive")
-            self.style().polish(label)
-
-
 class JoystickStateWidget(QWidget):
     def __init__(self, joystick: RawLocalJoystickDevice | None = None):
         super().__init__()
         self.joystick = joystick
         self.max_axes = 8
         self.axis_bars = []
-        self.axis_widgets = []
+        self.state_display = QTextEdit()
         self.init_ui()
 
         self.update_timer = QTimer()
@@ -146,34 +50,75 @@ class JoystickStateWidget(QWidget):
         layout.setSpacing(10)
         self.setLayout(layout)
 
-        self.button_grid = ButtonGridWidget()
-        layout.addWidget(self.button_grid)
+        # Large Text Edit for Buttons and POV
+        self.state_display.setReadOnly(True)
+        self.state_display.setFont(QFont("Monospace", 14))
+        layout.addWidget(self.state_display, stretch=2) # Give more space to the text display
 
         self.axes_group = QGroupBox("Axes")
         axes_layout = QVBoxLayout()
         axes_layout.setSpacing(4)
         self.axes_group.setLayout(axes_layout)
 
-        for _ in range(self.max_axes):
+        for i in range(self.max_axes):
+            axis_label = QLabel(f"Axis {i}:")
             bar = QProgressBar()
-            bar.setRange(0, 100)
-            bar.setValue(50)
-            bar.setTextVisible(False)
+            bar.setRange(-100, 100) # Assuming axis values range from -1 to 1
+            bar.setValue(0)
+            bar.setTextVisible(True)
             bar.setFixedHeight(20)
-            self.axis_bars.append(bar)
-            self.axis_widgets.append(bar)
-            axes_layout.addWidget(bar)
 
-        layout.addWidget(self.axes_group)
-        self.pov_grid = POVGridWidget()
-        layout.addWidget(self.pov_grid)
+            axis_widget_layout = QHBoxLayout()
+            axis_widget_layout.addWidget(axis_label)
+            axis_widget_layout.addWidget(bar)
+
+            axis_container = QWidget()
+            axis_container.setLayout(axis_widget_layout)
+
+            self.axis_bars.append(bar)
+            axes_layout.addWidget(axis_container)
+
+        layout.addWidget(self.axes_group, stretch=1)
 
     def set_joystick(self, joystick: RawLocalJoystickDevice | None):
         self.joystick = joystick
         self.update_state()
 
     def update_state(self):
-        pass
+        if not self.joystick:
+            self.state_display.setText("No joystick connected or selected.")
+            for bar in self.axis_bars:
+                bar.setValue(0)
+            return
+
+        # Update button and POV state in the text edit
+        text_output = []
+        text_output.append("--- Buttons ---")
+        button_states = []
+        for i in range(self.joystick.get_button_count()):
+            state = self.joystick.get_button_state(i)
+            button_states.append(f"B{i}: {'ON' if state else 'OFF'}")
+        text_output.append(" ".join(button_states))
+        text_output.append("\n--- POV ---")
+        pov_direction = self.joystick.get_pov_direction() # Assuming only one POV for simplicity
+        pov_text = "POV 0: "
+        if pov_direction == -1:
+            pov_text += "Centered"
+        else:
+            pov_text += f"{pov_direction}°"
+        text_output.append(pov_text)
+
+        # Set text and apply formatting
+        self.state_display.setText("\n".join(text_output))
+
+        # Update Axis bars
+        for i in range(self.max_axes):
+            if i < self.joystick.get_axis_count():
+                print("axes", self.joystick.get_axes())
+                value = 0 # Scale to -100 to 100
+                self.axis_bars[i].setValue(value)
+            else:
+                self.axis_bars[i].setValue(0) # Reset if axis doesn't exist
 
 
 class ControlConsoleControllersTab(QWidget):
@@ -203,7 +148,7 @@ class ControlConsoleControllersTab(QWidget):
         self.selector_layout.addStretch()
 
         self.controllers = {}
-        self.button_states = {}
+        self.button_states = {} # Keep for the list item active indicator
         self.controller_order = []
         self.selected_index = None
 
@@ -259,13 +204,9 @@ class ControlConsoleControllersTab(QWidget):
 
     def update_controller_list(self):
         count = LocalJoystickIdentifiers.get_count()
-        names = LocalJoystickIdentifiers.get_names()
-        guids = LocalJoystickIdentifiers.get_guids()
         print(f"{count} joysticks present")
-        print(f"Joystick Names: {names}")
-        print(f"Joystick GUIDs: {guids}")
-        joystick_names = LocalJoystickIdentifiers.get_names()
-        valid_indices = list(range(len(joystick_names)))
+        joystick_names = LocalJoystickIdentifiers.get_count()
+        valid_indices = list(range(joystick_names))
 
         for index in list(self.controllers.keys()):
             if index not in valid_indices:
@@ -279,7 +220,7 @@ class ControlConsoleControllersTab(QWidget):
             previous_order = []
             for i in range(self.selector.count()):
                 item = self.selector.item(i)
-                previous_order.append(item.text())  # or extract index instead
+                previous_order.append(item.text())
 
             self.selector.clear()
 
@@ -300,6 +241,7 @@ class ControlConsoleControllersTab(QWidget):
                         joystick = RawLocalJoystickDevice(index)
                         joystick.start_polling()
                         self.controllers[index] = joystick
+                        # Initialize button states for new joysticks
                         self.button_states[index] = [False] * 32
                         for button in range(32):
                             joystick.register_button_callback(
@@ -309,8 +251,16 @@ class ControlConsoleControllersTab(QWidget):
                         self.logger.error(f"Failed to initialize joystick {index}: {e}")
                         continue
 
-                is_any_pressed = any(self.button_states.get(index, [False] * 32))
-                item = QListWidgetItem(f"{index}: {joystick_names[index]}")
+                # Ensure button_states is initialized for the current joystick's button count
+                current_joystick_button_count = 32 if index in self.controllers else 0
+                if index in self.button_states and len(self.button_states[index]) < current_joystick_button_count:
+                    # Extend if the joystick has more buttons than previously tracked
+                    self.button_states[index].extend([False] * (current_joystick_button_count - len(self.button_states[index])))
+                elif index not in self.button_states:
+                    self.button_states[index] = [False] * current_joystick_button_count
+
+                is_any_pressed = any(self.button_states.get(index, [False] * current_joystick_button_count))
+                item = QListWidgetItem(f"{index}: {index}")
                 item.setData(Qt.ItemDataRole.UserRole + 1, is_any_pressed)
                 self.selector.addItem(item)
                 index_to_row_map[index] = i
@@ -328,7 +278,16 @@ class ControlConsoleControllersTab(QWidget):
             self.update_state_display()
 
     def on_button_state_changed(self, controller_index: int, button_index: int, state: bool):
-        self.button_states.setdefault(controller_index, [False] * 32)
+        # Ensure the list is large enough for the button_index
+        if controller_index in self.button_states:
+            current_button_count = len(self.button_states[controller_index])
+            if button_index >= current_button_count:
+                # Extend the list with False values if button_index is out of bounds
+                self.button_states[controller_index].extend([False] * (button_index - current_button_count + 1))
+        else:
+            # Initialize with enough False values
+            self.button_states[controller_index] = [False] * (button_index + 1)
+
         self.button_states[controller_index][button_index] = state
         is_any_pressed = any(self.button_states[controller_index])
         for row in range(self.selector.count()):
@@ -342,7 +301,9 @@ class ControlConsoleControllersTab(QWidget):
         for row in range(self.selector.count()):
             item = self.selector.item(row)
             index = int(item.text().split(":")[0])
-            item.setData(Qt.ItemDataRole.UserRole + 1, self.button_states.get(index, False))
+            # Assuming button_states is accurately maintained for each index
+            is_any_pressed = any(self.button_states.get(index, [False] * 32))
+            item.setData(Qt.ItemDataRole.UserRole + 1, is_any_pressed)
 
     def on_selection_changed(self, current: QListWidgetItem, _: QListWidgetItem):
         if current:
