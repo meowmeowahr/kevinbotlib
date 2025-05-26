@@ -2,7 +2,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from dataclasses import dataclass
+from pydantic.dataclasses import dataclass
 from enum import Enum, IntEnum
 from typing import Any, final
 
@@ -279,14 +279,14 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         if event.type == sdl2.SDL_JOYBUTTONDOWN:
             button = event.jbutton.button
             self._button_states[button] = True
-            if button in self._button_callbacks:
-                self._button_callbacks[button](True)
+            if self._controller_map.map_button(button) in self._button_callbacks:
+                self._button_callbacks[self._controller_map.map_button(button)](True)
 
         elif event.type == sdl2.SDL_JOYBUTTONUP:
             button = event.jbutton.button
             self._button_states[button] = False
-            if button in self._button_callbacks:
-                self._button_callbacks[button](False)
+            if self._controller_map.map_button(button) in self._button_callbacks:
+                self._button_callbacks[self._controller_map.map_button(button)](False)
 
         elif event.type == sdl2.SDL_JOYHATMOTION:
             # Convert SDL hat values to angles
@@ -300,10 +300,10 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
         elif event.type == sdl2.SDL_JOYAXISMOTION:
             axis = event.jaxis.axis
-            # Convert SDL axis value (-32768 to 32767) to float (-1.0 to 1.0)
+            # Convert SDL axis value (-32,768 to 32,767) to float (-1.0 to 1.0)
             value = event.jaxis.value / 32767.0
 
-            # Update state and trigger callback if value changed significantly
+            # Update state and trigger callback if the value changed significantly
             self._axis_states[axis] = value
             if axis in self._axis_callbacks:
                 self._axis_callbacks[axis](value)
@@ -560,10 +560,12 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         self._last_pov_state = POVDirection.NONE
         self._last_axis_states = {}
 
+        self._controller_map: ControllerMap = DefaultControllerMap
+
         self.connected = False
         self.running = False
 
-        # Start polling thread
+        # Start the polling thread
         self.start_polling()
 
     @property
@@ -584,25 +586,35 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
         if not sendable:
             return False
-        return button_id in sendable.value
+        mapped_id = self._controller_map.map_button(button_id)
+        return mapped_id in sendable.value
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
         if not sendable:
             return 0.0
-        return round(sendable.value[axis_id], precision) if axis_id < len(sendable.value) else 0.0
+        mapped_id = self._controller_map.map_axis(axis_id)
+        return round(sendable.value[mapped_id], precision) if mapped_id < len(sendable.value) else 0.0
 
     def get_buttons(self) -> list[int | Enum | IntEnum]:
         sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
         if not sendable:
             return []
-        return sendable.value
+        # Map received button IDs back through the controller map
+        mapped_buttons = [self._controller_map.map_button(btn) for btn in sendable.value]
+        return mapped_buttons
 
     def get_axes(self) -> list[float]:
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
         if not sendable:
             return []
-        return sendable.value
+        # Map received axis values through the controller map
+        axes = [0.0] * len(sendable.value)
+        for i in range(len(sendable.value)):
+            mapped_id = self._controller_map.map_axis(i)
+            if mapped_id < len(sendable.value):
+                axes[mapped_id] = sendable.value[i]
+        return axes
 
     def get_pov_direction(self) -> POVDirection:
         sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
@@ -617,6 +629,9 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
         """Registers a callback function for POV (D-pad) direction changes."""
         self._pov_callbacks.append(callback)
+
+    def apply_map(self, controller_map: ControllerMap):
+        self._controller_map = controller_map
 
     def _poll_loop(self):
         """Polling loop that checks for state changes and triggers callbacks."""
@@ -635,8 +650,8 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
                     old_state = self._last_button_states.get(button, False)
                     new_state = current_button_states.get(button, False)
 
-                    if old_state != new_state and button in self._button_callbacks:
-                        self._button_callbacks[button](new_state)
+                    if old_state != new_state and self._controller_map.map_button(button) in self._button_callbacks:
+                        self._button_callbacks[self._controller_map.map_button(button)](new_state)
 
                 self._last_button_states = current_button_states
 
