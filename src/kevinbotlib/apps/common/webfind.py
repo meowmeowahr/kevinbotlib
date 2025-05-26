@@ -63,5 +63,5 @@ class FindDialog(QDialog):
             flags |= QWebEnginePage.FindFlag.FindCaseSensitively
         self.web_view.findText(self.find_input.text(), flags)
 
-    def closeEvent(self, arg__1, /):  # noqa: N802
+    def closeEvent(self, _event):  # noqa: N802
         self.web_view.findText("")

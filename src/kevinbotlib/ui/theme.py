@@ -42,7 +42,8 @@ class Theme:
         try:
             # this is needed for PyInstaller - base.qss gets moved to sys._MEIPASS
             if getattr(sys, "frozen", False):  # Running in a bundle
-                base_path = pathlib.Path(getattr(sys, "_MEIPASS"))
+                # noinspection PyProtectedMember
+                base_path = pathlib.Path(sys._MEIPASS)  # noqa: SLF001
             else:  # Running from source
                 base_path = pathlib.Path(__file__).parent.resolve()
             template_loader = jinja2.FileSystemLoader(searchpath=base_path)

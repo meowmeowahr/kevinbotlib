@@ -212,7 +212,7 @@ class CommPath:
 
 
 class RedisCommClient:
-    SENDABLE_TYPES: ClassVar = {
+    SENDABLE_TYPES: ClassVar[dict[str, type[BaseSendable]]] = {
         "kevinbotlib.dtype.int": IntegerSendable,
         "kevinbotlib.dtype.bool": BooleanSendable,
         "kevinbotlib.dtype.str": StringSendable,
@@ -222,6 +222,21 @@ class RedisCommClient:
         "kevinbotlib.dtype.bin": BinarySendable,
     }
 
+    class _ConnectionLivelinessController:
+        def __init__(self, *, dead: bool = False, on_disconnect: Callable[[], None] | None = None):
+            self._dead = dead
+            self._on_disconnect = on_disconnect
+
+        @property
+        def dead(self):
+            return self._dead
+
+        @dead.setter
+        def dead(self, value):
+            self._dead = value
+            if not value and self._on_disconnect:
+                self._on_disconnect()
+
     def __init__(
         self,
         host: str = "localhost",
@@ -230,8 +245,8 @@ class RedisCommClient:
         on_connect: Callable[[], None] | None = None,
         on_disconnect: Callable[[], None] | None = None,
     ) -> None:
-        """Initialize Redis client with connection parameters."""
-        self.redis = None
+        """Initialize the Redis client with connection parameters."""
+        self.redis: redis.Redis | None = None
         self._host = host
         self._port = port
         self._db = db
@@ -245,7 +260,9 @@ class RedisCommClient:
         self.sub_callbacks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable], None]]] = {}
         self._lock = threading.Lock()
         self._listener_thread: threading.Thread | None = None
-        self._dead = False
+        self._dead: RedisCommClient._ConnectionLivelinessController = RedisCommClient._ConnectionLivelinessController(
+            dead=False, on_disconnect=self.on_disconnect
+        )
 
     def register_type(self, data_type: type[BaseSendable]):
         self.SENDABLE_TYPES[data_type.model_fields["data_id"].default] = data_type
@@ -264,10 +281,10 @@ class RedisCommClient:
             return None
         try:
             raw = self.redis.get(str(key))
-            self._dead = False
+            self._dead.dead = False
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get {key}: {e}")
-            self._dead = True
+            self._dead.dead = True
             return None
         if raw is None:
             return None
@@ -286,10 +303,10 @@ class RedisCommClient:
             return []
         try:
             keys = self.redis.keys("*")
-            self._dead = False
+            self._dead.dead = False
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get keys: {e}")
-            self._dead = True
+            self._dead.dead = True
             return []
         else:
             return keys
@@ -301,11 +318,11 @@ class RedisCommClient:
             return None
         try:
             raw = self.redis.get(str(key))
-            self._dead = False
+            self._dead.dead = False
             return orjson.loads(raw) if raw else None
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get raw {key}: {e}")
-            self._dead = True
+            self._dead.dead = True
             return None
 
     def get_all_raw(self) -> dict[str, dict] | None:
@@ -317,12 +334,12 @@ class RedisCommClient:
             # Get all keys from Redis
             keys = self.redis.keys("*")
             if not keys:
-                self._dead = False
+                self._dead.dead = False
                 return {}
 
             # Retrieve all values using mget for efficiency
             values = self.redis.mget(keys)
-            self._dead = False
+            self._dead.dead = False
 
             # Construct result dictionary, decoding JSON values
             result = {}
@@ -331,7 +348,7 @@ class RedisCommClient:
                     result[key] = orjson.loads(value)
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot get all raw: {e}")
-            self._dead = True
+            self._dead.dead = True
             return None
         else:
             return result
@@ -355,10 +372,10 @@ class RedisCommClient:
                 self.redis.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
             else:
                 self.redis.set(str(key), orjson.dumps(data))
-            self._dead = False
+            self._dead.dead = False
         except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
-            self._dead = True
+            self._dead.dead = True
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         self._apply(key, sendable, pub_mode=False)
@@ -384,10 +401,10 @@ class RedisCommClient:
                                 callback[1](channel, callback[0](**data))
                         except Exception as e:  # noqa: BLE001
                             _Logger().error(f"Failed to process message: {e!r}")
-                    self._dead = False
-                time.sleep(1) # 1-second delay if there are no subscriptions
+                    self._dead.dead = False
+                time.sleep(1)  # 1-second delay if there are no subscriptions
         except (redis.exceptions.ConnectionError, ValueError, AttributeError):
-            self._dead = True
+            self._dead.dead = True
         _Logger().warning("Listener loop ended")
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
@@ -409,10 +426,10 @@ class RedisCommClient:
         try:
             self.redis.flushdb()
             self.redis.flushall()
-            self._dead = False
+            self._dead.dead = False
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot wipe all: {e}")
-            self._dead = True
+            self._dead.dead = True
 
     def delete(self, key: CommPath | str) -> None:
         """Delete a key from the Redis database."""
@@ -421,10 +438,10 @@ class RedisCommClient:
             return
         try:
             self.redis.delete(str(key))
-            self._dead = False
+            self._dead.dead = False
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot delete {key}: {e}")
-            self._dead = True
+            self._dead.dead = True
 
     def _start_hooks(self) -> None:
         if not self.running:
@@ -462,9 +479,9 @@ class RedisCommClient:
                             except (orjson.JSONDecodeError, ValidationError, KeyError):
                                 pass
                     previous_values[key] = message
-                self._dead = False
+                self._dead.dead = False
             except redis.exceptions.ConnectionError:
-                self._dead = True
+                self._dead.dead = True
             except (AttributeError, ValueError) as e:
                 _Logger().error(f"Something went wrong while processing hooks: {e!r}")
             if not self.running:
@@ -477,12 +494,12 @@ class RedisCommClient:
         self._start_hooks()
         try:
             self.redis.ping()
-            self._dead = False
+            self._dead.dead = False
             if self.on_connect:
                 self.on_connect()
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Redis connection error: {e}")
-            self._dead = True
+            self._dead.dead = True
             self.redis = None
             if self.on_disconnect:
                 self.on_disconnect()
@@ -509,7 +526,7 @@ class RedisCommClient:
             return (end_time - start_time) * 1000  # Convert to milliseconds
         except redis.exceptions.ConnectionError as e:
             _Logger().error(f"Cannot measure latency: {e}")
-            self._dead = True
+            self._dead.dead = True
             return None
 
     def wait_until_connected(self, timeout: float = 5.0):
@@ -517,7 +534,7 @@ class RedisCommClient:
         start_time = time.time()
         while not self.redis or not self.redis.ping():
             if time.time() > start_time + timeout:
-                self._dead = True
+                self._dead.dead = True
                 msg = "The connection timed out"
                 raise kevinbotlib.exceptions.HandshakeTimeoutException(msg)
             time.sleep(0.02)
@@ -546,7 +563,7 @@ class RedisCommClient:
                 )
                 self._listener_thread.start()
         except redis.exceptions.ConnectionError:
-            self._dead = True
+            self._dead.dead = True
             return
 
     def reset_connection(self):
@@ -567,7 +584,7 @@ class RedisCommClient:
                 try:
                     self.pubsub.subscribe(sub)
                 except redis.exceptions.ConnectionError:
-                    self._dead = True
+                    self._dead.dead = True
                     _Logger().warning(f"Failed to re-subscribe to {sub}, client is not connected")
 
             self._start_hooks()
@@ -578,7 +595,7 @@ class RedisCommClient:
             self._listener_thread.start()
 
             checker = threading.Thread(target=self._redis_connection_check, daemon=True)
-            checker.setName("KevinbotLib.Redis.ConnCheck")
+            checker.name = "KevinbotLib.Redis.ConnCheck"
             checker.start()
 
     @property

@@ -851,9 +851,9 @@ class DashboardApplicationRunner:
     def configure_logger(self, args: DashboardApplicationStartupArguments | None):
         # this is needed on Windows when using --windowed in PyInstaller
         if sys.stdout is None:
-            sys.stdout = open(os.devnull, "w")
+            sys.stdout = open(os.devnull, "w")  # noqa: SIM115
         if sys.stderr is None:
-            sys.stderr = open(os.devnull, "w")
+            sys.stderr = open(os.devnull, "w")  # noqa: SIM115
 
         if args is None:
             parser = QCommandLineParser()
