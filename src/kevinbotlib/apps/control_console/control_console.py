@@ -51,7 +51,7 @@ try:
     from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
     from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
     SDL2_OK = True
-except RuntimeError:
+except (RuntimeError, ImportError):
     # sdl2 is not installed
     SDL2_OK = False
 
