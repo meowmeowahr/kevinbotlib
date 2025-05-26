@@ -30,6 +30,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QTabWidget,
+    QMessageBox,
 )
 
 import kevinbotlib.apps.control_console.resources_rc
@@ -39,14 +40,20 @@ from kevinbotlib.apps.control_console.pages.control import (
     AppState,
     ControlConsoleControlTab,
 )
-from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
 from kevinbotlib.comm import AnyListSendable, CommPath, RedisCommClient, StringSendable
-from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
+
+try:
+    from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
+    from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
+    SDL2_OK = True
+except RuntimeError:
+    # sdl2 is not installed
+    SDL2_OK = False
 
 
 class HeartbeatWorker(QObject):
@@ -339,6 +346,10 @@ class ControlConsoleApplicationRunner:
         self.logger.configure(LoggerConfiguration(level=log_level))
 
     def run(self):
+        if not SDL2_OK:
+            QMessageBox.critical(None, "SDL2 Error", "SDL2 is not installed. Control console will now exit.")
+            sys.exit(1)
+
         with wakepy.keep.running() if not self.args.nolock else contextlib.nullcontext():
             kevinbotlib.apps.control_console.resources_rc.qInitResources()
             self.window = ControlConsoleApplicationWindow(self.logger)
