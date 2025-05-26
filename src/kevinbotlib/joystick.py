@@ -1,3 +1,4 @@
+import math
 import multiprocessing
 import threading
 import time
@@ -21,7 +22,21 @@ from kevinbotlib.logger import Level
 from kevinbotlib.logger import Logger as _Logger
 from kevinbotlib.multiprocessing import SafeTelemeterizedProcess
 
-sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_GAMECONTROLLER)
+sdl2.SDL_Init(sdl2.SDL_INIT_GAMECONTROLLER | sdl2.SDL_INIT_JOYSTICK)
+
+class JoystickButton(IntEnum):
+    A = sdl2.SDL_CONTROLLER_BUTTON_A
+    B = sdl2.SDL_CONTROLLER_BUTTON_B
+    X = sdl2.SDL_CONTROLLER_BUTTON_X
+    Y = sdl2.SDL_CONTROLLER_BUTTON_Y
+    LEFT_STICK = sdl2.SDL_CONTROLLER_BUTTON_LEFTSTICK
+    RIGHT_STICK = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSTICK
+    LEFT_BUMPER = sdl2.SDL_CONTROLLER_BUTTON_LEFTSHOULDER
+    RIGHT_BUMPER = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+    START = sdl2.SDL_CONTROLLER_BUTTON_START
+    BACK = sdl2.SDL_CONTROLLER_BUTTON_BACK
+    GUIDE = sdl2.SDL_CONTROLLER_BUTTON_GUIDE
+    SHARE = sdl2.SDL_CONTROLLER_BUTTON_MISC1
 
 
 class LocalJoystickIdentifiers:
@@ -82,6 +97,15 @@ class AbstractJoystickInterface(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def register_button_callback(self, button_id: JoystickButton, callback: Callable[[bool], Any]) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def register_pov_callback(self, callback: Callable[[int], Any]) -> None:
+        raise NotImplementedError
+
+
+    @abstractmethod
     def is_connected(self) -> bool:
         return False
 
@@ -105,21 +129,6 @@ class NullJoystick(AbstractJoystickInterface):
     def is_connected(self) -> bool:
         return super().is_connected()
 
-
-class JoystickButton(IntEnum):
-    A = sdl2.SDL_CONTROLLER_BUTTON_A
-    B = sdl2.SDL_CONTROLLER_BUTTON_B
-    X = sdl2.SDL_CONTROLLER_BUTTON_X
-    Y = sdl2.SDL_CONTROLLER_BUTTON_Y
-    LEFT_STICK = sdl2.SDL_CONTROLLER_BUTTON_LEFTSTICK
-    RIGHT_STICK = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSTICK
-    LEFT_BUMPER = sdl2.SDL_CONTROLLER_BUTTON_LEFTSHOULDER
-    RIGHT_BUMPER = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
-    START = sdl2.SDL_CONTROLLER_BUTTON_START
-    BACK = sdl2.SDL_CONTROLLER_BUTTON_BACK
-    GUIDE = sdl2.SDL_CONTROLLER_BUTTON_GUIDE
-
-
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
 
@@ -129,8 +138,8 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     @dataclass
     class GameControllerEvent:
-        identifier: int
-        timestamp: int
+        identifier: int | None
+        timestamp: int | None
 
     @dataclass
     class ButtonEvent(GameControllerEvent):
@@ -141,6 +150,10 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     class AxisEvent(GameControllerEvent):
         axis_id: int
         axis_value: float
+
+    @dataclass
+    class PovEvent(GameControllerEvent):
+        pov_direction: int
 
     def __init__(self, index: int, polling_hz: int = 100):
         super().__init__()
@@ -157,16 +170,13 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         self._pov_state = -1
         self._axis_states = {}
 
+        self._pov_callbacks: list[Callable[[int], Any]] = []
+        self._button_callbacks: dict[JoystickButton, list[Callable[[bool], Any]]] = {}
+
         self.on_disconnect: Callable[[], Any] | None = None
 
     def is_connected(self) -> bool:
         return self.connected
-
-    def get_button_count(self) -> int:
-        """Returns the total number of buttons on the joystick."""
-        if not self._sdl_joystick or not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
-            return 0
-        return sdl2.SDL_JoystickNumButtons(self._sdl_joystick)
 
     def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
@@ -196,6 +206,16 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         """Returns the current POV (D-pad) direction."""
         return self._pov_state
 
+    def register_button_callback(self, button_id: JoystickButton, callback: Callable[[bool], Any]) -> None:
+        """Registers a callback for button events."""
+        if button_id not in self._button_callbacks:
+            self._button_callbacks[button_id] = []
+        self._button_callbacks[button_id].append(callback)
+
+    def register_pov_callback(self, callback: Callable[[int], Any]) -> None:
+        """Registers a callback for POV events."""
+        self._pov_callbacks.append(callback)
+
     def _log_catcher(self):
         while self.running:
             entry = self._logging_queue.get()
@@ -211,9 +231,23 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                     self._button_states[entry.button_id] = True
                 else:
                     self._button_states[entry.button_id] = False
+                if entry.button_id in self._button_callbacks:
+                    for callback in self._button_callbacks[entry.button_id]:
+                        callback(entry.button_signal == RawLocalJoystickDevice.ButtonSignal.Pressed)
+            elif isinstance(entry, RawLocalJoystickDevice.PovEvent):
+                self._pov_state = entry.pov_direction
+                for callback in self._pov_callbacks:
+                    callback(entry.pov_direction)
 
     @staticmethod
-    def _event_loop(index: int, polling_hz: int, logger: multiprocessing.Queue, evq: multiprocessing.Queue) -> None:
+    def _event_loop(
+        index: int,
+        polling_hz: int,
+        logger: multiprocessing.Queue,
+        evq: multiprocessing.Queue,
+        on_disconnect: Callable[[], Any],
+        get_running: Callable[[], bool],
+    ) -> None:
         """Internal loop for processing SDL events synchronously. Must run in its own process or MainThread"""
         if sdl2.SDL_IsGameController(index):
             _sdl_joystick = sdl2.SDL_GameControllerOpen(index)
@@ -225,10 +259,60 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         else:
             raise JoystickMissingException(index)
 
+        _pid = index
         running = True
         event = sdl2.SDL_Event()
 
+        _dpad = {
+            "up": False,
+            "down": False,
+            "left": False,
+            "right": False,
+        }
+
+        def update_dpad():
+            if not any(_dpad.values()):
+                evq.put_nowait(
+                    RawLocalJoystickDevice.PovEvent(
+                        identifier=None,
+                        timestamp=None,
+                        pov_direction=-1,
+                    )
+                )
+                return
+
+            x = 0
+            y = 0
+            y += 1 if _dpad["up"] else 0
+            y -= 1 if _dpad["down"] else 0
+            x += 1 if _dpad["right"] else 0
+            x -= 1 if _dpad["left"] else 0
+
+            if x == 0 and y == 0:
+                evq.put_nowait(
+                    RawLocalJoystickDevice.PovEvent(
+                        identifier=None,
+                        timestamp=None,
+                        pov_direction=-1,
+                    )
+                )
+                return
+
+            rad = math.atan2(x, y)
+            angle = (math.degrees(rad) + 360) % 360
+
+            evq.put_nowait(
+                RawLocalJoystickDevice.PovEvent(
+                    identifier=None,
+                    timestamp=None,
+                    pov_direction=int(round(angle)),
+                )
+            )
+
         while running:
+            if not get_running():
+                running = False
+                break
             while sdl2.SDL_PollEvent(event):
                 if event.type == sdl2.SDL_QUIT:
                     logger.put_nowait((Level.WARNING, "Unexpected SQL_QUIT event"))
@@ -238,28 +322,70 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                         continue
                     button = event.cbutton.button
                     logger.put_nowait((Level.TRACE, f"Button pressed: {button} on controller {event.cbutton.which}"))
-                    evq.put_nowait(
-                        RawLocalJoystickDevice.ButtonEvent(
-                            identifier=event.cbutton.which,
-                            timestamp=event.cbutton.timestamp,
-                            button_id=JoystickButton(button),
-                            button_signal=RawLocalJoystickDevice.ButtonSignal.Pressed,
-                        )
-                    )
+
+                    match button:
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_UP:
+                            _dpad["up"] = True
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                            _dpad["down"] = True
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                            _dpad["left"] = True
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                            _dpad["right"] = True
+                            update_dpad()
+                        case _:
+                            if button not in JoystickButton:
+                                logger.put_nowait(
+                                    (Level.WARNING, f"Ignoring button {button} - not a valid JoystickButton")
+                                )
+                                continue
+
+                            evq.put_nowait(
+                                RawLocalJoystickDevice.ButtonEvent(
+                                    identifier=event.cbutton.which,
+                                    timestamp=event.cbutton.timestamp,
+                                    button_id=JoystickButton(button),
+                                    button_signal=RawLocalJoystickDevice.ButtonSignal.Pressed,
+                                )
+                            )
 
                 elif event.type == sdl2.SDL_CONTROLLERBUTTONUP:
                     if sdl2.SDL_GameControllerGetPlayerIndex(_sdl_joystick) != index:
                         continue
                     button = event.cbutton.button
                     logger.put_nowait((Level.TRACE, f"Button released: {button} on controller {event.cbutton.which}"))
-                    evq.put_nowait(
-                        RawLocalJoystickDevice.ButtonEvent(
-                            identifier=event.cbutton.which,
-                            timestamp=event.cbutton.timestamp,
-                            button_id=JoystickButton(button),
-                            button_signal=RawLocalJoystickDevice.ButtonSignal.Released,
-                        )
-                    )
+
+                    match button:
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_UP:
+                            _dpad["up"] = False
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                            _dpad["down"] = False
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                            _dpad["left"] = False
+                            update_dpad()
+                        case sdl2.SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                            _dpad["right"] = False
+                            update_dpad()
+                        case _:
+                            if button not in JoystickButton:
+                                logger.put_nowait(
+                                    (Level.WARNING, f"Ignoring button {button} - not a valid JoystickButton")
+                                )
+                                continue
+
+                            evq.put_nowait(
+                                RawLocalJoystickDevice.ButtonEvent(
+                                    identifier=event.cbutton.which,
+                                    timestamp=event.cbutton.timestamp,
+                                    button_id=JoystickButton(button),
+                                    button_signal=RawLocalJoystickDevice.ButtonSignal.Released,
+                                )
+                            )
 
                 elif event.type == sdl2.SDL_CONTROLLERAXISMOTION:
                     if sdl2.SDL_GameControllerGetPlayerIndex(_sdl_joystick) != index:
@@ -286,36 +412,24 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                     device_index = event.cdevice.which
                     if sdl2.SDL_IsGameController(device_index) and device_index == index:
                         _sdl_joystick = sdl2.SDL_GameControllerOpen(device_index)
+                        _pid = sdl2.SDL_JoystickInstanceID(sdl2.SDL_GameControllerGetJoystick(_sdl_joystick))
                         logger.put_nowait((Level.INFO, f"Re-initialized current controller {device_index}"))
                     logger.put_nowait((Level.DEBUG, f"Controller connected: {device_index}"))
 
                 elif event.type == sdl2.SDL_CONTROLLERDEVICEREMOVED:
                     logger.put_nowait((Level.DEBUG, "Controller disconnected"))
+                    device_index = event.cdevice.which
+                    if device_index == _pid:
+                        on_disconnect()
 
             time.sleep(1 / polling_hz)
+        sdl2.SDL_GameControllerClose(_sdl_joystick)
 
     def _handle_disconnect(self):
         """Handles joystick disconnection."""
         self._logger.warning(f"Joystick {self.index} disconnected.")
         if self.on_disconnect:
             self.on_disconnect()
-        self._attempt_reconnect()
-
-    def _attempt_reconnect(self):
-        """Attempts to reconnect the joystick."""
-        self._logger.info("Attempting to reconnect...")
-
-        self.connected = False
-        time.sleep(1)
-
-        num_joysticks = sdl2.SDL_NumJoysticks()
-        if self.index < num_joysticks:
-            self._sdl_joystick = sdl2.SDL_JoystickOpen(self.index)
-            if self._sdl_joystick and sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
-                self._logger.info(f"Reconnected joystick {self.index} successfully")
-                return
-
-        time.sleep(1)
 
     def start_polling(self):
         """Starts the polling loop in a separate thread."""
@@ -326,7 +440,14 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                 target=self._event_loop,
                 daemon=True,
                 name=f"KevinbotLib.Joystick.EvProcess.{self.index}",
-                args=(self.index, self.polling_hz, self._logging_queue, self.event_queue),
+                args=(
+                    self.index,
+                    self.polling_hz,
+                    self._logging_queue,
+                    self.event_queue,
+                    self._handle_disconnect,
+                    lambda: self.running,
+                ),
             ).start()
             threading.Thread(
                 target=self._log_catcher,
@@ -342,7 +463,6 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def stop(self):
         """Stops event handling and releases resources."""
         self.running = False
-        sdl2.SDL_GameControllerClose(self._sdl_joystick)
 
 
 class JoystickSender:

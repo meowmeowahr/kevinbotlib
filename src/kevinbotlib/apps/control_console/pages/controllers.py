@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.exceptions import JoystickMissingException
-from kevinbotlib.joystick import LocalJoystickIdentifiers, POVDirection, RawLocalJoystickDevice
+from kevinbotlib.joystick import LocalJoystickIdentifiers, RawLocalJoystickDevice
 from kevinbotlib.logger import Logger
 
 
@@ -101,15 +101,15 @@ class POVGridWidget(QGroupBox):
         square_size = 16  # Slightly larger for visibility
         # Define the 3x3 grid positions for POV directions
         pov_positions = {
-            POVDirection.UP: (0, 1),
-            POVDirection.UP_RIGHT: (0, 2),
-            POVDirection.RIGHT: (1, 2),
-            POVDirection.DOWN_RIGHT: (2, 2),
-            POVDirection.DOWN: (2, 1),
-            POVDirection.DOWN_LEFT: (2, 0),
-            POVDirection.LEFT: (1, 0),
-            POVDirection.UP_LEFT: (0, 0),
-            POVDirection.NONE: (1, 1),  # Center
+            0: (0, 1),
+            45: (0, 2),
+            90: (1, 2),
+            135: (2, 2),
+            180: (2, 1),
+            215: (2, 0),
+            270: (1, 0),
+            315: (0, 0),
+            -1: (1, 1),  # Center
         }
 
         # Create labels for each direction
@@ -121,7 +121,7 @@ class POVGridWidget(QGroupBox):
             self.grid.addWidget(label, row, col)
             self.pov_labels[direction] = label
 
-    def set_pov_state(self, direction: POVDirection):
+    def set_pov_state(self, direction: int):
         """Update the POV grid to highlight the active direction."""
         for d, label in self.pov_labels.items():
             label.setObjectName("ButtonInputStateBoxActive" if d == direction else "ButtonInputStateBoxInactive")
@@ -173,39 +173,7 @@ class JoystickStateWidget(QWidget):
         self.update_state()
 
     def update_state(self):
-        if not self.joystick or not self.joystick.is_connected():
-            self.button_grid.set_button_count(0)
-            for widget in self.axis_widgets:
-                widget.setVisible(False)
-            self.pov_grid.set_pov_state(POVDirection.NONE)
-            return
-
-        if self.joystick.is_connected():
-            # Buttons
-            button_count = self.joystick.get_button_count()
-            self.button_grid.set_button_count(button_count)
-            for i in range(button_count):
-                state = self.joystick.get_button_state(i)
-                self.button_grid.set_button_state(i, state)
-
-            # Axes
-            axes = self.joystick.get_axes(precision=2)
-            for i, value in enumerate(axes):
-                if i < self.max_axes:
-                    self.axis_widgets[i].setVisible(True)
-                    progress_value = int((value + 1.0) * 50)
-                    self.axis_bars[i].setValue(progress_value)
-            for i in range(len(axes), self.max_axes):
-                self.axis_widgets[i].setVisible(False)
-
-            # POV/D-pad
-            pov = self.joystick.get_pov_direction()
-            self.pov_grid.set_pov_state(pov)
-        else:
-            self.button_grid.set_button_count(0)
-            for widget in self.axis_widgets:
-                widget.setVisible(False)
-            self.pov_grid.set_pov_state(POVDirection.NONE)
+        pass
 
 
 class ControlConsoleControllersTab(QWidget):
@@ -290,6 +258,12 @@ class ControlConsoleControllersTab(QWidget):
         return {index: self.controllers[index] for index in self.controller_order if index in self.controllers}
 
     def update_controller_list(self):
+        count = LocalJoystickIdentifiers.get_count()
+        names = LocalJoystickIdentifiers.get_names()
+        guids = LocalJoystickIdentifiers.get_guids()
+        print(f"{count} joysticks present")
+        print(f"Joystick Names: {names}")
+        print(f"Joystick GUIDs: {guids}")
         joystick_names = LocalJoystickIdentifiers.get_names()
         valid_indices = list(range(len(joystick_names)))
 
