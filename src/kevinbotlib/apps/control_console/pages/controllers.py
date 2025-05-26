@@ -22,8 +22,13 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.apps.common.widgets import QWidgetList
 from kevinbotlib.exceptions import JoystickMissingException
-from kevinbotlib.joystick import LocalJoystickIdentifiers, POVDirection, RawLocalJoystickDevice, XboxControllerButtons, \
-    XboxControllerAxis
+from kevinbotlib.joystick import (
+    LocalJoystickIdentifiers,
+    POVDirection,
+    RawLocalJoystickDevice,
+    XboxControllerAxis,
+    XboxControllerButtons,
+)
 from kevinbotlib.logger import Logger
 
 
@@ -41,16 +46,14 @@ class ButtonGridWidget(QGroupBox):
         self.max_buttons = max_buttons
         self.button_count = 0
         self.button_labels = []
-        self.init_ui()
         self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-    def init_ui(self):
         self.root_layout = QGridLayout()
         self.root_layout.setSpacing(4)
         self.setLayout(self.root_layout)
 
         square_size = 14
-        for i in range(self.max_buttons):
+        for _ in range(self.max_buttons):
             label = QLabel(parent=self)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedSize(square_size, square_size)
@@ -81,6 +84,7 @@ class ButtonGridWidget(QGroupBox):
             col = i // 8
             self.root_layout.addWidget(self.button_labels[i], row, col)
 
+
 class XboxDefaultButtonMapWidget(QGroupBox):
     def __init__(self):
         super().__init__("Xbox Button Reference")
@@ -91,6 +95,7 @@ class XboxDefaultButtonMapWidget(QGroupBox):
         for value in XboxControllerButtons:
             label = QLabel(f"{XboxControllerButtons(value).name.title()} -> {value}")
             self.root_layout.addWidget(label)
+
 
 class XboxDefaultAxisMapWidget(QGroupBox):
     def __init__(self):
@@ -108,9 +113,7 @@ class POVGridWidget(QGroupBox):
     def __init__(self):
         super().__init__("POV")
         self.pov_labels = {}
-        self.init_ui()
 
-    def init_ui(self):
         self.root = QVBoxLayout()
         self.setLayout(self.root)
 
@@ -169,6 +172,7 @@ class MapEditor(QGroupBox):
     def update_guid(self, guid: str):
         self.guid.setText(f"GUID: {guid}")
 
+
 class JoystickStateWidget(QWidget):
     def __init__(self, joystick: RawLocalJoystickDevice | None = None):
         super().__init__()
@@ -176,13 +180,11 @@ class JoystickStateWidget(QWidget):
         self.max_axes = 8
         self.axis_bars = []
         self.axis_widgets = []
-        self.init_ui()
 
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.update_state)
         self.update_timer.start(100)
 
-    def init_ui(self):
         layout = QHBoxLayout()
         layout.setSpacing(10)
         self.setLayout(layout)
@@ -232,7 +234,7 @@ class JoystickStateWidget(QWidget):
 
         if self.joystick.is_connected():
             # Map Editor
-            self.map_editor.update_guid(''.join(f'{b:02x}' for b in self.joystick.guid))
+            self.map_editor.update_guid("".join(f"{b:02x}" for b in self.joystick.guid))
 
             # Buttons
             button_count = self.joystick.get_button_count()
