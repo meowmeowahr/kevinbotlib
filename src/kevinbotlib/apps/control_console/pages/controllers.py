@@ -49,7 +49,7 @@ class ButtonGridWidget(QGroupBox):
 
         square_size = 14
         for i in range(self.max_buttons):
-            label = QLabel()
+            label = QLabel(parent=self)
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedSize(square_size, square_size)
             label.setObjectName("ButtonInputStateBoxInactive")
