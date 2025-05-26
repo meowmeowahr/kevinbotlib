@@ -16,6 +16,9 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             arch: x64
+          - os: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
           - os: macos-13
             platform: macos
             arch: x64
@@ -44,7 +47,7 @@ jobs:
         run: hatch env create
 
       - name: Build on Linux
-        if: matrix.platform == 'linux'
+        if: matrix.platform == 'linux' && matrix.arch == 'x64'
         env:
           HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
           HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
@@ -55,6 +58,19 @@ jobs:
           hatch build
           bash scripts/resource-rcc-compile.sh
           hatch publish
+          bash scripts/build/build_binaries_linux.sh
+
+      - name: Build on Linux ARM
+        if: matrix.platform == 'linux' && matrix.arch == 'arm64'
+        env:
+          HATCH_INDEX_USER: ${{ secrets.PYPI_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          source $(hatch env find)/bin/activate
+          pip install uv
+          uv sync --active --extra dev
+          hatch build
+          bash scripts/resource-rcc-compile.sh
           bash scripts/build/build_binaries_linux.sh
 
       - name: Build on macOS
