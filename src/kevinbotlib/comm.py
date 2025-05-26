@@ -234,7 +234,7 @@ class RedisCommClient:
         @dead.setter
         def dead(self, value):
             self._dead = value
-            if not value and self._on_disconnect:
+            if value and self._on_disconnect:
                 self._on_disconnect()
 
     def __init__(
@@ -511,7 +511,7 @@ class RedisCommClient:
 
     def is_connected(self) -> bool:
         """Check if the Redis connection is established."""
-        return self.redis is not None and self.redis.connection_pool is not None and not self._dead
+        return self.redis is not None and self.redis.connection_pool is not None and not self._dead.dead
 
     def get_latency(self) -> float | None:
         """Measure the round-trip latency to the Redis server in milliseconds."""
