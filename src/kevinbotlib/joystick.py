@@ -2,6 +2,7 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+from dataclasses import dataclass
 from enum import Enum, IntEnum
 from typing import Any, final
 
@@ -41,9 +42,9 @@ class XboxControllerAxis(IntEnum):
 
     LeftX = 0
     LeftY = 1
-    RightX = 3
-    RightY = 4
-    LeftTrigger = 2
+    RightX = 2
+    RightY = 3
+    LeftTrigger = 4
     RightTrigger = 5
 
 
@@ -59,6 +60,27 @@ class POVDirection(IntEnum):
     LEFT = 270
     UP_LEFT = 315
     NONE = -1
+
+
+@dataclass
+class ControllerMap:
+    """Controller mapping for joystick events."""
+
+    button_map: dict[int, int]
+    axis_map: dict[int, int]
+
+    def map_button(self, button_id: int) -> int:
+        if button_id not in self.button_map:
+            return button_id
+        return self.button_map[button_id]
+
+    def map_axis(self, axis_id: int) -> int:
+        if axis_id not in self.axis_map:
+            return axis_id
+        return self.axis_map[axis_id]
+
+
+DefaultControllerMap = ControllerMap({}, {})
 
 
 class LocalJoystickIdentifiers:
@@ -97,6 +119,10 @@ class AbstractJoystickInterface(ABC):
 
         self.polling_hz = 100
         self.connected = False
+
+    @abstractmethod
+    def apply_map(self, controller_map: ControllerMap):
+        raise NotImplementedError
 
     @abstractmethod
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
@@ -156,11 +182,15 @@ class NullJoystick(AbstractJoystickInterface):
     def is_connected(self) -> bool:
         return super().is_connected()
 
+    def apply_map(self, _controller_map: ControllerMap):
+        return
+
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
 
     def __init__(self, index: int, polling_hz: int = 100):
+        super().__init__()
         self.index = index
         self._sdl_joystick: sdl2.joystick.SDL_Joystick = sdl2.SDL_JoystickOpen(index)
         self._logger = _Logger()
@@ -183,6 +213,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         self._pov_callbacks: list[Callable[[POVDirection], Any]] = []
         self._axis_states = {}
         self._axis_callbacks = {}
+        self._controller_map: ControllerMap = DefaultControllerMap
 
         self.on_disconnect: Callable[[], Any] | None = None
 
@@ -201,20 +232,31 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
-        return self._button_states.get(button_id, False)
+        return self._button_states.get(self._controller_map.map_button(button_id), False)
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         """Returns the current value of the specified axis (-1.0 to 1.0)."""
-        return round(max(min(self._axis_states.get(axis_id, 0.0), 1), -1), precision)
+        return round(max(min(self._axis_states.get(self._controller_map.map_axis(axis_id), 0.0), 1), -1), precision)
 
     def get_buttons(self) -> list[int]:
         """Returns a list of currently pressed buttons."""
-        buttons = [key for key, value in self._button_states.items() if value]
+        buttons = [self._controller_map.map_button(key) for key, value in self._button_states.items() if value]
         buttons.sort()
         return buttons
 
     def get_axes(self, precision: int = 3):
-        return [round(float(max(min(self._axis_states[axis_id], 1), -1)), precision) for axis_id in self._axis_states]
+        return [
+            round(
+                float(
+                    max(
+                        min(self._axis_states[self._controller_map.map_axis(axis_id)], 1),
+                        -1,
+                    )
+                ),
+                precision,
+            )
+            for axis_id in self._axis_states
+        ]
 
     def get_pov_direction(self) -> POVDirection:
         """Returns the current POV (D-pad) direction."""
@@ -227,6 +269,9 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
         """Registers a callback function for POV (D-pad) direction changes."""
         self._pov_callbacks.append(callback)
+
+    def apply_map(self, controller_map: ControllerMap):
+        self._controller_map = controller_map
 
     def _handle_event(self, event) -> None:
         """Handles SDL events and triggers registered callbacks."""
@@ -256,13 +301,6 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             axis = event.jaxis.axis
             # Convert SDL axis value (-32768 to 32767) to float (-1.0 to 1.0)
             value = event.jaxis.value / 32767.0
-
-            # For triggers, convert range from [-1.0, 1.0] to [0.0, 1.0]
-            if axis in (
-                XboxControllerAxis.LeftTrigger,
-                XboxControllerAxis.RightTrigger,
-            ):
-                value = (value + 1.0) / 2.0
 
             # Update state and trigger callback if value changed significantly
             self._axis_states[axis] = value
@@ -636,7 +674,13 @@ class RemoteXboxController(RemoteRawJoystickDevice):
 
     def get_buttons(self) -> list[XboxControllerButtons]:
         """Returns a list of currently pressed buttons using Xbox button enums."""
-        return [XboxControllerButtons(x) for x in super().get_buttons()]
+        buttons = []
+        for x in super().get_buttons():
+            try:
+                buttons.append(XboxControllerButtons(x))
+            except ValueError:
+                _Logger().error(f"Invalid button value received: {x}, not in XboxControllerButtons")
+        return buttons
 
     def get_axes(self, precision: int = 3) -> list[float]:
         """Returns a list of axis values with Xbox-specific ordering."""

@@ -40,15 +40,15 @@ class ButtonGridWidget(QGroupBox):
         self.button_count = 0
         self.button_labels = []
         self.init_ui()
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
     def init_ui(self):
         self.root_layout = QGridLayout()
         self.root_layout.setSpacing(4)
         self.setLayout(self.root_layout)
 
-        square_size = 12
-        for _ in range(self.max_buttons):
+        square_size = 14
+        for i in range(self.max_buttons):
             label = QLabel()
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedSize(square_size, square_size)

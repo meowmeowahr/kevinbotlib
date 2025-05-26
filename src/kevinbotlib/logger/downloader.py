@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 class RemoteLogDownloader:
     """Tool for downloading logs from a remote host using SFTP."""
+
     default_missing_host_key_policy = paramiko.WarningPolicy()
 
     def __init__(self, log_dir: str = "~/.local/share/kevinbotlib/logging/"):

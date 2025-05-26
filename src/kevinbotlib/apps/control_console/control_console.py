@@ -29,8 +29,8 @@ from PySide6.QtWidgets import (
     QApplication,
     QLabel,
     QMainWindow,
-    QTabWidget,
     QMessageBox,
+    QTabWidget,
 )
 
 import kevinbotlib.apps.control_console.resources_rc
@@ -48,8 +48,9 @@ from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 try:
-    from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
     from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
+    from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
+
     SDL2_OK = True
 except (RuntimeError, ImportError):
     # sdl2 is not installed
@@ -93,6 +94,9 @@ class LatencyWorker(QObject):
 
 
 class ControlConsoleApplicationWindow(QMainWindow):
+    on_disconnect_signal = Signal()
+    on_connect_signal = Signal()
+
     def __init__(self, logger: Logger):
         super().__init__()
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
@@ -123,11 +127,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_logs_key = "%ControlConsole/logs"
         self._ctrl_batteries_key = "%ControlConsole/batteries"
 
+        self.on_disconnect_signal.connect(self.on_disconnect)
+        self.on_connect_signal.connect(self.on_connect)
+
         self.client = RedisCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
             port=int(self.settings.value("network.port", 6379, int)),  # type: ignore
-            on_connect=self.on_connect,
-            on_disconnect=self.on_disconnect,
+            on_connect=self.on_connect_signal.emit,
+            on_disconnect=self.on_disconnect_signal.emit,
         )
 
         self.logrx = ANSILogReceiver(self.on_log, self.client, self._ctrl_logs_key)
