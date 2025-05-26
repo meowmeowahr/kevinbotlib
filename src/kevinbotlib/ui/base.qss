@@ -181,6 +181,43 @@ QDoubleSpinBox::down-arrow {
     height: 10px;
 }
 
+QComboBox {
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 4px;
+    margin: 1px;
+    selection-background-color: {{selection}};
+    selection-color: {{fg}};
+    min-height: 20px;
+}
+
+QComboBox:focus {
+    border: 1px solid {{primary1}};
+}
+
+QComboBox::drop-down {
+    background-color: {{bg3}};
+    width: 16px;
+    margin-right: 2px;
+}
+
+QComboBox::drop-down:hover {
+    background-color: {{bg4}};
+}
+
+QComboBox::drop-down:pressed {
+    background-color: {{bg5}};
+}
+
+QComboBox::down-arrow {
+    image: url({{":/theme_icons/spinbox-caret-down-dark.png" if is_dark else ":/theme_icons/spinbox-caret-down-light.png"}});
+    width: 12px;
+    height: 10px;
+}
+
+
 QLabel {
     color: {{fg}}; 
 }
