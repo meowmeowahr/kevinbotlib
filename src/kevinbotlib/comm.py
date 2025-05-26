@@ -271,11 +271,11 @@ class RedisCommClient:
         )
 
     def add_hook(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
-        """Add a callback to be triggered when a sendable of data_type is set for key."""
+        """Add a callback to be triggered when sendable of data_type is set for a key."""
         self.hooks.append((str(key), data_type, callback))  # type: ignore
 
     def get(self, key: CommPath | str, data_type: type[T]) -> T | None:
-        """Retrieve and deserialize a sendable by key."""
+        """Retrieve and deserialize sendable by key."""
         if not self.redis:
             _Logger().error("Cannot get data: client is not started")
             return None
