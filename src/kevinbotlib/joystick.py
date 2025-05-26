@@ -193,6 +193,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         super().__init__()
         self.index = index
         self._sdl_joystick: sdl2.joystick.SDL_Joystick = sdl2.SDL_JoystickOpen(index)
+        self.guid = bytes(sdl2.SDL_JoystickGetGUID(self._sdl_joystick).data)
         self._logger = _Logger()
 
         if not self._sdl_joystick:
@@ -378,6 +379,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             self._sdl_joystick = sdl2.SDL_JoystickOpen(self.index)
             if self._sdl_joystick and sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
                 self._logger.info(f"Reconnected joystick {self.index} successfully")
+                self.guid = bytes(sdl2.SDL_JoystickGetGUID(self._sdl_joystick).data)
                 return
 
         time.sleep(1)

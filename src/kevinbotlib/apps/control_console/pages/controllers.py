@@ -20,8 +20,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps.common.widgets import QWidgetList
 from kevinbotlib.exceptions import JoystickMissingException
-from kevinbotlib.joystick import LocalJoystickIdentifiers, POVDirection, RawLocalJoystickDevice
+from kevinbotlib.joystick import LocalJoystickIdentifiers, POVDirection, RawLocalJoystickDevice, XboxControllerButtons, \
+    XboxControllerAxis
 from kevinbotlib.logger import Logger
 
 
@@ -79,6 +81,28 @@ class ButtonGridWidget(QGroupBox):
             col = i // 8
             self.root_layout.addWidget(self.button_labels[i], row, col)
 
+class XboxDefaultButtonMapWidget(QGroupBox):
+    def __init__(self):
+        super().__init__("Xbox Button Reference")
+
+        self.root_layout = QVBoxLayout()
+        self.setLayout(self.root_layout)
+
+        for value in XboxControllerButtons:
+            label = QLabel(f"{XboxControllerButtons(value).name.title()} -> {value}")
+            self.root_layout.addWidget(label)
+
+class XboxDefaultAxisMapWidget(QGroupBox):
+    def __init__(self):
+        super().__init__("Xbox Axis Reference")
+
+        self.root_layout = QVBoxLayout()
+        self.setLayout(self.root_layout)
+
+        for value in XboxControllerAxis:
+            label = QLabel(f"{XboxControllerAxis(value).name.title()} -> {value}")
+            self.root_layout.addWidget(label)
+
 
 class POVGridWidget(QGroupBox):
     def __init__(self):
@@ -128,6 +152,23 @@ class POVGridWidget(QGroupBox):
             self.style().polish(label)
 
 
+class MapEditor(QGroupBox):
+    def __init__(self):
+        super().__init__("Map Editor")
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+
+        self.root_layout = QVBoxLayout()
+        self.setLayout(self.root_layout)
+
+        self.guid = QLabel("GUID: Unknown")
+        self.root_layout.addWidget(self.guid)
+
+        self.list = QWidgetList()
+        self.root_layout.addWidget(self.list)
+
+    def update_guid(self, guid: str):
+        self.guid.setText(f"GUID: {guid}")
+
 class JoystickStateWidget(QWidget):
     def __init__(self, joystick: RawLocalJoystickDevice | None = None):
         super().__init__()
@@ -168,6 +209,15 @@ class JoystickStateWidget(QWidget):
         self.pov_grid = POVGridWidget()
         layout.addWidget(self.pov_grid)
 
+        self.map_editor = MapEditor()
+        layout.addWidget(self.map_editor, 2)
+
+        xbox_button_reference = XboxDefaultButtonMapWidget()
+        layout.addWidget(xbox_button_reference)
+
+        xbox_axis_reference = XboxDefaultAxisMapWidget()
+        layout.addWidget(xbox_axis_reference)
+
     def set_joystick(self, joystick: RawLocalJoystickDevice | None):
         self.joystick = joystick
         self.update_state()
@@ -181,6 +231,9 @@ class JoystickStateWidget(QWidget):
             return
 
         if self.joystick.is_connected():
+            # Map Editor
+            self.map_editor.update_guid(''.join(f'{b:02x}' for b in self.joystick.guid))
+
             # Buttons
             button_count = self.joystick.get_button_count()
             self.button_grid.set_button_count(button_count)
@@ -252,7 +305,6 @@ class ControlConsoleControllersTab(QWidget):
         details_layout = QHBoxLayout(self.details_widget)
         self.state_widget = JoystickStateWidget()
         details_layout.addWidget(self.state_widget)
-        details_layout.addStretch()
 
         # Add widgets to QStackedWidget
         self.content_stack.addWidget(self.no_controller_widget)  # index 0
