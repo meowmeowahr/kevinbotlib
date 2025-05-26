@@ -259,8 +259,11 @@ class BaseRobot:
                 "Non-Linux OSes are not fully supported. Features such as signal shutdown may be broken"
             )
 
-        signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
-        signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
+        if platform.system() != "Windows":
+            signal.signal(signal.SIGUSR1, self._signal_usr1_capture)
+            signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
+        else:
+            self.telemetry.warning("Signal shutdown not supported on this platform")
         self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
 
         self.comm_client.add_hook(

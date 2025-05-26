@@ -29,8 +29,8 @@ from PySide6.QtWidgets import (
     QApplication,
     QLabel,
     QMainWindow,
-    QTabWidget,
     QMessageBox,
+    QTabWidget,
 )
 
 import kevinbotlib.apps.control_console.resources_rc
@@ -48,8 +48,9 @@ from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 try:
-    from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
     from kevinbotlib.apps.control_console.pages.controllers import ControlConsoleControllersTab
+    from kevinbotlib.joystick import DynamicJoystickSender, NullJoystick
+
     SDL2_OK = True
 except (RuntimeError, ImportError):
     # sdl2 is not installed

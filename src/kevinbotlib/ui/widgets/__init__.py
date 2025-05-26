@@ -7,6 +7,7 @@ from kevinbotlib.ui.widgets.battery import Battery, BatteryGrapher, BatteryManag
 
 class LicenseDialog(QDialog):
     """Qt Dialog for viewing KevinbotLib's internal licenses."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Licenses")

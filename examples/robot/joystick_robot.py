@@ -1,10 +1,12 @@
-from kevinbotlib.joystick import RemoteXboxController
+from kevinbotlib.joystick import RawLocalJoystickDevice
 from kevinbotlib.logger import Level
 from kevinbotlib.robot import BaseRobot
 
 
 class DemoRobot(BaseRobot):
     def __init__(self):
+        self.joystick1 = RawLocalJoystickDevice(0)
+        self.joystick1.start_polling()
         super().__init__(
             opmodes=[
                 "TestOp1",
@@ -13,8 +15,6 @@ class DemoRobot(BaseRobot):
             cycle_time=20,  # loop our robot code 20x per second - it is recommended to run much higher in practice
             metrics_publish_timer=0,  # the test robot doesn't use metrics - see the metrics_robot.py example for a metrics usage example
         )
-
-        self.joystick1 = RemoteXboxController(self.comm_client, "%ControlConsole/joystick/0")
 
     def robot_start(self) -> None:  # runs once as the robot starts
         super().robot_start()
