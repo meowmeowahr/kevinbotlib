@@ -556,6 +556,7 @@ class Application(ThemableWindow):
 
         self.log_widget = QWidget()
         self.log_widget.setContentsMargins(0, 0, 0, 0)
+        self.log_widget.hide()
         root_layout.addWidget(self.log_widget)
 
         log_layout = QVBoxLayout(self.log_widget)
@@ -583,7 +584,6 @@ class Application(ThemableWindow):
         self.log_close_animation.setStartValue(200)
         self.log_close_animation.setEndValue(0)
         self.log_close_animation.setDuration(100)
-        self.log_close_animation.start()
         self.log_close_animation.finished.connect(self.log_widget.hide)
 
         self.latency_thread = QThread(self)
