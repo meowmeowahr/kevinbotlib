@@ -296,6 +296,7 @@ class TopicStatusPanel(QStackedWidget):
         self.raw_text.setFont(QFont("monospace", 10))
         self.raw_syntax = superqt.utils.CodeSyntaxHighlight(self.raw_text, "json", "monokai")
         self.raw_text.setReadOnly(True)
+        self.raw_text.setWordWrapMode(QTextOption.WrapMode.NoWrap)
         self.raw_text.setPlaceholderText("Raw data will appear here")
         raw_view_layout.addWidget(self.raw_text)
 
@@ -328,7 +329,11 @@ class TopicStatusPanel(QStackedWidget):
         raw_content = json.dumps(raw, indent=2) if raw else "No raw data available"
         if self.tab_widget.currentIndex() == 1:
             if raw_content != self.raw_text.document().toPlainText():
+                vscroll = self.raw_text.verticalScrollBar().value()
+                hscroll = self.raw_text.horizontalScrollBar().value()
                 self.raw_text.setText(raw_content)
+                self.raw_text.verticalScrollBar().setValue(vscroll)
+                self.raw_text.horizontalScrollBar().setValue(hscroll)
         elif self.raw_text.toPlainText() != "Raw data will appear here":
             self.raw_text.setText("Raw data will appear here")
 
