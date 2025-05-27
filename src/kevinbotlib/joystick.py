@@ -2,12 +2,12 @@ import threading
 import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from pydantic.dataclasses import dataclass
 from enum import Enum, IntEnum
 from typing import Any, final
 
 import sdl2
 import sdl2.ext
+from pydantic.dataclasses import dataclass
 
 from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
 from kevinbotlib.comm import (
@@ -119,10 +119,15 @@ class AbstractJoystickInterface(ABC):
 
         self.polling_hz = 100
         self.connected = False
+        self._controller_map: ControllerMap = DefaultControllerMap
 
     @abstractmethod
     def apply_map(self, controller_map: ControllerMap):
         raise NotImplementedError
+
+    @property
+    def controller_map(self):
+        return self._controller_map
 
     @abstractmethod
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
@@ -431,7 +436,7 @@ class LocalXboxController(RawLocalJoystickDevice):
         ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
-        return max(self.get_axis_value(trigger, precision), 0)
+        return (max(self.get_axis_value(trigger, precision), 0) + 1) / 2
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         return super().get_axis_value(axis_id, precision)
@@ -601,8 +606,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         if not sendable:
             return []
         # Map received button IDs back through the controller map
-        mapped_buttons = [self._controller_map.map_button(btn) for btn in sendable.value]
-        return mapped_buttons
+        return [self._controller_map.map_button(btn) for btn in sendable.value]
 
     def get_axes(self) -> list[float]:
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
@@ -727,7 +731,7 @@ class RemoteXboxController(RemoteRawJoystickDevice):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
         value = super().get_axis_value(trigger, precision)
-        return max(value, 0.0)  # Ensure triggers are 0.0 to 1.0
+        return (max(value, 0.0) + 1) / 2  # Ensure triggers are 0.0 to 1.0
 
     def get_triggers(self, precision: int = 3) -> list[float]:
         """Returns the current values of both triggers."""

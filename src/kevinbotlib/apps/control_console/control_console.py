@@ -193,7 +193,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.control = ControlConsoleControlTab(
             self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key
         )
-        self.controllers_tab = ControlConsoleControllersTab()
+        self.controllers_tab = ControlConsoleControllersTab(self.settings)
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 
         self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
