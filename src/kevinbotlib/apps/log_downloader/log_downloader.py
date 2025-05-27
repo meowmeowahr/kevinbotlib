@@ -178,6 +178,7 @@ class Application(ThemableWindow):
 
         self.connection_form = ConnectionForm()
         self.connection_form.auth_pwd.connect(self.connect_pwd)
+        self.connection_form.auth_key.connect(self.connect_key)
         self.root_widget.insertWidget(0, self.connection_form)
 
         self.connecting = ConnectingPage()
@@ -224,6 +225,24 @@ class Application(ThemableWindow):
 
         # Trigger `run_password()` inside the worker thread
         self.connect_thread.started.connect(lambda: self.connect_worker.start_password.emit(host, port, user, password))
+
+        self.connect_thread.start()
+
+    def connect_key(self, host: str, port: int, user: str, key: paramiko.RSAKey):
+        self.root_widget.setCurrentIndex(1)
+
+        self.connect_thread = QThread()
+        self.connect_worker = ConnectionWorker(self.downloader)
+        self.connect_worker.moveToThread(self.connect_thread)
+
+        self.connect_worker.connected.connect(self.on_connected)
+        self.connect_worker.connected.connect(self.connect_thread.quit)
+        self.connect_worker.error.connect(self.connection_error)
+        self.connect_worker.error.connect(self.connect_thread.quit)
+        self.connect_thread.finished.connect(self.connect_thread.deleteLater)
+
+        # Trigger `run_password()` inside the worker thread
+        self.connect_thread.started.connect(lambda: self.connect_worker.start_key.emit(host, port, user, key))
 
         self.connect_thread.start()
 

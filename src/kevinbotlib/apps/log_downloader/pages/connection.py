@@ -100,7 +100,7 @@ class ConnectionForm(QWidget):
 
     def load_pkey_file(self, _event):
         path, _ = QFileDialog.getOpenFileName(
-            self, "Open Private Key File", "", "Private Key Files (*.pem *.ppk *.pvk *.rsa)"
+            self, "Open Private Key File", "", "Private Key Files (*.pem *.ppk *.pvk *.rsa *.key)"
         )
         if path:
             self.set_key_path(path)
