@@ -73,6 +73,9 @@ class Theme:
                 "fg": "#d0d8d8"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#333333",
+                "fg_disabled": "#606868"
+                if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
+                else "#636363",
                 "fg_highlight": "#ffffff"
                 if self.style == ThemeStyle.Dark or (self.style == ThemeStyle.System and darkdetect.isDark())
                 else "#1a1a1a",

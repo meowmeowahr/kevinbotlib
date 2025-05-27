@@ -31,7 +31,7 @@ class GraphWidgetSettings(QDialog):
     def __init__(self, graph, options: dict | None = None, parent=None):
         super().__init__(parent)
         if not options:
-            options = {"min": 0, "max": 100, "auto_scale": False}
+            options = {"min": 0, "max": 100, "auto_scale": True}
         self.options = options
 
         self.setWindowTitle("Graph Settings")
@@ -46,7 +46,7 @@ class GraphWidgetSettings(QDialog):
         self.form.addRow(Divider("Range"))
 
         self.auto_scale = QCheckBox()
-        self.auto_scale.setChecked(self.options.get("auto_scale", False))
+        self.auto_scale.setChecked(self.options.get("auto_scale", True))
         self.auto_scale.stateChanged.connect(self.set_auto_scale)
         self.form.addRow("Auto Scale Y-Axis", self.auto_scale)
 
@@ -56,6 +56,7 @@ class GraphWidgetSettings(QDialog):
         self.min_value.setDecimals(2)
         self.min_value.setEnabled(not self.options.get("auto_scale", False))
         self.min_value.valueChanged.connect(self.set_min_value)
+        self.min_value.setDisabled(self.options.get("auto_scale", True))
         self.form.addRow("Min Value", self.min_value)
 
         self.max_value = QDoubleSpinBox()
@@ -64,6 +65,7 @@ class GraphWidgetSettings(QDialog):
         self.max_value.setDecimals(2)
         self.max_value.setEnabled(not self.options.get("auto_scale", False))
         self.max_value.valueChanged.connect(self.set_max_value)
+        self.max_value.setDisabled(self.options.get("auto_scale", True))
         self.form.addRow("Max Value", self.max_value)
 
         self.button_layout = QHBoxLayout()
@@ -119,7 +121,7 @@ class GraphWidgetItem(WidgetItem):
         self.graph.mouseReleaseEvent = lambda _: None
         self.graph.setAntialiasing(False)
 
-        if not self.options.get("auto_scale", False):
+        if not self.options.get("auto_scale", True):
             self.graph.setYRange(
                 self.options.get("min", 0),
                 self.options.get("max", 100)
@@ -198,7 +200,7 @@ class GraphWidgetItem(WidgetItem):
                 self.graph.setXRange(min_t, max_t, padding=0.05)
 
             # Update Y-axis range if auto-scaling is enabled
-            if self.options.get("auto_scale", False) and self.data_points:
+            if self.options.get("auto_scale", True) and self.data_points:
                 min_y = min(v for _, v in self.data_points)
                 max_y = max(v for _, v in self.data_points)
                 # Add small padding to avoid clipping
@@ -218,7 +220,7 @@ class GraphWidgetItem(WidgetItem):
     def options_changed(self, options: dict):
         self.options = options
         # Update Y-axis range based on new settings
-        if not self.options.get("auto_scale", False):
+        if not self.options.get("auto_scale", True):
             self.graph.setYRange(
                 self.options.get("min", 0),
                 self.options.get("max", 100),

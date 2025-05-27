@@ -149,12 +149,24 @@ QSpinBox:focus, QDoubleSpinBox:focus {
     border: 1px solid {{primary1}};
 }
 
+QSpinBox::disabled,
+QDoubleSpinBox::disabled {
+    background-color: {{bg4}};
+    color: {{fg_disabled}};
+}
+
+
 QSpinBox::up-button, QSpinBox::down-button,
 QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
     background-color: {{bg3}};
     border: none;
     width: 16px;
     margin-right: 2px;
+}
+
+QSpinBox::up-button:disabled, QSpinBox::down-button:disabled,
+QDoubleSpinBox::up-button:disabled, QDoubleSpinBox::down-button:disabled {
+    background-color: {{bg4}};
 }
 
 QSpinBox::up-button:hover, QSpinBox::down-button:hover,
@@ -191,6 +203,11 @@ QComboBox {
     selection-background-color: {{selection}};
     selection-color: {{fg}};
     min-height: 20px;
+}
+
+QComboBox::disabled {
+    background-color: {{bg4}};
+    color: {{fg_disabled}};
 }
 
 QComboBox:focus {
