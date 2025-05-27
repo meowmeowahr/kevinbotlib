@@ -105,7 +105,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.logger = logger
         if self.logger:
-            self.logger.add_hook_ansi(self.log_hook)
+            self.logger.add_hook_ansi(self.local_log_hook)
 
         self.console_log_queue: Queue[str] = Queue(1000)
 
@@ -137,7 +137,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
             on_disconnect=self.on_disconnect_signal.emit,
         )
 
-        self.logrx = ANSILogReceiver(self.on_log, self.client, self._ctrl_logs_key)
+        self.logrx = ANSILogReceiver(self.remote_on_log, self.client, self._ctrl_logs_key)
 
         self.joystick_senders: list[DynamicJoystickSender] = []
         for i in range(8):
@@ -226,11 +226,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
         controllers = list(self.controllers_tab.ordered_controllers.values())
         return controllers[index] if index < len(controllers) else NullJoystick()
 
-    def log_hook(self, data: str):
-        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(data.strip()))
+    def local_log_hook(self, data: str):
+        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mDS  >>> \x1b[0m" + data.strip()))
 
-    def on_log(self, ansi: str):
-        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert(ansi.strip()))
+    def remote_on_log(self, ansi: str):
+        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mBOT >>> \x1b[0m" + ansi.strip()))
 
     def update_logs(self):
         if not self.control:
