@@ -109,7 +109,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
         self.console_log_queue: Queue[str] = Queue(1000)
 
-        self.settings = QSettings("meowmeowahr", "kevinbotlib.console", self)
+        self.settings = QSettings("kevinbotlib", "console", self)
 
         # create settings keys if missing
         if "network.ip" not in self.settings.allKeys():
