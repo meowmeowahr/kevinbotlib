@@ -56,6 +56,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
 from superqt import QFlowLayout
 
 import kevinbotlib.apps.dashboard.resources_rc
@@ -802,6 +803,8 @@ class Application(ThemableWindow):
                 return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
             case "speedometer":
                 return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            case "graph":
+                return GraphWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
             case "battery":
                 return BatteryWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
 

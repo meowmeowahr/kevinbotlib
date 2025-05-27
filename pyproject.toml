@@ -49,6 +49,7 @@ dependencies = [
   "pyside6-addons>=6.9.0",
   "pyside6>=6.9.0",
   "blake3>=1.0.5",
+  "pyqtgraph>=0.13.7",
 ]
 
 [project.optional-dependencies]
