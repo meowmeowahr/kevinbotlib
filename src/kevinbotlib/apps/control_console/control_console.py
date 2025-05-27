@@ -100,7 +100,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
     def __init__(self, logger: Logger):
         super().__init__()
         self.setWindowTitle(f"KevinbotLib Control Console {__version__}")
-        self.setWindowIcon(QIcon(":/app_icons/icon.svg"))
+        self.setWindowIcon(QIcon(":/app_icons/console.svg"))
         self.setContentsMargins(4, 4, 4, 0)
 
         self.logger = logger

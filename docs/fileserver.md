@@ -7,3 +7,5 @@ The KevinbotLib file server is used internally inside [The Robot Class](robot.md
 
 !!! Note
     The File server is not required to use the [KevinbotLib Log Downloader](apps/logdownloader/index.md), since that uses SFTP/SSH.
+
+![fileserver.png](media/fileserver.png)

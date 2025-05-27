@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['../../resources/kevinbotlib/app_icons/icon.png'],
+    icon=['../../resources/kevinbotlib/app_icons/console.png'],
 )
 coll = COLLECT(
     exe,
@@ -45,5 +45,5 @@ coll = COLLECT(
 )
 app = BUNDLE(coll,
          name='KevinbotLib Control Console.app',
-         icon='../../resources/kevinbotlib/app_icons/icon.png',
+         icon='../../resources/kevinbotlib/app_icons/console.png',
          bundle_identifier=None)

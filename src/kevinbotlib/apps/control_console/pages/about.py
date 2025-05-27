@@ -32,7 +32,7 @@ class ControlConsoleAboutTab(QWidget):
         left_layout.addStretch()
 
         app_icon = QLabel()
-        app_icon.setPixmap(QPixmap(":/app_icons/icon.svg" if theme.is_dark() else ":/app_icons/icon-dark.svg"))
+        app_icon.setPixmap(QPixmap(":/app_icons/console.svg"))
         app_icon.setFixedSize(QSize(128, 128))
         app_icon.setScaledContents(True)
         left_layout.addWidget(app_icon)
