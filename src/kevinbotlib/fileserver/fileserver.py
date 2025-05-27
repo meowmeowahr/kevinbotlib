@@ -1,5 +1,4 @@
 import contextlib
-import logging
 import os
 import threading
 import urllib.parse
@@ -161,7 +160,7 @@ class FileServer:
         self.http_server = None
         self.logger = Logger()
 
-    def http_server(self):
+    def http_server_loop(self):
         """Start the WSGI server."""
         app = FileserverHTTPHandler(self.directory)
         self.http_server = make_server(self.host, self.http_port, app)
@@ -176,7 +175,7 @@ class FileServer:
             msg = f"Directory does not exist: {self.directory}"
             raise ValueError(msg)
 
-        self.http_thread = threading.Thread(target=self.http_server, name=name)
+        self.http_thread = threading.Thread(target=self.http_server_loop, name=name)
         self.http_thread.daemon = True
         self.http_thread.start()
 
