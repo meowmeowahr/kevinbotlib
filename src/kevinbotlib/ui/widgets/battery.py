@@ -136,17 +136,19 @@ class BatteryManager(QWidget):
             wrapper.setLayout(container)
             self.hlayout.addWidget(wrapper)
 
-            self.graph_widgets.append((graph, label))
+            self.graph_widgets.append((wrapper, graph, label))
 
         # Update each BatteryGrapher and QLabel
         for i, batt in enumerate(batts):
-            graph, label = self.graph_widgets[i]
+            _, graph, label = self.graph_widgets[i]
             graph.set_range(batt.y_min, batt.y_max)
             graph.add(batt.voltage)
             label.setText(f"{batt.voltage:.2f} V")
 
         # Hide any extra widgets if fewer batteries are passed
-        for i in range(len(batts), len(self.graph_widgets)):
-            graph, label = self.graph_widgets[i]
-            graph.hide()
-            label.hide()
+        for i in reversed(range(len(batts), len(self.graph_widgets))):
+            w, graph, label = self.graph_widgets[i]
+            self.hlayout.removeWidget(w)
+            graph.setParent(None)
+            label.setParent(None)
+            self.graph_widgets.pop(i)
