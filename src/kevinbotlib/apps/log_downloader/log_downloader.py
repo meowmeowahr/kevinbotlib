@@ -1,7 +1,10 @@
 import os
 import socket
 import sys
+import time
+from binascii import hexlify
 from dataclasses import dataclass
+from enum import IntEnum
 
 import paramiko
 import qtawesome as qta
@@ -84,22 +87,62 @@ class SettingsWindow(QDialog):
         self.on_applied.emit()
 
 
+class HostKeyOptionReturn(IntEnum):
+    Unknown = 0
+    Accept = 1
+    Abort = 2
+
+
 class ConnectionWorker(QObject):
     connected = Signal()
     error = Signal(str)
     start_password = Signal(str, int, str, str)
     start_key = Signal(str, int, str, paramiko.RSAKey)
+    ask_host_key = Signal(object, str, str, str)
+    return_host_key = Signal(HostKeyOptionReturn)
 
-    def __init__(self, client: RemoteLogDownloader):
+    class HostKeyPolicy(paramiko.MissingHostKeyPolicy):
+        def __init__(self, parent: "ConnectionWorker"):
+            super().__init__()
+            self.parent = parent
+            self.key_return = HostKeyOptionReturn.Unknown
+
+        def missing_host_key(self, _client, hostname, key):
+            hostname_str = str(hostname)
+            key_name = key.get_name()
+            key_fingerprint = hexlify(key.get_fingerprint()).decode()
+
+            Logger().warning(f"Unknown {key_name} host key for {hostname_str}: {key_fingerprint}")
+
+            self.parent.ask_host_key.emit(self, hostname_str, key_name, key_fingerprint)
+            while self.key_return == HostKeyOptionReturn.Unknown:
+                time.sleep(0.1)
+            match self.key_return:
+                case HostKeyOptionReturn.Abort:
+                    msg = f"Server {hostname!r} not found in known_hosts"
+                    raise paramiko.SSHException(msg)
+                case HostKeyOptionReturn.Accept:
+                    return
+            return
+
+    def __init__(self, client: RemoteLogDownloader, parent):
         super().__init__()
         self.client = client
+        self.window = parent
         self.start_password.connect(self.run_password)
         self.start_key.connect(self.run_key)
+        self.policy = ConnectionWorker.HostKeyPolicy(self)
 
     @Slot(str, int, str, paramiko.RSAKey)
     def run_key(self, host: str, port: int, user: str, key: paramiko.RSAKey):
         try:
-            self.client.connect_with_key(host, user, key, port)
+            self.client.connect_with_key(
+                host,
+                user,
+                key,
+                port,
+                missing_host_key_policy=self.policy,
+            )
         except paramiko.AuthenticationException:
             self.error.emit("Authentication failed")
             return
@@ -108,13 +151,22 @@ class ConnectionWorker(QObject):
             return
         except socket.gaierror as e:
             self.error.emit(f"Could not resolve hostname: {e!r}")
+            return
+        except paramiko.SSHException as e:
+            self.error.emit(f"Connection failed: {e!r}")
             return
         self.connected.emit()
 
     @Slot(str, int, str, str)
     def run_password(self, host: str, port: int, user: str, password: str):
         try:
-            self.client.connect_with_password(host, user, password, port)
+            self.client.connect_with_password(
+                host,
+                user,
+                password,
+                port,
+                missing_host_key_policy=self.policy,
+            )
         except paramiko.AuthenticationException:
             self.error.emit("Authentication failed")
             return
@@ -123,6 +175,9 @@ class ConnectionWorker(QObject):
             return
         except socket.gaierror as e:
             self.error.emit(f"Could not resolve hostname: {e!r}")
+            return
+        except paramiko.SSHException as e:
+            self.error.emit(f"Connection failed: {e!r}")
             return
         self.connected.emit()
 
@@ -210,17 +265,31 @@ class Application(ThemableWindow):
     def show_about(self):
         self.about_window.show()
 
+    def request_host_key_option(self, policy: ConnectionWorker.HostKeyPolicy, hostname_str, _key_name, key_fingerprint):
+        msg = QMessageBox.question(
+            self,
+            "Host Keys",
+            f"Do you want to accept or deny the host key from {hostname_str}?\n{key_fingerprint}",
+            QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Abort,
+        )
+        match msg:
+            case QMessageBox.StandardButton.Open:
+                policy.key_return = HostKeyOptionReturn.Accept
+            case QMessageBox.StandardButton.Abort:
+                policy.key_return = HostKeyOptionReturn.Abort
+
     def connect_pwd(self, host: str, port: int, user: str, password: str):
         self.root_widget.setCurrentIndex(1)
 
         self.connect_thread = QThread()
-        self.connect_worker = ConnectionWorker(self.downloader)
+        self.connect_worker = ConnectionWorker(self.downloader, self)
         self.connect_worker.moveToThread(self.connect_thread)
 
         self.connect_worker.connected.connect(self.on_connected)
         self.connect_worker.connected.connect(self.connect_thread.quit)
         self.connect_worker.error.connect(self.connection_error)
         self.connect_worker.error.connect(self.connect_thread.quit)
+        self.connect_worker.ask_host_key.connect(self.request_host_key_option)
         self.connect_thread.finished.connect(self.connect_thread.deleteLater)
 
         # Trigger `run_password()` inside the worker thread
@@ -232,13 +301,14 @@ class Application(ThemableWindow):
         self.root_widget.setCurrentIndex(1)
 
         self.connect_thread = QThread()
-        self.connect_worker = ConnectionWorker(self.downloader)
+        self.connect_worker = ConnectionWorker(self.downloader, self)
         self.connect_worker.moveToThread(self.connect_thread)
 
         self.connect_worker.connected.connect(self.on_connected)
         self.connect_worker.connected.connect(self.connect_thread.quit)
         self.connect_worker.error.connect(self.connection_error)
         self.connect_worker.error.connect(self.connect_thread.quit)
+        self.connect_worker.ask_host_key.connect(self.request_host_key_option)
         self.connect_thread.finished.connect(self.connect_thread.deleteLater)
 
         # Trigger `run_password()` inside the worker thread
