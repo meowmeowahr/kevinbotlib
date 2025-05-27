@@ -34,7 +34,6 @@ dependencies = [
   "pybase64~=1.4.1",
   "pysdl2~=0.9.17",
   "opencv-python~=4.11.0",
-  "pyftpdlib~=2.0.1",
   "jinja2~=3.1.6",
   "psutil>=7.0.0",
   "pyside6-essentials>=6.8.0.2",

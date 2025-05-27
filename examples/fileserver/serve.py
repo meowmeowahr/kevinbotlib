@@ -7,7 +7,6 @@ logger = Logger()
 logger.configure(LoggerConfiguration())
 
 server = FileServer(
-    ftp_port=2121,  # ftp
     http_port=8000,  # http
     directory="./",  # serve directory
 )

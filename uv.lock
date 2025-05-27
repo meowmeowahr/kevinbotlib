@@ -508,7 +508,6 @@ dependencies = [
     { name = "psutil" },
     { name = "pybase64" },
     { name = "pydantic" },
-    { name = "pyftpdlib" },
     { name = "pysdl2" },
     { name = "pyserial" },
     { name = "pyside6" },
@@ -552,7 +551,6 @@ requires-dist = [
     { name = "psutil", specifier = ">=7.0.0" },
     { name = "pybase64", specifier = "~=1.4.1" },
     { name = "pydantic", specifier = "~=2.11.4" },
-    { name = "pyftpdlib", specifier = "~=2.0.1" },
     { name = "pyinstaller", marker = "extra == 'dev'" },
     { name = "pysdl2", specifier = "~=0.9.17" },
     { name = "pyserial", specifier = "~=3.5" },
@@ -1103,27 +1101,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyasynchat"
-version = "1.0.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyasyncore", marker = "python_full_version >= '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/fd/aacc6309abcc5a388c66915829cd8175daccac583828fde40a1eea5768e4/pyasynchat-1.0.4.tar.gz", hash = "sha256:3f5333df649e46c56d48c57e6a4b7163fd07f626bfd884e22ef373ab3c3a4670", size = 9747 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c2/4f/b4a7aa2a35858d40f970bdb63ab3e9deda35d0d2116b9175f929f37d764d/pyasynchat-1.0.4-py3-none-any.whl", hash = "sha256:167feb25d635a01b61338e17e9ab1e3372cd9274005af4083dcda52d51f64a76", size = 7753 },
-]
-
-[[package]]
-name = "pyasyncore"
-version = "1.0.4"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/25/6e/956e2bc9b47e3310cd524036f506b779a77788c2a1eb732e544240ad346f/pyasyncore-1.0.4.tar.gz", hash = "sha256:2c7a8b9b750ba6260f1e5a061456d61320a80579c6a43d42183417da89c7d5d6", size = 15339 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/46/aaa0999302d7a584a033ec23b6ca21a452cf9c7f6d8dce8d174ac407eb3f/pyasyncore-1.0.4-py3-none-any.whl", hash = "sha256:9e5f6dc9dc057c56370b7a5cdb4c4670fd4b0556de2913ed1f428cd6a5366895", size = 10032 },
-]
-
-[[package]]
 name = "pybase64"
 version = "1.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1338,16 +1315,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/b2/5309c905a93811524a49b4e031e9851a6b00ff0fb668794472ea7746b448/pydantic_core-2.33.2-pp311-pypy311_pp73-musllinux_1_1_x86_64.whl", hash = "sha256:82f68293f055f51b51ea42fafc74b6aad03e70e191799430b90c13d643059ebb", size = 2238715 },
     { url = "https://files.pythonhosted.org/packages/32/56/8a7ca5d2cd2cda1d245d34b1c9a942920a718082ae8e54e5f3e5a58b7add/pydantic_core-2.33.2-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:329467cecfb529c925cf2bbd4d60d2c509bc2fb52a20c1045bf09bb70971a9c1", size = 2066757 },
 ]
-
-[[package]]
-name = "pyftpdlib"
-version = "2.0.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyasynchat", marker = "python_full_version >= '3.12'" },
-    { name = "pyasyncore", marker = "python_full_version >= '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/0c/32bf0a7c88efe147bc3bc6586216d92269d196c59f149b05efa973834946/pyftpdlib-2.0.1.tar.gz", hash = "sha256:ef0d172a82bfae10e2dec222e87533514609d41bf4b0fd0f07e29d4380fb96bf", size = 202285 }
 
 [[package]]
 name = "pygments"

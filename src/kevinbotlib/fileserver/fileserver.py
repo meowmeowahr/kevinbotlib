@@ -7,9 +7,6 @@ from importlib import resources
 from wsgiref.simple_server import make_server
 
 import jinja2
-from pyftpdlib.authorizers import DummyAuthorizer
-from pyftpdlib.handlers import FTPHandler
-from pyftpdlib.servers import FTPServer
 
 from kevinbotlib import __about__
 from kevinbotlib.logger import Level, Logger, StreamRedirector
@@ -155,46 +152,16 @@ class FileServer:
     def __init__(
         self,
         directory=".",
-        ftp_port=2121,
         http_port=8000,
         host="0.0.0.0",  # TODO: do we need to fix this # noqa: S104
-        *,
-        enable_ftp_server: bool = False,
     ):
         self.directory = os.path.abspath(directory)
-        self.ftp_port = ftp_port
-        self._ftp_enabled = enable_ftp_server
         self.http_port = http_port
         self.host = host
-        self.ftp_thread = None
         self.http_server = None
         self.logger = Logger()
 
-    def start_ftp_server(self):
-        """Start the FTP server in a separate thread."""
-        ftp_logger = logging.getLogger("pyftpdlib")
-        ftp_logger.addHandler(logging.StreamHandler())
-        ftp_logger.setLevel(Level.DEBUG.value.no)
-
-        def logging_redirect(record):
-            log_level = next(key for key, val in logging.getLevelNamesMapping().items() if val == record.levelno)
-            logger_opt = self.logger.loguru_logger.opt(depth=6, exception=record.exc_info)
-            logger_opt.log(log_level, record.getMessage())
-            return False
-
-        ftp_logger.addFilter(logging_redirect)
-
-        authorizer = DummyAuthorizer()
-        authorizer.add_anonymous(self.directory, perm="elradfmwMT")
-        handler = FTPHandler
-        handler.authorizer = authorizer
-        handler.banner = "Welcome to KevinbotLib FTP Server"
-        self.ftpserver = FTPServer((self.host, self.ftp_port), handler)
-
-        self.logger.info(f"FTP server starting on {self.host}:{self.ftp_port}")
-        self.ftpserver.serve_forever()
-
-    def start_http_server(self):
+    def http_server(self):
         """Start the WSGI server."""
         app = FileserverHTTPHandler(self.directory)
         self.http_server = make_server(self.host, self.http_port, app)
@@ -204,26 +171,16 @@ class FileServer:
             self.http_server.serve_forever()
 
     def start(self, name: str = "KevinbotLib.FileServer.Serve"):
-        """Start both FTP and HTTP servers."""
+        """Start HTTP servers"""
         if not os.path.exists(self.directory):
             msg = f"Directory does not exist: {self.directory}"
             raise ValueError(msg)
 
-        if self._ftp_enabled:
-            self.ftp_thread = threading.Thread(target=self.start_ftp_server)
-            self.ftp_thread.daemon = True
-            self.ftp_thread.start()
-            self.logger.security(
-                "FTP server enabled. This is a security vulnerability and will be removed in a future version."
-            )
-
-        self.http_thread = threading.Thread(target=self.start_http_server, name=name)
+        self.http_thread = threading.Thread(target=self.http_server, name=name)
         self.http_thread.daemon = True
         self.http_thread.start()
 
     def stop(self):
         """Stop the servers."""
-        if self._ftp_enabled and hasattr(self, "ftpserver"):
-            self.ftpserver.close()
         if self.http_server:
             self.http_server.shutdown()

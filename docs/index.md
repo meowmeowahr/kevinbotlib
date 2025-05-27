@@ -21,16 +21,16 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 ### The Command Scheduler
 
 * A way to asynchronously run robot tasks
-* Commands can be grouped to run sequentially, or in parallel if desired
+* Commands can be grouped to run sequentially or in parallel if desired
 * Commands can be executed at a set interval
 
 ### The Communication System
 
 * Uses [Redis](https://redis.io/open-source/) for set/get and pub/sub communication
-* Data can be easily sent from robot to client or vice-versa
+* Data can be easily sent from robot to client or vice versa
 * Data is synchronized between all clients
 * Out-of-the-box ready-made sendables for builtin primitive types
-* Easy to create custom sendables based on [pydantic](https://github.com/pydantic/pydantic) models
+* Create custom sendables based on [pydantic](https://github.com/pydantic/pydantic) models
 
 ### The Vision Pipeline System
 
@@ -42,7 +42,7 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 
 * Logging is based on [loguru](https://github.com/Delgan/loguru)
 * Automatic file rotations
-* Logs to `stdout`, an inbuilt file server over HTTP, and/or an ~~inbuilt FTP server~~ (deprecated)
+* Logs to `stdout`, an inbuilt file server over HTTP, and/or files.
 
 ### Gamepad Inputs
 
@@ -59,5 +59,5 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 * Change robot state and OpModes
 * Monitor robot system metrics
 
-!!! warning "Development"
+!!! Warning "Development"
     This project is in the early stage of development. There are many missing functions that will be supported in the future.
