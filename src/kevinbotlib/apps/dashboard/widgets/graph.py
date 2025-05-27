@@ -1,9 +1,11 @@
 import time
-from typing import TYPE_CHECKING
+from enum import Enum
+from typing import TYPE_CHECKING, Any
 from datetime import datetime
 
+import superqt
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QColor
 from PySide6.QtWidgets import (
     QDialog,
     QDoubleSpinBox,
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QCheckBox,
+    QSpinBox,
 )
 import pyqtgraph as pg
 
@@ -24,15 +27,23 @@ from kevinbotlib.comm import RedisCommClient
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
 
+class GraphColors(Enum):
+    Red = "#b44646"
+    Green = "#46b482"
+    Blue = "#4682b4"
+    White = "#e4e4e4"
+    Black = "060606"
+    Yellow = "#e4e446"
+    Magenta = "#b446b4"
 
 class GraphWidgetSettings(QDialog):
     options_changed = Signal(dict)
 
-    def __init__(self, graph, options: dict | None = None, parent=None):
+    def __init__(self, graph, options: dict[str, Any] | None = None, parent=None):
         super().__init__(parent)
         if not options:
             options = {"min": 0, "max": 100, "auto_scale": True}
-        self.options = options
+        self.options: dict[str, Any] = options
 
         self.setWindowTitle("Graph Settings")
         self.setModal(True)
@@ -68,6 +79,18 @@ class GraphWidgetSettings(QDialog):
         self.max_value.setDisabled(self.options.get("auto_scale", True))
         self.form.addRow("Max Value", self.max_value)
 
+        self.form.addRow(Divider("Visuals"))
+
+        self.color = superqt.QEnumComboBox()
+        self.color.setEnumClass(GraphColors)
+        self.color.setCurrentEnum(GraphColors(self.options.get("color", "#4682b4")))
+        self.color.currentEnumChanged.connect(self.set_color)
+        self.form.addRow("Line Color", self.color)
+
+        self.width = QSpinBox(minimum=1, maximum=6, value=self.options.get("width", 2))
+        self.width.valueChanged.connect(self.set_width)
+        self.form.addRow("Line Width", self.width)
+
         self.button_layout = QHBoxLayout()
         self.button_layout.addStretch()
         self.root_layout.addLayout(self.button_layout)
@@ -79,6 +102,12 @@ class GraphWidgetSettings(QDialog):
         self.exit_button = QPushButton("Exit")
         self.exit_button.clicked.connect(self.close)
         self.button_layout.addWidget(self.exit_button)
+
+    def set_color(self, color: GraphColors):
+        self.options["color"] = color.value
+
+    def set_width(self, width: int):
+        self.options["width"] = width
 
     def set_auto_scale(self, state: int):
         self.options["auto_scale"] = bool(state)
@@ -128,7 +157,7 @@ class GraphWidgetItem(WidgetItem):
             )
 
         self.plot: pg.PlotDataItem = self.graph.plot(
-            pen=pg.mkPen(color=grid.theme.value.primary, width=2)
+            pen=pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
         )
 
         # Create settings dialog
@@ -232,6 +261,7 @@ class GraphWidgetItem(WidgetItem):
             max_y = max(v for _, v in self.data_points)
             padding = (max_y - min_y) * 0.05 if max_y != min_y else 1
             self.graph.setYRange(min_y - padding, max_y + padding, padding=0)
+        self.plot.setPen(pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)))
 
     def close(self):
         pass
