@@ -5,15 +5,19 @@
 
 The KevinbotLib command-line tools are automatically installed using [`pip`](../installation.md#install-with-pip).
 
-## `console`
+## `apps` (Group)
+
+The apps group contains all KevinbotLib graphical utilities.
+
+### `apps console`
 
 [KevinbotLib Control Console](../apps/console/index.md) can be launched with the below command:
 
 ```console
-kevinbotlib console
+kevinbotlib apps console
 ```
 
-### Options
+#### Options
 
 <div class="grid cards" markdown>
 
@@ -38,12 +42,93 @@ kevinbotlib console
 
 </div>
 
-## `dashboard`
+### `apps dashboard`
 
 [KevinbotLib Dashboard](../apps/dashboard/index.md) can be launched with the below command:
 
 ```console
-kevinbotlib dashboard
+kevinbotlib apps dashboard
+```
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-text:{ .lg .middle } __Verbose Logging__
+
+    ---
+
+    `-v` *or* `--verbose`: Enables verbose-level logging
+
+
+- :material-text:{ .lg .middle } __Trace Logging__
+
+    ---
+
+    `-t` *or* `--trace`: Enables trace-level logging
+
+</div>
+
+### `apps logdownloader`
+
+[KevinbotLib Log Downloader](../apps/logdownloader/index.md) can be launched with the below command:
+
+```console
+kevinbotlib apps logdownloader
+```
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-text:{ .lg .middle } __Verbose Logging__
+
+    ---
+
+    `-v` *or* `--verbose`: Enables verbose-level logging
+
+
+- :material-text:{ .lg .middle } __Trace Logging__
+
+    ---
+
+    `-t` *or* `--trace`: Enables trace-level logging
+
+</div>
+
+### `apps logviewer`
+
+[KevinbotLib Log Viewer](../apps/logviewer/index.md) can be launched with the below command:
+
+```console
+kevinbotlib apps logviewer
+```
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-text:{ .lg .middle } __Verbose Logging__
+
+    ---
+
+    `-v` *or* `--verbose`: Enables verbose-level logging
+
+
+- :material-text:{ .lg .middle } __Trace Logging__
+
+    ---
+
+    `-t` *or* `--trace`: Enables trace-level logging
+
+</div>
+
+## `fileserver`
+
+The [KevinbotLib File Server](../fileserver.md) can be launched using the following command:
+
+```console
+kevinbotlib fileserver
 ```
 
 ### Options
@@ -62,5 +147,23 @@ kevinbotlib dashboard
     ---
 
     `-t` *or* `--trace`: Enables trace-level logging
+
+- :material-folder:{ .lg .middle } __Directory__
+
+    ---
+
+    `-d` *or* `--dir`: Sets the directory for the file server. Defaults to the current working directory.
+
+- :material-upload-network:{ .lg .middle } __Server Port__
+
+    ---
+
+    `-d` *or* `--dir`: Sets the port to serve on. Defaults to `8000`.
+
+- :material-ip-network:{ .lg .middle } __Server Host__
+
+    ---
+
+    `-d` *or* `--dir`: Sets the host to serve on. Defaults to `localhost`.
 
 </div>

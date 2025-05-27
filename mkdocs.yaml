@@ -122,6 +122,7 @@ nav:
     - cli/index.md
   - commandscheduler.md
   - robot.md
+  - fileserver.md
   - KevinbotLib Reference:
     - reference/index.md
     - reference/logging.md
