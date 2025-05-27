@@ -1,7 +1,16 @@
+import blake3
+
+
 def get_structure_text(value: dict | None):
     if not value:
         return ""
     out = ""
+    if "did" in value and value["did"] in [
+        "kevinbotlib.vision.dtype.mjpeg",
+        "kevinbotlib.vision.dtype.frame",
+        "kevinbotlib.dtype.bin",
+    ]:
+        return f"BLAKE3 Hash of Value: {blake3.blake3(value['value'].encode()).hexdigest()}"
     if "struct" in value and "dashboard" in value["struct"]:
         for viewable in value["struct"]["dashboard"]:
             display = ""

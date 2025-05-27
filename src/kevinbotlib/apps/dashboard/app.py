@@ -64,6 +64,7 @@ from kevinbotlib.apps.common.abc import ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Notifier, Severity
+from kevinbotlib.apps.common.widgets import WrapAnywhereLabel
 from kevinbotlib.apps.dashboard.card_types import determine_widget_types
 from kevinbotlib.apps.dashboard.grid import (
     GridGraphicsView,
@@ -271,9 +272,10 @@ class TopicStatusPanel(QStackedWidget):
         self.data_known = QLabel("Data Compatible: Unknown")
         data_view_layout.addWidget(self.data_known)
 
-        self.value = QLabel("Value: Dashboard Error")
+        self.value = WrapAnywhereLabel("Value: Dashboard Error")
         self.value.setWordWrap(True)
-        self.value.setMaximumWidth(1024)
+        self.value.setMinimumWidth(100)
+        self.value.setFont(QFont("monospace", self.font().pointSize()))
         data_view_layout.addWidget(self.value)
 
         data_view_layout.addStretch()
