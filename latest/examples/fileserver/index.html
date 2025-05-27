@@ -1364,6 +1364,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The File Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -1388,7 +1409,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           
@@ -1405,14 +1426,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             KevinbotLib Reference
           </label>
@@ -1617,8 +1638,7 @@
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.fileserver</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileServer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
@@ -1627,7 +1647,6 @@
 <span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
 
 <span class="n">server</span> <span class="o">=</span> <span class="n">FileServer</span><span class="p">(</span>
-    <span class="n">ftp_port</span><span class="o">=</span><span class="mi">2121</span><span class="p">,</span>  <span class="c1"># ftp</span>
     <span class="n">http_port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>  <span class="c1"># http</span>
     <span class="n">directory</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span>  <span class="c1"># serve directory</span>
 <span class="p">)</span>

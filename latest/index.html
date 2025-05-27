@@ -1420,6 +1420,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The File Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -1444,7 +1465,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           
@@ -1461,14 +1482,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             KevinbotLib Reference
           </label>
@@ -1729,16 +1750,16 @@
 <h3 id="the-command-scheduler">The Command Scheduler</h3>
 <ul>
 <li>A way to asynchronously run robot tasks</li>
-<li>Commands can be grouped to run sequentially, or in parallel if desired</li>
+<li>Commands can be grouped to run sequentially or in parallel if desired</li>
 <li>Commands can be executed at a set interval</li>
 </ul>
 <h3 id="the-communication-system">The Communication System</h3>
 <ul>
 <li>Uses <a href="https://redis.io/open-source/">Redis</a> for set/get and pub/sub communication</li>
-<li>Data can be easily sent from robot to client or vice-versa</li>
+<li>Data can be easily sent from robot to client or vice versa</li>
 <li>Data is synchronized between all clients</li>
 <li>Out-of-the-box ready-made sendables for builtin primitive types</li>
-<li>Easy to create custom sendables based on <a href="https://github.com/pydantic/pydantic">pydantic</a> models</li>
+<li>Create custom sendables based on <a href="https://github.com/pydantic/pydantic">pydantic</a> models</li>
 </ul>
 <h3 id="the-vision-pipeline-system">The Vision Pipeline System</h3>
 <ul>
@@ -1750,7 +1771,7 @@
 <ul>
 <li>Logging is based on <a href="https://github.com/Delgan/loguru">loguru</a></li>
 <li>Automatic file rotations</li>
-<li>Logs to <code>stdout</code>, an inbuilt file server over HTTP, and/or an <del>inbuilt FTP server</del> (deprecated)</li>
+<li>Logs to <code>stdout</code>, an inbuilt file server over HTTP, and/or files.</li>
 </ul>
 <h3 id="gamepad-inputs">Gamepad Inputs</h3>
 <ul>

@@ -1314,6 +1314,27 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The File Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -1338,7 +1359,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           
@@ -1355,14 +1376,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             KevinbotLib Reference
           </label>
@@ -1514,13 +1535,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#console" class="md-nav__link">
+  <a href="#apps-group" class="md-nav__link">
     <span class="md-ellipsis">
-      console
+      apps (Group)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="console">
+    <nav class="md-nav" aria-label="apps (Group)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#apps-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      apps console
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="apps console">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1536,19 +1567,96 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#dashboard" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#apps-dashboard" class="md-nav__link">
     <span class="md-ellipsis">
-      dashboard
+      apps dashboard
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="dashboard">
+    <nav class="md-nav" aria-label="apps dashboard">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#options_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apps-logdownloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      apps logdownloader
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="apps logdownloader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apps-logviewer" class="md-nav__link">
+    <span class="md-ellipsis">
+      apps logviewer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="apps logviewer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fileserver" class="md-nav__link">
+    <span class="md-ellipsis">
+      fileserver
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fileserver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options_4" class="md-nav__link">
     <span class="md-ellipsis">
       Options
     </span>
@@ -1589,11 +1697,13 @@
 <p><img alt="Banner Logo" src="../media/cli-banner-dark.svg#only-dark" />
 <img alt="Banner Logo" src="../media/cli-banner-light.svg#only-light" /></p>
 <p>The KevinbotLib command-line tools are automatically installed using <a href="../installation/#install-with-pip"><code>pip</code></a>.</p>
-<h2 id="console"><code>console</code></h2>
+<h2 id="apps-group"><code>apps</code> (Group)</h2>
+<p>The apps group contains all KevinbotLib graphical utilities.</p>
+<h3 id="apps-console"><code>apps console</code></h3>
 <p><a href="../apps/console/">KevinbotLib Control Console</a> can be launched with the below command:</p>
-<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib console</span>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib apps console</span>
 </code></pre></div>
-<h3 id="options">Options</h3>
+<h4 id="options">Options</h4>
 <div class="grid cards">
 <ul>
 <li>
@@ -1613,11 +1723,11 @@
 </li>
 </ul>
 </div>
-<h2 id="dashboard"><code>dashboard</code></h2>
+<h3 id="apps-dashboard"><code>apps dashboard</code></h3>
 <p><a href="../apps/dashboard/">KevinbotLib Dashboard</a> can be launched with the below command:</p>
-<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib dashboard</span>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib apps dashboard</span>
 </code></pre></div>
-<h3 id="options_1">Options</h3>
+<h4 id="options_1">Options</h4>
 <div class="grid cards">
 <ul>
 <li>
@@ -1629,6 +1739,78 @@
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Trace Logging</strong></p>
 <hr />
 <p><code>-t</code> <em>or</em> <code>--trace</code>: Enables trace-level logging</p>
+</li>
+</ul>
+</div>
+<h3 id="apps-logdownloader"><code>apps logdownloader</code></h3>
+<p><a href="../apps/logdownloader/">KevinbotLib Log Downloader</a> can be launched with the below command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib apps logdownloader</span>
+</code></pre></div>
+<h4 id="options_2">Options</h4>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Verbose Logging</strong></p>
+<hr />
+<p><code>-v</code> <em>or</em> <code>--verbose</code>: Enables verbose-level logging</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Trace Logging</strong></p>
+<hr />
+<p><code>-t</code> <em>or</em> <code>--trace</code>: Enables trace-level logging</p>
+</li>
+</ul>
+</div>
+<h3 id="apps-logviewer"><code>apps logviewer</code></h3>
+<p><a href="../apps/logviewer/">KevinbotLib Log Viewer</a> can be launched with the below command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib apps logviewer</span>
+</code></pre></div>
+<h4 id="options_3">Options</h4>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Verbose Logging</strong></p>
+<hr />
+<p><code>-v</code> <em>or</em> <code>--verbose</code>: Enables verbose-level logging</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Trace Logging</strong></p>
+<hr />
+<p><code>-t</code> <em>or</em> <code>--trace</code>: Enables trace-level logging</p>
+</li>
+</ul>
+</div>
+<h2 id="fileserver"><code>fileserver</code></h2>
+<p>The <a href="../fileserver/">KevinbotLib File Server</a> can be launched using the following command:</p>
+<div class="highlight"><pre><span></span><code><span class="go">kevinbotlib fileserver</span>
+</code></pre></div>
+<h3 id="options_4">Options</h3>
+<div class="grid cards">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Verbose Logging</strong></p>
+<hr />
+<p><code>-v</code> <em>or</em> <code>--verbose</code>: Enables verbose-level logging</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 6v2H3V6zM3 18h9v-2H3zm0-5h18v-2H3z"/></svg></span> <strong>Trace Logging</strong></p>
+<hr />
+<p><code>-t</code> <em>or</em> <code>--trace</code>: Enables trace-level logging</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8z"/></svg></span> <strong>Directory</strong></p>
+<hr />
+<p><code>-d</code> <em>or</em> <code>--dir</code>: Sets the directory for the file server. Defaults to the current working directory.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-5 2.5L7.5 10H11v4h2v-4h3.5z"/></svg></span> <strong>Server Port</strong></p>
+<hr />
+<p><code>-d</code> <em>or</em> <code>--dir</code>: Sets the port to serve on. Defaults to <code>8000</code>.</p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 9h-2V7h2zm7 11v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v2h1a1 1 0 0 1 1 1zM9 5H7v10h2zm2 10h2v-4h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4z"/></svg></span> <strong>Server Host</strong></p>
+<hr />
+<p><code>-d</code> <em>or</em> <code>--dir</code>: Sets the host to serve on. Defaults to <code>localhost</code>.</p>
 </li>
 </ul>
 </div>
