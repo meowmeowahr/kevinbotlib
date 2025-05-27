@@ -268,6 +268,9 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         """Returns the current POV (D-pad) direction."""
         return self._pov_state
 
+    def rumble(self, low_power: float, high_power: float, duration: float):
+        sdl2.SDL_JoystickRumble(self._sdl_joystick, int(low_power * 65535), int(high_power * 65535), int(duration * 1000))
+
     def register_button_callback(self, button_id: int, callback: Callable[[bool], Any]) -> None:
         """Registers a callback function for button press/release events."""
         self._button_callbacks[button_id] = callback
