@@ -504,6 +504,11 @@ class RedisCommClient:
             if self.on_disconnect:
                 self.on_disconnect()
             return
+
+        # subscribe
+        for sub in self.sub_callbacks.keys():
+            self.pubsub.subscribe(sub)
+
         self._listener_thread = threading.Thread(
             target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
         )
