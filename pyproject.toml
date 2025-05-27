@@ -137,3 +137,12 @@ ignore = ["G004", "TRY400"]
 "tests/*" = ["S101", "PLR2004"]
 "resources_rc.py" = ["N802"]
 "*" = ["FBT001"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "docs/",
+  "mkdocs.yaml",
+  "build/",
+  "scripts/",
+  ".github/"
+]
