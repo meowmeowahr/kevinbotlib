@@ -282,6 +282,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         if self.control.state.get() != AppState.EMERGENCY_STOPPED:
             self.control.state.set(AppState.NO_COMMS)
         self.metrics_tab.text.clear()
+        self.control.battery_manager.set([])
 
     def update_latency(self, latency: float | None):
         if latency:

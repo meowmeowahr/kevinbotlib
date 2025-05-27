@@ -27,7 +27,6 @@ from kevinbotlib.ui.widgets import Battery, BatteryManager
 class AppState(Enum):
     NO_COMMS = "Communication\nDown"
     WAITING = "Communication\nWaiting"
-    CODE_ERROR = "Robot Code\nError"
     ROBOT_DISABLED = "{0}\nDisabled"
     ROBOT_ENABLED = "{0}\nEnabled"
     EMERGENCY_STOPPED = "Emergency\nStopped"
