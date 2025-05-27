@@ -458,6 +458,9 @@ class PollingWorker(QObject):
 
 
 class Application(ThemableWindow):
+    on_disconnect_signal = Signal()
+    on_connect_signal = Signal()
+
     def __init__(self, app: QApplication, logger: Logger):
         super().__init__()
         self.app = app
@@ -478,11 +481,14 @@ class Application(ThemableWindow):
         )
         self.apply_theme()
 
+        self.on_connect_signal.connect(self.on_connect)
+        self.on_disconnect_signal.connect(self.on_disconnect)
+
         self.client = RedisCommClient(
             host=self.settings.value("ip", "10.0.0.2", str),  # type: ignore
             port=self.settings.value("port", 6379, int),  # type: ignore
-            on_disconnect=self.on_disconnect,
-            on_connect=self.on_connect,
+            on_disconnect=self.on_disconnect_signal.emit,
+            on_connect=self.on_connect_signal.emit,
         )
         VisionCommUtils.init_comms_types(self.client)
 
