@@ -263,7 +263,7 @@ class BaseRobot:
         signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
         self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
 
-        self.comm_client.add_hook(
+        self.comm_client.subscribe(
             CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
         )
 
@@ -389,6 +389,7 @@ class BaseRobot:
     @final
     def _on_console_enabled_request(self, _: str, sendable: BooleanSendable | None):
         self._current_enabled = sendable.value if sendable else False
+        print(self._current_enabled)
 
     @final
     def _get_console_opmode_request(self):

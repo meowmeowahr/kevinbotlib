@@ -193,14 +193,14 @@ class ControlConsoleControlTab(QWidget):
             self.state_label_timer.start(100)
             return
 
-        self.client.set(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
+        self.client.publish(CommPath(self.request_key) / "enabled", BooleanSendable(value=True))
 
     def disable_request(self):
         if not self.client.is_connected():
             self.state_label_timer.start(100)
             return
 
-        self.client.set(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
+        self.client.publish(CommPath(self.request_key) / "enabled", BooleanSendable(value=False))
 
     def estop_request(self):
         if not self.client.is_connected():
