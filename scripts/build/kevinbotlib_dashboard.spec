@@ -45,5 +45,5 @@ coll = COLLECT(
 )
 app = BUNDLE(coll,
          name='KevinbotLib Dashboard.app',
-         icon='../../resources/kevinbotlib/app_icons/dashboard-small.png',
+         icon='../../resources/kevinbotlib/app_icons/macos/dashboard/AppIcon.icns',
          bundle_identifier=None)
