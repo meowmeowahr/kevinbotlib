@@ -79,6 +79,12 @@ class GraphWidgetSettings(QDialog):
         self.max_value.setDisabled(self.options.get("auto_scale", True))
         self.form.addRow("Max Value", self.max_value)
 
+        self.form.addRow(Divider("Data"))
+
+        self.width = QSpinBox(minimum=20, maximum=200, value=self.options.get("points", 50))
+        self.width.valueChanged.connect(self.set_points)
+        self.form.addRow("Data Points", self.width)
+
         self.form.addRow(Divider("Visuals"))
 
         self.color = superqt.QEnumComboBox()
@@ -108,6 +114,9 @@ class GraphWidgetSettings(QDialog):
 
     def set_width(self, width: int):
         self.options["width"] = width
+
+    def set_points(self, points: int):
+        self.options["points"] = points
 
     def set_auto_scale(self, state: int):
         self.options["auto_scale"] = bool(state)
@@ -171,7 +180,7 @@ class GraphWidgetItem(WidgetItem):
         # Initialize data storage
         self.current_value = 0.0
         self.data_points = []  # Stores (timestamp, value) tuples
-        self.max_points = 50  # Maximum number of points to display
+        self.max_points = self.options.get("points", 50)  # Maximum number of points to display
 
         self.update_widget_geometry()
 
@@ -214,7 +223,7 @@ class GraphWidgetItem(WidgetItem):
             self.data_points.append((timestamp, new_value))
 
             # Limit the number of points
-            if len(self.data_points) > self.max_points:
+            while len(self.data_points) > self.max_points:
                 self.data_points.pop(0)
 
             # Update plot data
@@ -262,6 +271,7 @@ class GraphWidgetItem(WidgetItem):
             padding = (max_y - min_y) * 0.05 if max_y != min_y else 1
             self.graph.setYRange(min_y - padding, max_y + padding, padding=0)
         self.plot.setPen(pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)))
+        self.max_points = self.options.get("points", 50)
 
     def close(self):
         pass
