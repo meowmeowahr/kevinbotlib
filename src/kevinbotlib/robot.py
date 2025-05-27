@@ -389,7 +389,6 @@ class BaseRobot:
     @final
     def _on_console_enabled_request(self, _: str, sendable: BooleanSendable | None):
         self._current_enabled = sendable.value if sendable else False
-        print(self._current_enabled)
 
     @final
     def _get_console_opmode_request(self):

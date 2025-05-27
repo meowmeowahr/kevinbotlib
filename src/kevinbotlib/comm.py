@@ -491,7 +491,9 @@ class RedisCommClient:
             time.sleep(0.01)
 
     def connect(self) -> None:
-        self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout)
+        self.redis = redis.Redis(
+            host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout
+        )
         self.pubsub = self.redis.pubsub()
         self._start_hooks()
         try:
@@ -508,7 +510,7 @@ class RedisCommClient:
             return
 
         # subscribe
-        for sub in self.sub_callbacks.keys():
+        for sub in self.sub_callbacks:
             self.pubsub.subscribe(sub)
 
         self._listener_thread = threading.Thread(
@@ -583,7 +585,9 @@ class RedisCommClient:
 
             self.close()
 
-            self.redis = redis.Redis(host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout)
+            self.redis = redis.Redis(
+                host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout
+            )
             self.pubsub = self.redis.pubsub()
             for sub in subscriptions.values():
                 if sub is None:
@@ -626,7 +630,6 @@ class RedisCommClient:
         if self.redis:
             self.redis.connection_pool.connection_kwargs["port"] = value
         self.reset_connection()
-
 
     @property
     def timeout(self):

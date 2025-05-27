@@ -5,10 +5,10 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QScrollArea,
     QStackedWidget,
+    QStyle,
+    QStyleOption,
     QVBoxLayout,
     QWidget,
-    QStyleOption,
-    QStyle,
 )
 
 
@@ -91,6 +91,7 @@ class QWidgetList(QScrollArea):
         if text:
             self.loading_label.setText(text)
 
+
 class WrapAnywhereLabel(QLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,13 +100,11 @@ class WrapAnywhereLabel(QLabel):
         self.isTextLabel = True
         self.align = None
 
-    def paintEvent(self, event):
-
+    def paintEvent(self, _event):  # noqa: N802
         opt = QStyleOption()
         opt.initFrom(self)
         painter = QPainter(self)
 
         self.style().drawPrimitive(QStyle.PrimitiveElement.PE_Widget, opt, painter, self)
 
-        self.style().drawItemText(painter, self.rect(),
-                                  self.textalignment, self.palette(), True, self.text())
+        self.style().drawItemText(painter, self.rect(), self.textalignment, self.palette(), True, self.text())

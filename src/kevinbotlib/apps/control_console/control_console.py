@@ -227,10 +227,14 @@ class ControlConsoleApplicationWindow(QMainWindow):
         return controllers[index] if index < len(controllers) else NullJoystick()
 
     def local_log_hook(self, data: str):
-        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mDS  >>> \x1b[0m" + data.strip()))
+        self.console_log_queue.put(
+            ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mDS  >>> \x1b[0m" + data.strip())
+        )
 
     def remote_on_log(self, ansi: str):
-        self.console_log_queue.put(ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mBOT >>> \x1b[0m" + ansi.strip()))
+        self.console_log_queue.put(
+            ansi2html.Ansi2HTMLConverter(scheme="osx").convert("\x1b[1;35mBOT >>> \x1b[0m" + ansi.strip())
+        )
 
     def update_logs(self):
         if not self.control:

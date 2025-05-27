@@ -433,7 +433,7 @@ class ControlConsoleControllersTab(QWidget):
         self.selector.currentItemChanged.connect(self.on_selection_changed)
 
         self.refresh_button = QPushButton("Refresh")
-        self.refresh_button.clicked.connect(lambda: self.update_controller_list(manual=True))
+        self.refresh_button.clicked.connect(self.update_controller_list)
 
         self.selector_layout.addWidget(self.selector)
         self.selector_layout.addWidget(self.refresh_button)
@@ -499,7 +499,7 @@ class ControlConsoleControllersTab(QWidget):
     def ordered_controllers(self) -> dict:
         return {index: self.controllers[index] for index in self.controller_order if index in self.controllers}
 
-    def update_controller_list(self, manual: bool = False):
+    def update_controller_list(self):
         joystick_names = LocalJoystickIdentifiers.get_names()
         valid_indices = list(range(len(joystick_names)))
 
