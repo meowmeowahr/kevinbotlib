@@ -181,3 +181,37 @@ The speedometer widget can be used to display integers or floats in a highly con
 
 * `IntegerSendable`
 * `FloatSendable`
+
+## Graph Widget
+
+![graph-dark.png](../../media/dashboard/graph-dark.png#only-dark){width=384px}
+![graph-light.png](../../media/dashboard/graph-light.png#only-light){width=384px}
+
+The graph widget can graph data with customizable properties.
+
+### Configuration Options
+
+![graph-settings.png](../../media/dashboard/graph-config.png){width=280px}
+
+* Auto-Scale
+
+    The auto scale option will make the Y-Axis automatically scale to new values
+    Settings auto-scale will disable the range options
+
+* Range
+    
+    The range options will set the y-axis range.
+    These options are disabled when using Auto-Scale
+
+* Data Points
+
+    The data points option will determine how many pieces of data are stored at any given moment.
+    A higher value will increase the amount of data in the graph.
+
+* Line Color
+  
+    This option sets the color of the plot.
+
+* Line Width
+  
+    This option sets the width of the plot.

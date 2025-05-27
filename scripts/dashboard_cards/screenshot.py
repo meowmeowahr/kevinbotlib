@@ -41,6 +41,17 @@ CONFIG: typing.Final = {
             ],
         },
         {
+            "out": "docs/media/dashboard/graph-{0}.png",
+            "mod": "kevinbotlib.apps.dashboard.widgets.graph",
+            "class": "GraphWidgetItem",
+            "title": "Graph",
+            "span": [3, 2],
+            "data": [
+                {"value": x, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}
+                for x in [round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)]
+            ],
+        },
+        {
             "out": "docs/media/dashboard/textedit-{0}.png",
             "mod": "kevinbotlib.apps.dashboard.widgets.textedit",
             "class": "TextEditWidgetItem",
