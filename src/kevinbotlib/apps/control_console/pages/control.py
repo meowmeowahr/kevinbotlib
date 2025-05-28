@@ -230,7 +230,7 @@ class ControlConsoleControlTab(QWidget):
             if not cond():
                 ready = False
                 break
-        if not self.code_alive:
+        if (not self.code_alive) and ready:
             self.state.set(AppState.NO_CODE)
             return
         if ready:
@@ -273,7 +273,7 @@ class ControlConsoleControlTab(QWidget):
             if not cond():
                 ready = False
                 break
-        if not self.code_alive:
+        if (not self.code_alive) and ready:
             self.state.set(AppState.NO_CODE)
             return
         if ready:
