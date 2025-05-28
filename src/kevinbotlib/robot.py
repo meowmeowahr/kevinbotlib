@@ -20,13 +20,14 @@ from kevinbotlib.comm import (
     BooleanSendable,
     CommPath,
     DictSendable,
+    FloatSendable,
     RedisCommClient,
     StringSendable,
 )
 from kevinbotlib.exceptions import (
     RobotEmergencyStoppedException,
     RobotLockedException,
-    RobotStoppedException,
+    RobotStoppedException, LoggerNotConfiguredException,
 )
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
@@ -158,6 +159,7 @@ class BaseRobot:
                 time.sleep(update_interval)
 
         threading.Thread(target=metrics_updater, name="KevinbotLib.Robot.Metrics.Updater", daemon=True).start()
+        robot.telemetry.trace("Started telemetry thread")
 
     @staticmethod
     def add_battery(robot: "BaseRobot", min_voltage: int, max_voltage: int, source: Callable[[], float]):
@@ -175,11 +177,14 @@ class BaseRobot:
         serve_port: int = 6379,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
+        enable_stderr_logger: bool = False,
         default_opmode: str | None = None,
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
         metrics_publish_timer: float = 5.0,
         battery_publish_timer: float = 0.1,
+        robot_heartbeat_interval: float = 1.0,
+        robot_heartbeat_expiry: float = 2.5,
         *,
         allow_enable_without_console: bool = False,
     ):
@@ -191,16 +196,19 @@ class BaseRobot:
             serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8765.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
+            enable_stderr_logger (bool, optional): Enable logging to STDERR, may cause issues when using signal stop. Defaults to False.
             default_opmode (str, optional): Default Operational Mode to start in. Defaults to the first item of `opmodes`.
             cycle_time (float, optional): How fast to run periodic functions in Hz. Defaults to 250.
-            log_cleanup_timer (float, optional): How often to cleanup logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
+            log_cleanup_timer (float, optional): How often to clean up logs in seconds. Set to 0 to disable log cleanup. Defaults to 10.0.
             metrics_publish_timer (float, optional): How often to **publish** system metrics. This is separate from `BaseRobot.add_basic_metrics()` update_interval. Set to 0 to disable metrics publishing. Defaults to 5.0.
             battery_publish_timer (float, optional): How often to **publish** battery voltages.  Set to 0 to disable battery publishing. Defaults to 0.1.
+            robot_heartbeat_interval (float, optional): How often to send a heartbeat to the control console. Defaults to 1.0.
+            robot_heartbeat_expiry (float, optional): How long the robot heartbeat will stay valid. Must be longer than robot_heartbeat_interval. Defaults to 2.0.
             allow_enable_without_console (bool, optional): Allow the robot to be enabled without an active control console. Defaults to False.
         """
 
         self.telemetry = Logger()
-        self.telemetry.configure(LoggerConfiguration(level=log_level, file_logger=FileLoggerConfig()))
+        self.telemetry.configure(LoggerConfiguration(level=log_level, enable_stderr_logger=enable_stderr_logger, file_logger=FileLoggerConfig()))
 
         sys.excepthook = self._exc_hook
         threading.excepthook = self._thread_exc_hook
@@ -218,6 +226,7 @@ class BaseRobot:
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
         self._ctrl_batteries_key = "%ControlConsole/batteries"
+        self._robot_heartbeat_key = "%Robot/heartbeat"
 
         self.comm_client = RedisCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
@@ -225,6 +234,8 @@ class BaseRobot:
         self._print_log_level = print_level
         self._log_timer_interval = log_cleanup_timer
         self._metrics_timer_interval = metrics_publish_timer
+        self._robot_heartbeat_interval = robot_heartbeat_interval
+        self._robot_heartbeat_expiry = robot_heartbeat_expiry
         self._allow_enable_without_console = allow_enable_without_console
 
         self._signal_stop = False
@@ -285,6 +296,12 @@ class BaseRobot:
             timer.name = "KevinbotLib.Robot.Metrics.Updater"
             timer.start()
 
+        self._heartbeat_thread = threading.Thread(
+            target=self._heartbeat,
+            name="KevinbotLib.Robot.Heartbeat",
+            daemon=True,
+        )
+
         self.comm_client.wait_until_connected()
         self.comm_client.wipeall()
         self.log_sender.start()
@@ -295,6 +312,25 @@ class BaseRobot:
     @property
     def metrics(self):
         return self._metrics
+
+    @final
+    def _heartbeat(self):
+        if self._robot_heartbeat_expiry <= self._robot_heartbeat_interval:
+            self.telemetry.error("robot_heartbeat_expiry must be longer than robot_heartbeat_interval")
+
+        while True:
+            if self._estop:
+                self.telemetry.log(
+                    Level.CRITICAL,
+                    "Heartbeat stopped due to e-stop",
+                    LoggerWriteOpts(exception=RobotEmergencyStoppedException()),
+                )
+                break
+            self.comm_client.set(
+                self._robot_heartbeat_key,
+                FloatSendable(value=time.process_time(), timeout=self._robot_heartbeat_expiry),
+            )
+            time.sleep(self._robot_heartbeat_interval)
 
     @final
     def _comm_connection_check(self):
@@ -314,7 +350,8 @@ class BaseRobot:
 
     @final
     def _signal_usr1_capture(self, _, __):
-        self.telemetry.critical("Signal stop detected... Stopping now")
+        with contextlib.suppress(LoggerNotConfiguredException):
+            self.telemetry.critical("Signal stop detected... Stopping now")
         self._signal_stop = True
 
     @final
@@ -408,6 +445,8 @@ class BaseRobot:
         """Run the robot loop. Method is **final**."""
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:
+                self._heartbeat_thread.start()
+                self.telemetry.trace("Started heartbeat thread")
                 self.robot_start()
                 self._ready_for_periodic = True
                 self.telemetry.log(Level.INFO, "Robot started")

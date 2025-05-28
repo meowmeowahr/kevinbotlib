@@ -56,7 +56,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
 from superqt import QFlowLayout
 
 import kevinbotlib.apps.dashboard.resources_rc
@@ -79,6 +78,7 @@ from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
+from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem

@@ -256,7 +256,7 @@ class RedisCommClient:
         self.on_disconnect = on_disconnect
         self.running = False
         self.sub_thread: threading.Thread | None = None
-        self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable], None]]] = []
+        self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable | None], None]]] = []
 
         self.pubsub: redis.client.PubSub | None = None
         self.sub_callbacks: dict[str, tuple[type[BaseSendable], Callable[[str, BaseSendable], None]]] = {}
@@ -272,7 +272,7 @@ class RedisCommClient:
             f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}"
         )
 
-    def add_hook(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
+    def add_hook(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T | None], None]) -> None:
         """Add a callback to be triggered when sendable of data_type is set for a key."""
         self.hooks.append((str(key), data_type, callback))  # type: ignore
 
@@ -478,6 +478,8 @@ class RedisCommClient:
                                     if data["did"] == data_type(**data).data_id:
                                         sendable = self.SENDABLE_TYPES[data["did"]](**data)
                                         callback(ckey, sendable)
+                                else:
+                                    callback(ckey, None)
                             except (orjson.JSONDecodeError, ValidationError, KeyError):
                                 pass
                     previous_values[key] = message
@@ -533,7 +535,7 @@ class RedisCommClient:
             self.redis.config_get("maxclients")
             end_time = time.time()
             return (end_time - start_time) * 1000  # Convert to milliseconds
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot measure latency: {e}")
             self._dead.dead = True
             return None

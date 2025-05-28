@@ -1,3 +1,4 @@
+import contextlib
 import glob
 import os
 import sys
@@ -6,6 +7,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+from io import TextIOBase
 from typing import IO
 
 import platformdirs
@@ -81,7 +83,28 @@ class FileLoggerConfig:
 @dataclass
 class LoggerConfiguration:
     level: Level = Level.INFO
+    enable_stderr_logger: bool = True
     file_logger: FileLoggerConfig | None = None
+
+
+class _Sink(TextIOBase):
+    def write(self, data):
+        # noinspection PyBroadException
+        with contextlib.suppress(Exception):
+            sys.__stderr__.write(str(data))
+        return len(data) if isinstance(data, str) else 0
+
+    def flush(self):
+        # noinspection PyBroadException
+        with contextlib.suppress(Exception):
+            sys.__stderr__.flush()
+
+    def isatty(self):
+        # noinspection PyBroadException
+        try:
+            return sys.__stderr__.isatty
+        except Exception:  # noqa: BLE001
+            return False
 
 
 class Logger:
@@ -114,7 +137,8 @@ class Logger:
         Logger.is_configured = True
         self._config = config
         self._internal_logger.remove()
-        self._internal_logger.add(sys.stderr, level=config.level.value.no)
+        if config.enable_stderr_logger:
+            self._internal_logger.add(_Sink(), level=config.level.value.no) # type: ignore
 
         if config.file_logger:
             timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to ms

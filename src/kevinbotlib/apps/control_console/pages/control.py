@@ -18,6 +18,7 @@ from kevinbotlib.comm import (
     AnyListSendable,
     BooleanSendable,
     CommPath,
+    FloatSendable,
     RedisCommClient,
     StringSendable,
 )
@@ -27,6 +28,7 @@ from kevinbotlib.ui.widgets import Battery, BatteryManager
 class AppState(Enum):
     NO_COMMS = "Communication\nDown"
     WAITING = "Communication\nWaiting"
+    NO_CODE = "No\nCode"
     ROBOT_DISABLED = "{0}\nDisabled"
     ROBOT_ENABLED = "{0}\nEnabled"
     EMERGENCY_STOPPED = "Emergency\nStopped"
@@ -48,11 +50,12 @@ class StateManager:
 class ControlConsoleControlTab(QWidget):
     battery_update = Signal(list)
 
-    def __init__(self, client: RedisCommClient, status_key: str, request_key: str, batteries_key: str):
+    def __init__(self, client: RedisCommClient, robot_key: str, status_key: str, request_key: str, batteries_key: str):
         super().__init__()
 
         self.client = client
 
+        self.robot_key = robot_key
         self.status_key = status_key
         self.request_key = request_key
         self.batteries_key = batteries_key
@@ -68,6 +71,11 @@ class ControlConsoleControlTab(QWidget):
             BooleanSendable,
             self.on_enabled_update,
         )
+        self.client.add_hook(
+            CommPath(self.robot_key) / "heartbeat",
+            FloatSendable,
+            self.update_heartbeat,
+        )
 
         self.opmodes = []
         self.opmode = None
@@ -80,6 +88,7 @@ class ControlConsoleControlTab(QWidget):
             lambda: self.opmode is not None,
             lambda: self.enabled is not None,
         ]
+        self.code_alive = False
 
         self.state_label_timer = QTimer()
         self.state_label_timer.timeout.connect(self.pulse_state_label)
@@ -164,6 +173,9 @@ class ControlConsoleControlTab(QWidget):
         self.logs_layout.addLayout(log_controls_layout)
         self.logs_layout.addWidget(self.logs)
 
+    def update_heartbeat(self, _, sendable: FloatSendable | None):
+        self.code_alive = bool(sendable)
+
     def pulse_state_label(self):
         if self.state_label_timer_runs == 3:  # noqa: PLR2004
             self.state_label_timer_runs = 0
@@ -211,6 +223,19 @@ class ControlConsoleControlTab(QWidget):
         self.state.set(AppState.EMERGENCY_STOPPED)
         self.client.close()
 
+    def set_state_label(self):
+        # check dependencies
+        ready = True
+        for cond in self.dependencies:
+            if not cond():
+                ready = False
+                break
+        if not self.code_alive:
+            self.state.set(AppState.NO_CODE)
+            return
+        if ready:
+            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+
     def on_opmodes_update(self, _: str, sendable: AnyListSendable | None):  # these are for non-initial updates
         if not sendable:
             self.opmode_selector.clear()
@@ -221,14 +246,7 @@ class ControlConsoleControlTab(QWidget):
             for opmode in sendable.value:
                 self.opmode_selector.addItem(opmode)
                 self.opmodes.append(opmode)
-        # check dependencies
-        ready = True
-        for cond in self.dependencies:
-            if not cond():
-                ready = False
-                break
-        if ready:
-            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+        self.set_state_label()
 
     def on_opmode_update(self, _: str, sendable: StringSendable | None):  # these are for non-initial updates
         if not sendable:
@@ -236,26 +254,13 @@ class ControlConsoleControlTab(QWidget):
         if sendable.value in self.opmodes:
             self.opmode_selector.setCurrentRow(self.opmodes.index(sendable.value))
             self.opmode = sendable.value
-        # check dependencies
-        ready = True
-        for cond in self.dependencies:
-            if not cond():
-                ready = False
-                break
-        if ready:
-            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+        self.set_state_label()
 
     def on_enabled_update(self, _: str, sendable: BooleanSendable | None):
         if not sendable:
             return
         self.enabled = sendable.value
-        ready = True
-        for cond in self.dependencies:
-            if not cond():
-                ready = False
-                break
-        if ready:
-            self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
+        self.set_state_label()
 
     def on_battery_update(self, _: str, sendable: AnyListSendable | None):
         if not sendable:
@@ -268,6 +273,9 @@ class ControlConsoleControlTab(QWidget):
             if not cond():
                 ready = False
                 break
+        if not self.code_alive:
+            self.state.set(AppState.NO_CODE)
+            return
         if ready:
             self.state.set(AppState.ROBOT_ENABLED if self.enabled else AppState.ROBOT_DISABLED)
 

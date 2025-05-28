@@ -126,6 +126,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self._ctrl_metrics_key = "%ControlConsole/metrics"
         self._ctrl_logs_key = "%ControlConsole/logs"
         self._ctrl_batteries_key = "%ControlConsole/batteries"
+        self._robot_key = "%Robot"
 
         self.on_disconnect_signal.connect(self.on_disconnect)
         self.on_connect_signal.connect(self.on_connect)
@@ -191,7 +192,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.settings_tab.settings_changed.connect(self.settings_changed)
 
         self.control = ControlConsoleControlTab(
-            self.client, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key
+            self.client, self._robot_key, self._ctrl_status_key, self._ctrl_request_key, self._ctrl_batteries_key
         )
         self.controllers_tab = ControlConsoleControllersTab(self.settings)
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)

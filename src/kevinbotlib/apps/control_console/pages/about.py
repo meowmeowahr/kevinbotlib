@@ -16,7 +16,7 @@ from kevinbotlib.ui.widgets import LicenseDialog
 
 
 class ControlConsoleAboutTab(QWidget):
-    def __init__(self, theme: Theme):
+    def __init__(self, _theme: Theme):
         super().__init__()
 
         # Main layout

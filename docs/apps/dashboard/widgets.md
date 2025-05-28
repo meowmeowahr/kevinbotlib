@@ -195,7 +195,7 @@ The graph widget can graph data with customizable properties.
 
 * Auto-Scale
 
-    The auto scale option will make the Y-Axis automatically scale to new values
+    The auto-scale option will make the Y-Axis automatically scale to new values
     Settings auto-scale will disable the range options
 
 * Range

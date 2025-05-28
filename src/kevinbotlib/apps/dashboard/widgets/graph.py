@@ -1,23 +1,22 @@
 import time
 from enum import Enum
 from typing import TYPE_CHECKING, Any
-from datetime import datetime
 
+import pyqtgraph as pg
 import superqt
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QAction, QColor
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
+    QCheckBox,
     QDialog,
     QDoubleSpinBox,
     QFormLayout,
     QGraphicsProxyWidget,
     QHBoxLayout,
     QPushButton,
-    QVBoxLayout,
-    QCheckBox,
     QSpinBox,
+    QVBoxLayout,
 )
-import pyqtgraph as pg
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
@@ -26,6 +25,7 @@ from kevinbotlib.comm import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
+
 
 class GraphColors(Enum):
     Red = "#b44646"
@@ -36,10 +36,11 @@ class GraphColors(Enum):
     Yellow = "#e4e446"
     Magenta = "#b446b4"
 
+
 class GraphWidgetSettings(QDialog):
     options_changed = Signal(dict)
 
-    def __init__(self, graph, options: dict[str, Any] | None = None, parent=None):
+    def __init__(self, _graph, options: dict[str, Any] | None = None, parent=None):
         super().__init__(parent)
         if not options:
             options = {"min": 0, "max": 100, "auto_scale": True}
@@ -160,13 +161,12 @@ class GraphWidgetItem(WidgetItem):
         self.graph.setAntialiasing(False)
 
         if not self.options.get("auto_scale", True):
-            self.graph.setYRange(
-                self.options.get("min", 0),
-                self.options.get("max", 100)
-            )
+            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100))
 
         self.plot: pg.PlotDataItem = self.graph.plot(
-            pen=pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
+            pen=pg.mkPen(
+                color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)
+            )
         )
 
         # Create settings dialog
@@ -209,7 +209,7 @@ class GraphWidgetItem(WidgetItem):
             # Extract numeric value from data
             if isinstance(data, dict) and "value" in data:
                 new_value = float(data["value"])
-            elif isinstance(data, (int, float)):
+            elif isinstance(data, int | float):
                 new_value = float(data)
             else:
                 text_value = get_structure_text(data)
@@ -259,18 +259,16 @@ class GraphWidgetItem(WidgetItem):
         self.options = options
         # Update Y-axis range based on new settings
         if not self.options.get("auto_scale", True):
-            self.graph.setYRange(
-                self.options.get("min", 0),
-                self.options.get("max", 100),
-                padding=0
-            )
+            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100), padding=0)
         elif self.data_points:
             # Apply auto-scaling if enabled and data exists
             min_y = min(v for _, v in self.data_points)
             max_y = max(v for _, v in self.data_points)
             padding = (max_y - min_y) * 0.05 if max_y != min_y else 1
             self.graph.setYRange(min_y - padding, max_y + padding, padding=0)
-        self.plot.setPen(pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)))
+        self.plot.setPen(
+            pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
+        )
         self.max_points = self.options.get("points", 50)
 
     def close(self):
