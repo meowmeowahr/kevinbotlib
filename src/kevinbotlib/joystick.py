@@ -1,3 +1,4 @@
+import math
 import threading
 import time
 from abc import ABC, abstractmethod
@@ -19,33 +20,37 @@ from kevinbotlib.comm import (
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
 
-sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK)
+sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
 
 class XboxControllerButtons(IntEnum):
-    A = 0
-    B = 1
-    X = 2
-    Y = 3
-    LeftBumper = 4
-    RightBumper = 5
-    Back = 6
-    Start = 7
-    Guide = 8
-    LeftStick = 9
-    RightStick = 10
-    Share = 11
+    A = sdl2.SDL_CONTROLLER_BUTTON_A
+    B = sdl2.SDL_CONTROLLER_BUTTON_B
+    X = sdl2.SDL_CONTROLLER_BUTTON_X
+    Y = sdl2.SDL_CONTROLLER_BUTTON_Y
+    DpadUp = sdl2.SDL_CONTROLLER_BUTTON_DPAD_UP
+    DpadDown = sdl2.SDL_CONTROLLER_BUTTON_DPAD_DOWN
+    DpadLeft = sdl2.SDL_CONTROLLER_BUTTON_DPAD_LEFT
+    DpadRight = sdl2.SDL_CONTROLLER_BUTTON_DPAD_RIGHT
+    LeftBumper = sdl2.SDL_CONTROLLER_BUTTON_LEFTSHOULDER
+    RightBumper = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+    Back = sdl2.SDL_CONTROLLER_BUTTON_BACK
+    Start = sdl2.SDL_CONTROLLER_BUTTON_START
+    Guide = sdl2.SDL_CONTROLLER_BUTTON_GUIDE
+    LeftStick = sdl2.SDL_CONTROLLER_BUTTON_LEFTSTICK
+    RightStick = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSTICK
+    Share = sdl2.SDL_CONTROLLER_BUTTON_MISC1
 
 
 class XboxControllerAxis(IntEnum):
     """Axis identifiers for Xbox controller."""
 
-    LeftX = 0
-    LeftY = 1
-    RightX = 2
-    RightY = 3
-    LeftTrigger = 4
-    RightTrigger = 5
+    LeftX = sdl2.SDL_CONTROLLER_AXIS_LEFTX
+    LeftY = sdl2.SDL_CONTROLLER_AXIS_LEFTY
+    RightX = sdl2.SDL_CONTROLLER_AXIS_RIGHTX
+    RightY = sdl2.SDL_CONTROLLER_AXIS_RIGHTY
+    LeftTrigger = sdl2.SDL_CONTROLLER_AXIS_TRIGGERLEFT
+    RightTrigger = sdl2.SDL_CONTROLLER_AXIS_TRIGGERRIGHT
 
 
 class POVDirection(IntEnum):
@@ -197,17 +202,17 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def __init__(self, index: int, polling_hz: int = 100):
         super().__init__()
         self.index = index
-        self._sdl_joystick: sdl2.joystick.SDL_Joystick = sdl2.SDL_JoystickOpen(index)
-        self.guid = bytes(sdl2.SDL_JoystickGetGUID(self._sdl_joystick).data)
+        self._sdl_joystick: sdl2.joystick.SDL_Joystick = sdl2.SDL_GameControllerOpen(index)
+        self.guid = bytes(sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)
         self._logger = _Logger()
 
         if not self._sdl_joystick:
             msg = f"No joystick of index {index} present"
             raise JoystickMissingException(msg)
 
-        self._logger.info(f"Init joystick {index} of name: {sdl2.SDL_JoystickName(self._sdl_joystick).decode('utf-8')}")
+        self._logger.info(f"Init joystick {index} of name: {sdl2.SDL_GameControllerName(self._sdl_joystick).decode('utf-8')}")
         self._logger.info(
-            f"Init joystick {index} of GUID: {''.join(f'{b:02x}' for b in sdl2.SDL_JoystickGetGUID(self._sdl_joystick).data)}"
+            f"Init joystick {index} of GUID: {''.join(f'{b:02x}' for b in sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)}"
         )
 
         self.running = False
@@ -216,6 +221,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         self._button_states = {}
         self._button_callbacks = {}
         self._pov_state = POVDirection.NONE
+        self._pov_buttons = []
         self._pov_callbacks: list[Callable[[POVDirection], Any]] = []
         self._axis_states = {}
         self._axis_callbacks = {}
@@ -223,7 +229,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
         self.on_disconnect: Callable[[], Any] | None = None
 
-        num_axes = sdl2.SDL_JoystickNumAxes(self._sdl_joystick)
+        num_axes = sdl2.SDL_CONTROLLER_AXIS_MAX
         for i in range(num_axes):
             self._axis_states[i] = 0.0
 
@@ -232,9 +238,9 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     def get_button_count(self) -> int:
         """Returns the total number of buttons on the joystick."""
-        if not self._sdl_joystick or not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
+        if not self._sdl_joystick or not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
             return 0
-        return sdl2.SDL_JoystickNumButtons(self._sdl_joystick)
+        return sdl2.SDL_CONTROLLER_BUTTON_MAX
 
     def get_button_state(self, button_id: int) -> bool:
         """Returns the state of a button (pressed: True, released: False)."""
@@ -269,7 +275,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         return self._pov_state
 
     def rumble(self, low_power: float, high_power: float, duration: float):
-        sdl2.SDL_JoystickRumble(
+        sdl2.SDL_GameControllerRumble(
             self._sdl_joystick, int(low_power * 65535), int(high_power * 65535), int(duration * 1000)
         )
 
@@ -286,32 +292,36 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     def _handle_event(self, event) -> None:
         """Handles SDL events and triggers registered callbacks."""
-        if event.type == sdl2.SDL_JOYBUTTONDOWN:
-            button = event.jbutton.button
+        if event.type == sdl2.SDL_CONTROLLERBUTTONDOWN:
+            button = event.cbutton.button
             self._button_states[button] = True
             if self._controller_map.map_button(button) in self._button_callbacks:
                 self._button_callbacks[self._controller_map.map_button(button)](True)
 
-        elif event.type == sdl2.SDL_JOYBUTTONUP:
-            button = event.jbutton.button
-            self._button_states[button] = False
-            if self._controller_map.map_button(button) in self._button_callbacks:
-                self._button_callbacks[self._controller_map.map_button(button)](False)
-
-        elif event.type == sdl2.SDL_JOYHATMOTION:
-            # Convert SDL hat values to angles
-            hat_value = event.jhat.value
-            new_direction = self._convert_hat_to_direction(hat_value)
+            new_direction = self._convert_buttons_to_direction(self.get_buttons())
 
             if new_direction != self._pov_state:
                 self._pov_state = new_direction
                 for callback in self._pov_callbacks:
                     callback(new_direction)
 
-        elif event.type == sdl2.SDL_JOYAXISMOTION:
-            axis = event.jaxis.axis
+        elif event.type == sdl2.SDL_CONTROLLERBUTTONUP:
+            button = event.cbutton.button
+            self._button_states[button] = False
+            if self._controller_map.map_button(button) in self._button_callbacks:
+                self._button_callbacks[self._controller_map.map_button(button)](False)
+
+            new_direction = self._convert_buttons_to_direction(self.get_buttons())
+
+            if new_direction != self._pov_state:
+                self._pov_state = new_direction
+                for callback in self._pov_callbacks:
+                    callback(new_direction)
+
+        elif event.type == sdl2.SDL_CONTROLLERAXISMOTION:
+            axis = event.caxis.axis
             # Convert SDL axis value (-32,768 to 32,767) to float (-1.0 to 1.0)
-            value = event.jaxis.value / 32767.0
+            value = event.caxis.value / 32767.0
 
             # Update state and trigger callback if the value changed significantly
             self._axis_states[axis] = value
@@ -319,25 +329,35 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                 self._axis_callbacks[axis](value)
 
     @staticmethod
-    def _convert_hat_to_direction(hat_value: int) -> POVDirection:
-        """Converts SDL hat value to POVDirection enum."""
-        hat_to_direction = {
-            0x00: POVDirection.NONE,  # centered
-            0x01: POVDirection.UP,  # up
-            0x02: POVDirection.RIGHT,  # right
-            0x04: POVDirection.DOWN,  # down
-            0x08: POVDirection.LEFT,  # left
-            0x03: POVDirection.UP_RIGHT,  # up + right
-            0x06: POVDirection.DOWN_RIGHT,  # down + right
-            0x0C: POVDirection.DOWN_LEFT,  # down + left
-            0x09: POVDirection.UP_LEFT,  # up + left
-        }
-        return hat_to_direction.get(hat_value, POVDirection.NONE)
+    def _convert_buttons_to_direction(buttons: list[int]) -> POVDirection:
+        """Convert list of buttons to POV direction."""
+        if not buttons:
+            return POVDirection.NONE
+
+        x = 0
+        y = 0
+        if sdl2.SDL_CONTROLLER_BUTTON_DPAD_UP in buttons:
+            y += 1
+        if sdl2.SDL_CONTROLLER_BUTTON_DPAD_DOWN in buttons:
+            y -= 1
+        if sdl2.SDL_CONTROLLER_BUTTON_DPAD_RIGHT in buttons:
+            x += 1
+        if sdl2.SDL_CONTROLLER_BUTTON_DPAD_LEFT in buttons:
+            x -= 1
+
+        if x == 0 and y == 0:
+            # Opposing directions cancel out (e.g., up+down)
+            return POVDirection.NONE
+
+        # atan2 returns radians CCW from positive X-axis; POV expects degrees CW from up
+        rad = math.atan2(x, y)  # Note: args are (x, y), not (y, x) to rotate 90°
+        angle = (math.degrees(rad) + 360) % 360
+        return POVDirection(int(round(angle)))
 
     def _event_loop(self):
         """Internal loop for processing SDL events synchronously."""
         while self.running:
-            if not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
+            if not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
                 self.connected = False
                 for key in self._axis_states:
                     self._axis_states[key] = 0.0
@@ -351,13 +371,13 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
             _sdl2_event_dispatcher().iterate()
             events: list[sdl2.events.SDL_Event] = _sdl2_event_dispatcher().get(
-                sdl2.joystick.SDL_JoystickInstanceID(self._sdl_joystick)
+                sdl2.joystick.SDL_JoystickInstanceID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick))
             )
             for event in events:
                 if event.type == sdl2.SDL_QUIT:
                     self.running = False
                     break
-                if event.jdevice.which == sdl2.joystick.SDL_JoystickInstanceID(self._sdl_joystick):
+                if event.jdevice.which == sdl2.joystick.SDL_JoystickInstanceID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)):
                     self._handle_event(event)
 
             time.sleep(1 / self.polling_hz)
@@ -365,7 +385,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def _check_connection(self):
         """Thread to monitor joystick connection state."""
         while self.running:
-            if not sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
+            if not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
                 self._handle_disconnect()
                 return
             time.sleep(0.5)
@@ -386,10 +406,10 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
         num_joysticks = sdl2.SDL_NumJoysticks()
         if self.index < num_joysticks:
-            self._sdl_joystick = sdl2.SDL_JoystickOpen(self.index)
-            if self._sdl_joystick and sdl2.SDL_JoystickGetAttached(self._sdl_joystick):
+            self._sdl_joystick = sdl2.SDL_GameControllerOpen(self.index)
+            if self._sdl_joystick and sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
                 self._logger.info(f"Reconnected joystick {self.index} successfully")
-                self.guid = bytes(sdl2.SDL_JoystickGetGUID(self._sdl_joystick).data)
+                self.guid = bytes(sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)
                 return
 
         time.sleep(1)
@@ -412,7 +432,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     def stop(self):
         """Stops event handling and releases resources."""
         self.running = False
-        sdl2.SDL_JoystickClose(self._sdl_joystick)
+        sdl2.SDL_GameControllerClose(self._sdl_joystick)
 
 
 class LocalXboxController(RawLocalJoystickDevice):

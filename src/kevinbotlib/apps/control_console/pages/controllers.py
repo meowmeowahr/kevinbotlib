@@ -252,6 +252,7 @@ class MapEditor(QGroupBox):
             self.list.add_widget(widget)
 
     def load_map(self, cmap: ControllerMap):
+        self.list.clear_widgets()
         self._apply_map(cmap.button_map, ControllerMapType.ButtonMap)
         self._apply_map(cmap.axis_map, ControllerMapType.AxisMap)
 

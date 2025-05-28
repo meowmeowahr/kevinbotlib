@@ -15,12 +15,11 @@ class _InternalSdl2EventDispatcher:
         event: sdl2.events.SDL_Event
         for event in events:
             if event.type in (
-                sdl2.SDL_JOYAXISMOTION,
-                sdl2.SDL_JOYBUTTONDOWN,
-                sdl2.SDL_JOYBUTTONUP,
-                sdl2.SDL_JOYHATMOTION,
-                sdl2.SDL_JOYDEVICEADDED,
-                sdl2.SDL_JOYDEVICEREMOVED,
+                sdl2.SDL_CONTROLLERAXISMOTION,
+                sdl2.SDL_CONTROLLERBUTTONDOWN,
+                sdl2.SDL_CONTROLLERBUTTONUP,
+                sdl2.SDL_CONTROLLERDEVICEADDED,
+                sdl2.SDL_CONTROLLERDEVICEREMOVED,
             ):
                 joyid: int = event.jdevice.which
                 if joyid not in self.queues:
