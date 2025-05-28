@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.joystick import LocalXboxController, XboxControllerButtons
+from kevinbotlib.joystick import LocalNamedController, NamedControllerButtons
 from kevinbotlib.logger import Logger, LoggerConfiguration
 from kevinbotlib.scheduler import Command, CommandScheduler, Trigger
 
@@ -52,13 +52,13 @@ start_time = time.time()
 
 scheduler = CommandScheduler()
 
-controller = LocalXboxController(0)
+controller = LocalNamedController(0)
 controller.start_polling()
 
-Trigger(lambda: XboxControllerButtons.A in controller.get_buttons(), scheduler).while_true(
+Trigger(lambda: NamedControllerButtons.A in controller.get_buttons(), scheduler).while_true(
     PrintForOneSecondCommand("A Button Command")
 )
-Trigger(lambda: XboxControllerButtons.B in controller.get_buttons(), scheduler).on_true(
+Trigger(lambda: NamedControllerButtons.B in controller.get_buttons(), scheduler).on_true(
     PrintForOneSecondCommand("B Button Command")
 )
 

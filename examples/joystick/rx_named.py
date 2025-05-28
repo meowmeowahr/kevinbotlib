@@ -1,7 +1,7 @@
 import time
 
 from kevinbotlib.comm import RedisCommClient
-from kevinbotlib.joystick import RemoteXboxController
+from kevinbotlib.joystick import RemoteNamedController
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
@@ -11,7 +11,7 @@ client = RedisCommClient()
 client.connect()
 client.wait_until_connected()
 
-controller = RemoteXboxController(client, "joysticks/0")
+controller = RemoteNamedController(client, "joysticks/0")
 controller.start_polling()
 
 try:

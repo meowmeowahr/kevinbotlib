@@ -22,8 +22,7 @@ from kevinbotlib.logger import Logger as _Logger
 
 sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
-
-class XboxControllerButtons(IntEnum):
+class NamedControllerButtons(IntEnum):
     A = sdl2.SDL_CONTROLLER_BUTTON_A
     B = sdl2.SDL_CONTROLLER_BUTTON_B
     X = sdl2.SDL_CONTROLLER_BUTTON_X
@@ -39,11 +38,15 @@ class XboxControllerButtons(IntEnum):
     Guide = sdl2.SDL_CONTROLLER_BUTTON_GUIDE
     LeftStick = sdl2.SDL_CONTROLLER_BUTTON_LEFTSTICK
     RightStick = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSTICK
-    Share = sdl2.SDL_CONTROLLER_BUTTON_MISC1
+    Misc1 = sdl2.SDL_CONTROLLER_BUTTON_MISC1
+    Paddle1 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE1
+    Paddle2 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE2
+    Paddle3 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE3
+    Paddle4 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE4
+    Touchpad = sdl2.SDL_CONTROLLER_BUTTON_TOUCHPAD
 
-
-class XboxControllerAxis(IntEnum):
-    """Axis identifiers for Xbox controller."""
+class NamedControllerAxis(IntEnum):
+    """Named Axis Identifiers"""
 
     LeftX = sdl2.SDL_CONTROLLER_AXIS_LEFTX
     LeftY = sdl2.SDL_CONTROLLER_AXIS_LEFTY
@@ -435,57 +438,57 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         sdl2.SDL_GameControllerClose(self._sdl_joystick)
 
 
-class LocalXboxController(RawLocalJoystickDevice):
-    """Xbox-specific controller with button name mappings."""
+class LocalNamedController(RawLocalJoystickDevice):
+    """Controller with named buttons and axes."""
 
-    def get_button_state(self, button: XboxControllerButtons) -> bool:
+    def get_button_state(self, button: NamedControllerButtons) -> bool:
         """Returns the state of a button using its friendly name."""
         return super().get_button_state(button)
 
-    def get_buttons(self) -> list[XboxControllerButtons]:
-        return [XboxControllerButtons(x) for x in super().get_buttons()]
+    def get_buttons(self) -> list[NamedControllerButtons]:
+        return [NamedControllerButtons(x) for x in super().get_buttons()]
 
-    def register_button_callback(self, button: XboxControllerButtons, callback: Callable[[bool], Any]) -> None:
+    def register_button_callback(self, button: NamedControllerButtons, callback: Callable[[bool], Any]) -> None:
         """Registers a callback using the friendly button name."""
         super().register_button_callback(button, callback)
 
     def get_dpad_direction(self) -> POVDirection:
-        """Returns the current D-pad direction using Xbox terminology."""
+        """Returns the current D-pad direction."""
         return self.get_pov_direction()
 
-    def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
+    def get_trigger_value(self, trigger: NamedControllerAxis, precision: int = 3) -> float:
         """Returns the current value of the specified trigger (0.0 to 1.0)."""
         if trigger not in (
-            XboxControllerAxis.LeftTrigger,
-            XboxControllerAxis.RightTrigger,
+                NamedControllerAxis.LeftTrigger,
+                NamedControllerAxis.RightTrigger,
         ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
-        return (max(self.get_axis_value(trigger, precision), 0) + 1) / 2
+        return max(self.get_axis_value(trigger, precision), 0)
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         return super().get_axis_value(axis_id, precision)
 
     def get_triggers(self, precision: int = 3):
         return [
-            self.get_trigger_value(XboxControllerAxis.LeftTrigger, precision),
-            self.get_trigger_value(XboxControllerAxis.RightTrigger, precision),
+            self.get_trigger_value(NamedControllerAxis.LeftTrigger, precision),
+            self.get_trigger_value(NamedControllerAxis.RightTrigger, precision),
         ]
 
     def get_left_stick(self, precision: int = 3):
         return [
-            self.get_axis_value(XboxControllerAxis.LeftX, precision),
-            self.get_axis_value(XboxControllerAxis.LeftY, precision),
+            self.get_axis_value(NamedControllerAxis.LeftX, precision),
+            self.get_axis_value(NamedControllerAxis.LeftY, precision),
         ]
 
     def get_right_stick(self, precision: int = 3):
         return [
-            self.get_axis_value(XboxControllerAxis.RightX, precision),
-            self.get_axis_value(XboxControllerAxis.RightY, precision),
+            self.get_axis_value(NamedControllerAxis.RightX, precision),
+            self.get_axis_value(NamedControllerAxis.RightY, precision),
         ]
 
     def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback for D-pad direction changes using Xbox terminology."""
+        """Registers a callback for D-pad direction changes"""
         self.register_pov_callback(callback)
 
 
@@ -708,50 +711,50 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         self.running = False
 
 
-class RemoteXboxController(RemoteRawJoystickDevice):
-    """Xbox-specific remote controller with button name mappings."""
+class RemoteNamedController(RemoteRawJoystickDevice):
+    """Remote controller with named buttons and axes."""
 
     def __init__(self, client: RedisCommClient, key: str, callback_polling_hz: int = 100) -> None:
         super().__init__(client, key, callback_polling_hz)
 
-    def get_button_state(self, button: XboxControllerButtons) -> bool:
-        """Returns the state of a button using its friendly Xbox name."""
+    def get_button_state(self, button: NamedControllerButtons) -> bool:
+        """Returns the state of a button using its friendly name."""
         return super().get_button_state(button)
 
-    def get_buttons(self) -> list[XboxControllerButtons]:
-        """Returns a list of currently pressed buttons using Xbox button enums."""
+    def get_buttons(self) -> list[NamedControllerButtons]:
+        """Returns a list of currently pressed buttons using button enums."""
         buttons = []
         for x in super().get_buttons():
             try:
-                buttons.append(XboxControllerButtons(x))
+                buttons.append(NamedControllerButtons(x))
             except ValueError:
-                _Logger().error(f"Invalid button value received: {x}, not in XboxControllerButtons")
+                _Logger().error(f"Invalid button value received: {x}, not in NamedControllerButtons")
         return buttons
 
     def get_axes(self, precision: int = 3) -> list[float]:
-        """Returns a list of axis values with Xbox-specific ordering."""
+        """Returns a list of axis values"""
         axes = super().get_axes()
         if not axes:
-            return [0.0] * len(XboxControllerAxis)  # Return default zeroed axes if no data
+            return [0.0] * len(NamedControllerAxis)  # Return default zeroed axes if no data
         return [round(x, precision) for x in axes]  # Convert to float and apply precision
 
-    def register_button_callback(self, button: XboxControllerButtons, callback: Callable[[bool], Any]) -> None:
-        """Registers a callback using the friendly Xbox button name."""
+    def register_button_callback(self, button: NamedControllerButtons, callback: Callable[[bool], Any]) -> None:
+        """Registers a callback using the friendly button name."""
         super().register_button_callback(button, callback)
 
     def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback for D-pad direction changes using Xbox terminology."""
+        """Registers a callback for D-pad direction changes"""
         super().register_pov_callback(callback)
 
     def get_dpad_direction(self) -> POVDirection:
-        """Returns the current D-pad direction using Xbox terminology."""
+        """Returns the current D-pad direction using"""
         return super().get_pov_direction()
 
-    def get_trigger_value(self, trigger: XboxControllerAxis, precision: int = 3) -> float:
+    def get_trigger_value(self, trigger: NamedControllerAxis, precision: int = 3) -> float:
         """Returns the current value of the specified trigger (0.0 to 1.0)."""
         if trigger not in (
-            XboxControllerAxis.LeftTrigger,
-            XboxControllerAxis.RightTrigger,
+                NamedControllerAxis.LeftTrigger,
+                NamedControllerAxis.RightTrigger,
         ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
@@ -761,26 +764,26 @@ class RemoteXboxController(RemoteRawJoystickDevice):
     def get_triggers(self, precision: int = 3) -> list[float]:
         """Returns the current values of both triggers."""
         return [
-            self.get_trigger_value(XboxControllerAxis.LeftTrigger, precision),
-            self.get_trigger_value(XboxControllerAxis.RightTrigger, precision),
+            self.get_trigger_value(NamedControllerAxis.LeftTrigger, precision),
+            self.get_trigger_value(NamedControllerAxis.RightTrigger, precision),
         ]
 
     def get_left_stick(self, precision: int = 3) -> list[float]:
         """Returns the current values of the left stick (x, y)."""
         return [
-            super().get_axis_value(XboxControllerAxis.LeftX, precision),
-            super().get_axis_value(XboxControllerAxis.LeftY, precision),
+            super().get_axis_value(NamedControllerAxis.LeftX, precision),
+            super().get_axis_value(NamedControllerAxis.LeftY, precision),
         ]
 
     def get_right_stick(self, precision: int = 3) -> list[float]:
         """Returns the current values of the right stick (x, y)."""
         return [
-            super().get_axis_value(XboxControllerAxis.RightX, precision),
-            super().get_axis_value(XboxControllerAxis.RightY, precision),
+            super().get_axis_value(NamedControllerAxis.RightX, precision),
+            super().get_axis_value(NamedControllerAxis.RightY, precision),
         ]
 
     def _poll_loop(self):
-        """Xbox-specific polling loop that checks for state changes and triggers callbacks."""
+        """Polling loop that checks for state changes and triggers callbacks."""
         while self.running:
             # Check connection status
             conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)

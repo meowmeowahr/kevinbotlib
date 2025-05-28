@@ -26,9 +26,9 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.apps.common.widgets import QWidgetList
-from kevinbotlib.apps.control_console.components.xbox_reference import (
-    XboxDefaultAxisMapWidget,
-    XboxDefaultButtonMapWidget,
+from kevinbotlib.apps.control_console.components.named_reference import (
+    NamedDefaultAxisMapWidget,
+    NamedDefaultButtonMapWidget,
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.joystick import (
@@ -64,6 +64,8 @@ class ButtonGridWidget(QGroupBox):
         square_size = 16
         for i in range(self.max_buttons):
             label = QLabel(str(i), parent=self)
+            label.setContentsMargins(0, 0, 0, 0)
+
             label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label.setFixedSize(square_size, square_size)
             label.setObjectName("ButtonInputStateBoxInactive")
@@ -302,10 +304,10 @@ class JoystickStateWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
-        self.raw_button_grid = ButtonGridWidget(name="Raw Buttons")
+        self.raw_button_grid = ButtonGridWidget(name="Raw Btn")
         layout.addWidget(self.raw_button_grid)
 
-        self.mapped_button_grid = ButtonGridWidget(name="Mapped Btns")
+        self.mapped_button_grid = ButtonGridWidget(name="Map Btn")
         layout.addWidget(self.mapped_button_grid)
 
         self.raw_axes_group = QGroupBox("Raw Axes")
@@ -345,11 +347,11 @@ class JoystickStateWidget(QWidget):
         self.map_editor = MapEditor(settings, joystick)
         layout.addWidget(self.map_editor, 2)
 
-        xbox_button_reference = XboxDefaultButtonMapWidget()
-        layout.addWidget(xbox_button_reference)
+        button_reference = NamedDefaultButtonMapWidget()
+        layout.addWidget(button_reference)
 
-        xbox_axis_reference = XboxDefaultAxisMapWidget()
-        layout.addWidget(xbox_axis_reference)
+        axis_reference = NamedDefaultAxisMapWidget()
+        layout.addWidget(axis_reference)
 
     def set_joystick(self, joystick: RawLocalJoystickDevice | None):
         self.joystick = joystick

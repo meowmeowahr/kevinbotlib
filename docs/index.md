@@ -47,7 +47,7 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 ### Gamepad Inputs
 
 * Based on [SDL2](https://github.com/py-sdl/py-sdl2)
-* Builtin-support for Raw devices and Xbox One and Xbox Series controllers
+* Builtin-support for all Game Controllers supported under the SDL2 GameController API
 * Joystick data sender and receiver through the communication system
 
 ### The Control Console

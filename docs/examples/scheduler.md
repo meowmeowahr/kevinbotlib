@@ -18,8 +18,8 @@
 --8<-- "examples/scheduler/sequential.py"
 ```
 
-## Xbox Controller Command Trigger
+## Named Controller Command Trigger
 
-```python title="examples/scheduler/xbox_trigger.py" linenums="1"
---8<-- "examples/scheduler/xbox_trigger.py"
+```python title="examples/scheduler/joystick_trigger.py" linenums="1"
+--8<-- "examples/scheduler/joystick_trigger.py"
 ```

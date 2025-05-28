@@ -12,10 +12,10 @@
 --8<-- "examples/joystick/local_polling.py"
 ```
 
-## Local Xbox Polling
+## Local Named Polling
 
-```python title="examples/joystick/local_xbox_polling.py" linenums="1"
---8<-- "examples/joystick/local_xbox_polling.py"
+```python title="examples/joystick/local_named_polling.py" linenums="1"
+--8<-- "examples/joystick/local_named_polling.py"
 ```
 
 ## Sending Joystick Data with a `KevinbotCommClient`
@@ -30,8 +30,8 @@
 --8<-- "examples/joystick/rx_raw.py"
 ```
 
-## Receiving Xbox Joystick Data with a `KevinbotCommClient`
+## Receiving Named Joystick Data with a `KevinbotCommClient`
 
-```python title="examples/joystick/rx_xbox.py" linenums="1"
---8<-- "examples/joystick/rx_xbox.py"
+```python title="examples/joystick/rx_named.py" linenums="1"
+--8<-- "examples/joystick/rx_named.py"
 ```

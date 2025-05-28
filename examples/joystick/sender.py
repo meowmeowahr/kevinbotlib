@@ -1,13 +1,13 @@
 import time
 
 from kevinbotlib.comm import RedisCommClient
-from kevinbotlib.joystick import JoystickSender, LocalXboxController
+from kevinbotlib.joystick import JoystickSender, LocalNamedController
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()
 logger.configure(LoggerConfiguration())
 
-controller = LocalXboxController(
+controller = LocalNamedController(
     0
 )  # it doesn't matter what type of controller is being sent - all values will be converted to raw anyway
 controller.start_polling()
