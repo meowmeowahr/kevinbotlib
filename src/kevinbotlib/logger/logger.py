@@ -138,7 +138,7 @@ class Logger:
         self._config = config
         self._internal_logger.remove()
         if config.enable_stderr_logger:
-            self._internal_logger.add(_Sink(), level=config.level.value.no) # type: ignore
+            self._internal_logger.add(_Sink(), level=config.level.value.no)  # type: ignore
 
         if config.file_logger:
             timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to ms

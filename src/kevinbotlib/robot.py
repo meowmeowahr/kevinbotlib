@@ -25,9 +25,10 @@ from kevinbotlib.comm import (
     StringSendable,
 )
 from kevinbotlib.exceptions import (
+    LoggerNotConfiguredException,
     RobotEmergencyStoppedException,
     RobotLockedException,
-    RobotStoppedException, LoggerNotConfiguredException,
+    RobotStoppedException,
 )
 from kevinbotlib.fileserver.fileserver import FileServer
 from kevinbotlib.logger import (
@@ -177,7 +178,6 @@ class BaseRobot:
         serve_port: int = 6379,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
-        enable_stderr_logger: bool = False,
         default_opmode: str | None = None,
         cycle_time: float = 250,
         log_cleanup_timer: float = 10.0,
@@ -186,6 +186,7 @@ class BaseRobot:
         robot_heartbeat_interval: float = 1.0,
         robot_heartbeat_expiry: float = 2.5,
         *,
+        enable_stderr_logger: bool = False,
         allow_enable_without_console: bool = False,
     ):
         """
@@ -208,7 +209,11 @@ class BaseRobot:
         """
 
         self.telemetry = Logger()
-        self.telemetry.configure(LoggerConfiguration(level=log_level, enable_stderr_logger=enable_stderr_logger, file_logger=FileLoggerConfig()))
+        self.telemetry.configure(
+            LoggerConfiguration(
+                level=log_level, enable_stderr_logger=enable_stderr_logger, file_logger=FileLoggerConfig()
+            )
+        )
 
         sys.excepthook = self._exc_hook
         threading.excepthook = self._thread_exc_hook
