@@ -217,11 +217,14 @@ class BaseRobot:
 
         sys.excepthook = self._exc_hook
         threading.excepthook = self._thread_exc_hook
+        self.telemetry.trace("Configured exception hooks")
 
         self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
+        self.telemetry.trace("Configured file server")
 
         self._instance_locker = InstanceLocker(f"{self.__class__.__name__}.lock")
         atexit.register(self._instance_locker.unlock)
+        self.telemetry.trace("Configured instance locker")
 
         self._opmodes = opmodes
 
