@@ -11,6 +11,7 @@ class DemoRobot(BaseRobot):
                 "TestBatteryRobot",
             ],  # robot's operational modes
             log_level=Level.TRACE,  # lowest logging level
+            enable_stderr_logger=True,
             cycle_time=5,  # loop our robot code 5x per second - it is recommended to run much higher in practice
             metrics_publish_timer=5.0,  # how often to publish new system metrics to the control console
         )
