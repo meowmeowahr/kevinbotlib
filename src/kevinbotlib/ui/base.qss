@@ -234,6 +234,19 @@ QComboBox::down-arrow {
     height: 10px;
 }
 
+QComboBox QAbstractItemView {
+    margin: 0;
+    padding: 4px;
+    background: {{bg3}};
+    border: 1px solid {{border}};
+    border-style: none;
+}
+
+QComboBox QListView::item {
+    border: none;
+    selection-background-color: {{selection}};
+    border-style: none;
+}
 
 QLabel {
     color: {{fg}}; 
@@ -273,8 +286,8 @@ QToolButton:pressed {
 QPushButton:disabled,
 QToolButton:disabled {
     background-color: {{bg2}};
-    color: {{fg}}50; /* 50% opacity of foreground color */
-    border-color: {{border}}80; /* 80% opacity of border color */
+    color: {{fg_disabled}};
+    border-color: {{border}};
 }
 
 /* QSplitter Styling */ QSplitter { background-color: transparent; }
