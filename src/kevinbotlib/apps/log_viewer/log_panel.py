@@ -1,5 +1,6 @@
 import html
 
+import orjson
 import qtawesome as qta
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, QUrl, Signal
 from PySide6.QtGui import QColor, QPalette
@@ -89,9 +90,13 @@ class LogFetchWorker(QRunnable):
 
     def run(self):
         self.signals.progress.emit(0)
-        with open(self.logfile) as f:
-            raw = f.read()
-        log = LogParser.parse(raw)
+        try:
+            with open(self.logfile) as f:
+                raw = f.read()
+            log = LogParser.parse(raw)
+        except (orjson.JSONDecodeError, FileNotFoundError) as e:
+            self.signals.error.emit(str(e))
+            return
 
         # Generate HTML content
         html_data = '<meta charset="UTF-8">\n'
