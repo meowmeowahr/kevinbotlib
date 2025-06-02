@@ -32,7 +32,8 @@ Copy-Item -Recurse -Force dist/kevinbotlib/_internal/* $internalDir -ErrorAction
 Copy-Item BINARY-LICENSE $distAll/BINARY-LICENSE
 
 # Create ZIP archive (GLIBC version not used here)
-$zipName = "kevinbotlib-windows-x64.zip"
+$arch = [System.Runtime.InteropServices.RuntimeInformation,mscorlib]::OSArchitecture.ToString().ToLower()
+$zipName = "kevinbotlib-windows-$arch.zip"
 Compress-Archive -Path "$distAll\*" -DestinationPath "dist\$zipName" -Force
 
 Write-Output "Packaged into dist\$zipName"
