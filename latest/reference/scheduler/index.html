@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../metrics/">
+        <link rel="prev" href="../logging/">
       
       
-        <link rel="next" href="../misc/">
+        <link rel="next" href="../comm/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>UI Reference - KevinbotLib Docs</title>
+        <title>Command Scheduler Reference - KevinbotLib Docs</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ui-reference" class="md-skip">
+        <a href="#command-scheduler-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              UI Reference
+              Command Scheduler Reference
             
           </span>
         </div>
@@ -1441,10 +1441,31 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../scheduler/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Command Scheduler Reference
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1454,6 +1475,338 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;scheduler
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" scheduler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Command
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.init" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;execute
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.end" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;end
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.finished" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;finished
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.then" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;then
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.alongside" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;alongside
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.SequentialCommand" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SequentialCommand
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" SequentialCommand">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.SequentialCommand.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.ParallelCommand" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ParallelCommand
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" ParallelCommand">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.ParallelCommand.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TriggerActions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" TriggerActions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.on_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;on_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.on_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;on_false
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.while_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;while_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.while_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;while_false
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Trigger
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Trigger">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.check" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.on_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;on_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.on_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;on_false
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.while_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;while_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.while_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;while_false
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandScheduler
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CommandScheduler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.get_instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.register_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;register_trigger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;iterate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1617,31 +1970,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    UI Reference
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ui/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1651,332 +1983,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" theme">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" ThemeStyle">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Theme">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" widgets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Battery
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Battery">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.voltage" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;voltage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_min" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_min
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_max" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_max
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryGrapher">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" LicenseDialog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" delegates">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2060,47 +2066,74 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;scheduler
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" theme">
+    <nav class="md-nav" aria-label=" scheduler">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.Command" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Command
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" ThemeStyle">
+    <nav class="md-nav" aria-label=" Command">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.Command.init" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;init
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.Command.execute" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;execute
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.Command.end" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;end
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.finished" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;finished
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.then" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;then
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Command.alongside" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;alongside
     </span>
   </a>
   
@@ -2112,209 +2145,17 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.SequentialCommand" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SequentialCommand
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" Theme">
+    <nav class="md-nav" aria-label=" SequentialCommand">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" widgets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Battery
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Battery">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.voltage" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;voltage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_min" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_min
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_max" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_max
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryGrapher">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" LicenseDialog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog.__init__" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.SequentialCommand.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
     </span>
@@ -2327,36 +2168,207 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.ParallelCommand" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ParallelCommand
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" ParallelCommand">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.ParallelCommand.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TriggerActions
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" delegates">
+    <nav class="md-nav" aria-label=" TriggerActions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.TriggerActions.on_true" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;on_true
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.scheduler.TriggerActions.on_false" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;on_false
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.while_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;while_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.TriggerActions.while_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;while_false
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Trigger
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" Trigger">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.check" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.on_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;on_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.on_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;on_false
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.while_true" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;while_true
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.Trigger.while_false" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;while_false
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandScheduler
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CommandScheduler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.get_instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.schedule" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;schedule
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.register_trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;register_trigger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.scheduler.CommandScheduler.iterate" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;iterate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2381,7 +2393,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/ui.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/scheduler.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2389,15 +2401,15 @@
   
 
 
-<h1 id="ui-reference">UI Reference</h1>
+<h1 id="command-scheduler-reference">Command Scheduler Reference</h1>
 
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="kevinbotlib.ui.theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.theme</code>
+<h2 id="kevinbotlib.scheduler" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.scheduler</code>
 
 
 </h2>
@@ -2425,8 +2437,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.ThemeStyle" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.ThemeStyle</code>
+<h3 id="kevinbotlib.scheduler.Command" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.Command</code>
 
 
 </h3>
@@ -2434,10 +2446,10 @@
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+              Bases: <code><span title="abc.ABC">ABC</span></code></p>
 
 
-        <p>Theme options for the KevinbotLib UI theme</p>
+        <p>Synchronous command interface that users will implement</p>
 
 
 
@@ -2456,16 +2468,16 @@
 
 
 
-<div class="doc doc-object doc-attribute">
 
 
+<div class="doc doc-object doc-function">
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Light" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Light</span> <span class="o">=</span> <span class="mi">0</span></code>
+
+<h4 id="kevinbotlib.scheduler.Command.init" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">init</span><span class="p">()</span></code>
 
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h4>
@@ -2473,22 +2485,21 @@
 
     <div class="doc doc-contents ">
 
-        <p>Light mode</p>
+        <p>Ran once when the command is initialized.</p>
+
 
     </div>
 
 </div>
 
-<div class="doc doc-object doc-attribute">
+<div class="doc doc-object doc-function">
 
 
-
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Dark</span> <span class="o">=</span> <span class="mi">1</span></code>
+<h4 id="kevinbotlib.scheduler.Command.execute" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">execute</span><span class="p">()</span></code>
 
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h4>
@@ -2496,22 +2507,21 @@
 
     <div class="doc doc-contents ">
 
-        <p>Dark mode</p>
+        <p>Ran continuously while the command is active.</p>
+
 
     </div>
 
 </div>
 
-<div class="doc doc-object doc-attribute">
+<div class="doc doc-object doc-function">
 
 
-
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.System" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">System</span> <span class="o">=</span> <span class="mi">2</span></code>
+<h4 id="kevinbotlib.scheduler.Command.end" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">end</span><span class="p">()</span></code>
 
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
   </span>
 
 </h4>
@@ -2519,13 +2529,201 @@
 
     <div class="doc doc-contents ">
 
-        <p>System theme, uses GTK on Linux, and system preference on Windows/macOS</p>
+        <p>Ran once when the command is finished.</p>
+
 
     </div>
 
 </div>
 
+<div class="doc doc-object doc-function">
 
+
+<h4 id="kevinbotlib.scheduler.Command.finished" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">finished</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get if the command has finished execution.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if the command is finished, False otherwise.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Command.then" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">then</span><span class="p">(</span><span class="n">next_command</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Chain commands to run sequentially</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>next_command</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Command to run next</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.SequentialCommand" href="#kevinbotlib.scheduler.SequentialCommand">SequentialCommand</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Sequential Command</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Command.alongside" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">alongside</span><span class="p">(</span><span class="n">next_command</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Chain commands to run in parallel</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>next_command</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Command to run alongside this command.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.ParallelCommand" href="#kevinbotlib.scheduler.ParallelCommand">ParallelCommand</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Parallel Command</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
 
 
 
@@ -2539,17 +2737,17 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.Theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.Theme</code>
+<h3 id="kevinbotlib.scheduler.SequentialCommand" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.SequentialCommand</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code></p>
 
-
-        <p>Qt theming engine for the KevinbotLib UI style</p>
 
 
 
@@ -2573,15 +2771,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.theme.Theme.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">style</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.SequentialCommand.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Initialize the theming system.</p>
+        <p>Construct a new sequential command.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2597,194 +2795,14 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>style</code>
+                <code>commands</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.ui.theme.ThemeStyle" href="#kevinbotlib.ui.theme.ThemeStyle">ThemeStyle</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Theme to use.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.is_dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">is_dark</span><span class="p">()</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Detect if the currently applied style is dark</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>bool</code></td>            <td>
-                  <code><span title="bool">bool</span></code>
+                  <code><span title="list">list</span>[<a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Is the current style dark?</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.get_stylesheet" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_stylesheet</span><span class="p">()</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Get the formatted stylesheet string to apply</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Qt QSS Stylesheet string.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.apply" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">apply</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Apply the theme to an application or window</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>app</code>
-            </td>
-            <td>
-                  <code><span title="qtpy.QtWidgets.QApplication">QApplication</span> | <span title="qtpy.QtWidgets.QMainWindow">QMainWindow</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>App or window to apply the theme to.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.set_style" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Apply a new theme to the application or window.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>style</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.ui.theme.ThemeStyle" href="#kevinbotlib.ui.theme.ThemeStyle">ThemeStyle</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>ThemeStyle. Theme to use.</p>
+                <p>List of commands to run sequentially.</p>
               </div>
             </td>
             <td>
@@ -2806,51 +2824,105 @@
     </div>
 
 </div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="kevinbotlib.ui.widgets" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.widgets</code>
-
-
-</h2>
-
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
 
 <div class="doc doc-object doc-class">
 
 
 
-<h3 id="kevinbotlib.ui.widgets.Battery" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.Battery</code>
+<h3 id="kevinbotlib.scheduler.ParallelCommand" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.ParallelCommand</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code></p>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.ParallelCommand.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Construct a new parallel command.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>commands</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span>[<a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Commands to run in parallel.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.scheduler.TriggerActions" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.TriggerActions</code>
 
 
   <span class="doc doc-labels">
@@ -2863,7 +2935,7 @@
     <div class="doc doc-contents ">
 
 
-        <p>Battery item to be used in BatteryManager.</p>
+        <p>Trigger types to be used internally within the command scheduler</p>
 
 
 
@@ -2886,10 +2958,11 @@
 
 
 
-<h4 id="kevinbotlib.ui.widgets.Battery.voltage" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">voltage</span></code>
+<h4 id="kevinbotlib.scheduler.TriggerActions.on_true" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">on_true</span> <span class="o">=</span> <span class="kc">None</span></code>
 
   <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
@@ -2898,7 +2971,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Current battery voltage.</p>
+        <p>Triggers when a value becomes True</p>
 
     </div>
 
@@ -2908,10 +2981,11 @@
 
 
 
-<h4 id="kevinbotlib.ui.widgets.Battery.y_min" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">y_min</span></code>
+<h4 id="kevinbotlib.scheduler.TriggerActions.on_false" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">on_false</span> <span class="o">=</span> <span class="kc">None</span></code>
 
   <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
@@ -2920,7 +2994,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Minimum reasonable battery voltage.</p>
+        <p>Triggers when a value becomes False</p>
 
     </div>
 
@@ -2930,10 +3004,11 @@
 
 
 
-<h4 id="kevinbotlib.ui.widgets.Battery.y_max" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">y_max</span></code>
+<h4 id="kevinbotlib.scheduler.TriggerActions.while_true" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">while_true</span> <span class="o">=</span> <span class="kc">None</span></code>
 
   <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
       <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
@@ -2942,7 +3017,30 @@
 
     <div class="doc doc-contents ">
 
-        <p>Maximum reasonable battery voltage.</p>
+        <p>Triggers while a value is True</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.scheduler.TriggerActions.while_false" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">while_false</span> <span class="o">=</span> <span class="kc">None</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Triggers while a value is False</p>
 
     </div>
 
@@ -2962,19 +3060,15 @@
 
 
 
-<h3 id="kevinbotlib.ui.widgets.BatteryGrapher" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryGrapher</code>
+<h3 id="kevinbotlib.scheduler.Trigger" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.Trigger</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
 
-
-        <p>Qt widget to plot battery voltage over time.</p>
 
 
 
@@ -2998,15 +3092,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.Trigger.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">trigger_func</span><span class="p">,</span> <span class="n">command_system</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Create the widget</p>
+        <p>Create a new Command trigger.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3022,63 +3116,30 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>parent</code>
+                <code>trigger_func</code>
             </td>
             <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
+                  <code><span title="collections.abc.Callable">Callable</span>[[], <span title="bool">bool</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Parent QObject of the widget. Defaults to None.</p>
+                <p>Function that returns the value that is polled in the scheduler loop.</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                <em>required</em>
             </td>
           </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.add" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Add a new data point, scroll left if necessary.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>value</code>
+                <code>command_system</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.CommandScheduler" href="#kevinbotlib.scheduler.CommandScheduler">CommandScheduler</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>New value to add</p>
+                <p>Command scheduler instance to apply the trigger.</p>
               </div>
             </td>
             <td>
@@ -3096,15 +3157,56 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_range</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.Trigger.check" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">check</span><span class="p">()</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Set the y-axis range for the graph.</p>
+        <p>Check the current state of the trigger and determine if it has changed. To be used internally within the scheduler lopp.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span>[<span title="bool">bool</span>, <span title="bool">bool</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Current state and whether it has changed since the last check.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Trigger.on_true" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">on_true</span><span class="p">(</span><span class="n">command_instance</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Trigger a command once when a condition is met.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3120,34 +3222,257 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>y_min</code>
+                <code>command_instance</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Minimum Y value.</p>
+                <p>Command to trigger.</p>
               </div>
             </td>
             <td>
                 <em>required</em>
             </td>
           </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>y_max</code>
-            </td>
-            <td>
-                  <code><span title="float">float</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Trigger" href="#kevinbotlib.scheduler.Trigger">Trigger</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Maximum Y value.</p>
+                <p>This trigger</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Trigger.on_false" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">on_false</span><span class="p">(</span><span class="n">command_instance</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Trigger a command once when a condition is unmet.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>command_instance</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Command to trigger.</p>
               </div>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Trigger" href="#kevinbotlib.scheduler.Trigger">Trigger</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>This trigger</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Trigger.while_true" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">while_true</span><span class="p">(</span><span class="n">command_instance</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Trigger a command once and keep running while a condition is met.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>command_instance</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Command to trigger.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Trigger" href="#kevinbotlib.scheduler.Trigger">Trigger</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>This trigger</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.Trigger.while_false" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">while_false</span><span class="p">(</span><span class="n">command_instance</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Trigger a command once and keep running while a condition is unmet.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>command_instance</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Command to trigger.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Trigger" href="#kevinbotlib.scheduler.Trigger">Trigger</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>This trigger</p>
+              </div>
             </td>
           </tr>
       </tbody>
@@ -3170,19 +3495,15 @@
 
 
 
-<h3 id="kevinbotlib.ui.widgets.BatteryManager" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryManager</code>
+<h3 id="kevinbotlib.scheduler.CommandScheduler" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.scheduler.CommandScheduler</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
 
-
-        <p>Qt widget to display multiple BatteryGraphers and voltage labels.</p>
 
 
 
@@ -3206,42 +3527,52 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryManager.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.CommandScheduler.__init__" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">()</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Create the widget.</p>
+        <p>Create a new Command Scheduler.</p>
 
 
-<p><span class="doc-section-title">Parameters:</span></p>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.scheduler.CommandScheduler.get_instance" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_instance</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get the singleton instance of the CommandScheduler.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
     <table>
       <thead>
         <tr>
-          <th>Name</th>
           <th>Type</th>
           <th>Description</th>
-          <th>Default</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>parent</code>
-            </td>
-            <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.CommandScheduler" href="#kevinbotlib.scheduler.CommandScheduler">CommandScheduler</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Parent QObject of the widget. Defaults to None.</p>
+                <p>CommandScheduler instance.</p>
               </div>
-            </td>
-            <td>
-                  <code>None</code>
             </td>
           </tr>
       </tbody>
@@ -3255,15 +3586,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryManager.set" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="nb">set</span><span class="p">(</span><span class="n">batts</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.CommandScheduler.schedule" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">schedule</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Set the current battery voltages. Will update all graphs.</p>
+        <p>Manually schedule a command to run.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3279,19 +3610,14 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>batts</code>
+                <code>command</code>
             </td>
             <td>
-                  <code><span title="list">list</span>[<a class="autorefs autorefs-internal" title="            kevinbotlib.ui.widgets.Battery
-
-
-  
-      dataclass
-   (kevinbotlib.ui.widgets.battery.Battery)" href="#kevinbotlib.ui.widgets.Battery">Battery</a>]</code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Command" href="#kevinbotlib.scheduler.Command">Command</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of batteries</p>
+                <p>Command to schedule.</p>
               </div>
             </td>
             <td>
@@ -3306,63 +3632,18 @@
 
 </div>
 
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.LicenseDialog" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.LicenseDialog</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QDialog">QDialog</span></code></p>
-
-
-        <p>Qt Dialog for viewing KevinbotLib's internal licenses.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.LicenseDialog.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.scheduler.CommandScheduler.register_trigger" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">register_trigger</span><span class="p">(</span><span class="n">trigger</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Create the dialog.</p>
+        <p>Register a new command trigger. To be used internally in <code>Trigger</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3378,18 +3659,18 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>parent</code>
+                <code>trigger</code>
             </td>
             <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.scheduler.Trigger" href="#kevinbotlib.scheduler.Trigger">Trigger</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Parent QObject of the dialog. Defaults to None.</p>
+                <p>Trigger to register.</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                <em>required</em>
             </td>
           </tr>
       </tbody>
@@ -3400,133 +3681,24 @@
 
 </div>
 
+<div class="doc doc-object doc-function">
 
 
-  </div>
+<h4 id="kevinbotlib.scheduler.CommandScheduler.iterate" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">iterate</span><span class="p">()</span></code>
 
-    </div>
-
-</div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="kevinbotlib.ui.delegates" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.delegates</code>
-
-
-</h2>
-
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.delegates.NoFocusDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.NoFocusDelegate</code>
-
-
-</h3>
+</h4>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
 
+        <p>Executes one iteration of the command scheduler, processing all scheduled commands
+and their triggers according to their current state and conditions.</p>
 
-        <p>Qt QStyledItemDelegate that removes the focus indicator</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
 
     </div>
 
 </div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.ComboBoxNoTextDelegate</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
-
-
-        <p>Qt QStyledItemDelegate that removes text from QComboBox</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
 
 
 
@@ -3581,7 +3753,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../metrics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metrics and System Info API">
+          <a href="../logging/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Logger Reference">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3591,20 +3763,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Metrics and System Info API
+                Logger Reference
               </div>
             </div>
           </a>
         
         
           
-          <a href="../misc/" class="md-footer__link md-footer__link--next" aria-label="Next: Miscellaneous Reference">
+          <a href="../comm/" class="md-footer__link md-footer__link--next" aria-label="Next: Communications Reference">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Miscellaneous Reference
+                Communications Reference
               </div>
             </div>
             <div class="md-footer__button md-icon">

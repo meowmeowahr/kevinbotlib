@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../metrics/">
+        <link rel="prev" href="../vision/">
       
       
-        <link rel="next" href="../misc/">
+        <link rel="next" href="../ui/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>UI Reference - KevinbotLib Docs</title>
+        <title>Metrics and System Info API - KevinbotLib Docs</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ui-reference" class="md-skip">
+        <a href="#metrics-and-system-info-api" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              UI Reference
+              Metrics and System Info API
             
           </span>
         </div>
@@ -1595,28 +1595,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../metrics/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Metrics and System Info API
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -1633,7 +1611,7 @@
           
   
   <span class="md-ellipsis">
-    UI Reference
+    Metrics and System Info API
     
   </span>
   
@@ -1645,7 +1623,7 @@
         
   
   <span class="md-ellipsis">
-    UI Reference
+    Metrics and System Info API
     
   </span>
   
@@ -1668,47 +1646,83 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
+  <a href="#kevinbotlib.metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;metrics
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" theme">
+    <nav class="md-nav" aria-label=" metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MetricType
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" ThemeStyle">
+    <nav class="md-nav" aria-label=" MetricType">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.RawType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;RawType
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.PercentageUsedType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PercentageUsedType
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.PercentageRemainingType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PercentageRemainingType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.TemperatureCelciusType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TemperatureCelciusType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.TemperatureFahrenheitType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TemperatureFahrenheitType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.BytesType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;BytesType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.BooleanType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;BooleanType
     </span>
   </a>
   
@@ -1720,112 +1734,37 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Metric
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" Theme">
+    <nav class="md-nav" aria-label=" Metric">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.__init__" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.title" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;title
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.value" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;value
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.kind" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" widgets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Battery
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Battery">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.voltage" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;voltage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_min" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_min
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_max" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_max
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;kind
     </span>
   </a>
   
@@ -1837,26 +1776,17 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SystemMetrics
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" BatteryGrapher">
+    <nav class="md-nav" aria-label=" SystemMetrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.add" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
     </span>
@@ -1865,66 +1795,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.update" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;update
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.get" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.getall" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" LicenseDialog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;getall
     </span>
   </a>
   
@@ -1941,30 +1832,279 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
+  <a href="#kevinbotlib.system" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;system
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" delegates">
+    <nav class="md-nav" aria-label=" system">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.system.CPUInfo" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CPUInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CPUInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.cores_logical" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cores_logical
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.system.CPUInfo.cores_physical" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cores_physical
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_current" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_current
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.usage_percent_per_core" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;usage_percent_per_core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.total_usage_percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total_usage_percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MemoryInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" MemoryInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.total" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.available" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;available
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.used" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.free" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;free
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DiskInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" DiskInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;device
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.mountpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mountpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.fstype" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;fstype
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.total" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.used" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.free" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;free
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SystemPerformanceData
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" SystemPerformanceData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;cpu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.disks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;disks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.primary_disk" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;primary_disk
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1977,6 +2117,28 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI Reference
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2060,47 +2222,83 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme" class="md-nav__link">
+  <a href="#kevinbotlib.metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;metrics
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" theme">
+    <nav class="md-nav" aria-label=" metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ThemeStyle
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MetricType
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" ThemeStyle">
+    <nav class="md-nav" aria-label=" MetricType">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Light" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.RawType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Light
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;RawType
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.Dark" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.PercentageUsedType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;Dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PercentageUsedType
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.ThemeStyle.System" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.MetricType.PercentageRemainingType" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;System
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;PercentageRemainingType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.TemperatureCelciusType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TemperatureCelciusType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.TemperatureFahrenheitType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;TemperatureFahrenheitType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.BytesType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;BytesType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.metrics.MetricType.BooleanType" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;BooleanType
     </span>
   </a>
   
@@ -2112,112 +2310,37 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Theme
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Metric
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" Theme">
+    <nav class="md-nav" aria-label=" Metric">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.__init__" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.title" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;title
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.is_dark" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.value" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;is_dark
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;value
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.get_stylesheet" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.Metric.kind" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get_stylesheet
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.apply" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;apply
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.theme.Theme.set_style" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_style
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;widgets
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" widgets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;Battery
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" Battery">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.voltage" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;voltage
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_min" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_min
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.Battery.y_max" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;y_max
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;kind
     </span>
   </a>
   
@@ -2229,26 +2352,17 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryGrapher
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SystemMetrics
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" BatteryGrapher">
+    <nav class="md-nav" aria-label=" SystemMetrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.add" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.add" class="md-nav__link">
     <span class="md-ellipsis">
       <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;add
     </span>
@@ -2257,66 +2371,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.update" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set_range
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BatteryManager
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" BatteryManager">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;update
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.BatteryManager.set" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.get" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;set
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;get
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog" class="md-nav__link">
+  <a href="#kevinbotlib.metrics.SystemMetrics.getall" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LicenseDialog
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label=" LicenseDialog">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.widgets.LicenseDialog.__init__" class="md-nav__link">
-    <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;__init__
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;getall
     </span>
   </a>
   
@@ -2333,30 +2408,279 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates" class="md-nav__link">
+  <a href="#kevinbotlib.system" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;delegates
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;system
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" delegates">
+    <nav class="md-nav" aria-label=" system">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.NoFocusDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.system.CPUInfo" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;NoFocusDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CPUInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" CPUInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.cores_logical" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cores_logical
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="md-nav__link">
+  <a href="#kevinbotlib.system.CPUInfo.cores_physical" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;ComboBoxNoTextDelegate
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;cores_physical
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_current" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_current
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_min
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.frequency_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;frequency_max
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.usage_percent_per_core" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;usage_percent_per_core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.CPUInfo.total_usage_percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total_usage_percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MemoryInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" MemoryInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.total" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.available" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;available
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.used" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.free" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;free
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.MemoryInfo.percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;DiskInfo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" DiskInfo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.device" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;device
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.mountpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mountpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.fstype" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;fstype
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.total" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;total
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.used" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.free" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;free
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.DiskInfo.percent" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;percent
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SystemPerformanceData
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label=" SystemPerformanceData">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;cpu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.disks" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;disks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.system.SystemPerformanceData.primary_disk" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;primary_disk
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2381,7 +2705,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/ui.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/metrics.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2389,15 +2713,15 @@
   
 
 
-<h1 id="ui-reference">UI Reference</h1>
+<h1 id="metrics-and-system-info-api">Metrics and System Info API</h1>
 
 
 <div class="doc doc-object doc-module">
 
 
 
-<h2 id="kevinbotlib.ui.theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.theme</code>
+<h2 id="kevinbotlib.metrics" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.metrics</code>
 
 
 </h2>
@@ -2425,8 +2749,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.ThemeStyle" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.ThemeStyle</code>
+<h3 id="kevinbotlib.metrics.MetricType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.metrics.MetricType</code>
 
 
 </h3>
@@ -2434,10 +2758,10 @@
 
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
-              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+              Bases: <code><span title="enum.IntEnum">IntEnum</span></code></p>
 
 
-        <p>Theme options for the KevinbotLib UI theme</p>
+        <p>Display types for <code>kevinbotlib.metrics.Metric</code></p>
 
 
 
@@ -2460,8 +2784,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Light" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Light</span> <span class="o">=</span> <span class="mi">0</span></code>
+<h4 id="kevinbotlib.metrics.MetricType.RawType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">RawType</span> <span class="o">=</span> <span class="mi">0</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2473,7 +2797,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Light mode</p>
+        <p>Display the value raw</p>
 
     </div>
 
@@ -2483,8 +2807,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.Dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">Dark</span> <span class="o">=</span> <span class="mi">1</span></code>
+<h4 id="kevinbotlib.metrics.MetricType.PercentageUsedType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">PercentageUsedType</span> <span class="o">=</span> <span class="mi">1</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2496,7 +2820,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Dark mode</p>
+        <p>Display the value as a percentage used. Dashboards may assume that the percentage available is <code>1.0 - value</code></p>
 
     </div>
 
@@ -2506,8 +2830,8 @@
 
 
 
-<h4 id="kevinbotlib.ui.theme.ThemeStyle.System" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">System</span> <span class="o">=</span> <span class="mi">2</span></code>
+<h4 id="kevinbotlib.metrics.MetricType.PercentageRemainingType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">PercentageRemainingType</span> <span class="o">=</span> <span class="mi">2</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -2519,7 +2843,99 @@
 
     <div class="doc doc-contents ">
 
-        <p>System theme, uses GTK on Linux, and system preference on Windows/macOS</p>
+        <p>Display the value as a percentage remaining. Dashboards may assume that the percentage used is <code>1.0 - value</code></p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.MetricType.TemperatureCelciusType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">TemperatureCelciusType</span> <span class="o">=</span> <span class="mi">3</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display the value as a temperature in Celcius. Dashboards may convert to Fahrenheit.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.MetricType.TemperatureFahrenheitType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">TemperatureFahrenheitType</span> <span class="o">=</span> <span class="mi">4</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display the value as a temperature in Fahrenheit. Dashboards may convert to Celcius.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.MetricType.BytesType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">BytesType</span> <span class="o">=</span> <span class="mi">5</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display the values as a number of bytes. Dashboards may convert it into human readable KB, MB, etc</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.MetricType.BooleanType" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">BooleanType</span> <span class="o">=</span> <span class="mi">6</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Display the value as a boolean.</p>
 
     </div>
 
@@ -2539,8 +2955,8 @@
 
 
 
-<h3 id="kevinbotlib.ui.theme.Theme" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.theme.Theme</code>
+<h3 id="kevinbotlib.metrics.Metric" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.metrics.Metric</code>
 
 
 </h3>
@@ -2549,7 +2965,120 @@
     <div class="doc doc-contents ">
 
 
-        <p>Qt theming engine for the KevinbotLib UI style</p>
+        <p>A single system metric</p>
+<p>Examples: Memory Free, CPU Usage, CPU Temperature, etc</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.Metric.title" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">title</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The title of the metric</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.Metric.value" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The value of the metric</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.metrics.Metric.kind" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">kind</span> <span class="o">=</span> <span class="n">MetricType</span><span class="o">.</span><span class="n">RawType</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>How should the metric be displayed?</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.metrics.SystemMetrics" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.metrics.SystemMetrics</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Keep track of various system metrics</p>
+<p>Example metrics: CPU usage, CPU temperature, Disk usage, etc...</p>
 
 
 
@@ -2573,15 +3102,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.theme.Theme.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">style</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.metrics.SystemMetrics.add" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">add</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Initialize the theming system.</p>
+        <p>Add a new metric</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2597,145 +3126,30 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>style</code>
+                <code>identifier</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.ui.theme.ThemeStyle" href="#kevinbotlib.ui.theme.ThemeStyle">ThemeStyle</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Theme to use.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.is_dark" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">is_dark</span><span class="p">()</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Detect if the currently applied style is dark</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>bool</code></td>            <td>
-                  <code><span title="bool">bool</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Is the current style dark?</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.get_stylesheet" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get_stylesheet</span><span class="p">()</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Get the formatted stylesheet string to apply</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Qt QSS Stylesheet string.</p>
+                <p>Metric identifier. Will not be displayed in dashboards.</p>
               </div>
             </td>
+            <td>
+                <em>required</em>
+            </td>
           </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.theme.Theme.apply" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">apply</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Apply the theme to an application or window</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>app</code>
+                <code>metric</code>
             </td>
             <td>
-                  <code><span title="qtpy.QtWidgets.QApplication">QApplication</span> | <span title="qtpy.QtWidgets.QMainWindow">QMainWindow</span></code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.metrics.Metric" href="#kevinbotlib.metrics.Metric">Metric</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>App or window to apply the theme to.</p>
+                <p>The metric to add</p>
               </div>
             </td>
             <td>
@@ -2753,15 +3167,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.theme.Theme.set_style" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.metrics.SystemMetrics.update" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">update</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Apply a new theme to the application or window.</p>
+        <p>Update the value of a metric</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2777,308 +3191,30 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>style</code>
+                <code>identifier</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.ui.theme.ThemeStyle" href="#kevinbotlib.ui.theme.ThemeStyle">ThemeStyle</a></code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>ThemeStyle. Theme to use.</p>
+                <p>The metric identifier to update</p>
               </div>
             </td>
             <td>
                 <em>required</em>
             </td>
           </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="kevinbotlib.ui.widgets" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.widgets</code>
-
-
-</h2>
-
-    <div class="doc doc-contents first">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.Battery" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.Battery</code>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
-  </span>
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-
-
-        <p>Battery item to be used in BatteryManager.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h4 id="kevinbotlib.ui.widgets.Battery.voltage" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">voltage</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Current battery voltage.</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h4 id="kevinbotlib.ui.widgets.Battery.y_min" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">y_min</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Minimum reasonable battery voltage.</p>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h4 id="kevinbotlib.ui.widgets.Battery.y_max" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">y_max</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Maximum reasonable battery voltage.</p>
-
-    </div>
-
-</div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.BatteryGrapher" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryGrapher</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
-
-
-        <p>Qt widget to plot battery voltage over time.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Create the widget</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>parent</code>
-            </td>
-            <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Parent QObject of the widget. Defaults to None.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.add" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Add a new data point, scroll left if necessary.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
           <tr class="doc-section-item">
             <td>
                 <code>value</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><span title="str">str</span> | <span title="int">int</span> | <span title="float">float</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>New value to add</p>
+                <p>The new value</p>
               </div>
             </td>
             <td>
@@ -3096,15 +3232,15 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryGrapher.set_range" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">set_range</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.metrics.SystemMetrics.get" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">get</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Set the y-axis range for the graph.</p>
+        <p>Retrieve the value of a metric</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -3120,30 +3256,14 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>y_min</code>
+                <code>identifier</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Minimum Y value.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>y_max</code>
-            </td>
-            <td>
-                  <code><span title="float">float</span></code>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Maximum Y value.</p>
+                <p>Identifier of the metric to get</p>
               </div>
             </td>
             <td>
@@ -3154,94 +3274,23 @@
     </table>
 
 
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.BatteryManager" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.BatteryManager</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QWidget">QWidget</span></code></p>
-
-
-        <p>Qt widget to display multiple BatteryGraphers and voltage labels.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.BatteryManager.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Create the widget.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
+    <p><span class="doc-section-title">Returns:</span></p>
     <table>
       <thead>
         <tr>
-          <th>Name</th>
           <th>Type</th>
           <th>Description</th>
-          <th>Default</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>parent</code>
-            </td>
-            <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.metrics.Metric" href="#kevinbotlib.metrics.Metric">Metric</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Parent QObject of the widget. Defaults to None.</p>
+                <p>A system metric</p>
               </div>
-            </td>
-            <td>
-                  <code>None</code>
             </td>
           </tr>
       </tbody>
@@ -3255,141 +3304,34 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="kevinbotlib.ui.widgets.BatteryManager.set" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="nb">set</span><span class="p">(</span><span class="n">batts</span><span class="p">)</span></code>
+<h4 id="kevinbotlib.metrics.SystemMetrics.getall" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">getall</span><span class="p">()</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Set the current battery voltages. Will update all graphs.</p>
+        <p>Get all available system metrics</p>
 
 
-<p><span class="doc-section-title">Parameters:</span></p>
+    <p><span class="doc-section-title">Returns:</span></p>
     <table>
       <thead>
         <tr>
-          <th>Name</th>
           <th>Type</th>
           <th>Description</th>
-          <th>Default</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>batts</code>
-            </td>
-            <td>
-                  <code><span title="list">list</span>[<a class="autorefs autorefs-internal" title="            kevinbotlib.ui.widgets.Battery
-
-
-  
-      dataclass
-   (kevinbotlib.ui.widgets.battery.Battery)" href="#kevinbotlib.ui.widgets.Battery">Battery</a>]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <a class="autorefs autorefs-internal" title="            kevinbotlib.metrics.Metric" href="#kevinbotlib.metrics.Metric">Metric</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of batteries</p>
+                <p>Identifier-metric pair dictionary</p>
               </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="kevinbotlib.ui.widgets.LicenseDialog" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.widgets.LicenseDialog</code>
-
-
-</h3>
-
-
-    <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="PySide6.QtWidgets.QDialog">QDialog</span></code></p>
-
-
-        <p>Qt Dialog for viewing KevinbotLib's internal licenses.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h4 id="kevinbotlib.ui.widgets.LicenseDialog.__init__" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-</h4>
-
-
-    <div class="doc doc-contents ">
-
-        <p>Create the dialog.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>parent</code>
-            </td>
-            <td>
-                  <code><span title="PySide6.QtCore.QObject">QObject</span> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Parent QObject of the dialog. Defaults to None.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
             </td>
           </tr>
       </tbody>
@@ -3421,8 +3363,8 @@
 
 
 
-<h2 id="kevinbotlib.ui.delegates" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.ui.delegates</code>
+<h2 id="kevinbotlib.system" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.system</code>
 
 
 </h2>
@@ -3450,19 +3392,17 @@
 
 
 
-<h3 id="kevinbotlib.ui.delegates.NoFocusDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.NoFocusDelegate</code>
+<h3 id="kevinbotlib.system.CPUInfo" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.system.CPUInfo</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
 
 
-        <p>Qt QStyledItemDelegate that removes the focus indicator</p>
+        <p>CPU Information Type</p>
 
 
 
@@ -3480,6 +3420,160 @@
 
 
 
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.cores_logical" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">cores_logical</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Logical cores</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.cores_physical" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">cores_physical</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Physical cores</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.frequency_current" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">frequency_current</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Current running CPU frequency</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.frequency_min" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">frequency_min</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Minimum operational CPU frequency</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.frequency_max" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">frequency_max</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Maximum operational CPU frequency</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.usage_percent_per_core" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">usage_percent_per_core</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Percent CPU usage per core</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.CPUInfo.total_usage_percent" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">total_usage_percent</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total CPU usage percentage</p>
+
+    </div>
+
+</div>
 
 
 
@@ -3495,19 +3589,367 @@
 
 
 
-<h3 id="kevinbotlib.ui.delegates.ComboBoxNoTextDelegate" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.ui.delegates.ComboBoxNoTextDelegate</code>
+<h3 id="kevinbotlib.system.MemoryInfo" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.system.MemoryInfo</code>
 
 
 </h3>
 
 
     <div class="doc doc-contents ">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="qtpy.QtWidgets.QStyledItemDelegate">QStyledItemDelegate</span></code></p>
 
 
-        <p>Qt QStyledItemDelegate that removes text from QComboBox</p>
+        <p>Memory Information Type</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.MemoryInfo.total" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">total</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total memory amount (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.MemoryInfo.available" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">available</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total memory available (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.MemoryInfo.used" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">used</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total memory used (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.MemoryInfo.free" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">free</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total memory free (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.MemoryInfo.percent" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">percent</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total memory used (percent)</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.system.DiskInfo" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.system.DiskInfo</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Disk Information Type</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.device" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">device</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Device path</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.mountpoint" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">mountpoint</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Disk mountpoint</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.fstype" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">fstype</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Disk filesystem type</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.total" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">total</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total disk bytes</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.used" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">used</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total disk space used (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.free" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">free</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total disk space free (bytes)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="kevinbotlib.system.DiskInfo.percent" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">percent</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Total disk used (percent)</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.system.SystemPerformanceData" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.system.SystemPerformanceData</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>System information API</p>
 
 
 
@@ -3527,6 +3969,186 @@
 
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.system.SystemPerformanceData.cpu" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">cpu</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets CPU information</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.system.CPUInfo" href="#kevinbotlib.system.CPUInfo">CPUInfo</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>CPU Information</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.system.SystemPerformanceData.memory" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">memory</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets memory information</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.system.MemoryInfo" href="#kevinbotlib.system.MemoryInfo">MemoryInfo</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Memory information</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.system.SystemPerformanceData.disks" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">disks</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets system disk(s) information</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="list">list</span>[<a class="autorefs autorefs-internal" title="            kevinbotlib.system.DiskInfo" href="#kevinbotlib.system.DiskInfo">DiskInfo</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Disk information</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.system.SystemPerformanceData.primary_disk" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">primary_disk</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gets system primary disk information</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            kevinbotlib.system.DiskInfo" href="#kevinbotlib.system.DiskInfo">DiskInfo</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Primary disk information</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
 
 
 
@@ -3581,7 +4203,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../metrics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metrics and System Info API">
+          <a href="../vision/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Vision Reference">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3591,20 +4213,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Metrics and System Info API
+                Vision Reference
               </div>
             </div>
           </a>
         
         
           
-          <a href="../misc/" class="md-footer__link md-footer__link--next" aria-label="Next: Miscellaneous Reference">
+          <a href="../ui/" class="md-footer__link md-footer__link--next" aria-label="Next: UI Reference">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Miscellaneous Reference
+                UI Reference
               </div>
             </div>
             <div class="md-footer__button md-icon">

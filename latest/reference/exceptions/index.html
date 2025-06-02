@@ -11,25 +11,23 @@
       
       
       
-        <link rel="prev" href="../commandscheduler/">
+        <link rel="prev" href="../misc/">
       
       
-        <link rel="next" href="../fileserver/">
       
-      
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.8">
     
     
       
-        <title>The Robot Class - KevinbotLib Docs</title>
+        <title>Exceptions Reference - KevinbotLib Docs</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,11 +46,11 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-robot-class" class="md-skip">
+        <a href="#exceptions-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +96,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="KevinbotLib Docs" class="md-header__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
+    <a href="../.." title="KevinbotLib Docs" class="md-header__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -118,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The Robot Class
+              Exceptions Reference
             
           </span>
         </div>
@@ -241,7 +239,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="KevinbotLib Docs" class="md-nav__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
+    <a href="../.." title="KevinbotLib Docs" class="md-nav__button md-logo" aria-label="KevinbotLib Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -271,7 +269,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -292,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -349,7 +347,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../examples/" class="md-nav__link ">
+            <a href="../../examples/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -383,7 +381,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/robot/" class="md-nav__link">
+      <a href="../../examples/robot/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -405,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/comm/" class="md-nav__link">
+      <a href="../../examples/comm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -427,7 +425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/logger/" class="md-nav__link">
+      <a href="../../examples/logger/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -449,7 +447,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/joystick/" class="md-nav__link">
+      <a href="../../examples/joystick/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -471,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/system/" class="md-nav__link">
+      <a href="../../examples/system/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -493,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/fileserver/" class="md-nav__link">
+      <a href="../../examples/fileserver/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -515,7 +513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/hardwareinterface/" class="md-nav__link">
+      <a href="../../examples/hardwareinterface/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -537,7 +535,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/hardwarecontroller/" class="md-nav__link">
+      <a href="../../examples/hardwarecontroller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -559,7 +557,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/scheduler/" class="md-nav__link">
+      <a href="../../examples/scheduler/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -662,7 +660,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../apps/console/" class="md-nav__link ">
+            <a href="../../apps/console/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -696,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/console/launching/" class="md-nav__link">
+      <a href="../../apps/console/launching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -718,7 +716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/console/run/" class="md-nav__link">
+      <a href="../../apps/console/run/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -740,7 +738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/console/controllers/" class="md-nav__link">
+      <a href="../../apps/console/controllers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -762,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/console/metrics/" class="md-nav__link">
+      <a href="../../apps/console/metrics/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -784,7 +782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/console/settings/" class="md-nav__link">
+      <a href="../../apps/console/settings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -840,7 +838,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../apps/dashboard/" class="md-nav__link ">
+            <a href="../../apps/dashboard/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -874,7 +872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/dashboard/launching/" class="md-nav__link">
+      <a href="../../apps/dashboard/launching/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -896,7 +894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/dashboard/ui/" class="md-nav__link">
+      <a href="../../apps/dashboard/ui/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -918,7 +916,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/dashboard/settings/" class="md-nav__link">
+      <a href="../../apps/dashboard/settings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -940,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/dashboard/widgets/" class="md-nav__link">
+      <a href="../../apps/dashboard/widgets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -994,7 +992,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../apps/logdownloader/" class="md-nav__link ">
+            <a href="../../apps/logdownloader/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1028,7 +1026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/logdownloader/connection/" class="md-nav__link">
+      <a href="../../apps/logdownloader/connection/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1050,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/logdownloader/controls/" class="md-nav__link">
+      <a href="../../apps/logdownloader/controls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1072,7 +1070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/logdownloader/viewing/" class="md-nav__link">
+      <a href="../../apps/logdownloader/viewing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1124,7 +1122,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../apps/logviewer/" class="md-nav__link ">
+            <a href="../../apps/logviewer/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1158,7 +1156,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/logviewer/loading/" class="md-nav__link">
+      <a href="../../apps/logviewer/loading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1180,7 +1178,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../apps/logviewer/viewing/" class="md-nav__link">
+      <a href="../../apps/logviewer/viewing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1235,7 +1233,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../cli/" class="md-nav__link ">
+            <a href="../../cli/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1271,7 +1269,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../commandscheduler/" class="md-nav__link">
+      <a href="../../commandscheduler/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1287,6 +1285,378 @@
     
       
       
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../robot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Robot Class
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The File Server
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    KevinbotLib Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            KevinbotLib Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../robot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Robot Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Logger Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scheduler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command Scheduler Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Communications Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../joystick/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Joystick Interface Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fileserver/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File Server Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwareinterface/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Interface Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardwarecontroller/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hardware Controller Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics and System Info API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../misc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Miscellaneous Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
   
   
     
@@ -1305,7 +1675,7 @@
           
   
   <span class="md-ellipsis">
-    The Robot Class
+    Exceptions Reference
     
   </span>
   
@@ -1317,7 +1687,7 @@
         
   
   <span class="md-ellipsis">
-    The Robot Class
+    Exceptions Reference
     
   </span>
   
@@ -1340,46 +1710,91 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;exceptions
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#shutdown-signals" class="md-nav__link">
-    <span class="md-ellipsis">
-      Shutdown signals
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shutdown signals">
+    <nav class="md-nav" aria-label=" exceptions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#sigusr1" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions.HandshakeTimeoutException" class="md-nav__link">
     <span class="md-ellipsis">
-      SIGUSR1
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;HandshakeTimeoutException
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sigusr2" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions.JoystickMissingException" class="md-nav__link">
     <span class="md-ellipsis">
-      SIGUSR2
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;JoystickMissingException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.CommandSchedulerAlreadyExistsException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandSchedulerAlreadyExistsException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.CommandSchedulerDoesNotExistException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandSchedulerDoesNotExistException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.LoggerNotConfiguredException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LoggerNotConfiguredException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotStoppedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotStoppedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotEmergencyStoppedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotEmergencyStoppedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotLockedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotLockedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.SshNotConnectedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SshNotConnectedException
     </span>
   </a>
   
@@ -1394,376 +1809,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fileserver/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    The File Server
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    KevinbotLib Reference
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
-            <span class="md-nav__icon md-icon"></span>
-            KevinbotLib Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/robot/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Robot Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/logging/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Logger Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/scheduler/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Command Scheduler Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/comm/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Communications Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/joystick/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Joystick Interface Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/fileserver/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    File Server Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/hardwareinterface/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Hardware Interface Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/hardwarecontroller/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Hardware Controller Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/vision/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Vision Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/metrics/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Metrics and System Info API
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/ui/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    UI Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/misc/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Miscellaneous Reference
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/exceptions/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Exceptions Reference
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1803,46 +1848,91 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions" class="md-nav__link">
     <span class="md-ellipsis">
-      Features
+      <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;exceptions
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#shutdown-signals" class="md-nav__link">
-    <span class="md-ellipsis">
-      Shutdown signals
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Shutdown signals">
+    <nav class="md-nav" aria-label=" exceptions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#sigusr1" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions.HandshakeTimeoutException" class="md-nav__link">
     <span class="md-ellipsis">
-      SIGUSR1
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;HandshakeTimeoutException
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#sigusr2" class="md-nav__link">
+  <a href="#kevinbotlib.exceptions.JoystickMissingException" class="md-nav__link">
     <span class="md-ellipsis">
-      SIGUSR2
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;JoystickMissingException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.CommandSchedulerAlreadyExistsException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandSchedulerAlreadyExistsException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.CommandSchedulerDoesNotExistException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;CommandSchedulerDoesNotExistException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.LoggerNotConfiguredException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;LoggerNotConfiguredException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotStoppedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotStoppedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotEmergencyStoppedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotEmergencyStoppedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.RobotLockedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;RobotLockedException
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.exceptions.SshNotConnectedException" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SshNotConnectedException
     </span>
   </a>
   
@@ -1869,7 +1959,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/robot.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/exceptions.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1877,62 +1967,306 @@
   
 
 
-<h1 id="the-robot-class">The Robot Class</h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The main robot class can only be used once within your project</p>
+<h1 id="exceptions-reference">Exceptions Reference</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="kevinbotlib.exceptions" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <code>kevinbotlib.exceptions</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.HandshakeTimeoutException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.HandshakeTimeoutException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when the server-up wait times out</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p>The safety features included within KevinbotLib are not guaranteed to always function.</p>
-<p>It is <strong>always</strong> recommended to add a physical emergency stop system to your robot.</p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.JoystickMissingException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.JoystickMissingException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when a requested gamepad is missing</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<p>The KevinbotLib main robot class is the starting point for your robotics project. It integrates many components of KevinbotLib to make it easy to design your own robot.</p>
-<h2 id="features">Features</h2>
-<p>The KevinbotLib Robot class sets up some components of KevinbotLib to make designing a robot easier. The components are listed below.</p>
-<ul>
-<li>Communication Client</li>
-<li>Logging Configuration</li>
-<li>Periodic log file rotations</li>
-<li>Logging to HTTP Server</li>
-<li>Control Console communication and management</li>
-<li>Robot operational mode management</li>
-<li>Safety features</li>
-<li>Signal shutdown support (POSIX only)</li>
-</ul>
-<h2 id="usage">Usage</h2>
-<ul>
-<li>Extend the <a href="../reference/robot/#kevinbotlib.robot.BaseRobot">BaseRobot</a> class and add your own code.</li>
-<li>Call <code>YourRobotClassName().run()</code> to start the robot's execution</li>
-<li>All the components listed above will be started up automatically 😀</li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>It is not recommended to override the <code>run</code> method, or any other private method marked with the <code>@final</code> decorator.</p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.CommandSchedulerAlreadyExistsException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.CommandSchedulerAlreadyExistsException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when an attempt to create more than one command scheduler was made</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<h2 id="shutdown-signals">Shutdown signals</h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The shutdown signals are only supported on POSIX OSes (like Linux or macOS). They are not supported on Windows due to the lack of user signals in the NT kernel.</p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.CommandSchedulerDoesNotExistException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.CommandSchedulerDoesNotExistException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when an attempt to get the current scheduler instance before creating a CommandScheduler</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<h3 id="sigusr1"><code>SIGUSR1</code></h3>
-<p>This will trigger a graceful system shutdown similar to <code>CTRL-C</code> on the console</p>
-<p>This should leave the robot in a state where it's ready for a code restart</p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>This will cause the application to end with exit code <code>64</code></p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.LoggerNotConfiguredException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.LoggerNotConfiguredException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when trying to log to a non-configured logger</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<h3 id="sigusr2"><code>SIGUSR2</code></h3>
-<p>This will trigger an <strong>emergency shutdown</strong> similar to hitting space on the Control Console</p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>This will cause the application to end with exit code <code>65</code></p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.RobotStoppedException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.RobotStoppedException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Used when a non-urgent robot stop is triggered</p>
+
+
+
+
+
+
+
+
+    </div>
+
 </div>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p>If the robot code's PID (process id) is 1234, you can run the following command to gracefully shut it down:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">kill</span><span class="w"> </span>-SIGUSR1<span class="w"> </span><span class="m">1234</span>
-</code></pre></div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.RobotEmergencyStoppedException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.RobotEmergencyStoppedException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Used when an urgent robot stop is triggered</p>
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.RobotLockedException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.RobotLockedException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced when another instance of a robot is running</p>
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="kevinbotlib.exceptions.SshNotConnectedException" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <code>kevinbotlib.exceptions.SshNotConnectedException</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="BaseException">BaseException</span></code></p>
+
+
+        <p>Exception that is produced trying to interact with a disconnected SSH client</p>
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
 </div>
 
 
@@ -1971,7 +2305,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../commandscheduler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Command Scheduler">
+          <a href="../misc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Miscellaneous Reference">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1981,27 +2315,11 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                The Command Scheduler
+                Miscellaneous Reference
               </div>
             </div>
           </a>
         
-        
-          
-          <a href="../fileserver/" class="md-footer__link md-footer__link--next" aria-label="Next: The File Server">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                The File Server
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
         
       </nav>
     
@@ -2030,10 +2348,10 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

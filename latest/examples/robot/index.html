@@ -1434,7 +1434,19 @@
     
       
         
-          
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
         
       
         
@@ -1457,10 +1469,8 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../reference/" class="md-nav__link ">
-              
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
   
   <span class="md-ellipsis">
     KevinbotLib Reference
@@ -1468,14 +1478,8 @@
   </span>
   
 
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_9">
@@ -1484,6 +1488,26 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/robot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Robot Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -1497,7 +1521,73 @@
         
   
   <span class="md-ellipsis">
-    KevinbotLib Logging Reference
+    Logger Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/scheduler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command Scheduler Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/comm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Communications Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/joystick/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Joystick Interface Reference
     
   </span>
   
@@ -1519,7 +1609,7 @@
         
   
   <span class="md-ellipsis">
-    KevinbotLib File Server Reference
+    File Server Reference
     
   </span>
   
@@ -1581,11 +1671,99 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/vision/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vision Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/metrics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics and System Info API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/ui/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    KevinbotLib UI Reference
+    UI Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/misc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Miscellaneous Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/exceptions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions Reference
     
   </span>
   
@@ -1754,7 +1932,8 @@
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
 
@@ -1768,6 +1947,7 @@
                 <span class="s2">&quot;TestOp4&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
         <span class="p">)</span>
@@ -1851,7 +2031,8 @@
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
 
@@ -1862,6 +2043,7 @@
                 <span class="s2">&quot;TestOp1&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
         <span class="p">)</span>
@@ -1946,7 +2128,8 @@
 <span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
-<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
 
@@ -1957,6 +2140,7 @@
                 <span class="s2">&quot;TestMetricsRobot&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowest logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># loop our robot code 5x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>  <span class="c1"># how often to publish new system metrics to the control console</span>
         <span class="p">)</span>
@@ -2039,7 +2223,8 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteXboxController</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteNamedController</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
@@ -2051,11 +2236,12 @@
                 <span class="s2">&quot;TestOp1&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">joystick1</span> <span class="o">=</span> <span class="n">RemoteXboxController</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="p">,</span> <span class="s2">&quot;%ControlConsole/joystick/0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joystick1</span> <span class="o">=</span> <span class="n">RemoteNamedController</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="p">,</span> <span class="s2">&quot;%ControlConsole/joystick/0&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">robot_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># runs once as the robot starts</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">robot_start</span><span class="p">()</span>
@@ -2147,7 +2333,8 @@
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRobot</span>
 
 
@@ -2161,6 +2348,7 @@
                 <span class="s2">&quot;OpModeThatWill1stOpMode&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
             <span class="n">allow_enable_without_console</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># * allow the robot to enable without the prescence of a control console</span>
@@ -2247,7 +2435,8 @@
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AnyListSendable</span><span class="p">,</span>
     <span class="n">BooleanSendable</span><span class="p">,</span>
     <span class="n">FloatSendable</span><span class="p">,</span>
@@ -2268,6 +2457,7 @@
                 <span class="s2">&quot;TestOp4&quot;</span><span class="p">,</span>
             <span class="p">],</span>  <span class="c1"># robot&#39;s operational modes</span>
             <span class="n">log_level</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TRACE</span><span class="p">,</span>  <span class="c1"># lowset logging level</span>
+            <span class="n">enable_stderr_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">cycle_time</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="c1"># loop our robot code 20x per second - it is recommended to run much higher in practice</span>
             <span class="n">metrics_publish_timer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># the test robot doesn&#39;t use metrics - see the metrics_robot.py example for a metrics usage example</span>
         <span class="p">)</span>
