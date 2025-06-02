@@ -28,6 +28,9 @@ jobs:
           - os: windows-latest
             platform: windows
             arch: x64
+          - os: windows-11-arm
+            platform: windows
+            arch: arm64
 
     runs-on: ${{ matrix.os }}
 
@@ -85,7 +88,19 @@ jobs:
           bash scripts/build/build_binaries_mac.sh
 
       - name: Build on Windows
-        if: matrix.platform == 'windows'
+        if: matrix.platform == 'windows' && matrix.arch == 'x64'
+        shell: pwsh
+        run: |
+          $env_path = hatch env find
+          & "$env_path\Scripts\Activate.ps1"
+          pip install uv
+          uv sync --active --extra dev
+          hatch build
+          .\scripts\resource-rcc-compile.ps1
+          .\scripts\build\build_binaries_windows.ps1
+
+      - name: Build on Windows ARM
+        if: matrix.platform == 'windows' && matrix.arch == 'arm64'
         shell: pwsh
         run: |
           $env_path = hatch env find
