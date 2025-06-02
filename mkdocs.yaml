@@ -111,11 +111,13 @@ nav:
       - apps/dashboard/widgets.md
     - Log Downloader:
       - apps/logdownloader/index.md
+      - apps/logdownloader/launching.md
       - apps/logdownloader/connection.md
       - apps/logdownloader/controls.md
       - apps/logdownloader/viewing.md
     - Log Viewer:
       - apps/logviewer/index.md
+      - apps/logviewer/launching.md
       - apps/logviewer/loading.md
       - apps/logviewer/viewing.md
   - Command Line Tools:
