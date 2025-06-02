@@ -16,5 +16,11 @@ def fullclassname(o: object) -> str:
     return module + "." + o.__qualname__
 
 
-def is_binary():
+def is_binary() -> bool:
+    """
+    Detect if the application is running as a frozen executable or not.
+    
+    Returns:
+        Is frozen?
+    """
     return getattr(sys, "frozen", False)

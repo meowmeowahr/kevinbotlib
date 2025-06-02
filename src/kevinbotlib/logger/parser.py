@@ -8,20 +8,44 @@ import orjson
 
 @dataclass
 class LogEntry:
+    """Class representing a single log entry."""
+
     timestamp: datetime.datetime
+    """Timestamp of the log entry."""
+
     modname: str
+    """Module name of the log entry."""
+
     function: str
+    """Function name of the log entry."""
+
     line: int
+    """Line of code where the log entry was generated."""
+
     level_no: int
+    """Log level number."""
+
     level_name: str
+    """Log level name."""
+
     level_icon: str
+    """Log level icon."""
+
     message: str
+    """Messages logged."""
 
 
 class Log(list):
     """Class representing a list of LogEntry instances."""
 
     def __init__(self, entries: list[LogEntry] | None = None):
+        """
+        Create a new log object.
+
+        Args:
+            entries: List of LogEntry instances. Defaults to None.
+        """
+
         if entries is None:
             entries = []
         elif isinstance(entries, Log):
@@ -37,12 +61,26 @@ class Log(list):
         super().__init__(entries)
 
     def append(self, item: LogEntry) -> None:
+        """
+        Append a new LogEntry to the log.
+
+        Args:
+            item: New LogEntry to append.
+        """
+
         if not isinstance(item, LogEntry):
             msg = f"Expected LogEntry, got {type(item).__name__}"
             raise TypeError(msg)
         super().append(item)
 
     def extend(self, items: "list[LogEntry] | Log") -> None:
+        """
+        Extend the log with a list of LogEntry instances.
+
+        Args:
+            items: List is of LogEntry instances.
+        """
+
         if isinstance(items, Log):
             items = list(items)
         if not isinstance(items, list):
@@ -54,6 +92,14 @@ class Log(list):
         super().extend(items)
 
     def insert(self, index: int, item: LogEntry) -> None:
+        """
+        Insert a new LogEntry into the log at the specified index.
+
+        Args:
+            index: Index to insert the LogEntry at.
+            item: LogEntry to insert.
+        """
+
         if not isinstance(item, LogEntry):
             msg = f"Expected LogEntry, got {type(item).__name__}"
             raise TypeError(msg)
@@ -89,7 +135,15 @@ class LogParser:
 
     @staticmethod
     def parse(data: str) -> Log:
-        """Parse raw log data into a Log object."""
+        """
+        Parse raw log file data into a Log object.
+
+        Args:
+            data: Log file data.
+
+        Returns: Log object.
+        """
+
         entries = []
         for raw_entry in data.splitlines():
             if not raw_entry:

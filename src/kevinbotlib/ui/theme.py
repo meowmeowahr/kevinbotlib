@@ -26,19 +26,35 @@ class Theme:
     """Qt theming engine for the KevinbotLib UI style"""
 
     def __init__(self, style: ThemeStyle):
+        """
+        Initialize the theming system.
+
+        Args:
+            style: Theme to use.
+        """
         self.style = style
         self.app: QApplication | QMainWindow | None = None
 
-    def is_dark(self):
-        """Detect if the currently applied style is dark"""
+    def is_dark(self) -> bool:
+        """
+        Detect if the currently applied style is dark
+
+        Returns:
+            bool: Is the current style dark?
+        """
         if self.style == ThemeStyle.Dark:
             return True
         if self.style == ThemeStyle.Light:
             return False
         return darkdetect.isDark()
 
-    def get_stylesheet(self):
-        """Get the formatted stylesheet string to apply"""
+    def get_stylesheet(self) -> str:
+        """
+        Get the formatted stylesheet string to apply
+
+        Returns:
+            str: Qt QSS Stylesheet string.
+        """
         try:
             # this is needed for PyInstaller - base.qss gets moved to sys._MEIPASS
             if getattr(sys, "frozen", False):  # Running in a bundle
@@ -94,13 +110,23 @@ class Theme:
         except jinja2.TemplateNotFound:
             return ""
 
-    def apply(self, app: QApplication | QMainWindow):
-        """Apply the theme to an application of window"""
+    def apply(self, app: QApplication | QMainWindow) -> None:
+        """
+        Apply the theme to an application or window
+
+        Args:
+            app: App or window to apply the theme to.
+        """
         app.setStyleSheet(self.get_stylesheet())
         self.app = app
 
-    def set_style(self, style: ThemeStyle):
-        """Update the current style"""
+    def set_style(self, style: ThemeStyle) -> None:
+        """
+        Apply a new theme to the application or window.
+
+        Args:
+            style: ThemeStyle. Theme to use.
+        """
         self.style = style
         if self.app:
             self.app.setStyleSheet(self.get_stylesheet())

@@ -61,6 +61,9 @@ Trigger(lambda: NamedControllerButtons.A in controller.get_buttons(), scheduler)
 Trigger(lambda: NamedControllerButtons.B in controller.get_buttons(), scheduler).on_true(
     PrintForOneSecondCommand("B Button Command")
 )
+Trigger(lambda: NamedControllerButtons.X in controller.get_buttons(), scheduler).on_true(
+    PrintCommand("X Button Command")
+)
 
 while True:
     scheduler.iterate()

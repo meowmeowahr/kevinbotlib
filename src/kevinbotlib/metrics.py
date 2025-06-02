@@ -75,7 +75,7 @@ class SystemMetrics:
             identifier (str): Identifier of the metric to get
 
         Returns:
-            Metric: A system metric
+            A system metric
         """
         return self._metrics[identifier]
 
@@ -83,6 +83,6 @@ class SystemMetrics:
         """Get all available system metrics
 
         Returns:
-            dict[str, Metric]: identifier-metric pair dictionary
+            Identifier-metric pair dictionary
         """
         return self._metrics

@@ -10,6 +10,7 @@ from enum import Enum
 from io import TextIOBase
 from typing import IO
 
+import loguru._logger
 import platformdirs
 from deprecated import deprecated
 from loguru import logger as _internal_logger
@@ -20,15 +21,30 @@ from kevinbotlib.exceptions import LoggerNotConfiguredException
 
 class LoggerDirectories:
     @staticmethod
-    def get_logger_directory(*, ensure_exists=True) -> str:
-        """Returns the log directory path and ensures its existence if needed."""
+    def get_logger_directory(*, ensure_exists: bool = True) -> str:
+        """
+        Returns the log directory path and ensures its existence if needed.
+
+        Args:
+            ensure_exists: Create the directory if it doesn't exist.
+
+        Returns:
+            The log directory path.
+        """
         log_dir = platformdirs.user_data_dir("kevinbotlib/logging", ensure_exists=ensure_exists)
         os.makedirs(log_dir, exist_ok=True)
         return log_dir
 
     @staticmethod
-    def cleanup_logs(directory: str, max_size_mb: int = 500):
-        """Deletes oldest log files if the total log directory exceeds max_size_mb."""
+    def cleanup_logs(directory: str, max_size_mb: int = 500) -> None:
+        """
+        Deletes oldest log files if the total log directory exceeds max_size_mb.
+
+        Args:
+            directory: Log directory path.
+            max_size_mb: Maximum size of the log directory in MB.
+        """
+
         log_files = sorted(glob.glob(os.path.join(directory, "*.log")), key=os.path.getctime)
 
         while log_files and LoggerDirectories.get_directory_size(directory) > max_size_mb:
@@ -36,7 +52,16 @@ class LoggerDirectories:
 
     @staticmethod
     def get_directory_size(directory: str) -> float:
-        """Returns the size of the directory in MB."""
+        """
+        Returns the size of the directory in MB.
+
+        Args:
+            directory: Directory to measure size.
+
+        Returns:
+            Directory size in MB.
+        """
+
         return sum(os.path.getsize(f) for f in glob.glob(os.path.join(directory, "*.log"))) / (1024 * 1024)
 
 
@@ -67,24 +92,47 @@ class Level(Enum):
 
 @dataclass
 class LoggerWriteOpts:
+    """Options for writing to the logger"""
+
     depth: int = 1
+    """Logger depth. Used to determine the statement that triggered the log. Defaults to 1."""
+
     colors: bool = True
+    """Enable colorized output. Defaults to True."""
+
     ansi: bool = True
+    """Enable ANSI escape codes. Defaults to True."""
+
     exception: bool | BaseException = False
+    """Exception to send to the logger. Defaults to False."""
 
 
 @dataclass
 class FileLoggerConfig:
+    """Configuration for file-based logging"""
+
     directory: str = field(default_factory=LoggerDirectories.get_logger_directory)
+    """Directory to store log files. Defaults to the user's data directory."""
+
     rotation_size: str = "150MB"
+    """Rotation size for the log file. Defaults to 150MB."""
+
     level: Level | None = None
+    """Logging level for the log file. Defaults to the global logging level."""
 
 
 @dataclass
 class LoggerConfiguration:
+    """Configuration for the logger"""
+
     level: Level = Level.INFO
+    """Global logging level. Defaults to INFO."""
+
     enable_stderr_logger: bool = True
+    """Enable logging to stderr. Defaults to True."""
+
     file_logger: FileLoggerConfig | None = None
+    """File-based logging configuration. Defaults to None."""
 
 
 class _Sink(TextIOBase):
@@ -112,28 +160,51 @@ class Logger:
     _suppress = False
 
     def __init__(self) -> None:
+        """Create a logger instance"""
+
         self._internal_logger = _internal_logger
         self._config: LoggerConfiguration | None = None
 
     @property
     def config(self) -> LoggerConfiguration | None:
+        """
+        Get the current logger configuration.
+
+        Returns:
+            Current global logger configuration.
+        """
         return self._config
 
     @property
-    def loguru_logger(self):
+    def loguru_logger(self) -> loguru._logger.Logger:
+        """
+        Get the internal loguru logger instance.
+
+        Returns:
+            Loguru logger.
+        """
+
         return self._internal_logger
 
     @classmethod
     @contextmanager
     def suppress(cls):
+        """Content manager to suppress all logging."""
+
         cls._suppress = True
         try:
             yield
         finally:
             cls._suppress = False
 
-    def configure(self, config: LoggerConfiguration):
-        """Configures file-based logging with rotation and cleanup."""
+    def configure(self, config: LoggerConfiguration) -> None:
+        """
+        Configures file-based logging with rotation and cleanup.
+
+        Args:
+            config: Logger configuration.
+        """
+
         Logger.is_configured = True
         self._config = config
         self._internal_logger.remove()
@@ -155,7 +226,14 @@ class Logger:
             return log_file
         return None
 
-    def add_hook(self, hook: Callable[[Message], None]):
+    def add_hook(self, hook: Callable[[Message], None]) -> None:
+        """
+        Add a new serialized logger write hook.
+
+        Args:
+            hook: Logger write hook.
+        """
+
         if not self.config:
             raise LoggerNotConfiguredException
         self._internal_logger.add(
@@ -166,7 +244,14 @@ class Logger:
             colorize=True,
         )
 
-    def add_hook_ansi(self, hook: Callable[[str], None]):
+    def add_hook_ansi(self, hook: Callable[[str], None]) -> None:
+        """
+        Add a new ANSI logger write hook.
+
+        Args:
+            hook: Logger write hook.
+        """
+
         if not self.config:
             raise LoggerNotConfiguredException
         self._internal_logger.add(
@@ -181,8 +266,16 @@ class Logger:
         level: Level,
         message: str | BaseException,
         opts: LoggerWriteOpts | None = None,
-    ):
-        """Log a message with a specified level"""
+    ) -> None:
+        """
+        Log a message with the specified level and options.
+
+        Args:
+            level: Logger level
+            message: Message to log. Can be a string or an exception.
+            opts: Logger options.
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -197,7 +290,14 @@ class Logger:
             exception=opts.exception,
         ).log(level.name, message)
 
-    def trace(self, message: str):
+    def trace(self, message: str) -> None:
+        """
+        Log a trace message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -206,7 +306,14 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.TRACE.name, message)
 
-    def debug(self, message: str):
+    def debug(self, message: str) -> None:
+        """
+        Log a debug message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -215,7 +322,14 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.DEBUG.name, message)
 
-    def info(self, message: str):
+    def info(self, message: str) -> None:
+        """
+        Log an info message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -224,7 +338,14 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.INFO.name, message)
 
-    def warning(self, message: str):
+    def warning(self, message: str) -> None:
+        """
+        Log a warning message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -234,10 +355,24 @@ class Logger:
         self._internal_logger.opt(depth=1).log(Level.WARNING.name, message)
 
     @deprecated("Use Logger.warning() instead")
-    def warn(self, message: str):
+    def warn(self, message: str) -> None:
+        """
+        Log a warning message. Deprecated. Use Logger.warning() instead.
+
+        Args:
+            message: Message
+        """
+
         self.warning(message)
 
-    def error(self, message: str):
+    def error(self, message: str) -> None:
+        """
+        Log an error message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -246,7 +381,14 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.ERROR.name, message)
 
-    def security(self, message: str):
+    def security(self, message: str) -> None:
+        """
+        Log a security message.
+
+        Args:
+            message: Message
+        """
+
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -255,7 +397,7 @@ class Logger:
 
         self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
 
-    def critical(self, message: str):
+    def critical(self, message: str) -> None:
         if not Logger.is_configured:
             raise LoggerNotConfiguredException
 
@@ -269,6 +411,14 @@ class StreamRedirector(IO):
     """Redirect a stream to logging"""
 
     def __init__(self, logger: Logger, level: Level = Level.INFO):
+        """
+        Initialize the log stream redirector.
+
+        Args:
+            logger: Logger to redirect the stream to.
+            level: Level to log at.
+        """
+
         self._level = level
         self._logger = logger
 

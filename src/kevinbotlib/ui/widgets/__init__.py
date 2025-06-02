@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QObject, Qt
 from PySide6.QtWidgets import QDialog, QPushButton, QTabWidget, QTextEdit, QVBoxLayout
 
 from kevinbotlib.licenses import get_licenses
@@ -8,7 +8,13 @@ from kevinbotlib.ui.widgets.battery import Battery, BatteryGrapher, BatteryManag
 class LicenseDialog(QDialog):
     """Qt Dialog for viewing KevinbotLib's internal licenses."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QObject | None = None):
+        """
+        Create the dialog.
+
+        Args:
+            parent: Parent QObject of the dialog. Defaults to None.
+        """
         super().__init__(parent)
         self.setWindowTitle("Licenses")
         self.setMinimumSize(500, 400)

@@ -66,7 +66,7 @@ class InstanceLocker:
         """Attempt to acquire the lock by creating a lockfile with the current PID.
 
         Returns:
-            bool: True if the lock was successfully acquired, False if another instance is running.
+            True if the lock was successfully acquired, False if another instance is running.
         """
         if self._locked:
             return True  # Already locked by this instance
@@ -118,7 +118,7 @@ class InstanceLocker:
             lockfile_name (str): The name of the lockfile to check.
 
         Returns:
-            int: -1 if not locked, PID of locking process
+            -1 if not locked, PID of locking process
         """
         if not os.path.exists(os.path.join(tempfile.gettempdir(), lockfile_name)):
             return False
@@ -219,7 +219,7 @@ class BaseRobot:
         threading.excepthook = self._thread_exc_hook
         self.telemetry.trace("Configured exception hooks")
 
-        self.fileserver = FileServer(LoggerDirectories.get_logger_directory())
+        self.fileserver = FileServer(LoggerDirectories.get_logger_directory(), host="0.0.0.0")  # noqa: S104
         self.telemetry.trace("Configured file server")
 
         self._instance_locker = InstanceLocker(f"{self.__class__.__name__}.lock")
@@ -364,7 +364,6 @@ class BaseRobot:
 
     @final
     def _signal_usr2_capture(self, _, __):
-        """Internal method used for the *EMERGENCY STOP* system **DO NOT OVERRIDE**"""
         self.telemetry.critical("Signal EMERGENCY STOP detected... Stopping now")
         self._signal_estop = True
 

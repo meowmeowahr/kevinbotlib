@@ -25,7 +25,7 @@ The KevinbotLib Robot class sets up some components of KevinbotLib to make desig
 
 ## Usage
 
-* Extend the [BaseRobot](reference/index.md#kevinbotlib.robot.BaseRobot) class and add your own code.
+* Extend the [BaseRobot](reference/robot.md#kevinbotlib.robot.BaseRobot) class and add your own code.
 * Call `YourRobotClassName().run()` to start the robot's execution
 * All the components listed above will be started up automatically 😀
 

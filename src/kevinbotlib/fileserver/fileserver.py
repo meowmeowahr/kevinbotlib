@@ -11,9 +11,16 @@ from kevinbotlib import __about__
 from kevinbotlib.logger import Level, Logger, StreamRedirector
 
 
-# Your existing get_file_type function remains unchanged
-def get_file_type(path):
-    """Determine the file type for icon display."""
+def get_file_type(path: str) -> str:
+    """
+    Get the icon name from a file extension.
+
+    Args:
+        path: File path
+
+    Returns: Icon name
+    """
+
     if os.path.isdir(path):
         return "folder"
     ext = os.path.splitext(path)[1].lower()
@@ -150,18 +157,31 @@ class FileServer:
 
     def __init__(
         self,
-        directory=".",
-        http_port=8000,
-        host="0.0.0.0",  # TODO: do we need to fix this # noqa: S104
+        directory: str = ".",
+        http_port: int = 8000,
+        host: str = "172.0.0.1",
     ):
+        """
+        Initialize the file server.
+
+        Args:
+            directory: Directory to serve. Defaults to "."
+            http_port: Port to serve on. Defaults to 8000.
+            host: Host to serve on. Defaults to "127.0.0.1".
+        """
+
+        self.http_thread: threading.Thread | None = None
         self.directory = os.path.abspath(directory)
         self.http_port = http_port
         self.host = host
         self.http_server = None
         self.logger = Logger()
 
-    def http_server_loop(self):
-        """Start the WSGI server."""
+    def http_server_loop(self) -> None:
+        """
+        Start the WSGI file server
+        """
+
         app = FileserverHTTPHandler(self.directory)
         self.http_server = make_server(self.host, self.http_port, app)
         self.logger.info(f"HTTP server starting on {self.host}:{self.http_port}")
@@ -169,8 +189,14 @@ class FileServer:
         with contextlib.redirect_stderr(StreamRedirector(self.logger, Level.DEBUG)):
             self.http_server.serve_forever()
 
-    def start(self, name: str = "KevinbotLib.FileServer.Serve"):
-        """Start HTTP servers"""
+    def start(self, name: str = "KevinbotLib.FileServer.Serve") -> None:
+        """
+        Start the HTTP server.
+
+        Args:
+            name: Name of the server thread. Defaults to "KevinbotLib.FileServer.Serve".
+        """
+
         if not os.path.exists(self.directory):
             msg = f"Directory does not exist: {self.directory}"
             raise ValueError(msg)
@@ -179,7 +205,8 @@ class FileServer:
         self.http_thread.daemon = True
         self.http_thread.start()
 
-    def stop(self):
-        """Stop the servers."""
+    def stop(self) -> None:
+        """Shutdown the HTTP server."""
+
         if self.http_server:
             self.http_server.shutdown()

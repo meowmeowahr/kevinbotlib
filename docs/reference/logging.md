@@ -1,4 +1,4 @@
-# KevinbotLib Logging Reference
+# Logger Reference
 
 ::: kevinbotlib.logger
 ::: kevinbotlib.remotelog

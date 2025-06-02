@@ -22,52 +22,124 @@ from kevinbotlib.logger import Logger as _Logger
 
 sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
+
 class NamedControllerButtons(IntEnum):
+    """Named controller buttons provided by the SDL2 backend"""
+
     A = sdl2.SDL_CONTROLLER_BUTTON_A
+    """A button"""
+
     B = sdl2.SDL_CONTROLLER_BUTTON_B
+    """B button"""
+
     X = sdl2.SDL_CONTROLLER_BUTTON_X
+    """X button"""
+
     Y = sdl2.SDL_CONTROLLER_BUTTON_Y
+    """Y button"""
+
     DpadUp = sdl2.SDL_CONTROLLER_BUTTON_DPAD_UP
+    """D-Pad Up button"""
+
     DpadDown = sdl2.SDL_CONTROLLER_BUTTON_DPAD_DOWN
+    """D-Pad Down button"""
+
     DpadLeft = sdl2.SDL_CONTROLLER_BUTTON_DPAD_LEFT
+    """D-Pad Left button"""
+
     DpadRight = sdl2.SDL_CONTROLLER_BUTTON_DPAD_RIGHT
+    """D-Pad Right button"""
+
     LeftBumper = sdl2.SDL_CONTROLLER_BUTTON_LEFTSHOULDER
+    """Left bumper button"""
+
     RightBumper = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+    """Right bumper button"""
+
     Back = sdl2.SDL_CONTROLLER_BUTTON_BACK
+    """Back button"""
+
     Start = sdl2.SDL_CONTROLLER_BUTTON_START
+    """Start button"""
+
     Guide = sdl2.SDL_CONTROLLER_BUTTON_GUIDE
+    """Guide button"""
+
     LeftStick = sdl2.SDL_CONTROLLER_BUTTON_LEFTSTICK
+    """Left stick button"""
+
     RightStick = sdl2.SDL_CONTROLLER_BUTTON_RIGHTSTICK
+    """Right stick button"""
+
     Misc1 = sdl2.SDL_CONTROLLER_BUTTON_MISC1
+    """Miscellaneous button (may be detected as the Share button on some platforms)"""
+
     Paddle1 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE1
+    """Paddle 1"""
+
     Paddle2 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE2
+    """Paddle 2"""
     Paddle3 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE3
+    """Paddle 3"""
+
     Paddle4 = sdl2.SDL_CONTROLLER_BUTTON_PADDLE4
+    """Paddle 4"""
+
     Touchpad = sdl2.SDL_CONTROLLER_BUTTON_TOUCHPAD
+    """Touchpad button on Playstation-style controllers"""
+
 
 class NamedControllerAxis(IntEnum):
-    """Named Axis Identifiers"""
+    """Named Axis Identifiers provided by the SDL2 backend"""
 
     LeftX = sdl2.SDL_CONTROLLER_AXIS_LEFTX
+    """Left Stick X-Axis"""
+
     LeftY = sdl2.SDL_CONTROLLER_AXIS_LEFTY
+    """Left Stick Y-Axis"""
+
     RightX = sdl2.SDL_CONTROLLER_AXIS_RIGHTX
+    """Right Stick X-Axis"""
+
     RightY = sdl2.SDL_CONTROLLER_AXIS_RIGHTY
+    """Right Stick Y-Axis"""
+
     LeftTrigger = sdl2.SDL_CONTROLLER_AXIS_TRIGGERLEFT
+    """Left Trigger Axis"""
+
     RightTrigger = sdl2.SDL_CONTROLLER_AXIS_TRIGGERRIGHT
+    """Right Trigger Axis"""
 
 
 class POVDirection(IntEnum):
     """D-pad directions in degrees."""
 
     UP = 0
+    """Up button (0 degrees)"""
+
     UP_RIGHT = 45
+    """Up and right button (45 degrees)"""
+
     RIGHT = 90
+    """Right button (90 degrees)"""
+
     DOWN_RIGHT = 135
+    """Down and right button (135 degrees)"""
+
     DOWN = 180
+    """Down button (180 degrees)"""
+
     DOWN_LEFT = 225
+    """Down and left button (225 degrees)"""
+
     LEFT = 270
+    """Left button (270 degrees)"""
+
     UP_LEFT = 315
+    """Up and left button (315 degrees)"""
+
     NONE = -1
+    """Centered (no buttons)"""
 
 
 @dataclass
@@ -78,11 +150,29 @@ class ControllerMap:
     axis_map: dict[int, int]
 
     def map_button(self, button_id: int) -> int:
+        """
+        Maps a button using the controller map.
+
+        Args:
+            button_id: Raw input button
+
+        Returns:
+            Mapped button
+        """
         if button_id not in self.button_map:
             return button_id
         return self.button_map[button_id]
 
     def map_axis(self, axis_id: int) -> int:
+        """
+        Maps an axis using the controller map.
+
+        Args:
+            axis_id: Raw input axis
+
+        Returns:
+            Mapped Axis
+        """
         if axis_id not in self.axis_map:
             return axis_id
         return self.axis_map[axis_id]
@@ -96,13 +186,23 @@ class LocalJoystickIdentifiers:
 
     @staticmethod
     def get_count() -> int:
-        """Returns the number of connected joysticks."""
+        """
+        Returns the number of connected joysticks.
+
+        Returns:
+            Controller count
+        """
         sdl2.SDL_JoystickUpdate()
         return sdl2.SDL_NumJoysticks()
 
     @staticmethod
     def get_names() -> dict[int, str]:
-        """Returns a dictionary of joystick indices and their corresponding names."""
+        """
+        Returns a dictionary of joystick indices and their corresponding names.
+
+        Returns:
+            Dictionary of names from index keys
+        """
         sdl2.SDL_JoystickUpdate()
         num_joysticks = sdl2.SDL_NumJoysticks()
         joystick_names = {}
@@ -112,7 +212,13 @@ class LocalJoystickIdentifiers:
 
     @staticmethod
     def get_guids() -> dict[int, bytes]:
-        """Returns a dictionary of joystick indices and their corresponding GUIDs."""
+        """
+        Returns a dictionary of joystick indices and their corresponding GUIDs.
+
+        Returns:
+            Dictionary of GUIDs from index keys
+
+        """
         sdl2.SDL_JoystickUpdate()
         num_joysticks = sdl2.SDL_NumJoysticks()
         joystick_guids = {}
@@ -122,7 +228,11 @@ class LocalJoystickIdentifiers:
 
 
 class AbstractJoystickInterface(ABC):
+    """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
+
     def __init__(self) -> None:
+        """Initialize the abstract joystick"""
+
         super().__init__()
 
         self.polling_hz = 100
@@ -130,72 +240,221 @@ class AbstractJoystickInterface(ABC):
         self._controller_map: ControllerMap = DefaultControllerMap
 
     @abstractmethod
-    def apply_map(self, controller_map: ControllerMap):
+    def apply_map(self, controller_map: ControllerMap) -> None:
+        """
+        Apply a controller map
+
+        Args:
+            controller_map: Controller map
+        """
         raise NotImplementedError
 
     @property
-    def controller_map(self):
+    def controller_map(self) -> ControllerMap:
+        """
+        Get the applied controller map
+
+        Returns:
+            Applied controller map
+        """
+
         return self._controller_map
 
     @abstractmethod
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+        """
+        Get the state of a button by index or named button.
+        Args:
+            button_id: Button
+
+        Returns:
+            Is the button pressed?
+        """
+
         raise NotImplementedError
 
     @abstractmethod
-    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+    def get_axis_value(self, axis_id: int | IntEnum, precision: int = 3) -> float:
+        """
+        Get the state of an axis by index or named axis.
+
+        Args:
+            axis_id: Axis
+            precision: Decimal precision
+
+        Returns:
+            Axis value
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def get_buttons(self) -> list[int | Enum | IntEnum]:
+        """
+        Get a list of all pressed buttons
+
+        Returns:
+            List of pressed buttons
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def get_axes(self) -> list[int | Enum | IntEnum]:
+        """
+        Get a list of all axis values.
+
+        Returns:
+            List of all axis values
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def get_pov_direction(self) -> POVDirection:
+        """
+        Get the current D-Pad direction.
+
+        Returns:
+            D-Pad direction
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            button_id: Button index or named button
+            callback: Callback to be triggered when the specified button is pressed
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
+        """
+        Register a new callback when the D-Pad direction is changed.
+
+        Args:
+            callback: Callback to be triggered when the D-Pad changes direction
+        """
+
         raise NotImplementedError
 
     @abstractmethod
     def is_connected(self) -> bool:
+        """
+        Detect if the joystick device is connnected
+
+        Returns:
+            Connected?
+        """
+
         return False
 
 
 class NullJoystick(AbstractJoystickInterface):
+    """
+    A fake joystick implementation that will do nothing.
+    """
+
     def get_button_state(self, _: int | Enum | IntEnum) -> bool:
+        """
+        Get the state of a button.
+        Args:
+            _: Button index or named button
+
+        Returns:
+            False
+        """
+
         return False
 
     def get_axis_value(self, _: int, __: int = 3) -> float:
+        """
+        Get the state of an axis.
+        Args:
+            _: Axis index or named axis
+            __: Decimal precision
+
+        Returns:
+            0.0
+        """
+
         return 0.0
 
     def get_buttons(self) -> list[int | Enum | IntEnum]:
+        """
+        Get a list of all pressed buttons by index
+
+        Returns:
+            []
+        """
+
         return []
 
     def get_axes(self) -> list[int | Enum | IntEnum]:
+        """
+        Get a list of all axes.
+
+        Returns:
+            []
+        """
+
         return []
 
     def get_pov_direction(self) -> POVDirection:
+        """
+        Get the current D-Pad direction.
+
+        Returns:
+            POVDirection.NONE
+        """
+
         return POVDirection.NONE
 
     def register_button_callback(self, _: int | Enum | IntEnum, __: Callable[[bool], Any]) -> None:
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            _: Button index or named button
+            __: Callback to be triggered when the specified button is pressed
+        """
+
         return
 
     def register_pov_callback(self, _: Callable[[POVDirection], Any]) -> None:
+        """
+        Register a new callback when the D-Pad direction is changed.
+
+        Args:
+            _: Callback to be triggered when the D-Pad changes direction
+        """
+
         return
 
     def is_connected(self) -> bool:
+        """
+        Detect if the joystick device is connnected
+
+        Returns:
+            False
+        """
+
         return super().is_connected()
 
     def apply_map(self, _controller_map: ControllerMap):
+        """
+        Apply a controller map
+
+        Args:
+            _controller_map: Controller map
+        """
+
         return
 
 
@@ -203,6 +462,14 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
 
     def __init__(self, index: int, polling_hz: int = 100):
+        """
+        Initialize the joystick system
+
+        Args:
+            index: Controller index
+            polling_hz: Polling rate. Defaults to 100hz.
+        """
+
         super().__init__()
         self.index = index
         self._sdl_joystick: sdl2.joystick.SDL_Joystick = sdl2.SDL_GameControllerOpen(index)
@@ -213,7 +480,9 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             msg = f"No joystick of index {index} present"
             raise JoystickMissingException(msg)
 
-        self._logger.info(f"Init joystick {index} of name: {sdl2.SDL_GameControllerName(self._sdl_joystick).decode('utf-8')}")
+        self._logger.info(
+            f"Init joystick {index} of name: {sdl2.SDL_GameControllerName(self._sdl_joystick).decode('utf-8')}"
+        )
         self._logger.info(
             f"Init joystick {index} of GUID: {''.join(f'{b:02x}' for b in sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)}"
         )
@@ -237,29 +506,73 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             self._axis_states[i] = 0.0
 
     def is_connected(self) -> bool:
+        """
+        Get if the controller is connected
+
+        Returns:
+            Connected?
+        """
+
         return self.connected
 
     def get_button_count(self) -> int:
-        """Returns the total number of buttons on the joystick."""
+        """
+        Returns the total number of buttons on the joystick.
+
+        Returns:
+            Button count
+        """
         if not self._sdl_joystick or not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
             return 0
         return sdl2.SDL_CONTROLLER_BUTTON_MAX
 
     def get_button_state(self, button_id: int) -> bool:
-        """Returns the state of a button (pressed: True, released: False)."""
+        """
+        Returns the state of a button (pressed: True, released: False).
+
+        Args:
+            button_id: Button index
+
+        Returns:
+            Button state
+        """
         return self._button_states.get(self._controller_map.map_button(button_id), False)
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
-        """Returns the current value of the specified axis (-1.0 to 1.0)."""
+        """
+        Returns the current value of the specified axis (-1.0 to 1.0).
+
+        Args:
+            axis_id: Axis index
+            precision: Decimal precision
+
+        Returns:
+            Axis value
+        """
         return round(max(min(self._axis_states.get(self._controller_map.map_axis(axis_id), 0.0), 1), -1), precision)
 
     def get_buttons(self) -> list[int]:
-        """Returns a list of currently pressed buttons."""
+        """
+        Get a list of all pressed buttons
+
+        Returns:
+            List of pressed buttons
+        """
+
         buttons = [self._controller_map.map_button(key) for key, value in self._button_states.items() if value]
         buttons.sort()
         return buttons
 
-    def get_axes(self, precision: int = 3):
+    def get_axes(self, precision: int = 3) -> list[float]:
+        """
+        Get a list of all axis values.
+
+        Args:
+            precision: Decimal precision
+        Returns:
+            List of all axis values
+        """
+
         return [
             round(
                 float(
@@ -274,27 +587,60 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         ]
 
     def get_pov_direction(self) -> POVDirection:
-        """Returns the current POV (D-pad) direction."""
+        """
+        Get the current D-Pad direction.
+
+        Returns:
+            D-Pad direction
+        """
+
         return self._pov_state
 
-    def rumble(self, low_power: float, high_power: float, duration: float):
+    def rumble(self, low_power: float, high_power: float, duration: float) -> None:
+        """
+        Set the controller rumble motors.
+
+        Args:
+            low_power: Low powered motor percent (0 to 1)
+            high_power: High powered motor percent (0 to 1)
+            duration: Duration of rumble in seconds
+        """
         sdl2.SDL_GameControllerRumble(
             self._sdl_joystick, int(low_power * 65535), int(high_power * 65535), int(duration * 1000)
         )
 
     def register_button_callback(self, button_id: int, callback: Callable[[bool], Any]) -> None:
-        """Registers a callback function for button press/release events."""
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            button_id: Button index or named button
+            callback: Callback to be triggered when the specified button is pressed
+        """
+
         self._button_callbacks[button_id] = callback
 
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback function for POV (D-pad) direction changes."""
+        """
+        Register a new callback when the D-Pad direction is changed.
+
+        Args:
+            callback: Callback to be triggered when the D-Pad changes direction
+        """
+
         self._pov_callbacks.append(callback)
 
     def apply_map(self, controller_map: ControllerMap):
+        """
+        Apply a controller map
+
+        Args:
+            controller_map: Controller map
+        """
+
         self._controller_map = controller_map
 
     def _handle_event(self, event) -> None:
-        """Handles SDL events and triggers registered callbacks."""
         if event.type == sdl2.SDL_CONTROLLERBUTTONDOWN:
             button = event.cbutton.button
             self._button_states[button] = True
@@ -333,7 +679,6 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     @staticmethod
     def _convert_buttons_to_direction(buttons: list[int]) -> POVDirection:
-        """Convert list of buttons to POV direction."""
         if not buttons:
             return POVDirection.NONE
 
@@ -358,7 +703,6 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         return POVDirection(int(round(angle)))
 
     def _event_loop(self):
-        """Internal loop for processing SDL events synchronously."""
         while self.running:
             if not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
                 self.connected = False
@@ -380,13 +724,14 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
                 if event.type == sdl2.SDL_QUIT:
                     self.running = False
                     break
-                if event.jdevice.which == sdl2.joystick.SDL_JoystickInstanceID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)):
+                if event.jdevice.which == sdl2.joystick.SDL_JoystickInstanceID(
+                    sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)
+                ):
                     self._handle_event(event)
 
             time.sleep(1 / self.polling_hz)
 
     def _check_connection(self):
-        """Thread to monitor joystick connection state."""
         while self.running:
             if not sdl2.SDL_GameControllerGetAttached(self._sdl_joystick):
                 self._handle_disconnect()
@@ -394,14 +739,12 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
             time.sleep(0.5)
 
     def _handle_disconnect(self):
-        """Handles joystick disconnection."""
         self._logger.warning(f"Joystick {self.index} disconnected.")
         if self.on_disconnect:
             self.on_disconnect()
         self._attempt_reconnect()
 
     def _attempt_reconnect(self):
-        """Attempts to reconnect the joystick."""
         self._logger.info("Attempting to reconnect...")
 
         self.connected = False
@@ -419,6 +762,7 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
 
     def start_polling(self):
         """Starts the polling loop in a separate thread."""
+
         if not self.running:
             self.running = True
             threading.Thread(
@@ -442,64 +786,158 @@ class LocalNamedController(RawLocalJoystickDevice):
     """Controller with named buttons and axes."""
 
     def get_button_state(self, button: NamedControllerButtons) -> bool:
-        """Returns the state of a button using its friendly name."""
+        """
+        Returns the state of a button (pressed: True, released: False).
+
+        Args:
+            button: Named button
+
+        Returns:
+            Button state
+        """
+
         return super().get_button_state(button)
 
     def get_buttons(self) -> list[NamedControllerButtons]:
+        """
+        Get a list of all pressed buttons
+
+        Returns:
+            List of pressed buttons
+        """
+
         return [NamedControllerButtons(x) for x in super().get_buttons()]
 
     def register_button_callback(self, button: NamedControllerButtons, callback: Callable[[bool], Any]) -> None:
-        """Registers a callback using the friendly button name."""
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            button: Named button
+            callback: Callback to be triggered when the specified button is pressed
+        """
+
         super().register_button_callback(button, callback)
 
     def get_dpad_direction(self) -> POVDirection:
-        """Returns the current D-pad direction."""
+        """
+        Gets the D-Pad direction. Functionally the same as `get_pov_direction`.
+
+        Returns:
+            POV Direction
+        """
         return self.get_pov_direction()
 
     def get_trigger_value(self, trigger: NamedControllerAxis, precision: int = 3) -> float:
-        """Returns the current value of the specified trigger (0.0 to 1.0)."""
+        """
+        Returns the current value of the specified trigger (0.0 to 1.0).
+
+        Args:
+            trigger: `NamedControllerAxis.LeftTrigger` or `NamedControllerAxis.RightTrigger`
+            precision: Decimal precision
+
+        Returns:
+            Trigger value
+        """
         if trigger not in (
-                NamedControllerAxis.LeftTrigger,
-                NamedControllerAxis.RightTrigger,
+            NamedControllerAxis.LeftTrigger,
+            NamedControllerAxis.RightTrigger,
         ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
         return max(self.get_axis_value(trigger, precision), 0)
 
-    def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+    def get_axis_value(self, axis_id: int | IntEnum, precision: int = 3) -> float:
+        """
+        Returns the current value of the specified axis (-1.0 to 1.0).
+
+        Args:
+            axis_id: Named axis
+            precision: Decimal precision
+
+        Returns:
+            Axis value
+        """
+
         return super().get_axis_value(axis_id, precision)
 
-    def get_triggers(self, precision: int = 3):
-        return [
+    def get_triggers(self, precision: int = 3) -> tuple[float, float]:
+        """
+        Get the current value of the trigger axes (0.0 to 1.0).
+
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            Both trigger axes
+        """
+
+        return (
             self.get_trigger_value(NamedControllerAxis.LeftTrigger, precision),
             self.get_trigger_value(NamedControllerAxis.RightTrigger, precision),
-        ]
+        )
 
-    def get_left_stick(self, precision: int = 3):
-        return [
+    def get_left_stick(self, precision: int = 3) -> tuple[float, float]:
+        """
+        Get the left stick values
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            X and Y axes
+        """
+
+        return (
             self.get_axis_value(NamedControllerAxis.LeftX, precision),
             self.get_axis_value(NamedControllerAxis.LeftY, precision),
-        ]
+        )
 
-    def get_right_stick(self, precision: int = 3):
-        return [
+    def get_right_stick(self, precision: int = 3) -> tuple[float, float]:
+        """
+        Get the right stick values
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            X and Y axes
+        """
+
+        return (
             self.get_axis_value(NamedControllerAxis.RightX, precision),
             self.get_axis_value(NamedControllerAxis.RightY, precision),
-        ]
+        )
 
     def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback for D-pad direction changes"""
+        """
+        Register a new callback when the D-Pad direction is changed. Functionally the same as `register_pov_callback`
+
+        Args:
+            callback: Callback to be triggered when the D-Pad changes direction
+        """
+
         self.register_pov_callback(callback)
 
 
 class JoystickSender:
+    """Joystick data sender for `RedisCommClient`"""
+
     def __init__(self, client: RedisCommClient, joystick: AbstractJoystickInterface, key: str) -> None:
+        """
+        Initialize the joystick sender
+
+        Args:
+            client: Communication client to send data
+            joystick: Joystick interface to poll
+            key: Network key to set data on
+        """
+
         self.client = client
 
         self.joystick = joystick
 
         self.key = key.rstrip("/")
 
+        self.thread: threading.Thread | None = None
         self.running = False
 
     @final
@@ -519,7 +957,8 @@ class JoystickSender:
             time.sleep(1 / self.joystick.polling_hz)
 
     @final
-    def start(self):
+    def start(self) -> None:
+        """Start sending data"""
         self.running = True
         self.thread = threading.Thread(
             target=self._send_loop,
@@ -529,20 +968,32 @@ class JoystickSender:
         self.thread.start()
 
     @final
-    def stop(self):
+    def stop(self) -> None:
+        """Stop sending data"""
         self.running = False
 
 
 class DynamicJoystickSender:
+    """Joystick data sender for `RedisCommClient` that can switch out joystick classes while running"""
     def __init__(
         self, client: RedisCommClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
     ) -> None:
+        """
+        Initialize the joystick sender
+
+        Args:
+            client: Communication client to send data
+            joystick_getter: Joystick interface to poll
+            key: Network key to set data on
+        """
+
         self.client = client
 
         self.joystick = joystick_getter
 
         self.key = key.rstrip("/")
 
+        self.thread: threading.Thread | None = None
         self.running = False
 
     @final
@@ -563,6 +1014,8 @@ class DynamicJoystickSender:
 
     @final
     def start(self):
+        """Start sending data"""
+
         self.running = True
         self.thread = threading.Thread(
             target=self._send_loop,
@@ -573,11 +1026,23 @@ class DynamicJoystickSender:
 
     @final
     def stop(self):
+        """Stop sending data"""
         self.running = False
 
 
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
+    """Joystick interface for `JoystickSender`"""
+
     def __init__(self, client: RedisCommClient, key: str, callback_polling_hz: int = 100) -> None:
+        """
+        Initialize the joystick interface
+
+        Args:
+            client: Communication client
+            key: Network sendable key
+            callback_polling_hz: Polling rate. Defaults to 100hz.
+        """
+
         super().__init__()
         self._client: RedisCommClient = client
         self._client_key: str = key.rstrip("/")
@@ -603,19 +1068,49 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
 
     @property
     def client(self) -> RedisCommClient:
+        """
+        Get the connected client
+
+        Returns:
+            Communication client
+        """
+
         return self._client
 
     @property
     def key(self) -> str:
+        """
+        Get the sendable key
+
+        Returns:
+            Sendable key
+        """
+
         return self._client_key
 
     def is_connected(self) -> bool:
+        """
+        Get if the controller is connected
+
+        Returns:
+            Connected?
+        """
+
         sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
         if not sendable:
             return False
         return sendable.value
 
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
+        """
+        Get the state of a button by index or named button.
+        Args:
+            button_id: Button
+
+        Returns:
+            Is the button pressed?
+        """
+
         sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
         if not sendable:
             return False
@@ -623,6 +1118,17 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         return mapped_id in sendable.value
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
+        """
+        Get the state of an axis by index or named axis.
+
+        Args:
+            axis_id: Axis
+            precision: Decimal precision
+
+        Returns:
+            Axis value
+        """
+
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
         if not sendable:
             return 0.0
@@ -630,6 +1136,13 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         return round(sendable.value[mapped_id], precision) if mapped_id < len(sendable.value) else 0.0
 
     def get_buttons(self) -> list[int | Enum | IntEnum]:
+        """
+        Get a list of all pressed buttons
+
+        Returns:
+            List of pressed buttons
+        """
+
         sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
         if not sendable:
             return []
@@ -637,6 +1150,13 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         return [self._controller_map.map_button(btn) for btn in sendable.value]
 
     def get_axes(self) -> list[float]:
+        """
+        Get a list of all axis values.
+
+        Returns:
+            List of all axis values
+        """
+
         sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
         if not sendable:
             return []
@@ -649,24 +1169,49 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         return axes
 
     def get_pov_direction(self) -> POVDirection:
+        """
+        Get the current D-Pad direction.
+
+        Returns:
+            D-Pad direction
+        """
+
         sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
         if not sendable:
             return POVDirection.NONE
         return POVDirection(sendable.value)
 
     def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
-        """Registers a callback function for button press/release events."""
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            button_id: Button index or named button
+            callback: Callback to be triggered when the specified button is pressed
+        """
+
         self._button_callbacks[button_id] = callback
 
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback function for POV (D-pad) direction changes."""
+        """
+        Register a new callback when the D-Pad direction is changed.
+
+        Args:
+            callback: Callback to be triggered when the D-Pad changes direction
+        """
+
         self._pov_callbacks.append(callback)
 
     def apply_map(self, controller_map: ControllerMap):
+        """
+        Apply a controller map
+
+        Args:
+            controller_map: Controller map
+        """
         self._controller_map = controller_map
 
     def _poll_loop(self):
-        """Polling loop that checks for state changes and triggers callbacks."""
         while self.running:
             # Check connection status
             conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
@@ -718,11 +1263,26 @@ class RemoteNamedController(RemoteRawJoystickDevice):
         super().__init__(client, key, callback_polling_hz)
 
     def get_button_state(self, button: NamedControllerButtons) -> bool:
-        """Returns the state of a button using its friendly name."""
+        """
+        Returns the state of a button (pressed: True, released: False).
+
+        Args:
+            button: Named button
+
+        Returns:
+            Button state
+        """
+
         return super().get_button_state(button)
 
     def get_buttons(self) -> list[NamedControllerButtons]:
-        """Returns a list of currently pressed buttons using button enums."""
+        """
+        Get a list of all pressed buttons
+
+        Returns:
+            List of pressed buttons
+        """
+
         buttons = []
         for x in super().get_buttons():
             try:
@@ -732,29 +1292,66 @@ class RemoteNamedController(RemoteRawJoystickDevice):
         return buttons
 
     def get_axes(self, precision: int = 3) -> list[float]:
-        """Returns a list of axis values"""
+        """
+        Get a list of all axis values.
+
+        Args:
+            precision: Decimal precision
+        Returns:
+            List of all axis values
+        """
+
         axes = super().get_axes()
         if not axes:
             return [0.0] * len(NamedControllerAxis)  # Return default zeroed axes if no data
         return [round(x, precision) for x in axes]  # Convert to float and apply precision
 
     def register_button_callback(self, button: NamedControllerButtons, callback: Callable[[bool], Any]) -> None:
-        """Registers a callback using the friendly button name."""
+        """
+        Register a new callback when a button is pressed.
+
+        Args:
+            button: Button index or named button
+            callback: Callback to be triggered when the specified button is pressed
+        """
+
         super().register_button_callback(button, callback)
 
     def register_dpad_callback(self, callback: Callable[[POVDirection], Any]) -> None:
-        """Registers a callback for D-pad direction changes"""
+        """
+        Register a new callback when the D-Pad direction is changed. Functionally the same as `register_pov_callback`
+
+        Args:
+            callback: Callback to be triggered when the D-Pad changes direction
+        """
+
         super().register_pov_callback(callback)
 
     def get_dpad_direction(self) -> POVDirection:
-        """Returns the current D-pad direction using"""
+        """
+        Gets the D-Pad direction. Functionally the same as `get_pov_direction`.
+
+        Returns:
+            POV Direction
+        """
+
         return super().get_pov_direction()
 
     def get_trigger_value(self, trigger: NamedControllerAxis, precision: int = 3) -> float:
-        """Returns the current value of the specified trigger (0.0 to 1.0)."""
+        """
+        Returns the current value of the specified trigger (0.0 to 1.0).
+
+        Args:
+            trigger: `NamedControllerAxis.LeftTrigger` or `NamedControllerAxis.RightTrigger`
+            precision: Decimal precision
+
+        Returns:
+            Trigger value
+        """
+
         if trigger not in (
-                NamedControllerAxis.LeftTrigger,
-                NamedControllerAxis.RightTrigger,
+            NamedControllerAxis.LeftTrigger,
+            NamedControllerAxis.RightTrigger,
         ):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
@@ -762,28 +1359,52 @@ class RemoteNamedController(RemoteRawJoystickDevice):
         return (max(value, 0.0) + 1) / 2  # Ensure triggers are 0.0 to 1.0
 
     def get_triggers(self, precision: int = 3) -> list[float]:
-        """Returns the current values of both triggers."""
+        """
+        Get the current value of the trigger axes (0.0 to 1.0).
+
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            Both trigger axes
+        """
+
         return [
             self.get_trigger_value(NamedControllerAxis.LeftTrigger, precision),
             self.get_trigger_value(NamedControllerAxis.RightTrigger, precision),
         ]
 
     def get_left_stick(self, precision: int = 3) -> list[float]:
-        """Returns the current values of the left stick (x, y)."""
+        """
+        Get the left stick values
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            X and Y axes
+        """
+
         return [
             super().get_axis_value(NamedControllerAxis.LeftX, precision),
             super().get_axis_value(NamedControllerAxis.LeftY, precision),
         ]
 
     def get_right_stick(self, precision: int = 3) -> list[float]:
-        """Returns the current values of the right stick (x, y)."""
+        """
+        Get the right stick values
+        Args:
+            precision: Decimal precision
+
+        Returns:
+            X and Y axes
+        """
+
         return [
             super().get_axis_value(NamedControllerAxis.RightX, precision),
             super().get_axis_value(NamedControllerAxis.RightY, precision),
         ]
 
     def _poll_loop(self):
-        """Polling loop that checks for state changes and triggers callbacks."""
         while self.running:
             # Check connection status
             conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)

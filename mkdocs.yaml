@@ -124,12 +124,19 @@ nav:
   - robot.md
   - fileserver.md
   - KevinbotLib Reference:
-    - reference/index.md
+    - reference/robot.md
     - reference/logging.md
+    - reference/scheduler.md
+    - reference/comm.md
+    - reference/joystick.md
     - reference/fileserver.md
     - reference/hardwareinterface.md
     - reference/hardwarecontroller.md
+    - reference/vision.md
+    - reference/metrics.md
     - reference/ui.md
+    - reference/misc.md
+    - reference/exceptions.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
 

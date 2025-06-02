@@ -204,7 +204,7 @@ class VisionCommUtils:
         """Allows the use of frame data over the communication client
 
         Args:
-            client (KevinbotCommClient): The communication client to integrate with
+            client (RedisCommClient): The communication client to integrate with
         """
         client.register_type(SingleFrameSendable)
         client.register_type(MjpegStreamSendable)
@@ -305,8 +305,14 @@ class VisionPipeline(ABC):
 
 class EmptyPipeline(VisionPipeline):
     """
-    A dummy vision pipeline returning the original frame
+    A fake vision pipeline returning the original frame
     """
 
     def run(self) -> tuple[bool, MatLike]:
+        """
+        Fake pipeline. Return the inputs.
+
+        Returns: Source values
+
+        """
         return self.source()

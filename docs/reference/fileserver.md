@@ -1,3 +1,3 @@
-# KevinbotLib File Server Reference
+# File Server Reference
 
 ::: kevinbotlib.fileserver

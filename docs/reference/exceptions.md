@@ -1,0 +1,3 @@
+# Exceptions Reference
+
+::: kevinbotlib.exceptions

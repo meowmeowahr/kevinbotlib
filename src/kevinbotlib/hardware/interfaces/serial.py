@@ -11,13 +11,28 @@ from kevinbotlib.hardware.interfaces.exceptions import SerialException, SerialPo
 
 @dataclass
 class SerialDeviceInfo:
+    """Information about a serial device link."""
+
     device: str
+    """Device"""
+
     device_path: str | None
+    """Device path. Ex: /dev/ttyAMA0."""
+
     name: str
+    """Device name."""
+
     description: str
+    """Device description."""
+
     manufacturer: str | None
+    """Device manufacturer."""
+
     pid: int | None
+    """Device PID."""
+
     hwid: str
+    """Device HWID."""
 
 
 class SerialIdentification:
@@ -25,7 +40,7 @@ class SerialIdentification:
 
     @staticmethod
     def list_device_info() -> list[SerialDeviceInfo]:
-        """List to available connected serial ports
+        """List of available connected serial ports
 
         Returns:
             list[SerialDeviceInfo]: List of port info
@@ -39,11 +54,22 @@ class SerialIdentification:
 
 
 class SerialParity(StrEnum):
+    """Serial parity types"""
+
     NONE = serial.PARITY_NONE
+    """No parity checking."""
+
     EVEN = serial.PARITY_EVEN
+    """Even parity checking."""
+
     ODD = serial.PARITY_ODD
+    """Odd parity checking."""
+
     MARK = serial.PARITY_MARK
+    """Mark parity checking."""
+
     SPACE = serial.PARITY_SPACE
+    """Space parity checking."""
 
 
 class RawSerialInterface(io.IOBase):

@@ -1,4 +1,4 @@
-# KevinbotLib UI Reference
+# UI Reference
 
 ::: kevinbotlib.ui.theme
 ::: kevinbotlib.ui.widgets

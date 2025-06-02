@@ -20,7 +20,7 @@ class BaseSendable(BaseModel, ABC):
 
     _**What is a sendable?**_
 
-    A sendable is a basic unit of data that can be transported through the `KevinbotCommClient` and server
+    A sendable is a basic unit of data that can be transported through the `RedisCommClient` and server
     """
 
     timeout: float | None = None
@@ -46,7 +46,7 @@ class BaseSendable(BaseModel, ABC):
 
 class SendableGenerator(ABC):
     """
-    Abstract class for a function capable of being sent over `KevinbotCommClient`
+    Abstract class for a function capable of being sent over `RedisCommClient`
     """
 
     @abstractmethod
@@ -246,7 +246,18 @@ class RedisCommClient:
         on_connect: Callable[[], None] | None = None,
         on_disconnect: Callable[[], None] | None = None,
     ) -> None:
-        """Initialize the Redis client with connection parameters."""
+        """
+        Initialize a Redis Communication Client.
+
+        Args:
+            host: Host of the Redis server.
+            port: Port of the Redis server.
+            db: Database number to use.
+            timeout: Socket timeout in seconds.
+            on_connect: Connection callback.
+            on_disconnect: Disconnection callback.
+        """
+
         self.redis: redis.Redis | None = None
         self._host = host
         self._port = port
@@ -266,18 +277,43 @@ class RedisCommClient:
             dead=False, on_disconnect=self.on_disconnect
         )
 
-    def register_type(self, data_type: type[BaseSendable]):
+    def register_type(self, data_type: type[BaseSendable]) -> None:
+        """
+        Register a custom sendable type.
+
+        Args:
+            data_type: Sendable type to register.
+        """
+
         self.SENDABLE_TYPES[data_type.model_fields["data_id"].default] = data_type
         _Logger().trace(
             f"Registered data type of id {data_type.model_fields['data_id'].default} as {data_type.__name__}"
         )
 
     def add_hook(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T | None], None]) -> None:
-        """Add a callback to be triggered when sendable of data_type is set for a key."""
+        """
+        Add a callback to be triggered when sendable of data_type is set for a key.
+
+        Args:
+            key: Key to listen to.
+            data_type: Sendable type to listen for.
+            callback: Callback to trigger.
+        """
+
         self.hooks.append((str(key), data_type, callback))  # type: ignore
 
     def get(self, key: CommPath | str, data_type: type[T]) -> T | None:
-        """Retrieve and deserialize sendable by key."""
+        """
+        Retrieve and deserialize sendable by key.
+
+        Args:
+            key: Key to retrieve.
+            data_type: Sendable type to deserialize to.
+
+        Returns:
+            Sendable or None if not found.
+        """
+
         if not self.redis:
             _Logger().error("Cannot get data: client is not started")
             return None
@@ -299,7 +335,13 @@ class RedisCommClient:
         return None
 
     def get_keys(self) -> list[str]:
-        """Return a list of all keys in the Redis database."""
+        """
+        Gets all keys in the Redis database.
+
+        Returns:
+            List of keys.
+        """
+
         if not self.redis:
             _Logger().error("Cannot get keys: client is not started")
             return []
@@ -314,7 +356,16 @@ class RedisCommClient:
             return keys
 
     def get_raw(self, key: CommPath | str) -> dict | None:
-        """Retrieve the raw JSON for a key."""
+        """
+        Retrieve the raw JSON for a key, ignoring the sendable deserialization.
+
+        Args:
+            key: Key to retrieve.
+
+        Returns:
+            Raw JSON value or None if not found.
+        """
+
         if not self.redis:
             _Logger().error("Cannot get raw: client is not started")
             return None
@@ -328,7 +379,12 @@ class RedisCommClient:
             return None
 
     def get_all_raw(self) -> dict[str, dict] | None:
-        """Retrieve all raw JSON values as a dictionary of key to raw value."""
+        """
+        Retrieve all raw JSON values as a dictionary of a key to raw value. May have slow performance.
+
+        Returns:
+            Dictionary of a key to raw value or None if not found.
+        """
         if not self.redis:
             _Logger().error("Cannot get all raw: client is not started")
             return None
@@ -356,7 +412,7 @@ class RedisCommClient:
             return result
 
     def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator, *, pub_mode: bool = False):
-        """Set a sendable in the Redis database."""
+        """Set sendable in the Redis database."""
         if not self.running or not self.redis:
             _Logger().error(f"Cannot publish to {key}: client is not started")
             return
@@ -380,10 +436,25 @@ class RedisCommClient:
             self._dead.dead = True
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
+        """
+        Set sendable in the Redis database.
+
+        Args:
+            key: Key to set
+            sendable: Sendable to set
+        """
+
         self._apply(key, sendable, pub_mode=False)
 
     def publish(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
-        """Publish a sendable in the Redis database."""
+        """
+        Publish sendable in the Redis Pub/Sub client.
+
+        Args:
+            key: Key to publish to
+            sendable: Sendable to publish
+        """
+
         self._apply(key, sendable, pub_mode=True)
 
     def _listen_loop(self):
@@ -410,6 +481,15 @@ class RedisCommClient:
         _Logger().warning("Listener loop ended")
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
+        """
+        Subscribe to a Pub/Sub key.
+
+        Args:
+            key: Key to subscribe to.
+            data_type: Sendable type to deserialize to.
+            callback: Callback when data is received.
+        """
+
         if isinstance(key, CommPath):
             key = str(key)
         with self._lock:
@@ -434,7 +514,13 @@ class RedisCommClient:
             self._dead.dead = True
 
     def delete(self, key: CommPath | str) -> None:
-        """Delete a key from the Redis database."""
+        """
+        Delete a key from the Redis database.
+
+        Args:
+            key: Key to delete.
+        """
+
         if not self.redis:
             _Logger().error("Cannot delete: client is not started")
             return
@@ -493,6 +579,8 @@ class RedisCommClient:
             time.sleep(0.01)
 
     def connect(self) -> None:
+        """Connect to the Redis server."""
+
         self.redis = redis.Redis(
             host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout
         )
@@ -503,7 +591,7 @@ class RedisCommClient:
             self._dead.dead = False
             if self.on_connect:
                 self.on_connect()
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Redis connection error: {e}")
             self._dead.dead = True
             self.redis = None
@@ -521,11 +609,22 @@ class RedisCommClient:
         self._listener_thread.start()
 
     def is_connected(self) -> bool:
-        """Check if the Redis connection is established."""
+        """
+        Check if the Redis connection is established.
+
+        Returns:
+            Is the connection established?
+        """
         return self.redis is not None and self.redis.connection_pool is not None and not self._dead.dead
 
     def get_latency(self) -> float | None:
-        """Measure the round-trip latency to the Redis server in milliseconds."""
+        """
+        Measure the round-trip latency to the Redis server in milliseconds.
+
+        Returns:
+            Latency in milliseconds or None if not connected.
+        """
+
         if not self.redis:
             return None
         try:
@@ -541,7 +640,13 @@ class RedisCommClient:
             return None
 
     def wait_until_connected(self, timeout: float = 5.0):
-        """Wait until the Redis connection is established."""
+        """
+        Wait until the Redis connection is established.
+
+        Args:
+            timeout: Timeout in seconds. Defaults to 5.0 seconds.
+        """
+
         start_time = time.time()
         while not self.redis or not self.redis.ping():
             if time.time() > start_time + timeout:

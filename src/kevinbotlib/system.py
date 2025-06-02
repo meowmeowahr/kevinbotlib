@@ -13,7 +13,7 @@ class CPUInfo:
     frequency_current: float
     """Current running CPU frequency"""
     frequency_min: float
-    """Mininum operational CPU frequency"""
+    """Minimum operational CPU frequency"""
     frequency_max: float
     """Maximum operational CPU frequency"""
     usage_percent_per_core: list[float]
@@ -63,7 +63,12 @@ class SystemPerformanceData:
 
     @staticmethod
     def cpu() -> CPUInfo:
-        """Gets CPU information"""
+        """
+        Gets CPU information
+
+        Returns:
+            CPU Information
+        """
         cpu_freq = psutil.cpu_freq()
 
         logical = psutil.cpu_count(logical=True)
@@ -86,7 +91,12 @@ class SystemPerformanceData:
 
     @staticmethod
     def memory() -> MemoryInfo:
-        """Gets memory information"""
+        """
+        Gets memory information
+
+        Returns:
+            Memory information
+        """
         mem = psutil.virtual_memory()
         return MemoryInfo(
             total=mem.total,
@@ -98,7 +108,12 @@ class SystemPerformanceData:
 
     @staticmethod
     def disks() -> list[DiskInfo]:
-        """Gets system disk(s) information"""
+        """
+        Gets system disk(s) information
+
+        Returns:
+            Disk information
+        """
         disks = []
         for part in psutil.disk_partitions(all=False):
             try:
@@ -120,7 +135,12 @@ class SystemPerformanceData:
 
     @staticmethod
     def primary_disk() -> DiskInfo:
-        """Gets system primary disk information"""
+        """
+        Gets system primary disk information
+
+        Returns:
+            Primary disk information
+        """
         for disk in SystemPerformanceData.disks():
             if disk.mountpoint == "/":
                 return disk
