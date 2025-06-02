@@ -320,7 +320,7 @@ class RedisCommClient:
         try:
             raw = self.redis.get(str(key))
             self._dead.dead = False
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot get {key}: {e}")
             self._dead.dead = True
             return None
@@ -348,7 +348,7 @@ class RedisCommClient:
         try:
             keys = self.redis.keys("*")
             self._dead.dead = False
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot get keys: {e}")
             self._dead.dead = True
             return []
@@ -373,7 +373,7 @@ class RedisCommClient:
             raw = self.redis.get(str(key))
             self._dead.dead = False
             return orjson.loads(raw) if raw else None
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot get raw {key}: {e}")
             self._dead.dead = True
             return None
@@ -404,7 +404,7 @@ class RedisCommClient:
             for key, value in zip(keys, values, strict=False):
                 if value:
                     result[key] = orjson.loads(value)
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot get all raw: {e}")
             self._dead.dead = True
             return None
@@ -431,7 +431,7 @@ class RedisCommClient:
             else:
                 self.redis.set(str(key), orjson.dumps(data))
             self._dead.dead = False
-        except (redis.exceptions.ConnectionError, ValueError, AttributeError) as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish to {key}: {e}")
             self._dead.dead = True
 
@@ -476,7 +476,7 @@ class RedisCommClient:
                             _Logger().error(f"Failed to process message: {e!r}")
                     self._dead.dead = False
                 time.sleep(1)  # 1-second delay if there are no subscriptions
-        except (redis.exceptions.ConnectionError, ValueError, AttributeError):
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError):
             self._dead.dead = True
         _Logger().warning("Listener loop ended")
 
@@ -509,7 +509,7 @@ class RedisCommClient:
             self.redis.flushdb()
             self.redis.flushall()
             self._dead.dead = False
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot wipe all: {e}")
             self._dead.dead = True
 
@@ -527,7 +527,7 @@ class RedisCommClient:
         try:
             self.redis.delete(str(key))
             self._dead.dead = False
-        except redis.exceptions.ConnectionError as e:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot delete {key}: {e}")
             self._dead.dead = True
 
@@ -570,7 +570,7 @@ class RedisCommClient:
                                 pass
                     previous_values[key] = message
                 self._dead.dead = False
-            except redis.exceptions.ConnectionError:
+            except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError):
                 self._dead.dead = True
             except (AttributeError, ValueError) as e:
                 _Logger().error(f"Something went wrong while processing hooks: {e!r}")
@@ -678,7 +678,7 @@ class RedisCommClient:
                     target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
                 )
                 self._listener_thread.start()
-        except redis.exceptions.ConnectionError:
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError):
             self._dead.dead = True
             return
 
@@ -701,7 +701,7 @@ class RedisCommClient:
                     continue
                 try:
                     self.pubsub.subscribe(sub)
-                except redis.exceptions.ConnectionError:
+                except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError):
                     self._dead.dead = True
                     _Logger().warning(f"Failed to re-subscribe to {sub}, client is not connected")
 
