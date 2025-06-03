@@ -11,7 +11,7 @@ import redis.exceptions
 from pydantic import BaseModel, ValidationError
 
 import kevinbotlib.exceptions
-from kevinbotlib.logger import Logger as _Logger
+from kevinbotlib.logger import Logger as _Logger, Logger
 
 
 class BaseSendable(BaseModel, ABC):
@@ -414,14 +414,16 @@ class RedisCommClient:
     def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator, *, pub_mode: bool = False):
         """Set sendable in the Redis database."""
         if not self.running or not self.redis:
-            _Logger().error(f"Cannot publish to {key}: client is not started")
+            _Logger().error(f"Cannot publish/set to {key}: client is not started")
             return
 
         if isinstance(sendable, SendableGenerator):
             sendable = sendable.generate_sendable()
 
         data = sendable.get_dict()
+        kwargs = None
         try:
+            kwargs = self.redis.connection_pool.connection_kwargs
             if pub_mode:
                 if sendable.timeout:
                     _Logger().warning("Publishing a Sendable with a timeout. Pub/Sub does not support this.")
@@ -432,8 +434,13 @@ class RedisCommClient:
                 self.redis.set(str(key), orjson.dumps(data))
             self._dead.dead = False
         except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError) as e:
-            _Logger().error(f"Cannot publish to {key}: {e}")
-            self._dead.dead = True
+            _Logger().error(f"Cannot publish/set to {key}: {e}")
+            if (not self.redis) or (not self.redis.connection_pool) or (kwargs == self.redis.connection_pool.connection_kwargs):
+                self._dead.dead = True
+            else:
+                Logger().warning(
+                    "Connection kwargs changed while getting ping to server. Connection may not be dead."
+                )
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """
@@ -496,7 +503,10 @@ class RedisCommClient:
             key_str = str(key)
             self.sub_callbacks[key_str] = (data_type, callback)  # type: ignore
             if self.pubsub:
-                self.pubsub.subscribe(key_str)
+                try:
+                    self.pubsub.subscribe(key_str)
+                except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
+                    _Logger().error(f"Cannot subscribe to {key_str}: {e}")
             else:
                 _Logger().error(f"Can't subscribe to {key}, Pub/Sub is not running")
 
@@ -627,16 +637,19 @@ class RedisCommClient:
 
         if not self.redis:
             return None
+        kwargs = None
         try:
-            import time
-
+            kwargs = self.redis.connection_pool.connection_kwargs
             start_time = time.time()
-            self.redis.config_get("maxclients")
+            self.redis.ping()
             end_time = time.time()
             return (end_time - start_time) * 1000  # Convert to milliseconds
         except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot measure latency: {e}")
-            self._dead.dead = True
+            if (not self.redis) or (not self.redis.connection_pool) or (kwargs == self.redis.connection_pool.connection_kwargs):
+                self._dead.dead = True
+            else:
+                Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
             return None
 
     def wait_until_connected(self, timeout: float = 5.0):
@@ -678,7 +691,7 @@ class RedisCommClient:
                     target=self._listen_loop, daemon=True, name="KevinbotLib.Redis.Listener"
                 )
                 self._listener_thread.start()
-        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError):
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError):
             self._dead.dead = True
             return
 
