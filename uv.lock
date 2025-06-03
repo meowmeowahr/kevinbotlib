@@ -501,11 +501,11 @@ dependencies = [
     { name = "opencv-python" },
     { name = "orjson" },
     { name = "paramiko" },
-    { name = "pglive" },
     { name = "platformdirs" },
     { name = "psutil" },
     { name = "pybase64" },
     { name = "pydantic" },
+    { name = "pyqtgraph" },
     { name = "pysdl2" },
     { name = "pyserial" },
     { name = "pyside6" },
@@ -544,13 +544,13 @@ requires-dist = [
     { name = "opencv-python", specifier = "~=4.11.0" },
     { name = "orjson", specifier = "~=3.10.18" },
     { name = "paramiko", specifier = ">=3.5.1" },
-    { name = "pglive", specifier = ">=0.8.3" },
     { name = "pillow", marker = "extra == 'dev'" },
     { name = "platformdirs", specifier = "~=4.3.8" },
     { name = "psutil", specifier = ">=7.0.0" },
     { name = "pybase64", specifier = "~=1.4.1" },
     { name = "pydantic", specifier = "~=2.11.4" },
     { name = "pyinstaller", marker = "extra == 'dev'" },
+    { name = "pyqtgraph", specifier = ">=0.13.7" },
     { name = "pysdl2", specifier = "~=0.9.17" },
     { name = "pyserial", specifier = "~=3.5" },
     { name = "pyside6", specifier = ">=6.9.0" },
@@ -996,19 +996,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/78/c5/3b3c62223f72e2360737fd2a57c30e5b2adecd85e70276879609a7403334/pefile-2023.2.7.tar.gz", hash = "sha256:82e6114004b3d6911c77c3953e3838654b04511b8b66e8583db70c65998017dc", size = 74854 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/55/26/d0ad8b448476d0a1e8d3ea5622dc77b916db84c6aa3cb1e1c0965af948fc/pefile-2023.2.7-py3-none-any.whl", hash = "sha256:da185cd2af68c08a6cd4481f7325ed600a88f6a813bad9dea07ab3ef73d8d8d6", size = 71791 },
-]
-
-[[package]]
-name = "pglive"
-version = "0.8.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "pyqtgraph" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/21/f96b3992c5d9ce48a8d95e77ff7b047f938f147ee00b192dece2dfa5e236/pglive-0.8.3.tar.gz", hash = "sha256:6f8d404da62692de41b51861af6ab08b0578e9aededad6aa255b7dddc5526b69", size = 45889 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/ad/aabf347de81e750341e59a0e6301171017fd0732dc2d4380cf5ebf132c35/pglive-0.8.3-py3-none-any.whl", hash = "sha256:1de0dba6fb6964cb65d8737a19a3a6a812bb2d7b266d8c776c7a114750223dd4", size = 79346 },
 ]
 
 [[package]]

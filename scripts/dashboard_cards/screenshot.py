@@ -40,9 +40,7 @@ CONFIG: typing.Final = {
                     "value": x,
                     "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
                 }
-                for x in [
-                    round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)
-                ]
+                for x in [round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)]
             ],
         },
         {
@@ -56,9 +54,7 @@ CONFIG: typing.Final = {
                     "value": x,
                     "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
                 }
-                for x in [
-                    round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)
-                ]
+                for x in [round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)]
             ],
             "perdata_wait": 0.05,
         },

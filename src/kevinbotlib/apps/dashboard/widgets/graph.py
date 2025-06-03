@@ -3,9 +3,6 @@ from typing import TYPE_CHECKING, Any
 
 import pyqtgraph
 import superqt
-from pglive.sources.data_connector import DataConnector
-from pglive.sources.live_plot import LiveLinePlot
-from pglive.sources.live_plot_widget import LivePlotWidget
 from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
@@ -22,6 +19,9 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
+from kevinbotlib.apps.dashboard.widgets._pglive.sources.data_connector import DataConnector
+from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot import LiveLinePlot
+from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot_widget import LivePlotWidget
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm import RedisCommClient
 

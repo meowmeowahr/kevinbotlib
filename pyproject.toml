@@ -49,7 +49,7 @@ dependencies = [
   "pyside6-addons>=6.9.0",
   "pyside6>=6.9.0",
   "blake3>=1.0.5",
-  "pglive>=0.8.3",
+  "pyqtgraph>=0.13.7",
 ]
 
 [project.optional-dependencies]
@@ -138,6 +138,7 @@ ignore = ["G004", "TRY400"]
 "tests/*" = ["S101", "PLR2004"]
 "resources_rc.py" = ["N802"]
 "*" = ["FBT001"]
+"src/kevinbotlib/apps/dashboard/widgets/_pglive/sources/*" = ["ALL"]
 
 [tool.hatch.build.targets.sdist]
 exclude = [
