@@ -2,9 +2,10 @@ import time
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
-import pyqtgraph as pg
+import line_profiler
+import pyqtgraph
 import superqt
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -17,6 +18,11 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QVBoxLayout,
 )
+
+from pglive.sources.data_connector import DataConnector
+from pglive.sources.live_plot import LiveLinePlot
+from pglive.sources.live_plot_widget import LivePlotWidget
+from pglive.kwargs import Axis
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
@@ -43,7 +49,7 @@ class GraphWidgetSettings(QDialog):
     def __init__(self, _graph, options: dict[str, Any] | None = None, parent=None):
         super().__init__(parent)
         if not options:
-            options = {"min": 0, "max": 100, "auto_scale": True}
+            options = {}
         self.options: dict[str, Any] = options
 
         self.setWindowTitle("Graph Settings")
@@ -82,9 +88,13 @@ class GraphWidgetSettings(QDialog):
 
         self.form.addRow(Divider("Data"))
 
-        self.width = QSpinBox(minimum=20, maximum=200, value=self.options.get("points", 50))
-        self.width.valueChanged.connect(self.set_points)
-        self.form.addRow("Data Points", self.width)
+        self.points = QSpinBox(minimum=20, maximum=200, value=self.options.get("points", 50))
+        self.points.valueChanged.connect(self.set_points)
+        self.form.addRow("Data Points", self.points)
+
+        self.interval = QSpinBox(minimum=1, maximum=1000, singleStep=25, value=self.options.get("interval", 50), suffix="ms")
+        self.interval.valueChanged.connect(self.set_interval)
+        self.form.addRow("Point Interval", self.interval)
 
         self.form.addRow(Divider("Visuals"))
 
@@ -119,6 +129,9 @@ class GraphWidgetSettings(QDialog):
     def set_points(self, points: int):
         self.options["points"] = points
 
+    def set_interval(self, interval: int):
+        self.options["interval"] = interval
+
     def set_auto_scale(self, state: int):
         self.options["auto_scale"] = bool(state)
         self.min_value.setEnabled(not self.options["auto_scale"])
@@ -147,45 +160,45 @@ class GraphWidgetItem(WidgetItem):
     ):
         super().__init__(title, key, options, grid, span_x, span_y)
         self.kind = "graph"
-        self.min_width = self.grid_size * 4  # Minimum width in pixels
-        self.min_height = self.grid_size * 3  # Minimum height in pixels
+        self.min_width = self.grid_size * 4
+        self.min_height = self.grid_size * 3
 
-        self.graph = pg.PlotWidget(axisItems={"bottom": pg.DateAxisItem()})
-        self.graph.setBackground(grid.theme.value.item_background)
+        self.graph = LivePlotWidget(
+            background=grid.theme.value.item_background,
+        )
         self.graph.setMouseTracking(False)
         self.graph.setMouseEnabled(x=False, y=False)
         self.graph.showGrid(x=True, y=True, alpha=0.3)
         self.graph.mouseMoveEvent = lambda _: None
         self.graph.mousePressEvent = lambda _: None
         self.graph.mouseReleaseEvent = lambda _: None
+        self.graph.wheelEvent = lambda _: None
         self.graph.setAntialiasing(False)
 
-        if not self.options.get("auto_scale", True):
-            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100))
-
-        self.plot: pg.PlotDataItem = self.graph.plot(
-            pen=pg.mkPen(
-                color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)
-            )
+        self.plot = LiveLinePlot(
+            pen=pyqtgraph.mkPen(GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
         )
+        self.graph.addItem(self.plot)
 
-        # Create settings dialog
         self.settings = GraphWidgetSettings(self.graph, self.options, grid)
         self.settings.options_changed.connect(self.options_changed)
 
-        # Create proxy widget to hold the plot
         self.proxy = QGraphicsProxyWidget(self)
         self.proxy.setWidget(self.graph)
 
-        # Initialize data storage
         self.current_value = 0.0
-        self.data_points = []  # Stores (timestamp, value) tuples
-        self.max_points = self.options.get("points", 50)  # Maximum number of points to display
+        self.max_points = self.options.get("points", 50)
+        self.connector = DataConnector(self.plot, max_points=self.max_points)
+
+        self.timer = QTimer()
+        self.timer.setInterval(self.options.get("interval", 50))
+        self.timer.timeout.connect(self.worker_update)
+        self.timer.start()
 
         self.update_widget_geometry()
 
     def update_widget_geometry(self):
-        widget_margin = self.margin + 30  # 30 is the title bar height
+        widget_margin = self.margin + 30
         widget_rect = (
             self.margin + 4,
             widget_margin + 4,
@@ -198,53 +211,20 @@ class GraphWidgetItem(WidgetItem):
         super().set_span(x, y)
         self.update_widget_geometry()
 
-    def prepareGeometryChange(self):  # noqa: N802
+    def prepareGeometryChange(self):
         super().prepareGeometryChange()
         self.update_widget_geometry()
 
     def update_data(self, data: dict):
         super().update_data(data)
-
         try:
-            # Extract numeric value from data
             if isinstance(data, dict) and "value" in data:
-                new_value = float(data["value"])
+                self.current_value = float(data["value"])
             elif isinstance(data, int | float):
-                new_value = float(data)
+                self.current_value = float(data)
             else:
                 text_value = get_structure_text(data)
-                try:
-                    new_value = float(text_value)
-                except (ValueError, TypeError):
-                    return
-
-            # Append new data point with current timestamp
-            timestamp = time.perf_counter()
-            self.data_points.append((timestamp, new_value))
-
-            # Limit the number of points
-            while len(self.data_points) > self.max_points:
-                self.data_points.pop(0)
-
-            # Update plot data
-            x_data = [t for t, _ in self.data_points]
-            y_data = [v for _, v in self.data_points]
-            self.plot.setData(x_data, y_data)
-
-            # Update X-axis range
-            if self.data_points:
-                min_t = min(t for t, _ in self.data_points)
-                max_t = max(t for t, _ in self.data_points)
-                self.graph.setXRange(min_t, max_t, padding=0.05)
-
-            # Update Y-axis range if auto-scaling is enabled
-            if self.options.get("auto_scale", True) and self.data_points:
-                min_y = min(v for _, v in self.data_points)
-                max_y = max(v for _, v in self.data_points)
-                # Add small padding to avoid clipping
-                padding = (max_y - min_y) * 0.05 if max_y != min_y else 1
-                self.graph.setYRange(min_y - padding, max_y + padding, padding=0)
-
+                self.current_value = float(text_value)
         except (ValueError, TypeError):
             pass
 
@@ -257,19 +237,24 @@ class GraphWidgetItem(WidgetItem):
 
     def options_changed(self, options: dict):
         self.options = options
-        # Update Y-axis range based on new settings
-        if not self.options.get("auto_scale", True):
-            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100), padding=0)
-        elif self.data_points:
-            # Apply auto-scaling if enabled and data exists
-            min_y = min(v for _, v in self.data_points)
-            max_y = max(v for _, v in self.data_points)
-            padding = (max_y - min_y) * 0.05 if max_y != min_y else 1
-            self.graph.setYRange(min_y - padding, max_y + padding, padding=0)
-        self.plot.setPen(
-            pg.mkPen(color=GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
-        )
+        self.timer.setInterval(self.options.get("interval", 50))
         self.max_points = self.options.get("points", 50)
+        self.plot.setPen(
+            color=GraphColors(self.options.get("color", "#4682b4")).value,
+            width=self.options.get("width", 2),
+        )
+        self.connector.max_points = self.max_points
+        if not self.options.get("auto_scale", True):
+            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100))
+        else:
+            self.graph.enableAutoRange(axis="y", enable=True)
+
+    @line_profiler.profile
+    def worker_update(self):
+        self.connector.cb_append_data_point(self.current_value)
+
+        if not self.options.get("auto_scale", True):
+            self.graph.setYRange(self.options.get("min", 0), self.options.get("max", 100))
 
     def close(self):
-        pass
+        self.timer.stop()
