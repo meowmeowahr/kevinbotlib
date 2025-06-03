@@ -1095,6 +1095,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Connecting to a Target
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1106,6 +1119,52 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#password-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Password Connection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#private-key-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Private Key Connection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#host-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Host Verification
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1822,6 +1881,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#password-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Password Connection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#private-key-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Private Key Connection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#host-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      Host Verification
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1845,6 +1939,36 @@
 
 
 <h1 id="connecting-to-a-target">Connecting to a Target</h1>
+<p>You may connect to a target using a password or a private RSA key file.</p>
+<h2 id="password-connection">Password Connection</h2>
+<p><img alt="log-downloader-password.png" src="../../../media/log-downloader-password.png" /></p>
+<p>Password-based connection requires the following information:</p>
+<ul>
+<li>Host to connect to</li>
+<li>SSH/SFTP Port</li>
+<li>Username</li>
+<li>Password</li>
+</ul>
+<h2 id="private-key-connection">Private Key Connection</h2>
+<p><img alt="log-downloader-pkey.png" src="../../../media/log-downloader-pkey.png" /></p>
+<p>Key-based connection requires the following information:</p>
+<ul>
+<li>Host to connect to</li>
+<li>SSH/SFTP Port</li>
+<li>Username</li>
+<li>RSA Private key file</li>
+</ul>
+<h2 id="host-verification">Host Verification</h2>
+<p>Upon connecting, you may be asked the following:</p>
+<p><img alt="ssh-host-verify.png" src="../../../media/ssh-host-verify.png" /></p>
+<p>Verify that the SSH Host Key is correct before proceeding by clicking "Open." 
+Click "Abort" if the Host Key isn't correct to end the connection.</p>
+<p>Upon connecting, an index of log files will be downloaded.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Retrieving the log index will significantly slow down if there is a large number of logs stored on the robot.
+Periodically clear out logs to prevent this.</p>
+</div>
 
 
 
