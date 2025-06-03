@@ -230,7 +230,7 @@ class WidgetGridController(QObject):
     def get_items(self) -> list[WidgetItem]:
         return [item for item in self.view.scene().items() if isinstance(item, WidgetItem)]
 
-    def load(self, item_loader: Callable[[dict], WidgetItem], items: list[dict]):
+    def load(self, loader: Callable[[dict], WidgetItem], items: list[dict]):
         for item in items:
-            widget_item = item_loader(item)
+            widget_item = loader(item)
             self.add_to_pos(widget_item, item["pos"][0], item["pos"][1])

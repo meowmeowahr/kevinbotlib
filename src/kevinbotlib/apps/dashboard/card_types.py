@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
@@ -9,6 +11,8 @@ from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 
+if TYPE_CHECKING:
+    from kevinbotlib.apps.dashboard.app import Application
 
 def determine_widget_types(did: str):
     match did:
@@ -49,7 +53,7 @@ def determine_widget_types(did: str):
     return {}
 
 
-def item_loader(self, item: dict) -> WidgetItem:
+def item_loader(app: "Application", item: dict) -> WidgetItem:
     kind = item["kind"]
     title = item["title"]
     options = item["options"] if "options" in item else {}
@@ -58,24 +62,24 @@ def item_loader(self, item: dict) -> WidgetItem:
     key = item["key"] if "key" in item else item["title"]
     match kind:
         case "base":
-            return WidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return WidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "text":
-            return LabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return LabelWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "bigtext":
-            return BigLabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return BigLabelWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "textedit":
-            return TextEditWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return TextEditWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "boolean":
-            return BooleanWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return BooleanWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "cameramjpeg":
-            return MjpegCameraStreamWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return MjpegCameraStreamWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "color":
-            return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return ColorWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "speedometer":
-            return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return SpeedometerWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "graph":
-            return GraphWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return GraphWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "battery":
-            return BatteryWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+            return BatteryWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
 
-    return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
+    return WidgetItem(title, key, options, app.graphics_view, span_x, span_y)

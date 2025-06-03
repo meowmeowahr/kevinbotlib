@@ -598,7 +598,7 @@ class Application(ThemableWindow):
         self.latency_timer.start()
 
         self.controller = WidgetGridController(self.graphics_view)
-        self.controller.load(item_loader, self.settings.value("layout", [], type=list))  # type: ignore
+        self.controller.load(lambda x: item_loader(self, x), self.settings.value("layout", [], type=list))  # type: ignore
 
         self.tree_worker_thread = QThread(self)
         self.tree_worker = PollingWorker(
