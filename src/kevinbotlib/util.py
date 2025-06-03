@@ -19,7 +19,7 @@ def fullclassname(o: object) -> str:
 def is_binary() -> bool:
     """
     Detect if the application is running as a frozen executable or not.
-    
+
     Returns:
         Is frozen?
     """

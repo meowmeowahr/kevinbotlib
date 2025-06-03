@@ -273,7 +273,7 @@ class CommandScheduler:
         self._scheduled: list[_ScheduledCommand] = []
         self._triggers: list[Trigger] = []
 
-    def get_instance(self) -> 'CommandScheduler':
+    def get_instance(self) -> "CommandScheduler":
         """
         Get the singleton instance of the CommandScheduler.
 

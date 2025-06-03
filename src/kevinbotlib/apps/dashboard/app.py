@@ -65,7 +65,7 @@ from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Notifier, Severity
 from kevinbotlib.apps.common.widgets import WrapAnywhereLabel
-from kevinbotlib.apps.dashboard.card_types import determine_widget_types
+from kevinbotlib.apps.dashboard.card_types import determine_widget_types, item_loader
 from kevinbotlib.apps.dashboard.grid import (
     GridGraphicsView,
     WidgetGridController,
@@ -74,15 +74,6 @@ from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
-from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
-from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
-from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
-from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
-from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
-from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
-from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
-from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration, LoggerWriteOpts
 from kevinbotlib.ui.theme import Theme, ThemeStyle
@@ -282,6 +273,7 @@ class TopicStatusPanel(QStackedWidget):
         data_view_layout.addStretch()
 
         self.add_layout = QFlowLayout()
+        self.add_layout.setSpacing(8)
         data_view_layout.addLayout(self.add_layout)
 
         data_view_layout.addStretch()
@@ -606,7 +598,7 @@ class Application(ThemableWindow):
         self.latency_timer.start()
 
         self.controller = WidgetGridController(self.graphics_view)
-        self.controller.load(self.item_loader, self.settings.value("layout", [], type=list))  # type: ignore
+        self.controller.load(item_loader, self.settings.value("layout", [], type=list))  # type: ignore
 
         self.tree_worker_thread = QThread(self)
         self.tree_worker = PollingWorker(
@@ -778,37 +770,6 @@ class Application(ThemableWindow):
 
         self.settings.setValue("rate", self.settings_window.poll_rate.value())
         self.update_timer.setInterval(self.settings.value("rate", 200, int))  # type: ignore
-
-    def item_loader(self, item: dict) -> WidgetItem:
-        kind = item["kind"]
-        title = item["title"]
-        options = item["options"] if "options" in item else {}
-        span_x = item["span_x"]
-        span_y = item["span_y"]
-        key = item["key"] if "key" in item else item["title"]
-        match kind:
-            case "base":
-                return WidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "text":
-                return LabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "bigtext":
-                return BigLabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "textedit":
-                return TextEditWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "boolean":
-                return BooleanWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "cameramjpeg":
-                return MjpegCameraStreamWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "color":
-                return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "speedometer":
-                return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "graph":
-                return GraphWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-            case "battery":
-                return BatteryWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
-
-        return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
 
     @override
     def closeEvent(self, event: QCloseEvent):

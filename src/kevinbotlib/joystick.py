@@ -975,6 +975,7 @@ class JoystickSender:
 
 class DynamicJoystickSender:
     """Joystick data sender for `RedisCommClient` that can switch out joystick classes while running"""
+
     def __init__(
         self, client: RedisCommClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
     ) -> None:

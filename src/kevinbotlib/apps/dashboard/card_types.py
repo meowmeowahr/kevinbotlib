@@ -1,3 +1,4 @@
+from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
@@ -46,3 +47,35 @@ def determine_widget_types(did: str):
         case "kevinbotlib.vision.dtype.mjpeg":
             return {"MJPEG Stream": MjpegCameraStreamWidgetItem}
     return {}
+
+
+def item_loader(self, item: dict) -> WidgetItem:
+    kind = item["kind"]
+    title = item["title"]
+    options = item["options"] if "options" in item else {}
+    span_x = item["span_x"]
+    span_y = item["span_y"]
+    key = item["key"] if "key" in item else item["title"]
+    match kind:
+        case "base":
+            return WidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "text":
+            return LabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "bigtext":
+            return BigLabelWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "textedit":
+            return TextEditWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "boolean":
+            return BooleanWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "cameramjpeg":
+            return MjpegCameraStreamWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "color":
+            return ColorWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "speedometer":
+            return SpeedometerWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "graph":
+            return GraphWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+        case "battery":
+            return BatteryWidgetItem(title, key, options, self.graphics_view, span_x, span_y, self.client)
+
+    return WidgetItem(title, key, options, self.graphics_view, span_x, span_y)
