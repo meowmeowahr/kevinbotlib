@@ -215,3 +215,60 @@ The graph widget can graph data with customizable properties.
 * Line Width
   
     This option sets the width of the plot.
+
+### Compatible Data Types
+
+* `IntegerSendable`
+* `FloatSendable`
+
+## Slider Widget
+
+![slider-dark.png](../../media/dashboard/slider-dark.png#only-dark){width=384px}
+![slider-light.png](../../media/dashboard/slider-light.png#only-light){width=384px}
+
+The slider widget can display numeric values on a configurable slider.
+
+### Configuration Options
+
+![slider-config.png](../../media/dashboard/slider-config.png){width=360px}
+
+* Min Value
+
+    Lowset value on the slider
+
+* Max Value
+  
+    Highest number on the slider
+
+* Step Size
+
+    Size of each step on the slider
+
+* Vertical Orientation
+
+    Use a vertical slider instead of a horizontal one.
+
+* Show Value Label
+  
+    Display the current value under the slider
+
+* Show Tick Marks
+
+    Display slider tick marks
+
+* Tick Interval
+
+    Interval of ticks
+
+* Send Delay
+
+    Delay to prevent spamming of the network while mouse is down on the slider
+
+* Read-Only
+
+    Prevent writing to the network
+
+### Compatible Data Types
+
+* `IntegerSendable`
+* `FloatSendable`

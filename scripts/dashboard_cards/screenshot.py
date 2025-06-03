@@ -36,8 +36,13 @@ CONFIG: typing.Final = {
             "title": "Battery Level",
             "span": [1, 1],
             "data": [
-                {"value": x, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}
-                for x in [round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)]
+                {
+                    "value": x,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+                for x in [
+                    round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)
+                ]
             ],
         },
         {
@@ -47,9 +52,15 @@ CONFIG: typing.Final = {
             "title": "Graph",
             "span": [3, 2],
             "data": [
-                {"value": x, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}
-                for x in [round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)]
+                {
+                    "value": x,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+                for x in [
+                    round(12 + (math.sin(x / 2) / 4) - x / 10, 2) for x in range(40)
+                ]
             ],
+            "perdata_wait": 0.05,
         },
         {
             "out": "docs/media/dashboard/textedit-{0}.png",
@@ -64,7 +75,12 @@ CONFIG: typing.Final = {
             "class": "LabelWidgetItem",
             "title": "Text",
             "span": [1, 1],
-            "data": [{"value": "Demo", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": "Demo",
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/bigtext-{0}.png",
@@ -72,7 +88,12 @@ CONFIG: typing.Final = {
             "class": "BigLabelWidgetItem",
             "title": "Big Text",
             "span": [1, 1],
-            "data": [{"value": "Demo", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": "Demo",
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/boolean-off-{0}.png",
@@ -80,7 +101,12 @@ CONFIG: typing.Final = {
             "class": "BooleanWidgetItem",
             "title": "Boolean Off",
             "span": [1, 1],
-            "data": [{"value": False, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": False,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/boolean-on-{0}.png",
@@ -88,7 +114,12 @@ CONFIG: typing.Final = {
             "class": "BooleanWidgetItem",
             "title": "Boolean on",
             "span": [1, 1],
-            "data": [{"value": True, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": True,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/color-{0}.png",
@@ -96,7 +127,12 @@ CONFIG: typing.Final = {
             "class": "ColorWidgetItem",
             "title": "Color",
             "span": [1, 1],
-            "data": [{"value": "#0000ff", "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": "#0000ff",
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/speedometer-{0}.png",
@@ -104,7 +140,12 @@ CONFIG: typing.Final = {
             "class": "SpeedometerWidgetItem",
             "title": "Speedometer",
             "span": [2, 2],
-            "data": [{"value": 10, "struct": {"dashboard": [{"element": "value", "format": "raw"}]}}],
+            "data": [
+                {
+                    "value": 10,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
         {
             "out": "docs/media/dashboard/mjpeg-{0}.png",
@@ -116,7 +157,10 @@ CONFIG: typing.Final = {
                 {
                     "value": base64.b64encode(
                         open(  # noqa: SIM115
-                            os.path.join(os.path.dirname(os.path.realpath(__file__)), "dashboard.jpg"),
+                            os.path.join(
+                                os.path.dirname(os.path.realpath(__file__)),
+                                "dashboard.jpg",
+                            ),
                             "rb",
                             closefd=True,
                         ).read()
@@ -125,6 +169,19 @@ CONFIG: typing.Final = {
                 }
             ],
             "wait": 2,
+        },
+        {
+            "out": "docs/media/dashboard/slider-{0}.png",
+            "mod": "kevinbotlib.apps.dashboard.widgets.slider",
+            "class": "SliderWidgetItem",
+            "title": "Slider",
+            "span": [2, 1],
+            "data": [
+                {
+                    "value": 40,
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
         },
     ],
 }
@@ -180,6 +237,14 @@ def main():
             start = time.time()
             while time.time() - item["wait"] < start:
                 app.processEvents()
+        if "perdata_wait" in item:
+            for data in item["data"]:
+                start = time.time()
+                while time.time() - start < item["perdata_wait"]:
+                    app.processEvents()
+                    witem.update_data(data)
+                    witem.update()
+                    time.sleep(item["perdata_wait"])
         scene.set_theme(Themes.Dark)
         capture_scene_to_image(
             scene,
@@ -201,6 +266,14 @@ def main():
             start = time.time()
             while time.time() - item["wait"] < start:
                 app.processEvents()
+        if "perdata_wait" in item:
+            for data in item["data"]:
+                start = time.time()
+                while time.time() - start < item["perdata_wait"]:
+                    app.processEvents()
+                    witem.update_data(data)
+                    witem.update()
+                    time.sleep(item["perdata_wait"])
         capture_scene_to_image(
             scene,
             width=item["span"][0] * CONFIG["grid_size"],
