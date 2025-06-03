@@ -14,6 +14,7 @@ from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import Application
 
+
 def determine_widget_types(did: str):
     match did:
         case "kevinbotlib.dtype.int":

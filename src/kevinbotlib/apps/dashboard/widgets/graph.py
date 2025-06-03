@@ -1,11 +1,12 @@
-import time
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
-import line_profiler
 import pyqtgraph
 import superqt
-from PySide6.QtCore import Signal, QTimer
+from pglive.sources.data_connector import DataConnector
+from pglive.sources.live_plot import LiveLinePlot
+from pglive.sources.live_plot_widget import LivePlotWidget
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -18,11 +19,6 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QVBoxLayout,
 )
-
-from pglive.sources.data_connector import DataConnector
-from pglive.sources.live_plot import LiveLinePlot
-from pglive.sources.live_plot_widget import LivePlotWidget
-from pglive.kwargs import Axis
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
@@ -92,7 +88,9 @@ class GraphWidgetSettings(QDialog):
         self.points.valueChanged.connect(self.set_points)
         self.form.addRow("Data Points", self.points)
 
-        self.interval = QSpinBox(minimum=1, maximum=1000, singleStep=25, value=self.options.get("interval", 50), suffix="ms")
+        self.interval = QSpinBox(
+            minimum=1, maximum=1000, singleStep=25, value=self.options.get("interval", 50), suffix="ms"
+        )
         self.interval.valueChanged.connect(self.set_interval)
         self.form.addRow("Point Interval", self.interval)
 
@@ -176,7 +174,9 @@ class GraphWidgetItem(WidgetItem):
         self.graph.setAntialiasing(False)
 
         self.plot = LiveLinePlot(
-            pen=pyqtgraph.mkPen(GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
+            pen=pyqtgraph.mkPen(
+                GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)
+            )
         )
         self.graph.addItem(self.plot)
 
@@ -211,7 +211,7 @@ class GraphWidgetItem(WidgetItem):
         super().set_span(x, y)
         self.update_widget_geometry()
 
-    def prepareGeometryChange(self):
+    def prepareGeometryChange(self):  # noqa: N802
         super().prepareGeometryChange()
         self.update_widget_geometry()
 
@@ -249,7 +249,6 @@ class GraphWidgetItem(WidgetItem):
         else:
             self.graph.enableAutoRange(axis="y", enable=True)
 
-    @line_profiler.profile
     def worker_update(self):
         self.connector.cb_append_data_point(self.current_value)
 
