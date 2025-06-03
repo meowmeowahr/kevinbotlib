@@ -8,6 +8,7 @@ from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
 from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
+from kevinbotlib.apps.dashboard.widgets.slider import SliderWidgetItem
 from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
 
@@ -24,6 +25,7 @@ def determine_widget_types(did: str):
                 "Big Text": BigLabelWidgetItem,
                 "Speedometer": SpeedometerWidgetItem,
                 "Graph": GraphWidgetItem,
+                "Slider": SliderWidgetItem,
             }
         case "kevinbotlib.dtype.float":
             return {
@@ -33,6 +35,7 @@ def determine_widget_types(did: str):
                 "Speedometer": SpeedometerWidgetItem,
                 "Battery": BatteryWidgetItem,
                 "Graph": GraphWidgetItem,
+                "Slider": SliderWidgetItem,
             }
         case "kevinbotlib.dtype.str":
             return {
@@ -82,5 +85,7 @@ def item_loader(app: "Application", item: dict) -> WidgetItem:
             return GraphWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "battery":
             return BatteryWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
+        case "slider":
+            return SliderWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
 
     return WidgetItem(title, key, options, app.graphics_view, span_x, span_y)

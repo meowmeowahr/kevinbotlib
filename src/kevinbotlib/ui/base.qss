@@ -552,6 +552,192 @@ QTreeView {
     color: {{fg}};
 }
 
+/* QSlider Styling */
+QSlider {
+    background-color: transparent;
+    margin: 2px;
+}
+
+/* Horizontal Slider Groove */
+QSlider::groove:horizontal {
+    background-color: {{bg4}};
+    border: 1px solid {{border}};
+    border-radius: 3px;
+    height: 6px;
+    margin: 2px 0;
+}
+
+QSlider::groove:horizontal:hover {
+    border-color: {{primary1}};
+}
+
+QSlider::groove:horizontal:disabled {
+    background-color: {{bg2}};
+}
+
+/* Horizontal Slider Handle */
+QSlider::handle:horizontal {
+    background-color: {{bg5}};
+    border: 2px solid {{primary1}};
+    border-radius: 8px;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0;
+}
+
+QSlider::handle:horizontal:hover {
+    background-color: {{primary1}};
+    border-color: {{primary2}};
+}
+
+QSlider::handle:horizontal:pressed {
+    background-color: {{primary2}};
+    border-color: {{primary2}};
+}
+
+QSlider::handle:horizontal:disabled {
+    background-color: {{bg3}};
+}
+
+/* Horizontal Slider Sub-page (filled portion) */
+QSlider::sub-page:horizontal {
+    background-color: {{primary1}};
+    border: 1px solid {{primary1}};
+    border-radius: 3px;
+    height: 6px;
+    margin: 2px 0;
+}
+
+QSlider::sub-page:horizontal:hover {
+    background-color: {{primary2}};
+    border-color: {{primary2}};
+}
+
+/* Horizontal Slider Add-page (unfilled portion) */
+QSlider::add-page:horizontal {
+    background-color: {{bg4}};
+    border: 1px solid {{border}};
+    border-radius: 3px;
+    height: 6px;
+    margin: 2px 0;
+}
+
+QSlider::add-page:horizontal:hover {
+    border-color: {{primary1}};
+}
+
+QSlider::add-page:horizontal:disabled {
+    background-color: {{bg2}};
+}
+
+/* Vertical Slider Groove */
+QSlider::groove:vertical {
+    background-color: {{bg4}};
+    border: 1px solid {{border}};
+    border-radius: 3px;
+    width: 6px;
+    margin: 0 2px;
+}
+
+QSlider::groove:vertical:hover {
+    border-color: {{primary1}};
+}
+
+QSlider::groove:vertical:disabled {
+    background-color: {{bg2}};
+}
+
+/* Vertical Slider Handle */
+QSlider::handle:vertical {
+    background-color: {{bg5}};
+    border: 2px solid {{primary1}};
+    border-radius: 4px;
+    width: 16px;
+    height: 16px;
+    margin: 0 -8px;
+}
+
+QSlider::handle:vertical:hover {
+    background-color: {{primary1}};
+    border-color: {{primary2}};
+}
+
+QSlider::handle:vertical:pressed {
+    background-color: {{primary2}};
+    border-color: {{primary2}};
+}
+
+QSlider::handle:vertical:disabled {
+    background-color: {{bg3}};
+}
+
+/* Vertical Slider Sub-page (filled portion) */
+QSlider::sub-page:vertical {
+    background-color: {{primary1}};
+    border: 1px solid {{primary1}};
+    border-radius: 3px;
+    width: 6px;
+    margin: 0 2px;
+}
+
+QSlider::sub-page:vertical:hover {
+    background-color: {{primary2}};
+    border-color: {{primary2}};
+}
+
+/* Vertical Slider Add-page (unfilled portion) */
+QSlider::add-page:vertical {
+    background-color: {{bg4}};
+    border: 1px solid {{border}};
+    border-radius: 3px;
+    width: 6px;
+    margin: 0 2px;
+}
+
+QSlider::add-page:vertical:hover {
+    border-color: {{primary1}};
+}
+
+QSlider::add-page:vertical:disabled {
+    background-color: {{bg2}};
+}
+
+/* Tick marks (works for both orientations) */
+QSlider::tick {
+    background-color: {{fg}};
+    width: 2px;
+    height: 2px;
+}
+
+/* Horizontal Tick Mark */
+QSlider::tick:horizontal {
+    background-color: {{fg}};
+    height: 6px;
+    width: 2px;
+    margin-top: 2px;
+}
+
+/* Vertical Tick Mark */
+QSlider::tick:vertical {
+    background-color: {{fg}};
+    width: 6px;
+    height: 2px;
+    margin-left: 2px;
+}
+
+
+/* Focus styling */
+QSlider:focus {
+    outline: none;
+}
+
+QSlider:focus::groove:horizontal {
+    border-color: {{primary1}};
+}
+
+QSlider:focus::groove:vertical {
+    border-color: {{primary1}};
+}
 
 /* QCheckBox Styling */
 QCheckBox {
