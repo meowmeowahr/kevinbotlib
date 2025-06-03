@@ -28,9 +28,11 @@ jobs:
           - os: windows-latest
             platform: windows
             arch: x64
-          - os: windows-11-arm
-            platform: windows
-            arch: arm64
+#          - os: windows-11-arm
+#            platform: windows
+#            arch: arm64
+# disabled because blake3, numpy, and maybe more don't support it yet
+# hoping Win on ARM support gets better
 
     runs-on: ${{ matrix.os }}
 
