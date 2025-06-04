@@ -2,7 +2,11 @@ from typing import Any
 
 import numpy as np  # type: ignore
 import pyqtgraph as pg  # type: ignore
-from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_mixins import MixinLeadingLine, MixinLiveBarPlot, MixinLivePlot
+from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_mixins import (
+    MixinLeadingLine,
+    MixinLiveBarPlot,
+    MixinLivePlot,
+)
 
 
 class LiveLinePlot(pg.PlotDataItem, MixinLivePlot, MixinLeadingLine):

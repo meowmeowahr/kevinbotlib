@@ -810,3 +810,7 @@ QCheckBox::indicator:hover:disabled {
     border-color: {{border}}80; /* No additional hover effect when disabled */
     background-color: {{bg2}};
 }
+
+QMdiSubWindow {
+    background: {{bg3}};
+}

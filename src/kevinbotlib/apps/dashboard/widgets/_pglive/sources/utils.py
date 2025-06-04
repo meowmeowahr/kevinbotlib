@@ -4,7 +4,7 @@ from typing import List, Union
 NUM = Union[int, float]
 NUM_LIST = List[NUM]
 
-MAX_SECONDS = 3.154e+9
+MAX_SECONDS = 3.154e9
 
 
 def get_scaled_time_duration(seconds: float, short: bool = True) -> str:

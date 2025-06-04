@@ -1,3 +1,4 @@
+import argparse
 import atexit
 import contextlib
 import os
@@ -14,6 +15,7 @@ from typing import Any, NoReturn, final
 
 import psutil
 
+import kevinbotlib.simulator as _sim
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.comm import (
     AnyListSendable,
@@ -42,6 +44,11 @@ from kevinbotlib.logger import (
 )
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
 from kevinbotlib.remotelog import ANSILogSender
+from kevinbotlib.robot._sim import (
+    TelemetryWindowView,
+    sim_telemetry_hook,
+    TimeWindowView,
+)
 from kevinbotlib.system import SystemPerformanceData
 
 
@@ -145,6 +152,8 @@ class InstanceLocker:
 class BaseRobot:
     estop_hooks: list[Callable[[], Any]] = []  # noqa: RUF012
 
+    IS_SIM: bool = False
+
     @staticmethod
     def add_basic_metrics(robot: "BaseRobot", update_interval: float = 2.0):
         robot.metrics.add("cpu.usage", Metric("CPU Usage", 0.0, MetricType.PercentageUsedType))
@@ -218,6 +227,8 @@ class BaseRobot:
         sys.excepthook = self._exc_hook
         threading.excepthook = self._thread_exc_hook
         self.telemetry.trace("Configured exception hooks")
+
+        self.simulator: _sim.SimulationFramework | None = None
 
         self.fileserver = FileServer(LoggerDirectories.get_logger_directory(), host="0.0.0.0")  # noqa: S104
         self.telemetry.trace("Configured file server")
@@ -449,7 +460,43 @@ class BaseRobot:
 
     @final
     def run(self) -> NoReturn:
-        """Run the robot loop. Method is **final**."""
+        """Run the robot loop and parse command-line arguments. Method is **final**."""
+        # parse args
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "--simulate", help="simulate the robot using the KevinbotLib Simulation Framework", action="store_true"
+        )
+        args = parser.parse_args()
+        BaseRobot.IS_SIM = args.simulate
+
+        if BaseRobot.IS_SIM:
+            _sim.freeze_support()
+            self.telemetry.trace("Added freeze support for simulator process")
+            self.simulator = _sim.SimulationFramework(self)
+            self.simulator.launch_simulator()
+            self.telemetry.trace("Launched simulator")
+            self.simulator.add_window("kevinbotlib.robot.internal.telemetry", TelemetryWindowView)
+            self.telemetry.trace("Added Telemetry simulator WindowView")
+            self.simulator.add_window("kevinbotlib.robot.internal.time", TimeWindowView)
+            self.telemetry.trace("Added Time simulator WindowView")
+
+            # telemetry updates
+            self.telemetry.add_hook_ansi(
+                lambda *args: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", self.simulator, *args)
+            )
+
+            # time updates
+            def time_updater():
+                start = time.monotonic()
+                while True:
+                    self.simulator.send_to_window("kevinbotlib.robot.internal.time", f"{time.monotonic()-start:0>9.4f}")
+                    time.sleep(0.05)
+            threading.Thread(
+                target=time_updater,
+                daemon=True,
+                name="KevinbotLib.Simulator.LiveWindows.Time.Update"
+            ).start()
+
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:
                 self._heartbeat_thread.start()

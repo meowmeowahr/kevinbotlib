@@ -11,7 +11,8 @@ import redis.exceptions
 from pydantic import BaseModel, ValidationError
 
 import kevinbotlib.exceptions
-from kevinbotlib.logger import Logger as _Logger, Logger
+from kevinbotlib.logger import Logger
+from kevinbotlib.logger import Logger as _Logger
 
 
 class BaseSendable(BaseModel, ABC):
@@ -435,12 +436,14 @@ class RedisCommClient:
             self._dead.dead = False
         except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish/set to {key}: {e}")
-            if (not self.redis) or (not self.redis.connection_pool) or (kwargs == self.redis.connection_pool.connection_kwargs):
+            if (
+                (not self.redis)
+                or (not self.redis.connection_pool)
+                or (kwargs == self.redis.connection_pool.connection_kwargs)
+            ):
                 self._dead.dead = True
             else:
-                Logger().warning(
-                    "Connection kwargs changed while getting ping to server. Connection may not be dead."
-                )
+                Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """
@@ -646,7 +649,11 @@ class RedisCommClient:
             return (end_time - start_time) * 1000  # Convert to milliseconds
         except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
             _Logger().error(f"Cannot measure latency: {e}")
-            if (not self.redis) or (not self.redis.connection_pool) or (kwargs == self.redis.connection_pool.connection_kwargs):
+            if (
+                (not self.redis)
+                or (not self.redis.connection_pool)
+                or (kwargs == self.redis.connection_pool.connection_kwargs)
+            ):
                 self._dead.dead = True
             else:
                 Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")

@@ -10,6 +10,7 @@ from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot_widget import 
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.utils import NUM_LIST
 
 if TYPE_CHECKING:
+
     class SupportsLivePlot(Protocol):
         plot_widget: Optional[LivePlotWidget]
         sigPlotChanged: QtCore.Signal
@@ -22,12 +23,13 @@ if TYPE_CHECKING:
         def setVisible(self, flag: bool) -> None: ...
 
 else:
-    class SupportsLivePlot:
-        ...
+
+    class SupportsLivePlot: ...
 
 
 class MixinLivePlot(SupportsLivePlot):
     """Implements new_data slot for any plot"""
+
     plot_widget: Optional[LivePlotWidget] = None
     min_x, min_y, max_x, max_y = 0, 0, 0, 0
 
@@ -49,6 +51,7 @@ class MixinLivePlot(SupportsLivePlot):
 
 class MixinLiveBarPlot(SupportsLivePlot):
     """Implements new_data slot for Bar Plot"""
+
     plot_widget: Optional[LivePlotWidget] = None
     sigPlotChanged = QtCore.Signal()
 
@@ -70,12 +73,19 @@ class MixinLiveBarPlot(SupportsLivePlot):
 
 class MixinLeadingLine(SupportsLivePlot):
     """Implements leading line"""
+
     _hl_kwargs = None
     _vl_kwargs = None
 
-    def set_leading_line(self, orientation: str = LeadingLine.VERTICAL,
-                         pen: QtGui.QPen = None, text_axis: str = LeadingLine.AXIS_X,
-                         text_color: str = "black", text_orientation: Orientation = Orientation.AUTO, **kwargs) -> Dict:
+    def set_leading_line(
+        self,
+        orientation: str = LeadingLine.VERTICAL,
+        pen: QtGui.QPen = None,
+        text_axis: str = LeadingLine.AXIS_X,
+        text_color: str = "black",
+        text_orientation: Orientation = Orientation.AUTO,
+        **kwargs,
+    ) -> Dict:
         text_axis = text_axis.lower()
         assert text_axis in (LeadingLine.AXIS_X, LeadingLine.AXIS_Y)
 
@@ -89,8 +99,15 @@ class MixinLeadingLine(SupportsLivePlot):
             _v_leading_text = pg.TextItem(color=text_color, angle=text_angle, fill=pen.color())
             _v_leading_line.setZValue(999)
             _v_leading_text.setZValue(999)
-            self._vl_kwargs = {"line": _v_leading_line, "text": _v_leading_text, "pen": pen, "text_axis": text_axis,
-                               "text_color": text_color, "text_orientation": text_orientation, **kwargs}
+            self._vl_kwargs = {
+                "line": _v_leading_line,
+                "text": _v_leading_text,
+                "pen": pen,
+                "text_axis": text_axis,
+                "text_color": text_color,
+                "text_orientation": text_orientation,
+                **kwargs,
+            }
             return self._vl_kwargs
         elif orientation == LeadingLine.HORIZONTAL:
             _h_leading_line = pg.InfiniteLine(angle=0, movable=False, pen=pen)
@@ -98,8 +115,15 @@ class MixinLeadingLine(SupportsLivePlot):
             _h_leading_text = pg.TextItem(color=text_color, angle=text_angle, fill=pen.color())
             _h_leading_text.setZValue(999)
             _h_leading_text.setZValue(999)
-            self._hl_kwargs = {"line": _h_leading_line, "text": _h_leading_text, "pen": pen, "text_axis": text_axis,
-                               "text_color": text_color, "text_orientation": text_orientation, **kwargs}
+            self._hl_kwargs = {
+                "line": _h_leading_line,
+                "text": _h_leading_text,
+                "pen": pen,
+                "text_axis": text_axis,
+                "text_color": text_color,
+                "text_orientation": text_orientation,
+                **kwargs,
+            }
             return self._hl_kwargs
         else:
             raise TypeError("Unsupported LeadingLine type")
@@ -115,8 +139,9 @@ class MixinLeadingLine(SupportsLivePlot):
         """Y tick format (will be overwritten when inserted in LivePlotWidget)"""
         return str(round(value, 4))
 
-    def update_leading_text(self, x: float, y: float, x_text: Optional[str] = None,
-                            y_text: Optional[str] = None) -> None:
+    def update_leading_text(
+        self, x: float, y: float, x_text: Optional[str] = None, y_text: Optional[str] = None
+    ) -> None:
         """Update position and text of Vertical and Horizontal leading text"""
         vb = self.getViewBox()
         width, height = vb.width(), vb.height()

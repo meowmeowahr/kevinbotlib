@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>app_icons/simulator.svg</file>
+        <file>app_icons/console.svg</file>
+        <file>mdi_background/grid-dark.svg</file>
+        <file>mdi_background/grid-light.svg</file>
+    </qresource>
+</RCC>

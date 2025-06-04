@@ -28,6 +28,7 @@ class LeadingLine:
     AXIS_X = "x"
     AXIS_Y = "y"
 
+
 class Orientation:
     AUTO = "Auto"
     HORIZONTAL = "Horizontal"
