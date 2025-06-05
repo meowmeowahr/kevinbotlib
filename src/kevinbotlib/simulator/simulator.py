@@ -5,8 +5,10 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from PySide6.QtWidgets import (
     QApplication,
+    QMessageBox,
 )
 
+from kevinbotlib.comm import RedisCommClient
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _ExitSimulatorEvent,
@@ -18,6 +20,7 @@ from kevinbotlib.simulator._events import (
 )
 from kevinbotlib.simulator._gui import SimMainWindow
 from kevinbotlib.simulator.windowview import WindowView, WindowViewOutputPayload
+from kevinbotlib.util import socket_exists
 
 if TYPE_CHECKING:
     from kevinbotlib.robot import BaseRobot
@@ -41,18 +44,34 @@ class SimulationFramework:
         self._ready_callback: Callable[[], None] | None = None
 
     @staticmethod
-    def simulator_run(in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue):
+    def simulator_run(
+        port: int | None, host: str | None, in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue
+    ):
         app = QApplication([])
+
+        if port and host and not socket_exists(host, port, 5):
+            QMessageBox.warning(
+                None,
+                "Redis Error",
+                f"Expected a Redis Server at {host}:{port}, socket isn't available\nThe simulator will most likely not function properly.",
+            )
+
         window = SimMainWindow(in_queue, out_queue)
         window.show()
         out_queue.put_nowait(_WindowReadyEvent())
         app.exec()
 
-    def launch_simulator(self, ready_callback: Callable[[], None] | None = None):
+    def launch_simulator(self, comm_client: RedisCommClient | None, ready_callback: Callable[[], None] | None = None):
+        host = None
+        port = None
+        if comm_client:
+            host = comm_client.host
+            port = comm_client.port
+
         self._ready_callback = ready_callback
 
         self.sim_process = multiprocessing.Process(
-            target=self.simulator_run, args=(self.sim_in_queue, self.sim_out_queue)
+            target=self.simulator_run, args=(port, host, self.sim_in_queue, self.sim_out_queue)
         )
         self.sim_process.name = "KevinbotLib.Simulator"
         self.sim_process.start()

@@ -45,11 +45,12 @@ from kevinbotlib.logger import (
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
 from kevinbotlib.remotelog import ANSILogSender
 from kevinbotlib.robot._sim import (
+    OpModeEventPayload,
     StateButtonsEventPayload,
     StateButtonsView,
     TelemetryWindowView,
     TimeWindowView,
-    sim_telemetry_hook, OpModeEventPayload,
+    sim_telemetry_hook,
 )
 from kevinbotlib.system import SystemPerformanceData
 
@@ -323,8 +324,6 @@ class BaseRobot:
             daemon=True,
         )
 
-        self.comm_client.wait_until_connected()
-        self.comm_client.wipeall()
         self.log_sender.start()
         self._update_console_enabled(False)
         self._update_console_opmodes(self._opmodes)
@@ -486,7 +485,7 @@ class BaseRobot:
                     )
 
             self.simulator = _sim.SimulationFramework(self)
-            self.simulator.launch_simulator(sim_ready)
+            self.simulator.launch_simulator(self.comm_client, sim_ready)
             self.estop_hooks.append(self.simulator.exit_simulator)
             self.telemetry.trace("Launched simulator")
 
@@ -535,6 +534,9 @@ class BaseRobot:
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:
+                self.comm_client.wait_until_connected()
+                self.comm_client.wipeall()
+
                 self._heartbeat_thread.start()
                 self.telemetry.trace("Started heartbeat thread")
                 self.robot_start()
@@ -654,9 +656,7 @@ class BaseRobot:
         if value not in self._opmodes:
             msg = f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}"
             raise ValueError(msg)
-        self.comm_client.set(
-            CommPath(self._ctrl_request_root_key) / "opmode", StringSendable(value=value)
-        )
+        self.comm_client.set(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable(value=value))
         self._update_console_opmode(value)
 
     @property

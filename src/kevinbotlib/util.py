@@ -1,3 +1,4 @@
+import socket
 import sys
 
 
@@ -24,3 +25,21 @@ def is_binary() -> bool:
         Is frozen?
     """
     return getattr(sys, "frozen", False)
+
+
+def socket_exists(host: str = "localhost", port: int = 6379, timeout: float = 1.0) -> bool:
+    """
+    Check if a TCP socket exists
+    Args:
+        host: Host to check
+        port: Port to check
+        timeout: Socket connection timeout
+
+    Returns:
+        Socket exists?
+    """
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except (TimeoutError, ConnectionRefusedError, OSError):
+        return False
