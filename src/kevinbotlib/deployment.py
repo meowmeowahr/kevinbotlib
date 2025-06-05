@@ -52,9 +52,12 @@ class ManifestParser:
         self._manifest: Manifest | None = None
 
         # attempt to load
-        with open(path) as f:
-            data = f.read()
-        self._manifest = Manifest(**json.loads(data))
+        try:
+            with open(path) as f:
+                data = f.read()
+            self._manifest = Manifest(**json.loads(data))
+        except FileNotFoundError:
+            self._manifest = None
 
     @property
     def path(self) -> pathlib.Path:
@@ -67,7 +70,7 @@ class ManifestParser:
         return self._path
 
     @property
-    def manifest(self) -> Manifest:
+    def manifest(self) -> Manifest | None:
         """
         Get the parsed manifest.
 
