@@ -45,11 +45,11 @@ from kevinbotlib.logger import (
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
 from kevinbotlib.remotelog import ANSILogSender
 from kevinbotlib.robot._sim import (
+    StateButtonsEventPayload,
     StateButtonsView,
     TelemetryWindowView,
     TimeWindowView,
-    sim_telemetry_hook,
-    StateButtonsEventPayload,
+    sim_telemetry_hook, OpModeEventPayload,
 )
 from kevinbotlib.system import SystemPerformanceData
 
@@ -473,12 +473,20 @@ class BaseRobot:
 
         if BaseRobot.IS_SIM:
             _sim.freeze_support()
-
             self._allow_enable_without_console = True
-
             self.telemetry.trace("Added freeze support for simulator process")
+
+            def sim_ready():
+                if self.simulator:
+                    self.simulator.send_to_window(
+                        "kevinbotlib.robot.internal.state_buttons", {"type": "opmodes", "opmodes": self._opmodes}
+                    )
+                    self.simulator.send_to_window(
+                        "kevinbotlib.robot.internal.state_buttons", {"type": "opmode", "opmode": self._opmode}
+                    )
+
             self.simulator = _sim.SimulationFramework(self)
-            self.simulator.launch_simulator()
+            self.simulator.launch_simulator(sim_ready)
             self.estop_hooks.append(self.simulator.exit_simulator)
             self.telemetry.trace("Launched simulator")
 
@@ -519,6 +527,12 @@ class BaseRobot:
 
             self.simulator.add_payload_callback(StateButtonsEventPayload, sim_state_callback)
 
+            # opmode updates
+            def opmode_change_callback(payload: OpModeEventPayload):
+                self.opmode = payload.payload()
+
+            self.simulator.add_payload_callback(OpModeEventPayload, opmode_change_callback)
+
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:
                 self._heartbeat_thread.start()
@@ -558,6 +572,11 @@ class BaseRobot:
                             self._update_console_opmode(current_opmode)
                             self.opmode_init(current_opmode, self._current_enabled)
                             self._prev_opmode = current_opmode
+                            if self.simulator:
+                                self.simulator.send_to_window(
+                                    "kevinbotlib.robot.internal.state_buttons",
+                                    {"type": "opmode", "opmode": self._opmode},
+                                )
 
                         # Handle enable/disable transitions
                         if self._prev_enabled != self._current_enabled:
@@ -635,7 +654,9 @@ class BaseRobot:
         if value not in self._opmodes:
             msg = f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}"
             raise ValueError(msg)
-        self._opmode = value
+        self.comm_client.set(
+            CommPath(self._ctrl_request_root_key) / "opmode", StringSendable(value=value)
+        )
         self._update_console_opmode(value)
 
     @property

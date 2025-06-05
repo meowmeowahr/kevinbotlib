@@ -1,6 +1,7 @@
 import multiprocessing
+from collections.abc import Callable
 from threading import Thread
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -8,11 +9,12 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
-    _SimulatorInputEvent,
-    _WindowViewUpdateEvent,
-    _SimulatorExitEvent,
-    _WindowViewPayloadEvent,
     _ExitSimulatorEvent,
+    _SimulatorExitEvent,
+    _SimulatorInputEvent,
+    _WindowReadyEvent,
+    _WindowViewPayloadEvent,
+    _WindowViewUpdateEvent,
 )
 from kevinbotlib.simulator._gui import SimMainWindow
 from kevinbotlib.simulator.windowview import WindowView, WindowViewOutputPayload
@@ -21,6 +23,7 @@ if TYPE_CHECKING:
     from kevinbotlib.robot import BaseRobot
 
 T = TypeVar("T", bound=WindowViewOutputPayload)
+
 
 class SimulationFramework:
     def __init__(self, robot: "BaseRobot"):
@@ -32,16 +35,22 @@ class SimulationFramework:
         self.sim_in_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
         self.sim_out_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
 
-        self._payload_callbacks: dict[type[WindowViewOutputPayload], list[Callable[[WindowViewOutputPayload], None]]] = {}
+        self._payload_callbacks: dict[
+            type[WindowViewOutputPayload], list[Callable[[WindowViewOutputPayload], None]]
+        ] = {}
+        self._ready_callback: Callable[[], None] | None = None
 
     @staticmethod
     def simulator_run(in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue):
         app = QApplication([])
         window = SimMainWindow(in_queue, out_queue)
         window.show()
+        out_queue.put_nowait(_WindowReadyEvent())
         app.exec()
 
-    def launch_simulator(self):
+    def launch_simulator(self, ready_callback: Callable[[], None] | None = None):
+        self._ready_callback = ready_callback
+
         self.sim_process = multiprocessing.Process(
             target=self.simulator_run, args=(self.sim_in_queue, self.sim_out_queue)
         )
@@ -74,7 +83,10 @@ class SimulationFramework:
             if isinstance(event, _SimulatorExitEvent):
                 self.robot.telemetry.critical("The simulator has stopped")
                 self.robot._signal_stop = True  # noqa: SLF001
-            if isinstance(event, _WindowViewPayloadEvent):
+            elif isinstance(event, _WindowReadyEvent):
+                if self._ready_callback:
+                    self._ready_callback()
+            elif isinstance(event, _WindowViewPayloadEvent):
                 if type(event.payload) in self._payload_callbacks:
                     for callback in self._payload_callbacks[type(event.payload)]:
                         callback(event.payload)

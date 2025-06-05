@@ -19,15 +19,17 @@ from loguru._handler import Message
 
 from kevinbotlib.exceptions import LoggerNotConfiguredException
 
+
 def _escape(msg: str):
     def replacer(match):
         content = match.group(1)
         # Only escape if there's no space inside the angle brackets
-        if ' ' not in content:
+        if " " not in content:
             return f"\\<{content}>"
         return f"<{content}>"
 
     return re.sub(r"<([^<>]+)>", replacer, msg)
+
 
 class LoggerDirectories:
     @staticmethod

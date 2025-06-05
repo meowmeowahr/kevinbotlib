@@ -1,9 +1,10 @@
 import ansi2html
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QFont, QTextBlockFormat, QTextCursor
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
+    QListWidget,
     QPushButton,
     QTextEdit,
     QVBoxLayout,
@@ -95,8 +96,19 @@ class StateButtonsEventPayload(WindowViewOutputPayload):
         return self._payload
 
 
+class OpModeEventPayload(WindowViewOutputPayload):
+    def __init__(self, payload: str):
+        self._payload = payload
+
+    def payload(self) -> str:
+        return self._payload
+
+
 @register_window_view("kevinbotlib.robot.internal.state_buttons")
 class StateButtonsView(WindowView):
+    set_opmodes = Signal(list)
+    set_opmode = Signal(str)
+
     def __init__(self):
         super().__init__()
 
@@ -118,15 +130,18 @@ class StateButtonsView(WindowView):
         self.estop_button.clicked.connect(self.estop)
         self.layout.addWidget(self.estop_button)
 
+        self.opmodes_selector = QListWidget()
+        self.opmodes_selector.currentTextChanged.connect(self.opmode_changed)
+        self.layout.addWidget(self.opmodes_selector)
+        self.set_opmodes.connect(self.update_opmodes)
+        self.set_opmode.connect(self.update_opmode)
+
     @property
     def title(self):
         return "Robot State"
 
     def generate(self) -> QWidget:
         return self.widget
-
-    def update(self, _payload):
-        return
 
     def enable(self):
         self.send_payload(StateButtonsEventPayload("enable"))
@@ -136,3 +151,22 @@ class StateButtonsView(WindowView):
 
     def estop(self):
         self.send_payload(StateButtonsEventPayload("estop"))
+
+    def update_opmodes(self, opmodes: list[str]):
+        self.opmodes_selector.addItems(opmodes)
+
+    def update_opmode(self, opmode: str):
+        self.opmodes_selector.blockSignals(True)
+        index = self.opmodes_selector.findItems(opmode, Qt.MatchFlag.MatchExactly)
+        if index:
+            self.opmodes_selector.setCurrentRow(self.opmodes_selector.row(index[0]))
+        self.opmodes_selector.blockSignals(False)
+
+    def opmode_changed(self, opmode: str):
+        self.send_payload(OpModeEventPayload(opmode))
+
+    def update(self, payload: dict):
+        if payload["type"] == "opmodes":
+            self.set_opmodes.emit(payload["opmodes"])
+        if payload["type"] == "opmode":
+            self.set_opmode.emit(payload["opmode"])

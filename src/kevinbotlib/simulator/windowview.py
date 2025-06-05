@@ -17,8 +17,7 @@ class WindowView(QObject):
         pass
 
     @final
-    def send_payload(self, payload: "WindowViewOutputPayload"):
-        ...
+    def send_payload(self, payload: "WindowViewOutputPayload"): ...
 
 
 class WindowViewOutputPayload(ABC):

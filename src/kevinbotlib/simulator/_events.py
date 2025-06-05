@@ -44,8 +44,10 @@ class _AddWindowEvent(_SimulatorInputEvent):
         self.view_cls = view_cls
         self.default_open = default_open
 
+
 class _ExitSimulatorEvent(_SimulatorInputEvent):
     pass
+
 
 class _WindowViewPayloadEvent(_SimulatorOutputEvent):
     __slots__ = ("winid", "payload")
@@ -53,3 +55,7 @@ class _WindowViewPayloadEvent(_SimulatorOutputEvent):
     def __init__(self, winid: str, payload: WindowViewOutputPayload):
         self.winid = winid
         self.payload = payload
+
+
+class _WindowReadyEvent(_SimulatorOutputEvent):
+    pass

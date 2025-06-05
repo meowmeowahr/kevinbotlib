@@ -25,10 +25,10 @@ from kevinbotlib.apps.common.toast import NotificationWidget, Severity
 from kevinbotlib.logger import Logger
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
-    _SimulatorExitEvent,
-    _WindowViewUpdateEvent,
-    _WindowViewPayloadEvent,
     _ExitSimulatorEvent,
+    _SimulatorExitEvent,
+    _WindowViewPayloadEvent,
+    _WindowViewUpdateEvent,
 )
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import WINDOW_VIEW_REGISTRY, WindowView
@@ -199,7 +199,6 @@ class SimMainWindow(_ThemableWindow):
         *,
         default_open: bool = False,
     ) -> QWidget:
-
         view.send_payload = lambda x: self.out_queue.put_nowait(_WindowViewPayloadEvent(winid, x))
 
         self.views[winid] = view
