@@ -78,3 +78,17 @@ class _MdiChild(QMdiSubWindow):
         self._settings.setValue(f"windows/{self._winid}/geometry", self.saveGeometry())
         self._settings.setValue(f"windows/{self._winid}/visible", False)
         super().closeEvent(event)
+
+    def moveEvent(self, event) -> None: # noqa: N802
+        pos = event.pos()
+        area = self.mdiArea()  # Get the parent QMdiArea
+        if area: # Ensure area is not None
+            # Check if the subwindow is trying to go out of bounds
+            if pos.x() < 0:
+                self.move(0, pos.y())
+            if pos.y() < 0:
+                self.move(pos.x(), 0)
+            if pos.x() + self.width() > area.width():
+                self.move(area.width() - self.width(), pos.y())
+            if pos.y() + self.height() > area.height():
+                self.move(pos.x(), area.height() - self.height())
