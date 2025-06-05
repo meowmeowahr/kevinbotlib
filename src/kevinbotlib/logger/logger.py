@@ -1,5 +1,6 @@
 import contextlib
 import glob
+import html
 import os
 import sys
 from collections.abc import Callable
@@ -288,7 +289,7 @@ class Logger:
             colors=opts.colors,
             ansi=opts.ansi,
             exception=opts.exception,
-        ).log(level.name, message)
+        ).log(level.name, html.escape(message))
 
     def trace(self, message: str) -> None:
         """
@@ -304,7 +305,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.TRACE.name, message)
+        self._internal_logger.opt(depth=1).log(Level.TRACE.name, html.escape(message))
 
     def debug(self, message: str) -> None:
         """
@@ -320,7 +321,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.DEBUG.name, message)
+        self._internal_logger.opt(depth=1).log(Level.DEBUG.name, html.escape(message))
 
     def info(self, message: str) -> None:
         """
@@ -336,7 +337,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.INFO.name, message)
+        self._internal_logger.opt(depth=1).log(Level.INFO.name, html.escape(message))
 
     def warning(self, message: str) -> None:
         """
@@ -352,7 +353,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.WARNING.name, message)
+        self._internal_logger.opt(depth=1).log(Level.WARNING.name, html.escape(message))
 
     @deprecated("Use Logger.warning() instead")
     def warn(self, message: str) -> None:
@@ -379,7 +380,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.ERROR.name, message)
+        self._internal_logger.opt(depth=1).log(Level.ERROR.name, html.escape(message))
 
     def security(self, message: str) -> None:
         """
@@ -395,7 +396,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.SECURITY.name, message)
+        self._internal_logger.opt(depth=1).log(Level.SECURITY.name, html.escape(message))
 
     def critical(self, message: str) -> None:
         if not Logger.is_configured:
@@ -404,7 +405,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, message)
+        self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, html.escape(message))
 
 
 class StreamRedirector(IO):
