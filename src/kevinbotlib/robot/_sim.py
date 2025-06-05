@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
+    QProgressBar
 )
 
 from kevinbotlib.simulator import SimulationFramework
@@ -62,6 +63,67 @@ class TelemetryWindowView(WindowView):
 
     def append_ansi(self, ansi: str):
         self.telemetry.append(self.ansi_convertor.convert(ansi.strip("\n\r")))
+
+@register_window_view("kevinbotlib.robot.internal.metrics")
+class MetricsWindowView(WindowView):
+    set = Signal(str, float)
+
+    def __init__(self):
+        super().__init__()
+        from PySide6.QtCore import QTimer
+
+        self.widget = QWidget()
+        self.layout = QVBoxLayout(self.widget)
+
+        self.metrics = QTextEdit()
+        self.metrics.setReadOnly(True)
+        self.metrics.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        self.metrics.setStyleSheet("border: none; font-family: monospace;")
+        self.layout.addWidget(self.metrics)
+
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 100)
+        self.progress.setFixedHeight(20)
+        self.progress.setTextVisible(False)
+        self.progress.setVisible(False)
+        self.layout.addWidget(self.progress)
+
+        self.set.connect(self.set_text)
+
+        self._interval = 1.0
+        self._elapsed = 0.0
+
+        self.timer = QTimer(self)
+        self.timer.setInterval(50)
+        self.timer.timeout.connect(self._on_timer)
+        self.timer.start()
+
+    @property
+    def title(self):
+        return "Metrics"
+
+    def generate(self) -> QWidget:
+        return self.widget
+
+    def set_text(self, payload, interval=None):
+        self.metrics.setPlainText(payload)
+        if interval is not None:
+            self._interval = interval
+            self._elapsed = 0.0
+            self.progress.setValue(0)
+        self.progress.setVisible(True)
+
+    def update(self, payload):
+        """Accept `str | Iterable[str]` and append to the log."""
+        if isinstance(payload, dict):
+            self.set.emit(payload["metrics"], payload["interval"])
+
+    def _on_timer(self):
+        self._elapsed += self.timer.interval() / 1000.0
+        percent = min(int((self._elapsed / self._interval) * 100), 100)
+        self.progress.setValue(percent)
+        if self._elapsed >= self._interval:
+            self._elapsed = 0.0
 
 
 @register_window_view("kevinbotlib.robot.internal.time")
@@ -218,6 +280,9 @@ def make_simulator(robot: "BaseRobot") -> SimulationFramework:
 
     simulator.add_window("kevinbotlib.robot.internal.state_buttons", StateButtonsView)
     robot.telemetry.trace("Added State Buttons simulator WindowView")
+
+    simulator.add_window("kevinbotlib.robot.internal.metrics", MetricsWindowView)
+    robot.telemetry.trace("Added Metrics simulator WindowView")
 
     # telemetry updates
     robot.telemetry.add_hook_ansi(

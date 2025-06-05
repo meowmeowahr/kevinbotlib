@@ -416,6 +416,12 @@ class BaseRobot:
                 "There were no metrics to publish, consider disabling metrics publishing to improve system resource usage"
             )
 
+        if self.simulator:
+            metrics_text = ""
+            for metric in self._metrics.getall():
+                metrics_text += f"{self._metrics.get(metric).title}: {self._metrics.get(metric).value}\n"
+            self.simulator.send_to_window("kevinbotlib.robot.internal.metrics", {"type": "metrics", "metrics": metrics_text, "interval": self._metrics_timer_interval})
+
         if self._log_timer_interval != 0:
             timer = threading.Timer(self._metrics_timer_interval, self._metrics_pub_internal)
             timer.daemon = True
