@@ -290,6 +290,11 @@ QToolButton:disabled {
     border-color: {{border}};
 }
 
+QPushButton:flat {
+    border: none;
+    background: transparent;
+}
+
 /* QSplitter Styling */ QSplitter { background-color: transparent; }
 
 QSplitter::handle { background-color: transparent; border: none;}
