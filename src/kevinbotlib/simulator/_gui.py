@@ -1,8 +1,8 @@
 import multiprocessing
 import sys
 
-from PySide6.QtCore import QByteArray, QSettings, Qt, QTimer, Signal
-from PySide6.QtGui import QAction, QFont, QIcon, QPixmap
+from PySide6.QtCore import QByteArray, QSettings, Qt, QTimer, Signal, QUrl
+from PySide6.QtGui import QAction, QFont, QIcon, QPixmap, QDesktopServices
 from PySide6.QtWidgets import (
     QDialog,
     QFormLayout,
@@ -22,7 +22,7 @@ from kevinbotlib.apps.common.abc import ThemableWindow as _ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
 from kevinbotlib.apps.common.toast import NotificationWidget, Severity
-from kevinbotlib.logger import Logger
+from kevinbotlib.logger import Logger, LoggerDirectories
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _ExitSimulatorEvent,
@@ -112,6 +112,9 @@ class SimMainWindow(_ThemableWindow):
         self.menu.setNativeMenuBar(sys.platform != "Darwin")
 
         self.file_menu: QMenu = self.menu.addMenu("&File")
+
+        self.open_logs_action = self.file_menu.addAction("Open Log Location", lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(LoggerDirectories.get_logger_directory(ensure_exists=True))))
+
         self.quit_action = self.file_menu.addAction("Quit", self.close)
         self.quit_action.setShortcut("Alt+F4")
 
