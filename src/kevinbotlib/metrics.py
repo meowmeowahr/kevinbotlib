@@ -14,7 +14,7 @@ class MetricType(IntEnum):
     """Display the value as a percentage used. Dashboards may assume that the percentage available is `1.0 - value`"""
     PercentageRemainingType = 2
     """Display the value as a percentage remaining. Dashboards may assume that the percentage used is `1.0 - value`"""
-    TemperatureCelciusType = 3
+    TemperatureCelsiusType = 3
     """Display the value as a temperature in Celcius. Dashboards may convert to Fahrenheit."""
     TemperatureFahrenheitType = 4
     """Display the value as a temperature in Fahrenheit. Dashboards may convert to Celcius."""
@@ -38,6 +38,31 @@ class Metric:
     """The value of the metric"""
     kind: MetricType = MetricType.RawType
     """How should the metric be displayed?"""
+
+    def display(self) -> str:
+        def sizeof_fmt(num: int, suffix="B"):
+            for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
+                if abs(num) < 1024.0:
+                    return f"{num:3.1f}{unit}{suffix}"
+                num /= 1024.0
+            return f"{num:.1f}Yi{suffix}"
+
+        match self.kind:
+            case MetricType.RawType:
+                return str(self.value)
+            case MetricType.PercentageUsedType:
+                return f"{self.value}% Used"
+            case MetricType.PercentageRemainingType:
+                return f"{self.value}% Remaining"
+            case MetricType.TemperatureCelsiusType:
+                return f"{self.value}℃"
+            case MetricType.TemperatureFahrenheitType:
+                return f"{self.value}℉"
+            case MetricType.BytesType:
+                return f"{sizeof_fmt(int(self.value))}"
+            case MetricType.BooleanType:
+                return "Yes" if self.value else "No"
+        return ""
 
 
 class SystemMetrics:

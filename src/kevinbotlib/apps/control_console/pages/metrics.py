@@ -12,7 +12,6 @@ class ControlConsoleMetricsTab(QWidget):
         super().__init__()
 
         self.metrics_update.connect(self.on_metrics_update)
-        self.metrics_update.connect(self.on_metrics_update)
         client.add_hook(
             CommPath(key) / "metrics", DictSendable, lambda key, sendable: self.metrics_update.emit((key, sendable))
         )
@@ -31,6 +30,6 @@ class ControlConsoleMetricsTab(QWidget):
 
         for metric_dict in data[1].value.values():
             metric = Metric(**metric_dict)
-            text += f"{metric.title}: {metric.value}\n"
+            text += f"{metric.title}: {metric.display()}\n"
 
         self.text.setPlainText(text)

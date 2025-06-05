@@ -419,7 +419,7 @@ class BaseRobot:
         if self.simulator:
             metrics_text = ""
             for metric in self._metrics.getall():
-                metrics_text += f"{self._metrics.get(metric).title}: {self._metrics.get(metric).value}\n"
+                metrics_text += f"{self._metrics.get(metric).title}: {self._metrics.get(metric).display()}\n"
             self.simulator.send_to_window("kevinbotlib.robot.internal.metrics", {"type": "metrics", "metrics": metrics_text, "interval": self._metrics_timer_interval})
 
         if self._log_timer_interval != 0:
