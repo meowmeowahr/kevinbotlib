@@ -5,7 +5,7 @@ from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 
 # ! remember to change these settings for your testing environment
 interface = RawSerialInterface(
-    "/dev/ttyUSB0", 9600, timeout=1
+    None, "/dev/ttyUSB0", 9600, timeout=1
 )  # a timeout is useful to not stall at `controller.read_next()`
 
 controller = RawKeyValueSerialController(interface, b"=", b"\n")

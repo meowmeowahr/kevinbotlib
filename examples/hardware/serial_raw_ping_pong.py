@@ -3,7 +3,7 @@ import time
 from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 
 # ! remember to change these settings for your testing environment
-gadget = RawSerialInterface("/dev/ttyUSB0", 9600)
+gadget = RawSerialInterface(None, "/dev/ttyUSB0", 9600)
 # gadget.open() # * not needed if a port is provided above ^
 
 while True:

@@ -7,6 +7,7 @@ import serial.tools.list_ports
 from pydantic.dataclasses import dataclass
 
 from kevinbotlib.hardware.interfaces.exceptions import SerialException, SerialPortOpenFailure, SerialWriteTimeout
+from kevinbotlib.robot import BaseRobot
 
 
 @dataclass
@@ -77,6 +78,7 @@ class RawSerialInterface(io.IOBase):
 
     def __init__(
         self,
+        robot: BaseRobot | None,
         port: str | None = None,
         baudrate: int = 9600,
         bytesize: int = 8,
@@ -94,11 +96,12 @@ class RawSerialInterface(io.IOBase):
         """Initialize a new serial port connection
 
         Args:
-            port (str | None, optional): The device to connect to e.g. COM3 of /dev/ttyAMA0. Defaults to None.
-            baudrate (int, optional): The baud rate to utilize. Defaults to 9600.
+            robot (BaseRobot | None, optional): Robot instance for simulation support. Defaults to None.
+            port (str | None, optional): The device to connect to e.g., COM3 of /dev/ttyAMA0. Defaults to None.
+            baudrate (int, optional): The baud rate to use. Defaults to 9600.
             bytesize (int, optional): Size of each byte to be sent. The default works for most use cases. Defaults to 8.
             parity (SerialParity, optional): Parity type. Defaults to SerialParity.NONE.
-            stopbits (float, optional): Number of stop bits to utilize. Defaults to 1.
+            stopbits (float, optional): Number of stop bits to use. Defaults to 1.
             timeout (float | None, optional): Read timeout in seconds. Defaults to None.
             write_timeout (float | None, optional): Write timeout in seconds. Defaults to None.
             inter_byte_timeout (float | None, optional): Timeout between characters. Set to None to disable. Defaults to None.
@@ -121,6 +124,7 @@ class RawSerialInterface(io.IOBase):
             inter_byte_timeout,
             exclusive,
         )
+        self._robot = robot
 
     # * connection
 
