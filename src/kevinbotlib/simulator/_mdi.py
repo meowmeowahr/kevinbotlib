@@ -8,14 +8,17 @@ from PySide6.QtWidgets import (
     QSizeGrip,
     QVBoxLayout,
     QWidget,
+    QFrame,
 )
 
 
-class _MdiTitleBar(QWidget):
+class _MdiTitleBar(QFrame):
     def __init__(self, parent: QMdiSubWindow, title: str) -> None:
         super().__init__(parent)
         self._parent = parent
         self._drag_position = QPoint()
+
+        self.setObjectName("SimulatorMdiTitleBar")
 
         # Layout for title bar
         layout = QHBoxLayout(self)

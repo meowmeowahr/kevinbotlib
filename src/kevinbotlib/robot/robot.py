@@ -568,7 +568,7 @@ class BaseRobot:
                     if self._ready_for_periodic:
                         # Handle opmode change
                         if current_opmode != self._opmode:
-                            if self._prev_enabled is not None:  # Not first iteration
+                            if self._prev_enabled is not None:  # Not the first iteration
                                 self.opmode_exit(self._opmode, self._prev_enabled)
                             self._opmode = current_opmode
                             self._update_console_opmode(current_opmode)
@@ -584,6 +584,11 @@ class BaseRobot:
                         if self._prev_enabled != self._current_enabled:
                             self._update_console_enabled(self._current_enabled)
                             self._prev_enabled = self._current_enabled
+                            if self.simulator:
+                                self.simulator.send_to_window(
+                                    "kevinbotlib.robot.internal.state_buttons",
+                                    {"type": "state", "enabled": self._current_enabled},
+                                )
 
                         self.robot_periodic(self._opmode, self._current_enabled)
 

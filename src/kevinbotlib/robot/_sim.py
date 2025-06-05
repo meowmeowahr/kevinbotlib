@@ -108,6 +108,7 @@ class OpModeEventPayload(WindowViewOutputPayload):
 class StateButtonsView(WindowView):
     set_opmodes = Signal(list)
     set_opmode = Signal(str)
+    set_state = Signal(bool)
 
     def __init__(self):
         super().__init__()
@@ -133,8 +134,18 @@ class StateButtonsView(WindowView):
         self.opmodes_selector = QListWidget()
         self.opmodes_selector.currentTextChanged.connect(self.opmode_changed)
         self.layout.addWidget(self.opmodes_selector)
+
+        self.enabled_text = QLabel("Enabled: ????")
+        self.enabled_text.setFont(QFont("monospace"))
+        self.layout.addWidget(self.enabled_text)
+
+        self.opmode_text = QLabel("OpMode: ????")
+        self.opmode_text.setFont(QFont("monospace"))
+        self.layout.addWidget(self.opmode_text)
+
         self.set_opmodes.connect(self.update_opmodes)
         self.set_opmode.connect(self.update_opmode)
+        self.set_state.connect(self.update_state)
 
     @property
     def title(self):
@@ -161,6 +172,10 @@ class StateButtonsView(WindowView):
         if index:
             self.opmodes_selector.setCurrentRow(self.opmodes_selector.row(index[0]))
         self.opmodes_selector.blockSignals(False)
+        self.opmode_text.setText(f"OpMode: {opmode}")
+
+    def update_state(self, enabled: bool):
+        self.enabled_text.setText(f"Enabled: {enabled}")
 
     def opmode_changed(self, opmode: str):
         self.send_payload(OpModeEventPayload(opmode))
@@ -170,3 +185,5 @@ class StateButtonsView(WindowView):
             self.set_opmodes.emit(payload["opmodes"])
         if payload["type"] == "opmode":
             self.set_opmode.emit(payload["opmode"])
+        if payload["type"] == "state":
+            self.set_state.emit(payload["enabled"])
