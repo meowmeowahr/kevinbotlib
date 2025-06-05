@@ -330,6 +330,20 @@ class BaseRobot:
         self._update_console_opmodes(self._opmodes)
         self._update_console_opmode(self._opmode)
 
+        # parse args
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "--simulate", help="simulate the robot using the KevinbotLib Simulation Framework", action="store_true"
+        )
+        args = parser.parse_args()
+        BaseRobot.IS_SIM = args.simulate
+
+        if BaseRobot.IS_SIM:
+            _sim.freeze_support()
+            self._allow_enable_without_console = True
+            self.telemetry.trace("Added freeze support for simulator process")
+            self.simulator = make_simulator(self)
+
     @property
     def metrics(self):
         return self._metrics
@@ -469,20 +483,6 @@ class BaseRobot:
     @final
     def run(self) -> NoReturn:
         """Run the robot loop and parse command-line arguments. Method is **final**."""
-        # parse args
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            "--simulate", help="simulate the robot using the KevinbotLib Simulation Framework", action="store_true"
-        )
-        args = parser.parse_args()
-        BaseRobot.IS_SIM = args.simulate
-
-        if BaseRobot.IS_SIM:
-            _sim.freeze_support()
-            self._allow_enable_without_console = True
-            self.telemetry.trace("Added freeze support for simulator process")
-            self.simulator = make_simulator(self)
-
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:
                 self.comm_client.wait_until_connected()
