@@ -1,7 +1,7 @@
 import contextlib
 import glob
-import html
 import os
+import re
 import sys
 from collections.abc import Callable
 from contextlib import contextmanager
@@ -19,6 +19,15 @@ from loguru._handler import Message
 
 from kevinbotlib.exceptions import LoggerNotConfiguredException
 
+def _escape(msg: str):
+    def replacer(match):
+        content = match.group(1)
+        # Only escape if there's no space inside the angle brackets
+        if ' ' not in content:
+            return f"\\<{content}>"
+        return f"<{content}>"
+
+    return re.sub(r"<([^<>]+)>", replacer, msg)
 
 class LoggerDirectories:
     @staticmethod
@@ -289,7 +298,7 @@ class Logger:
             colors=opts.colors,
             ansi=opts.ansi,
             exception=opts.exception,
-        ).log(level.name, html.escape(message))
+        ).log(level.name, _escape(message))
 
     def trace(self, message: str) -> None:
         """
@@ -305,7 +314,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.TRACE.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.TRACE.name, _escape(message))
 
     def debug(self, message: str) -> None:
         """
@@ -321,7 +330,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.DEBUG.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.DEBUG.name, _escape(message))
 
     def info(self, message: str) -> None:
         """
@@ -337,7 +346,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.INFO.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.INFO.name, _escape(message))
 
     def warning(self, message: str) -> None:
         """
@@ -353,7 +362,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.WARNING.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.WARNING.name, _escape(message))
 
     @deprecated("Use Logger.warning() instead")
     def warn(self, message: str) -> None:
@@ -380,7 +389,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.ERROR.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.ERROR.name, _escape(message))
 
     def security(self, message: str) -> None:
         """
@@ -396,7 +405,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.SECURITY.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.SECURITY.name, _escape(message))
 
     def critical(self, message: str) -> None:
         if not Logger.is_configured:
@@ -405,7 +414,7 @@ class Logger:
         if Logger._suppress:
             return
 
-        self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, html.escape(message))
+        self._internal_logger.opt(depth=1).log(Level.CRITICAL.name, _escape(message))
 
 
 class StreamRedirector(IO):

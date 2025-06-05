@@ -45,9 +45,11 @@ from kevinbotlib.logger import (
 from kevinbotlib.metrics import Metric, MetricType, SystemMetrics
 from kevinbotlib.remotelog import ANSILogSender
 from kevinbotlib.robot._sim import (
+    StateButtonsView,
     TelemetryWindowView,
-    sim_telemetry_hook,
     TimeWindowView,
+    sim_telemetry_hook,
+    StateButtonsEventPayload,
 )
 from kevinbotlib.system import SystemPerformanceData
 
@@ -471,18 +473,27 @@ class BaseRobot:
 
         if BaseRobot.IS_SIM:
             _sim.freeze_support()
+
+            self._allow_enable_without_console = True
+
             self.telemetry.trace("Added freeze support for simulator process")
             self.simulator = _sim.SimulationFramework(self)
             self.simulator.launch_simulator()
+            self.estop_hooks.append(self.simulator.exit_simulator)
             self.telemetry.trace("Launched simulator")
+
             self.simulator.add_window("kevinbotlib.robot.internal.telemetry", TelemetryWindowView)
             self.telemetry.trace("Added Telemetry simulator WindowView")
+
             self.simulator.add_window("kevinbotlib.robot.internal.time", TimeWindowView)
             self.telemetry.trace("Added Time simulator WindowView")
 
+            self.simulator.add_window("kevinbotlib.robot.internal.state_buttons", StateButtonsView)
+            self.telemetry.trace("Added State Buttons simulator WindowView")
+
             # telemetry updates
             self.telemetry.add_hook_ansi(
-                lambda *args: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", self.simulator, *args)
+                lambda *x: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", self.simulator, *x)
             )
 
             # time updates
@@ -491,11 +502,22 @@ class BaseRobot:
                 while True:
                     self.simulator.send_to_window("kevinbotlib.robot.internal.time", f"{time.monotonic()-start:0>9.4f}")
                     time.sleep(0.05)
+
             threading.Thread(
-                target=time_updater,
-                daemon=True,
-                name="KevinbotLib.Simulator.LiveWindows.Time.Update"
+                target=time_updater, daemon=True, name="KevinbotLib.Simulator.LiveWindows.Time.Update"
             ).start()
+
+            # state updates
+            def sim_state_callback(payload: StateButtonsEventPayload):
+                match payload.payload():
+                    case "enable":
+                        self.enabled = True
+                    case "disable":
+                        self.enabled = False
+                    case "estop":
+                        self.estop()
+
+            self.simulator.add_payload_callback(StateButtonsEventPayload, sim_state_callback)
 
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
             try:

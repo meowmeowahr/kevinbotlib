@@ -27,6 +27,8 @@ from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _SimulatorExitEvent,
     _WindowViewUpdateEvent,
+    _WindowViewPayloadEvent,
+    _ExitSimulatorEvent,
 )
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import WINDOW_VIEW_REGISTRY, WindowView
@@ -179,6 +181,8 @@ class SimMainWindow(_ThemableWindow):
                     view.update(event.payload)
             elif isinstance(event, _AddWindowEvent):
                 self._handle_add_window_event(event)
+            elif isinstance(event, _ExitSimulatorEvent):
+                self.close()
 
     def _handle_add_window_event(self, event: "_AddWindowEvent"):
         cls = WINDOW_VIEW_REGISTRY.get(event.name)
@@ -195,6 +199,9 @@ class SimMainWindow(_ThemableWindow):
         *,
         default_open: bool = False,
     ) -> QWidget:
+
+        view.send_payload = lambda x: self.out_queue.put_nowait(_WindowViewPayloadEvent(winid, x))
+
         self.views[winid] = view
         action: QAction = self.windows_menu.addAction(view.title)
 

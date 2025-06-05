@@ -1,6 +1,6 @@
 import multiprocessing
 from threading import Thread
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -10,13 +10,17 @@ from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _SimulatorInputEvent,
     _WindowViewUpdateEvent,
+    _SimulatorExitEvent,
+    _WindowViewPayloadEvent,
+    _ExitSimulatorEvent,
 )
 from kevinbotlib.simulator._gui import SimMainWindow
-from kevinbotlib.simulator.windowview import WindowView
+from kevinbotlib.simulator.windowview import WindowView, WindowViewOutputPayload
 
 if TYPE_CHECKING:
     from kevinbotlib.robot import BaseRobot
 
+T = TypeVar("T", bound=WindowViewOutputPayload)
 
 class SimulationFramework:
     def __init__(self, robot: "BaseRobot"):
@@ -27,6 +31,8 @@ class SimulationFramework:
 
         self.sim_in_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
         self.sim_out_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
+
+        self._payload_callbacks: dict[type[WindowViewOutputPayload], list[Callable[[WindowViewOutputPayload], None]]] = {}
 
     @staticmethod
     def simulator_run(in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue):
@@ -47,17 +53,28 @@ class SimulationFramework:
         )
         self.event_watcher.start()
 
+    def exit_simulator(self):
+        self.sim_in_queue.put_nowait(_ExitSimulatorEvent())
+
     def send_to_window(self, winid: str, payload: Any):
         self.sim_in_queue.put(_WindowViewUpdateEvent(winid, payload))
 
     def add_window(self, name: str, window: type[WindowView]):
         self.sim_in_queue.put(_AddWindowEvent(name, window, default_open=True))
 
+    def add_payload_callback(self, payload_type: type[T], callback: Callable[[T], None]):
+        if payload_type in self._payload_callbacks:
+            self._payload_callbacks[payload_type].append(callback)
+        else:
+            self._payload_callbacks[payload_type] = [callback]
+
     def _watch_events(self):
         while True:
             event = self.sim_out_queue.get()
-
-            match type(event):
-                case _SimulatorExitEvent:
-                    self.robot.telemetry.critical("The simulator has stopped")
-                    self.robot._signal_stop = True  # noqa: SLF001
+            if isinstance(event, _SimulatorExitEvent):
+                self.robot.telemetry.critical("The simulator has stopped")
+                self.robot._signal_stop = True  # noqa: SLF001
+            if isinstance(event, _WindowViewPayloadEvent):
+                if type(event.payload) in self._payload_callbacks:
+                    for callback in self._payload_callbacks[type(event.payload)]:
+                        callback(event.payload)

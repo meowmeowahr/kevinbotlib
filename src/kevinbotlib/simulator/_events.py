@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
+from kevinbotlib.simulator.windowview import WindowViewOutputPayload
+
 if TYPE_CHECKING:
     from kevinbotlib.simulator.windowview import WindowView
 
@@ -41,3 +43,13 @@ class _AddWindowEvent(_SimulatorInputEvent):
         self.name = name
         self.view_cls = view_cls
         self.default_open = default_open
+
+class _ExitSimulatorEvent(_SimulatorInputEvent):
+    pass
+
+class _WindowViewPayloadEvent(_SimulatorOutputEvent):
+    __slots__ = ("winid", "payload")
+
+    def __init__(self, winid: str, payload: WindowViewOutputPayload):
+        self.winid = winid
+        self.payload = payload

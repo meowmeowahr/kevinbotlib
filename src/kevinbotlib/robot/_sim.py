@@ -1,10 +1,21 @@
 import ansi2html
-from PySide6.QtCore import Signal, Qt
-from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QTextEdit, QWidget, QVBoxLayout, QLabel
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QFont, QTextBlockFormat, QTextCursor
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from kevinbotlib.simulator import SimulationFramework
-from kevinbotlib.simulator.windowview import WindowView, register_window_view
+from kevinbotlib.simulator.windowview import (
+    WindowView,
+    WindowViewOutputPayload,
+    register_window_view,
+)
 
 
 def sim_telemetry_hook(winid: str, sim: SimulationFramework, message: str):
@@ -44,6 +55,7 @@ class TelemetryWindowView(WindowView):
     def append_ansi(self, ansi: str):
         self.telemetry.append(self.ansi_convertor.convert(ansi.strip("\n\r")))
 
+
 @register_window_view("kevinbotlib.robot.internal.time")
 class TimeWindowView(WindowView):
     set_process_time = Signal(str)
@@ -73,3 +85,54 @@ class TimeWindowView(WindowView):
 
     def update_process_time(self, time: str):
         self.process_time.setText(f"Process Time: {time}")
+
+
+class StateButtonsEventPayload(WindowViewOutputPayload):
+    def __init__(self, payload: str):
+        self._payload = payload
+
+    def payload(self) -> str:
+        return self._payload
+
+
+@register_window_view("kevinbotlib.robot.internal.state_buttons")
+class StateButtonsView(WindowView):
+    def __init__(self):
+        super().__init__()
+
+        self.widget = QWidget()
+        self.layout = QVBoxLayout(self.widget)
+
+        self.main_layout = QHBoxLayout()
+        self.layout.addLayout(self.main_layout)
+
+        self.enable_button = QPushButton("Enable")
+        self.enable_button.clicked.connect(self.enable)
+        self.main_layout.addWidget(self.enable_button)
+
+        self.disable_button = QPushButton("Disable")
+        self.disable_button.clicked.connect(self.disable)
+        self.main_layout.addWidget(self.disable_button)
+
+        self.estop_button = QPushButton("E-Stop")
+        self.estop_button.clicked.connect(self.estop)
+        self.layout.addWidget(self.estop_button)
+
+    @property
+    def title(self):
+        return "Robot State"
+
+    def generate(self) -> QWidget:
+        return self.widget
+
+    def update(self, _payload):
+        return
+
+    def enable(self):
+        self.send_payload(StateButtonsEventPayload("enable"))
+
+    def disable(self):
+        self.send_payload(StateButtonsEventPayload("disable"))
+
+    def estop(self):
+        self.send_payload(StateButtonsEventPayload("estop"))

@@ -171,5 +171,5 @@ cython_debug/
 dump.rdb
 
 # RCC - not sure why this is needed - RCC's are different on different platforms?
-resources_rc.py
-resources_rc.py-e
+#resources_rc.py
+#resources_rc.py-e

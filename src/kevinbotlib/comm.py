@@ -11,7 +11,6 @@ import redis.exceptions
 from pydantic import BaseModel, ValidationError
 
 import kevinbotlib.exceptions
-from kevinbotlib.logger import Logger
 from kevinbotlib.logger import Logger as _Logger
 
 
@@ -443,7 +442,7 @@ class RedisCommClient:
             ):
                 self._dead.dead = True
             else:
-                Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
+                _Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
 
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """
@@ -656,7 +655,7 @@ class RedisCommClient:
             ):
                 self._dead.dead = True
             else:
-                Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
+                _Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
             return None
 
     def wait_until_connected(self, timeout: float = 5.0):
