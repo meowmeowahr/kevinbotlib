@@ -1,3 +1,7 @@
+import threading
+import time
+from typing import TYPE_CHECKING
+
 import ansi2html
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
@@ -17,6 +21,9 @@ from kevinbotlib.simulator.windowview import (
     WindowViewOutputPayload,
     register_window_view,
 )
+
+if TYPE_CHECKING:
+    from kevinbotlib.robot import BaseRobot
 
 
 def sim_telemetry_hook(winid: str, sim: SimulationFramework, message: str):
@@ -187,3 +194,62 @@ class StateButtonsView(WindowView):
             self.set_opmode.emit(payload["opmode"])
         if payload["type"] == "state":
             self.set_state.emit(payload["enabled"])
+
+def make_simulator(robot: "BaseRobot") -> SimulationFramework:
+    simulator = SimulationFramework(robot)
+
+    def sim_ready():
+        simulator.send_to_window(
+            "kevinbotlib.robot.internal.state_buttons", {"type": "opmodes", "opmodes": robot._opmodes}
+        )
+        simulator.send_to_window(
+            "kevinbotlib.robot.internal.state_buttons", {"type": "opmode", "opmode": robot._opmode}
+        )
+
+    simulator.launch_simulator(robot.comm_client, sim_ready)
+    robot.estop_hooks.append(simulator.exit_simulator)
+    robot.telemetry.trace("Launched simulator")
+
+    simulator.add_window("kevinbotlib.robot.internal.telemetry", TelemetryWindowView)
+    robot.telemetry.trace("Added Telemetry simulator WindowView")
+
+    simulator.add_window("kevinbotlib.robot.internal.time", TimeWindowView)
+    robot.telemetry.trace("Added Time simulator WindowView")
+
+    simulator.add_window("kevinbotlib.robot.internal.state_buttons", StateButtonsView)
+    robot.telemetry.trace("Added State Buttons simulator WindowView")
+
+    # telemetry updates
+    robot.telemetry.add_hook_ansi(
+        lambda *x: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", simulator, *x)
+    )
+
+    # time updates
+    def time_updater():
+        start = time.monotonic()
+        while True:
+            simulator.send_to_window("kevinbotlib.robot.internal.time", f"{time.monotonic()-start:0>9.4f}")
+            time.sleep(0.05)
+
+    threading.Thread(
+        target=time_updater, daemon=True, name="KevinbotLib.Simulator.LiveWindows.Time.Update"
+    ).start()
+
+    # state updates
+    def sim_state_callback(payload: StateButtonsEventPayload):
+        match payload.payload():
+            case "enable":
+                robot.enabled = True
+            case "disable":
+                robot.enabled = False
+            case "estop":
+                robot.estop()
+
+    simulator.add_payload_callback(StateButtonsEventPayload, sim_state_callback)
+
+    # opmode updates
+    def opmode_change_callback(payload: OpModeEventPayload):
+        robot.opmode = payload.payload()
+
+    simulator.add_payload_callback(OpModeEventPayload, opmode_change_callback)
+    return simulator
