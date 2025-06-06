@@ -425,7 +425,7 @@ class CommandScheduler:
             # Execute command
             command.execute()
 
-            # Check if command is finished
+            # Check if the command is finished
             if command.finished():
                 command.end()
                 self._scheduled.pop(i)
@@ -435,5 +435,10 @@ class CommandScheduler:
             loop_end_time = time.monotonic()
             if loop_end_time - loop_start_time > self.command_overrun:
                 _Logger().warning(
-                    f"Command execution took too long to complete.\n{command.__class__.__name__}: {(loop_end_time - loop_start_time) * 1000}ms" + (f"\n(includes trigger check time: {func.__name__}: {(end_check_time - start_check_time) * 1000}ms)" if trigger and func else "")
+                    f"Command execution took too long to complete.\n{command.__class__.__name__}: {(loop_end_time - loop_start_time) * 1000}ms"
+                    + (
+                        f"\n(includes trigger check time: {func.__name__}: {(end_check_time - start_check_time) * 1000}ms)"
+                        if trigger and func
+                        else ""
+                    )
                 )

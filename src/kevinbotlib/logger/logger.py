@@ -1,6 +1,7 @@
 import contextlib
 import glob
 import os
+import re
 import sys
 from collections.abc import Callable
 from contextlib import contextmanager
@@ -20,8 +21,8 @@ from kevinbotlib.exceptions import LoggerNotConfiguredException
 
 
 def _escape(msg: str):
-    return msg  # TODO: study this more
-    # return re.compile(r"\\?</?((?:[fb]g\s)?[^<>\s]*)>").sub(lambda match: f"\\{match[0]}", msg)
+    #return msg  # TODO: study this more
+    return re.compile(r"\\?</?((?:[fb]g\s)?[^<>\s]*)>").sub(lambda match: f"\\{match[0]}", msg)
 
 
 class LoggerDirectories:
