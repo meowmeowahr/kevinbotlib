@@ -120,7 +120,7 @@ class RawSerialInterface(io.IOBase):
             robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "new", "name": port})
             self._simulating = True
 
-        self._serial = (serial.Serial if not self._simulating else SimSerial)(
+        self._serial: serial.Serial | SimSerial = (serial.Serial if not self._simulating else SimSerial)(
             port,
             baudrate,
             bytesize,
