@@ -204,8 +204,7 @@ class SerialWindowView(WindowView):
 
     def make_binary(self, devname: str):
         tool = BinaryFrameMaker(self.widget)
-        tool.exec()
-        if tool.data:
+        if tool.exec() and tool.data:
             self.send_payload(SerialTxPayload(tool.data))
             page = self.pages.get(devname)
             self.send_payload(SerialTxPayload(page.input_line.text().encode("utf-8")))
