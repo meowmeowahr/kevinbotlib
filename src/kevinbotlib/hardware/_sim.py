@@ -4,19 +4,19 @@ import serial
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
-    QWidget,
-    QTabWidget,
-    QVBoxLayout,
-    QTextEdit,
-    QLineEdit,
     QHBoxLayout,
+    QLineEdit,
     QPushButton,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
 from kevinbotlib.simulator.windowview import (
-    register_window_view,
     WindowView,
     WindowViewOutputPayload,
+    register_window_view,
 )
 
 
@@ -39,12 +39,14 @@ class SerialConsolePage(QWidget):
         self.send_button = QPushButton("Send")
         self.input_layout.addWidget(self.send_button)
 
+
 class SerialTxPayload(WindowViewOutputPayload):
     def __init__(self, payload: bytes):
         self._payload = payload
 
     def payload(self) -> bytes:
         return self._payload
+
 
 @register_window_view("kevinbotlib.serial.internal.view")
 class SerialWindowView(WindowView):
@@ -113,21 +115,23 @@ class SerialWindowView(WindowView):
                 case "write":
                     self.new_data.emit(payload["name"], payload["data"])
 
+
 class SimSerial:
-    def __init__(self,
-                 port=None,
-                 baudrate=9600,
-                 bytesize=serial.EIGHTBITS,
-                 parity=serial.PARITY_NONE,
-                 stopbits=serial.STOPBITS_ONE,
-                 timeout=None,
-                 xonxoff=False,
-                 rtscts=False,
-                 write_timeout=None,
-                 dsrdtr=False,
-                 inter_byte_timeout=None,
-                 exclusive=None,
-                 **kwargs):
+    def __init__(
+        self,
+        port=None,
+        baudrate=9600,
+        bytesize=serial.EIGHTBITS,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        timeout=None,
+        xonxoff=False,  # noqa: FBT002
+        rtscts=False,  # noqa: FBT002
+        write_timeout=None,
+        dsrdtr=False,  # noqa: FBT002
+        inter_byte_timeout=None,
+        exclusive=None,
+    ):
         self.is_open = False
         self.portstr = None
         self.name = None
@@ -162,21 +166,21 @@ class SimSerial:
 
     def readline(self):
         """Simulate reading a line, ending with a newline character."""
-        newline_index = self.mock_buffer.find(b'\n')
+        newline_index = self.mock_buffer.find(b"\n")
         if newline_index == -1:
             # No newline found, return entire buffer
             data = self.mock_buffer
             self.mock_buffer = b""
         else:
-            data = self.mock_buffer[:newline_index + 1]
-            self.mock_buffer = self.mock_buffer[newline_index + 1:]
+            data = self.mock_buffer[: newline_index + 1]
+            self.mock_buffer = self.mock_buffer[newline_index + 1 :]
         return data
 
     def readlines(self, hint=-1):
         """Simulate reading all lines (or up to hint bytes)."""
         lines = []
         total = 0
-        while b'\n' in self.mock_buffer:
+        while b"\n" in self.mock_buffer:
             line = self.readline()
             lines.append(line)
             total += len(line)

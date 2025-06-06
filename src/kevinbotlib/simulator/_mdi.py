@@ -1,6 +1,7 @@
 from PySide6.QtCore import QPoint, QSettings, QSize, Qt
 from PySide6.QtGui import QIcon, QMouseEvent
 from PySide6.QtWidgets import (
+    QFrame,
     QHBoxLayout,
     QLabel,
     QMdiSubWindow,
@@ -8,7 +9,6 @@ from PySide6.QtWidgets import (
     QSizeGrip,
     QVBoxLayout,
     QWidget,
-    QFrame,
 )
 
 
@@ -79,10 +79,10 @@ class _MdiChild(QMdiSubWindow):
         self._settings.setValue(f"windows/{self._winid}/visible", False)
         super().closeEvent(event)
 
-    def moveEvent(self, event) -> None: # noqa: N802
+    def moveEvent(self, event) -> None:  # noqa: N802
         pos = event.pos()
         area = self.mdiArea()  # Get the parent QMdiArea
-        if area: # Ensure area is not None
+        if area:  # Ensure area is not None
             # Check if the subwindow is trying to go out of bounds
             if pos.x() < 0:
                 self.move(0, pos.y())

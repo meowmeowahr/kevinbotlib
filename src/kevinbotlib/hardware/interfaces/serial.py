@@ -6,7 +6,7 @@ import serial.tools
 import serial.tools.list_ports
 from pydantic.dataclasses import dataclass
 
-from kevinbotlib.hardware._sim import SerialWindowView, SimSerial, SerialTxPayload
+from kevinbotlib.hardware._sim import SerialTxPayload, SerialWindowView, SimSerial
 from kevinbotlib.hardware.interfaces.exceptions import SerialException, SerialPortOpenFailure, SerialWriteTimeout
 from kevinbotlib.robot import BaseRobot
 
@@ -136,8 +136,12 @@ class RawSerialInterface(io.IOBase):
         )
 
         if isinstance(self._serial, SimSerial):
-            self._serial.write = lambda x: robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "write", "data": x, "name": port})
-            robot.simulator.add_payload_callback(SerialTxPayload, lambda x: self._serial.append_mock_buffer_internal(x.payload()))
+            self._serial.write = lambda x: robot.simulator.send_to_window(
+                "kevinbotlib.serial.internal.view", {"type": "write", "data": x, "name": port}
+            )
+            robot.simulator.add_payload_callback(
+                SerialTxPayload, lambda x: self._serial.append_mock_buffer_internal(x.payload())
+            )
 
     # * connection
 

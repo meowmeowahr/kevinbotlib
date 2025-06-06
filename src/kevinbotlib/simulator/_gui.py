@@ -1,8 +1,8 @@
 import multiprocessing
 import sys
 
-from PySide6.QtCore import QByteArray, QSettings, Qt, QTimer, Signal, QUrl
-from PySide6.QtGui import QAction, QFont, QIcon, QPixmap, QDesktopServices
+from PySide6.QtCore import QByteArray, QSettings, Qt, QTimer, QUrl, Signal
+from PySide6.QtGui import QAction, QDesktopServices, QFont, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QDialog,
     QFormLayout,
@@ -113,7 +113,12 @@ class SimMainWindow(_ThemableWindow):
 
         self.file_menu: QMenu = self.menu.addMenu("&File")
 
-        self.open_logs_action = self.file_menu.addAction("Open Log Location", lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(LoggerDirectories.get_logger_directory(ensure_exists=True))))
+        self.open_logs_action = self.file_menu.addAction(
+            "Open Log Location",
+            lambda: QDesktopServices.openUrl(
+                QUrl.fromLocalFile(LoggerDirectories.get_logger_directory(ensure_exists=True))
+            ),
+        )
 
         self.quit_action = self.file_menu.addAction("Quit", self.close)
         self.quit_action.setShortcut("Alt+F4")

@@ -9,11 +9,11 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QListWidget,
+    QProgressBar,
     QPushButton,
     QTextEdit,
     QVBoxLayout,
     QWidget,
-    QProgressBar
 )
 
 from kevinbotlib.simulator import SimulationFramework
@@ -63,6 +63,7 @@ class TelemetryWindowView(WindowView):
 
     def append_ansi(self, ansi: str):
         self.telemetry.append(self.ansi_convertor.convert(ansi.strip("\n\r")))
+
 
 @register_window_view("kevinbotlib.robot.internal.metrics")
 class MetricsWindowView(WindowView):
@@ -257,15 +258,19 @@ class StateButtonsView(WindowView):
         if payload["type"] == "state":
             self.set_state.emit(payload["enabled"])
 
+
 def make_simulator(robot: "BaseRobot") -> SimulationFramework:
     simulator = SimulationFramework(robot)
 
+    # noinspection PyProtectedMember
     def sim_ready():
         simulator.send_to_window(
-            "kevinbotlib.robot.internal.state_buttons", {"type": "opmodes", "opmodes": robot._opmodes}
+            "kevinbotlib.robot.internal.state_buttons",
+            {"type": "opmodes", "opmodes": robot._opmodes},  # noqa: SLF001
         )
         simulator.send_to_window(
-            "kevinbotlib.robot.internal.state_buttons", {"type": "opmode", "opmode": robot._opmode}
+            "kevinbotlib.robot.internal.state_buttons",
+            {"type": "opmode", "opmode": robot._opmode},  # noqa: SLF001
         )
 
     simulator.launch_simulator(robot.comm_client, sim_ready)
@@ -285,9 +290,7 @@ def make_simulator(robot: "BaseRobot") -> SimulationFramework:
     robot.telemetry.trace("Added Metrics simulator WindowView")
 
     # telemetry updates
-    robot.telemetry.add_hook_ansi(
-        lambda *x: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", simulator, *x)
-    )
+    robot.telemetry.add_hook_ansi(lambda *x: sim_telemetry_hook("kevinbotlib.robot.internal.telemetry", simulator, *x))
 
     # time updates
     def time_updater():
@@ -296,9 +299,7 @@ def make_simulator(robot: "BaseRobot") -> SimulationFramework:
             simulator.send_to_window("kevinbotlib.robot.internal.time", f"{time.monotonic()-start:0>9.4f}")
             time.sleep(0.05)
 
-    threading.Thread(
-        target=time_updater, daemon=True, name="KevinbotLib.Simulator.LiveWindows.Time.Update"
-    ).start()
+    threading.Thread(target=time_updater, daemon=True, name="KevinbotLib.Simulator.LiveWindows.Time.Update").start()
 
     # state updates
     def sim_state_callback(payload: StateButtonsEventPayload):
