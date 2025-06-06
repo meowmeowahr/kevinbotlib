@@ -1,5 +1,6 @@
 site_name: KevinbotLib
 site_author: Kevin Ahr
+site_url: https://meowmeowahr.github.io/kevinbotlib
 
 theme:
   name: "material"
