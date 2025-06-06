@@ -8,5 +8,6 @@ from kevinbotlib.cli.logs.where import where
 def logs():
     """Log File Tools"""
 
+
 logs.add_command(where)
 logs.add_command(size)

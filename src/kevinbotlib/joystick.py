@@ -1043,7 +1043,6 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             key: Network sendable key
             callback_polling_hz: Polling rate. Defaults to 100hz.
         """
-
         super().__init__()
         self._client: RedisCommClient = client
         self._client_key: str = key.rstrip("/")
@@ -1058,6 +1057,12 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         self._last_button_states = {}
         self._last_pov_state = POVDirection.NONE
         self._last_axis_states = {}
+
+        # Cached state for get methods
+        self._cached_button_states = []
+        self._cached_axis_values = []
+        self._cached_pov_direction = POVDirection.NONE
+        self._cached_connected = False
 
         self._controller_map: ControllerMap = DefaultControllerMap
 
@@ -1075,7 +1080,6 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             Communication client
         """
-
         return self._client
 
     @property
@@ -1086,7 +1090,6 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             Sendable key
         """
-
         return self._client_key
 
     def is_connected(self) -> bool:
@@ -1096,27 +1099,20 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             Connected?
         """
-
-        sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
-        if not sendable:
-            return False
-        return sendable.value
+        return self._cached_connected
 
     def get_button_state(self, button_id: int | Enum | IntEnum) -> bool:
         """
         Get the state of a button by index or named button.
+
         Args:
             button_id: Button
 
         Returns:
             Is the button pressed?
         """
-
-        sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
-        if not sendable:
-            return False
         mapped_id = self._controller_map.map_button(button_id)
-        return mapped_id in sendable.value
+        return mapped_id in self._cached_button_states
 
     def get_axis_value(self, axis_id: int, precision: int = 3) -> float:
         """
@@ -1129,12 +1125,10 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             Axis value
         """
-
-        sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
-        if not sendable:
-            return 0.0
         mapped_id = self._controller_map.map_axis(axis_id)
-        return round(sendable.value[mapped_id], precision) if mapped_id < len(sendable.value) else 0.0
+        return (
+            round(self._cached_axis_values[mapped_id], precision) if mapped_id < len(self._cached_axis_values) else 0.0
+        )
 
     def get_buttons(self) -> list[int | Enum | IntEnum]:
         """
@@ -1143,12 +1137,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             List of pressed buttons
         """
-
-        sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
-        if not sendable:
-            return []
-        # Map received button IDs back through the controller map
-        return [self._controller_map.map_button(btn) for btn in sendable.value]
+        return [self._controller_map.map_button(btn) for btn in self._cached_button_states]
 
     def get_axes(self) -> list[float]:
         """
@@ -1157,16 +1146,11 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             List of all axis values
         """
-
-        sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
-        if not sendable:
-            return []
-        # Map received axis values through the controller map
-        axes = [0.0] * len(sendable.value)
-        for i in range(len(sendable.value)):
+        axes = [0.0] * len(self._cached_axis_values)
+        for i in range(len(self._cached_axis_values)):
             mapped_id = self._controller_map.map_axis(i)
-            if mapped_id < len(sendable.value):
-                axes[mapped_id] = sendable.value[i]
+            if mapped_id < len(self._cached_axis_values):
+                axes[mapped_id] = self._cached_axis_values[i]
         return axes
 
     def get_pov_direction(self) -> POVDirection:
@@ -1176,11 +1160,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Returns:
             D-Pad direction
         """
-
-        sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
-        if not sendable:
-            return POVDirection.NONE
-        return POVDirection(sendable.value)
+        return self._cached_pov_direction
 
     def register_button_callback(self, button_id: int | Enum | IntEnum, callback: Callable[[bool], Any]) -> None:
         """
@@ -1190,7 +1170,6 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             button_id: Button index or named button
             callback: Callback to be triggered when the specified button is pressed
         """
-
         self._button_callbacks[button_id] = callback
 
     def register_pov_callback(self, callback: Callable[[POVDirection], Any]) -> None:
@@ -1200,7 +1179,6 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         Args:
             callback: Callback to be triggered when the D-Pad changes direction
         """
-
         self._pov_callbacks.append(callback)
 
     def apply_map(self, controller_map: ControllerMap):
@@ -1216,12 +1194,14 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         while self.running:
             # Check connection status
             conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
-            self.connected = conn_sendable.value if conn_sendable else False
+            self._cached_connected = conn_sendable.value if conn_sendable else False
+            self.connected = self._cached_connected
 
-            if self.connected:
+            if self._cached_connected:
                 # Check buttons
-                buttons = self.get_buttons()
-                current_button_states = {btn: True for btn in buttons}
+                button_sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
+                self._cached_button_states = button_sendable.value if button_sendable else []
+                current_button_states = {btn: True for btn in self._cached_button_states}
 
                 # Check for button state changes
                 for button in set(self._last_button_states.keys()) | set(current_button_states.keys()):
@@ -1233,12 +1213,18 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
 
                 self._last_button_states = current_button_states
 
+                # Check axes
+                axes_sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
+                self._cached_axis_values = axes_sendable.value if axes_sendable else []
+
                 # Check POV
-                current_pov = self.get_pov_direction()
-                if current_pov != self._last_pov_state:
+                pov_sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
+                self._cached_pov_direction = POVDirection(pov_sendable.value) if pov_sendable else POVDirection.NONE
+
+                if self._cached_pov_direction != self._last_pov_state:
                     for callback in self._pov_callbacks:
-                        callback(current_pov)
-                self._last_pov_state = current_pov
+                        callback(self._cached_pov_direction)
+                self._last_pov_state = self._cached_pov_direction
 
             time.sleep(1 / self.polling_hz)
 

@@ -215,7 +215,7 @@ class BaseCamera(ABC):
 
     @abstractmethod
     def get_frame(self) -> tuple[bool, MatLike]:
-        """Get the current frame from the camera
+        """Get the current frame from the camera. Method is blocking until a frame is available.
 
         Returns:
             tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
@@ -248,9 +248,22 @@ class CameraByIndex(BaseCamera):
         self.capture.set(cv2.CAP_PROP_FPS, 60)
 
     def get_frame(self) -> tuple[bool, MatLike]:
+        """Get the current frame from the camera. Method is blocking until a frame is available.
+
+        Returns:
+            tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
+        """
+
         return self.capture.read()
 
     def set_resolution(self, width: int, height: int) -> None:
+        """Attempt to set the current camera resolution
+
+        Args:
+            width (int): Frame width in px
+            height (int): Frame height in px
+        """
+
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
@@ -267,9 +280,22 @@ class CameraByDevicePath(BaseCamera):
         self.capture = cv2.VideoCapture(path)
 
     def get_frame(self) -> tuple[bool, MatLike]:
+        """Get the current frame from the camera. Method is blocking until a frame is available.
+
+        Returns:
+            tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
+        """
+
         return self.capture.read()
 
     def set_resolution(self, width: int, height: int) -> None:
+        """Attempt to set the current camera resolution
+
+        Args:
+            width (int): Frame width in px
+            height (int): Frame height in px
+        """
+
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
