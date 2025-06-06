@@ -390,6 +390,8 @@ class CommandScheduler:
         # Process all scheduled commands
         i = 0
         while i < len(self._scheduled):
+            loop_start_time = time.monotonic()
+
             scheduled = self._scheduled[i]
             command = scheduled["command"]
             trigger = scheduled["trigger"]
@@ -420,3 +422,9 @@ class CommandScheduler:
                 self._scheduled.pop(i)
             else:
                 i += 1
+
+            loop_end_time = time.monotonic()
+            if loop_end_time - loop_start_time > self.command_overrun:
+                _Logger().warning(
+                    f"Command execution took too long to complete. {command.__class__.__name__}: {(loop_end_time - loop_start_time) * 1000}ms"
+                )
