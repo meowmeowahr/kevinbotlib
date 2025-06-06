@@ -50,6 +50,7 @@ dependencies = [
   "pyside6>=6.9.0",
   "blake3>=1.0.5",
   "pyqtgraph>=0.13.7",
+  "rich>=14.0.0",
 ]
 
 [project.optional-dependencies]

@@ -7,6 +7,7 @@ import click
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.cli.apps import apps
 from kevinbotlib.cli.fileserver import fileserver
+from kevinbotlib.cli.hardware import hardware
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"], "max_content_width": 120})
@@ -26,6 +27,7 @@ def cli():
 def main():  # no cov
     cli.add_command(apps)
     cli.add_command(fileserver)
+    cli.add_command(hardware)
     cli(prog_name="kevinbotlib")
 
 

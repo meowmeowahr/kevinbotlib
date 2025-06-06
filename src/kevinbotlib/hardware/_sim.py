@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QApplication,
     QStatusBar,
+    QComboBox,
 )
 
 from kevinbotlib.simulator.windowview import (
@@ -47,6 +48,23 @@ class SerialConsolePage(QWidget):
 
         self.send_button = QPushButton("Send")
         self.input_layout.addWidget(self.send_button)
+
+        self.newline_type_box = QComboBox()
+        self.newline_type_box.addItems(["LF", "CRLF", "No Newline"])
+        self.newline_type_box.setCurrentIndex(0)
+        self.input_layout.addWidget(self.newline_type_box)
+
+    def get_newline(self):
+        match self.newline_type_box.currentText():
+            case "LF":
+                return b"\n"
+            case "CRLF":
+                return b"\r\n"
+            case "No Newline":
+                return b""
+            case _:
+                msg = f"Invalid newline type: {self.newline_type_box.currentText()}"
+                raise ValueError(msg)
 
 
 class SerialTxPayload(WindowViewOutputPayload):
@@ -180,8 +198,8 @@ class SerialWindowView(WindowView):
 
     def send(self, devname: str):
         page = self.pages.get(devname)
-        self.send_payload(SerialTxPayload(page.input_line.text().encode("utf-8")))
-        page.console.append("<b>Sent&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt;&gt; </b>" + repr_byte_data(page.input_line.text().encode("utf-8")))
+        self.send_payload(SerialTxPayload(page.input_line.text().encode("utf-8") + page.get_newline()))
+        page.console.append("<b>Sent&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt;&gt; </b>" + repr_byte_data(page.input_line.text().encode("utf-8") + page.get_newline()))
         page.input_line.clear()
 
     def make_binary(self, devname: str):
