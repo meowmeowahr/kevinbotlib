@@ -18,12 +18,12 @@ def enumerate_s_dev(raw: bool):
     """Enumerate the connected serial devices"""
     from kevinbotlib.hardware.interfaces.serial import SerialIdentification
 
-    console = rich.console.Console()
 
     for dev in SerialIdentification.list_device_info():
         if raw:
-            console.print(dev, highlight=False)
+            click.echo(dev)
         else:
+            console = rich.console.Console()
             tree = rich.tree.Tree("[bold]" + dev.device)
             tree.add(f"[magenta]Name:[/] {dev.name}", highlight=True)
             tree.add(f"[magenta]True Path:[/] {dev.device_path}", highlight=True)

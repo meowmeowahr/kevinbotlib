@@ -1,4 +1,4 @@
-site_name: KevinbotLib Docs
+site_name: KevinbotLib
 site_author: Kevin Ahr
 
 theme:
@@ -13,6 +13,7 @@ theme:
     - navigation.instant.progress
     - navigation.footer
     - navigation.indexes
+    - navigation.tabs
   icon:
     logo:
       material/robot
@@ -76,69 +77,81 @@ plugins:
               filters: ["!^_", "^__init__$"]
   - search
   - mike
+  - blog
+  - rss:
+        match_path: blog/posts/.*
+        date_from_meta:
+          as_creation: date
+        categories:
+          - categories
+          - tags
+
 
 extra:
   version:
     provider: mike
 
 nav:
-  - index.md
-  - installation.md
-  - Examples: 
-    - examples/index.md
-    - examples/robot.md
-    - examples/comm.md
-    - examples/logger.md
-    - examples/joystick.md
-    - examples/system.md
-    - examples/fileserver.md
-    - examples/hardwareinterface.md
-    - examples/hardwarecontroller.md
-    - examples/scheduler.md
-  - Applications:
-    - Control Console:
-      - apps/console/index.md
-      - apps/console/launching.md
-      - apps/console/run.md
-      - apps/console/controllers.md
-      - apps/console/metrics.md
-      - apps/console/settings.md
-    - Dashboard:
-      - apps/dashboard/index.md
-      - apps/dashboard/launching.md
-      - apps/dashboard/ui.md
-      - apps/dashboard/settings.md
-      - apps/dashboard/widgets.md
-    - Log Downloader:
-      - apps/logdownloader/index.md
-      - apps/logdownloader/launching.md
-      - apps/logdownloader/connection.md
-      - apps/logdownloader/controls.md
-      - apps/logdownloader/viewing.md
-    - Log Viewer:
-      - apps/logviewer/index.md
-      - apps/logviewer/launching.md
-      - apps/logviewer/loading.md
-      - apps/logviewer/viewing.md
-  - Command Line Tools:
-    - cli/index.md
-  - commandscheduler.md
-  - robot.md
-  - fileserver.md
-  - KevinbotLib Reference:
-    - reference/robot.md
-    - reference/logging.md
-    - reference/scheduler.md
-    - reference/comm.md
-    - reference/joystick.md
-    - reference/fileserver.md
-    - reference/hardwareinterface.md
-    - reference/hardwarecontroller.md
-    - reference/vision.md
-    - reference/metrics.md
-    - reference/ui.md
-    - reference/misc.md
-    - reference/exceptions.md
+  - Docs:
+    - index.md
+    - installation.md
+    - Examples:
+      - examples/index.md
+      - examples/robot.md
+      - examples/comm.md
+      - examples/logger.md
+      - examples/joystick.md
+      - examples/system.md
+      - examples/fileserver.md
+      - examples/hardwareinterface.md
+      - examples/hardwarecontroller.md
+      - examples/scheduler.md
+    - Applications:
+      - Control Console:
+        - apps/console/index.md
+        - apps/console/launching.md
+        - apps/console/run.md
+        - apps/console/controllers.md
+        - apps/console/metrics.md
+        - apps/console/settings.md
+      - Dashboard:
+        - apps/dashboard/index.md
+        - apps/dashboard/launching.md
+        - apps/dashboard/ui.md
+        - apps/dashboard/settings.md
+        - apps/dashboard/widgets.md
+      - Log Downloader:
+        - apps/logdownloader/index.md
+        - apps/logdownloader/launching.md
+        - apps/logdownloader/connection.md
+        - apps/logdownloader/controls.md
+        - apps/logdownloader/viewing.md
+      - Log Viewer:
+        - apps/logviewer/index.md
+        - apps/logviewer/launching.md
+        - apps/logviewer/loading.md
+        - apps/logviewer/viewing.md
+    - Command Line Tools:
+      - cli/index.md
+    - commandscheduler.md
+    - robot.md
+    - fileserver.md
+    - KevinbotLib Reference:
+      - reference/robot.md
+      - reference/logging.md
+      - reference/scheduler.md
+      - reference/comm.md
+      - reference/joystick.md
+      - reference/fileserver.md
+      - reference/hardwareinterface.md
+      - reference/hardwarecontroller.md
+      - reference/vision.md
+      - reference/metrics.md
+      - reference/ui.md
+      - reference/misc.md
+      - reference/exceptions.md
+  - Blog:
+    - blog/index.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
 

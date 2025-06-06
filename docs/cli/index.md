@@ -167,3 +167,22 @@ kevinbotlib fileserver
     `-d` *or* `--dir`: Sets the host to serve on. Defaults to `localhost`.
 
 </div>
+
+## `hardware serial` (Group)
+
+The serial group contains utilities for serial device enumeration.
+
+### `hardware serial enumerate`
+
+The `kevinbotlib hardware serial enumerate` command will detect any connected Serial devices.
+
+### Options
+
+<div class="grid cards" markdown>
+
+- :material-text:{ .lg .middle } __Raw Output__
+
+    ---
+
+    `-R` *or* `--raw`: Enables raw plain-text output
+</div>

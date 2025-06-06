@@ -56,8 +56,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mkdocs",
-  "mkdocs-material",
+  "mkdocs-material[imaging]",
   "mkdocstrings[python]>=0.18",
+  "mkdocs-rss-plugin[dev]>=1.17.3",
   "mike",
   "pyinstaller",
   "Pillow",
