@@ -186,3 +186,30 @@ The `kevinbotlib hardware serial enumerate` command will detect any connected Se
 
     `-R` *or* `--raw`: Enables raw plain-text output
 </div>
+
+## `logs` (Group)
+
+The logs group contains tools for managing log files
+
+### `logs where`
+
+The `kevinbotlib logs where` command will detect output the default location for local log storage.
+
+### Options
+
+*No Options*
+
+### `logs size`
+
+The `kevinbotlib logs size` command output the size of the default logging directory
+
+### Options
+
+<div class="grid cards" markdown>
+
+- :material-harddisk:{ .lg .middle } __Bytes__
+
+    ---
+
+    `-b` *or* `--bytes`: Output raw number of bytes
+</div>
