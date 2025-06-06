@@ -402,8 +402,17 @@ class CommandScheduler:
                 scheduled["has_init"] = True
 
             # Check if trigger conditions are still satisfied for while_* commands
+            func = None
+            end_check_time, start_check_time = None, None
             if trigger:
-                current_state, _ = trigger.check()
+                start_check_time = time.monotonic()
+                current_state, _, func = trigger.check()
+                end_check_time = time.monotonic()
+
+                if end_check_time - start_check_time > self.trigger_overrun:
+                    _Logger().warning(
+                        f"Command trigger check took too long to complete. {func.__name__}: {(end_check_time - start_check_time) * 1000}ms"
+                    )
                 is_while_command = (trigger.actions.while_true is command and not current_state) or (
                     trigger.actions.while_false is command and current_state
                 )
@@ -426,5 +435,5 @@ class CommandScheduler:
             loop_end_time = time.monotonic()
             if loop_end_time - loop_start_time > self.command_overrun:
                 _Logger().warning(
-                    f"Command execution took too long to complete. {command.__class__.__name__}: {(loop_end_time - loop_start_time) * 1000}ms"
+                    f"Command execution took too long to complete.\n{command.__class__.__name__}: {(loop_end_time - loop_start_time) * 1000}ms" + (f"\n(includes trigger check time: {func.__name__}: {(end_check_time - start_check_time) * 1000}ms)" if trigger and func else "")
                 )
