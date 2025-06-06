@@ -104,7 +104,7 @@ class SerialWindowView(WindowView):
     def send(self, devname: str):
         page = self.pages.get(devname)
         self.send_payload(SerialTxPayload(page.input_line.text().encode("utf-8")))
-        page.console.append("<b>Sent     &gt;&gt;&gt; </b>" + self._decode(page.input_line.text().encode("utf-8")))
+        page.console.append("<b>Sent&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt;&gt; </b>" + self._decode(page.input_line.text().encode("utf-8")))
         page.input_line.clear()
 
     def update(self, payload):
