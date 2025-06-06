@@ -42,6 +42,7 @@ class SimulationFramework:
             type[WindowViewOutputPayload], list[Callable[[WindowViewOutputPayload], None]]
         ] = {}
         self._ready_callback: Callable[[], None] | None = None
+        self._windows: list[str] = []
 
     @staticmethod
     def simulator_run(
@@ -89,6 +90,11 @@ class SimulationFramework:
 
     def add_window(self, name: str, window: type[WindowView]):
         self.sim_in_queue.put(_AddWindowEvent(name, window, default_open=True))
+        self._windows.append(name)
+
+    @property
+    def windows(self) -> list[str]:
+        return self._windows
 
     def add_payload_callback(self, payload_type: type[T], callback: Callable[[T], None]):
         if payload_type in self._payload_callbacks:

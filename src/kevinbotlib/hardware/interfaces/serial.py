@@ -6,6 +6,7 @@ import serial.tools
 import serial.tools.list_ports
 from pydantic.dataclasses import dataclass
 
+from kevinbotlib.hardware._sim import SerialWindowView, SimSerial, SerialTxPayload
 from kevinbotlib.hardware.interfaces.exceptions import SerialException, SerialPortOpenFailure, SerialWriteTimeout
 from kevinbotlib.robot import BaseRobot
 
@@ -110,7 +111,16 @@ class RawSerialInterface(io.IOBase):
             dsrdtr (bool, optional): Enable hardware DSR/DTR flow control. Defaults to False.
             exclusive (bool | None, optional): POSIX exclusive access mode. Defaults to None.
         """
-        self._serial = serial.Serial(
+        self._robot = robot
+
+        # simulator support
+        self._simulating = False
+        if robot and robot.IS_SIM and "kevinbotlib.serial.internal.view" not in robot.simulator.windows:
+            robot.simulator.add_window("kevinbotlib.serial.internal.view", SerialWindowView)
+            robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "new", "name": port})
+            self._simulating = True
+
+        self._serial = (serial.Serial if not self._simulating else SimSerial)(
             port,
             baudrate,
             bytesize,
@@ -124,7 +134,10 @@ class RawSerialInterface(io.IOBase):
             inter_byte_timeout,
             exclusive,
         )
-        self._robot = robot
+
+        if isinstance(self._serial, SimSerial):
+            self._serial.write = lambda x: robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "write", "data": x, "name": port})
+            robot.simulator.add_payload_callback(SerialTxPayload, lambda x: self._serial.append_mock_buffer_internal(x.payload()))
 
     # * connection
 

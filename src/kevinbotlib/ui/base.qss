@@ -91,7 +91,7 @@ QLineEdit {
     color: {{fg}};
     border: 1px solid {{border}};
     border-radius: 4px;
-    padding: 4px;
+    padding: 5px;
     margin: 1px;
     selection-background-color: {{selection}};
     selection-color: {{fg}};
