@@ -7,4 +7,5 @@ from kevinbotlib.cli.hardware.serial import serial
 def hardware():
     """Hardware Interfaces"""
 
+
 hardware.add_command(serial)

@@ -7,6 +7,7 @@ import rich.tree
 def serial():
     """Serial Hardware"""
 
+
 @click.command("enumerate")
 @click.option(
     "-R",
@@ -17,7 +18,6 @@ def serial():
 def enumerate_s_dev(raw: bool):
     """Enumerate the connected serial devices"""
     from kevinbotlib.hardware.interfaces.serial import SerialIdentification
-
 
     for dev in SerialIdentification.list_device_info():
         if raw:
@@ -32,5 +32,6 @@ def enumerate_s_dev(raw: bool):
             tree.add(f"[magenta]PID:[/] {dev.pid}", highlight=True)
             tree.add(f"[magenta]HWID:[/] {dev.hwid}", highlight=True)
             console.print(tree)
+
 
 serial.add_command(enumerate_s_dev)

@@ -2,22 +2,21 @@ import binascii
 import unicodedata
 
 import serial
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
+    QComboBox,
+    QDialog,
     QHBoxLayout,
+    QLabel,
     QLineEdit,
     QPushButton,
+    QSplitter,
+    QStatusBar,
     QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
-    QSplitter,
-    QLabel,
-    QDialog,
-    QApplication,
-    QStatusBar,
-    QComboBox,
 )
 
 from kevinbotlib.simulator.windowview import (
@@ -74,6 +73,7 @@ class SerialTxPayload(WindowViewOutputPayload):
     def payload(self) -> bytes:
         return self._payload
 
+
 def repr_byte_data(data: bytes) -> str:
     result = ""
     for char in data:
@@ -87,6 +87,7 @@ def repr_byte_data(data: bytes) -> str:
             result += f"<span style='color: red'>\\{char:02x}</span>"
     return result
 
+
 class BinaryFrameMaker(QDialog):
     # Define signal to emit binary data
     data_submitted = Signal(bytearray)
@@ -98,9 +99,7 @@ class BinaryFrameMaker(QDialog):
 
         layout = QVBoxLayout()
 
-        instructions = QLabel(
-            "Enter hex values (e.g., 'FF 0A' or 'FF0A') in the left panel. UTF-8 view on the right."
-        )
+        instructions = QLabel("Enter hex values (e.g., 'FF 0A' or 'FF0A') in the left panel. UTF-8 view on the right.")
         layout.addWidget(instructions)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -156,6 +155,7 @@ class BinaryFrameMaker(QDialog):
         else:
             self.status_label.showMessage("No valid data to submit")
 
+
 @register_window_view("kevinbotlib.serial.internal.view")
 class SerialWindowView(WindowView):
     new_tab = Signal(str)
@@ -179,7 +179,7 @@ class SerialWindowView(WindowView):
 
     @property
     def title(self):
-        return "Mock Serial Devices"
+        return "Serial Devices"
 
     def create_tab(self, devname: str):
         if devname not in self.pages:
@@ -199,7 +199,10 @@ class SerialWindowView(WindowView):
     def send(self, devname: str):
         page = self.pages.get(devname)
         self.send_payload(SerialTxPayload(page.input_line.text().encode("utf-8") + page.get_newline()))
-        page.console.append("<b>Sent&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt;&gt; </b>" + repr_byte_data(page.input_line.text().encode("utf-8") + page.get_newline()))
+        page.console.append(
+            "<b>Sent&nbsp;&nbsp;&nbsp;&nbsp; &gt;&gt;&gt; </b>"
+            + repr_byte_data(page.input_line.text().encode("utf-8") + page.get_newline())
+        )
         page.input_line.clear()
 
     def make_binary(self, devname: str):
@@ -300,16 +303,25 @@ class SimSerial:
                 break
         return lines
 
-    def read_until(self, expected = b"\n", size: int | None = None):
+    def read_until(self, expected=b"\n", size: int | None = None):
         """Simulate reading a line, ending with a newline character."""
         newline_index = self.mock_buffer.find(expected)
         if newline_index == -1:
-            # No newline found, return entire buffer
-            data = self.mock_buffer
-            self.mock_buffer = b""
+            # No newline found
+            if size is not None:
+                data = self.mock_buffer[:size]
+                self.mock_buffer = self.mock_buffer[size:]
+            else:
+                data = self.mock_buffer
+                self.mock_buffer = b""
         else:
-            data = self.mock_buffer[: newline_index + 1]
-            self.mock_buffer = self.mock_buffer[newline_index + 1 :]
+            end_index = newline_index + 1
+            if size is not None and end_index > size:
+                data = self.mock_buffer[:size]
+                self.mock_buffer = self.mock_buffer[size:]
+            else:
+                data = self.mock_buffer[:end_index]
+                self.mock_buffer = self.mock_buffer[end_index:]
         return data
 
     @property
