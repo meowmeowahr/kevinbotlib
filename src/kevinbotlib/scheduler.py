@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -7,6 +8,7 @@ from kevinbotlib.exceptions import (
     CommandSchedulerAlreadyExistsException,
     CommandSchedulerDoesNotExistException,
 )
+from kevinbotlib.logger import Logger as _Logger
 
 
 class Command(ABC):
@@ -180,7 +182,7 @@ class Trigger:
         self.last_state: bool | None = None
         self.actions = TriggerActions()
 
-    def check(self) -> tuple[bool, bool]:
+    def check(self) -> tuple[bool, bool, Callable[[], bool]]:
         """
         Check the current state of the trigger and determine if it has changed. To be used internally within the scheduler lopp.
 
@@ -191,7 +193,7 @@ class Trigger:
         current_state = self.trigger_func()
         changed = current_state != self.last_state
         self.last_state = current_state
-        return current_state, changed
+        return current_state, changed, self.trigger_func
 
     def on_true(self, command_instance: Command) -> "Trigger":
         """
@@ -262,6 +264,8 @@ class _ScheduledCommand(TypedDict):
 
 class CommandScheduler:
     instance: Self | None = None
+    overrun_time: float = 0.01
+    trigger_overrun_time: float = 0.005
 
     def __init__(self) -> None:
         """Create a new Command Scheduler."""
@@ -284,6 +288,42 @@ class CommandScheduler:
         if CommandScheduler.instance:
             return CommandScheduler.instance
         raise CommandSchedulerDoesNotExistException
+
+    @property
+    def command_overrun(self) -> float:
+        """
+        Get the amount of time in seconds that the scheduler will execute a command that will cause an overrun warning
+        Returns:
+            Overrun time in seconds.
+        """
+        return CommandScheduler.overrun_time
+
+    @command_overrun.setter
+    def command_overrun(self, value: float) -> None:
+        """
+        Set the amount of time in seconds that the scheduler will execute a command that will cause an overrun warning
+        Args:
+            value: Overrun time in seconds.
+        """
+        CommandScheduler.overrun_time = value
+
+    @property
+    def trigger_overrun(self) -> float:
+        """
+        Get the amount of time in seconds that the scheduler will check a trigger that will cause an overrun warning
+        Returns:
+            Overrun time in seconds.
+        """
+        return CommandScheduler.overrun_time
+
+    @trigger_overrun.setter
+    def trigger_overrun(self, value: float) -> None:
+        """
+        Set the amount of time in seconds that the scheduler will check a trigger that will cause an overrun warning
+        Args:
+            value: Overrun time in seconds.
+        """
+        CommandScheduler.trigger_overrun_time = value
 
     def schedule(self, command: Command) -> None:
         """
@@ -314,9 +354,16 @@ class CommandScheduler:
         and their triggers according to their current state and conditions.
         """
 
-        # Get trigger states, determine if command should be run
+        # Get trigger states, determine if the command should be run
         for trigger in self._triggers:
-            current_state, state_changed = trigger.check()
+            start_check_time = time.monotonic()
+            current_state, state_changed, func = trigger.check()
+            end_check_time = time.monotonic()
+
+            if end_check_time - start_check_time > self.trigger_overrun:
+                _Logger().warning(
+                    f"Command trigger check took too long to complete. {func.__name__}: {(end_check_time - start_check_time) * 1000}ms"
+                )
 
             if current_state and state_changed and trigger.actions.on_true:
                 self._schedule(trigger.actions.on_true, trigger)
