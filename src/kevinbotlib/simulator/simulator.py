@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _ExitSimulatorEvent,

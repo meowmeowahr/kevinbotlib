@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.joystick import RemoteRawJoystickDevice
 from kevinbotlib.logger import Logger, LoggerConfiguration
 

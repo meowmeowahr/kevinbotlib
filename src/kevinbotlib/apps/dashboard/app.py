@@ -74,7 +74,7 @@ from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration, LoggerWriteOpts
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 from kevinbotlib.vision import VisionCommUtils

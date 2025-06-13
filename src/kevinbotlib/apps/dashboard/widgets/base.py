@@ -5,7 +5,7 @@ from PySide6.QtCore import QRect, QRectF, Qt, Signal
 from PySide6.QtGui import QAction, QBrush, QColor, QPainter, QPen
 from PySide6.QtWidgets import QGraphicsObject, QInputDialog, QMenu, QStyleOptionGraphicsItem, QWidget
 
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView

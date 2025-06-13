@@ -21,7 +21,7 @@ from kevinbotlib.exceptions import LoggerNotConfiguredException
 
 
 def _escape(msg: str):
-    #return msg  # TODO: study this more
+    # return msg  # TODO: study this more
     return re.compile(r"\\?</?((?:[fb]g\s)?[^<>\s]*)>").sub(lambda match: f"\\{match[0]}", msg)
 
 

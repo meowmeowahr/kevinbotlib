@@ -5,7 +5,7 @@ from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import QStyleOptionGraphicsItem, QWidget
 
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
     RedisCommClient,
 )
 

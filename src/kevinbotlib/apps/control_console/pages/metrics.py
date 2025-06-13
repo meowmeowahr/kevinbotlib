@@ -1,7 +1,7 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QHBoxLayout, QPlainTextEdit, QWidget
 
-from kevinbotlib.comm import CommPath, DictSendable, RedisCommClient
+from kevinbotlib.comm.redis import CommPath, DictSendable, RedisCommClient
 from kevinbotlib.metrics import Metric
 
 

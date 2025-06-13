@@ -1,4 +1,4 @@
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.logger import FileLoggerConfig, Logger, LoggerConfiguration
 from kevinbotlib.vision import (
     CameraByIndex,

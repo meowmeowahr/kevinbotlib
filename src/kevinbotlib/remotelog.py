@@ -1,10 +1,14 @@
 import contextlib
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from kevinbotlib.comm import CommPath, RedisCommClient, StringSendable
+from kevinbotlib.comm.sendables import StringSendable
 from kevinbotlib.exceptions import LoggerNotConfiguredException
 from kevinbotlib.logger import Logger
+
+if TYPE_CHECKING:
+    from kevinbotlib.comm.path import CommPath
+    from kevinbotlib.comm.redis import RedisCommClient
 
 
 class ANSILogSender:

@@ -1,4 +1,4 @@
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
     AnyListSendable,
     BooleanSendable,
     FloatSendable,

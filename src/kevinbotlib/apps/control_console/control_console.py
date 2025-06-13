@@ -42,7 +42,7 @@ from kevinbotlib.apps.control_console.pages.control import (
 )
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm import AnyListSendable, CommPath, RedisCommClient, StringSendable
+from kevinbotlib.comm.redis import AnyListSendable, CommPath, RedisCommClient, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle

@@ -11,7 +11,7 @@ import sdl2.ext
 from pydantic.dataclasses import dataclass
 
 from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
     AnyListSendable,
     BooleanSendable,
     IntegerSendable,

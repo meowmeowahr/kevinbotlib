@@ -1,6 +1,6 @@
 import time
 
-from kevinbotlib.comm import IntegerSendable, RedisCommClient
+from kevinbotlib.comm.redis import IntegerSendable, RedisCommClient
 from kevinbotlib.logger import Logger, LoggerConfiguration
 
 logger = Logger()

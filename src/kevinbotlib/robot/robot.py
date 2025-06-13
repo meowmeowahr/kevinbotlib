@@ -17,7 +17,7 @@ import psutil
 
 import kevinbotlib.simulator as _sim
 from kevinbotlib.__about__ import __version__
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
     AnyListSendable,
     BooleanSendable,
     CommPath,

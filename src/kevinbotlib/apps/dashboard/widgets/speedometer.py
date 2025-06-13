@@ -18,7 +18,7 @@ from kevinbotlib.apps.dashboard.gradient import GradientEditor
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.speedometer import Speedometer
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView

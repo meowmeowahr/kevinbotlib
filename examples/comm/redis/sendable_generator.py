@@ -1,10 +1,12 @@
 import random
 import time
 
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
+    RedisCommClient,
+)
+from kevinbotlib.comm.sendables import (
     BaseSendable,
     IntegerSendable,
-    RedisCommClient,
     SendableGenerator,
 )
 from kevinbotlib.logger import Logger, LoggerConfiguration

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import (
+from kevinbotlib.comm.redis import (
     FloatSendable,
     IntegerSendable,
     RedisCommClient,

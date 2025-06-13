@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.ui.widgets import BatteryGrapher
 
 if TYPE_CHECKING:

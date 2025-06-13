@@ -23,7 +23,7 @@ from kevinbotlib.apps.dashboard.widgets._pglive.sources.data_connector import Da
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot import LiveLinePlot
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot_widget import LivePlotWidget
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm import RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
