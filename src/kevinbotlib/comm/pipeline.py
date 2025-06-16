@@ -14,6 +14,13 @@ class PipelinedCommSetter:
     """
 
     def __init__(self, client: AbstractSetGetNetworkClient):
+        """
+        Create a new comm setter pipeline.
+
+        Args:
+            client: Client to use for the pipeline.
+        """
+
         self.client = client
         self.set_queue: list[SetRequest] = []
 

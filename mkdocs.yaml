@@ -75,6 +75,7 @@ plugins:
               show_root_members_full_path: true
               parameter_headings: false
               show_source: false
+              show_if_no_docstring: true
               filters: ["!^_", "^__init__$"]
   - search
   - mike
