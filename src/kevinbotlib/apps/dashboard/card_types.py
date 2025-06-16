@@ -11,6 +11,7 @@ from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.slider import SliderWidgetItem
 from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
+from kevinbotlib.apps.dashboard.widgets.coord2d import Coord2dWidgetItem
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import Application
@@ -54,6 +55,10 @@ def determine_widget_types(did: str):
             return {"Basic Text": LabelWidgetItem}
         case "kevinbotlib.vision.dtype.mjpeg":
             return {"MJPEG Stream": MjpegCameraStreamWidgetItem}
+        case "kevinbotlib.dtype.coord2d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.list.coord2d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
     return {}
 
 
@@ -87,5 +92,7 @@ def item_loader(app: "Application", item: dict) -> WidgetItem:
             return BatteryWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
         case "slider":
             return SliderWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
+        case "coord2d":
+            return Coord2dWidgetItem(title, key, options, app.graphics_view, span_x, span_y, app.client)
 
     return WidgetItem(title, key, options, app.graphics_view, span_x, span_y)
