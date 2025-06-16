@@ -14,12 +14,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from kevinbotlib.comm.redis import (
+from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
-    CommPath,
     FloatSendable,
-    RedisCommClient,
     StringSendable,
 )
 from kevinbotlib.ui.widgets import Battery, BatteryManager

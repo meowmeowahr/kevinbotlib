@@ -6,7 +6,7 @@ import sys
 from collections.abc import Callable
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from io import TextIOBase
 from typing import IO
@@ -218,7 +218,7 @@ class Logger:
             self._internal_logger.add(_Sink(), level=config.level.value.no)  # type: ignore
 
         if config.file_logger:
-            timestamp = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to ms
+            timestamp = datetime.now(tz=UTC).strftime("%Y-%m-%d_%H-%M-%S-%f")[:-3]  # Trim to ms
             log_file = os.path.join(config.file_logger.directory, f"{timestamp}.log")
 
             self._internal_logger.add(

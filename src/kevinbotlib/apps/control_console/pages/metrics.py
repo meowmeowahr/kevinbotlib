@@ -1,14 +1,16 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QHBoxLayout, QPlainTextEdit, QWidget
 
-from kevinbotlib.comm.redis import CommPath, DictSendable, RedisCommClient
+from kevinbotlib.comm.abstract import AbstractSetGetNetworkClient
+from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.sendables import DictSendable
 from kevinbotlib.metrics import Metric
 
 
 class ControlConsoleMetricsTab(QWidget):
     metrics_update = Signal(tuple)
 
-    def __init__(self, client: RedisCommClient, key: str | CommPath):
+    def __init__(self, client: AbstractSetGetNetworkClient, key: str | CommPath):
         super().__init__()
 
         self.metrics_update.connect(self.on_metrics_update)

@@ -9,10 +9,9 @@ from annotated_types import Len
 from cv2.typing import MatLike
 
 from kevinbotlib.comm.abstract import (
-    AbstractSetGetNetworkClient,
     AbstractPubSubNetworkClient,
+    AbstractSetGetNetworkClient,
 )
-from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.comm.sendables import BinarySendable
 
 

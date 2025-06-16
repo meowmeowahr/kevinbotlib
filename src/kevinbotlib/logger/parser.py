@@ -167,7 +167,7 @@ class LogParser:
 
             entries.append(
                 LogEntry(
-                    datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc),
+                    datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC),
                     modname,
                     function,
                     line,

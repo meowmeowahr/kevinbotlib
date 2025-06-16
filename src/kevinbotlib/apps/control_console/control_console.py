@@ -42,7 +42,9 @@ from kevinbotlib.apps.control_console.pages.control import (
 )
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
-from kevinbotlib.comm.redis import AnyListSendable, CommPath, RedisCommClient, StringSendable
+from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.sendables import AnyListSendable, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
 from kevinbotlib.ui.theme import Theme, ThemeStyle
@@ -72,7 +74,7 @@ class HeartbeatWorker(QObject):
             return
         self.client.set(
             CommPath(self.key) / "heartbeat",
-            StringSendable(value=str(datetime.datetime.now(datetime.timezone.utc)), timeout=1.5),
+            StringSendable(value=str(datetime.datetime.now(datetime.UTC)), timeout=1.5),
         )
 
 

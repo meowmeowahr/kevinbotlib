@@ -391,6 +391,7 @@ class Pose2dListSendable(BaseSendable):
         data["value"] = self.value
         return data
 
+
 class Pose3dListSendable(BaseSendable):
     value: list[Pose3d]
     """Value to send"""
@@ -408,6 +409,7 @@ class Pose3dListSendable(BaseSendable):
         data = super().get_dict()
         data["value"] = self.value
         return data
+
 
 DEFAULT_SENDABLES = {
     "kevinbotlib.dtype.int": IntegerSendable,

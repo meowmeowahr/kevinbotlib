@@ -157,7 +157,7 @@ class RemoteLogDownloader:
 
         resolved_path = self._resolve_log_dir()
         return datetime.datetime.fromtimestamp(
-            self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_mtime, tz=datetime.timezone.utc
+            self.sftp_client.stat(os.path.join(resolved_path, logfile)).st_mtime, tz=datetime.UTC
         )
 
     def get_file_size(self, logfile: str) -> int:
