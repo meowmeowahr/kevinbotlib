@@ -17,11 +17,6 @@ import psutil
 
 import kevinbotlib.simulator as _sim
 from kevinbotlib.__about__ import __version__
-from kevinbotlib.comm.client import NetworkClient
-from kevinbotlib.comm.redis import (
-    CommPath,
-    RedisCommClient,
-)
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
@@ -29,6 +24,8 @@ from kevinbotlib.comm.sendables import (
     FloatSendable,
     StringSendable,
 )
+from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.path import CommPath
 from kevinbotlib.exceptions import (
     LoggerNotConfiguredException,
     RobotEmergencyStoppedException,
@@ -185,7 +182,7 @@ class BaseRobot:
     def __init__(
         self,
         opmodes: list[str],
-        serve_port: int = 8888,
+        serve_port: int = 6379,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
@@ -204,7 +201,7 @@ class BaseRobot:
 
         Args:
             opmodes (list[str]): List of operational mode names.
-            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8888.
+            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8765.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
             enable_stderr_logger (bool, optional): Enable logging to STDERR, may cause issues when using signal stop. Defaults to False.
@@ -248,7 +245,7 @@ class BaseRobot:
         self._ctrl_batteries_key = "%ControlConsole/batteries"
         self._robot_heartbeat_key = "%Robot/heartbeat"
 
-        self.comm_client = NetworkClient(port=serve_port)
+        self.comm_client = RedisCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level
@@ -358,10 +355,10 @@ class BaseRobot:
                     LoggerWriteOpts(exception=RobotEmergencyStoppedException()),
                 )
                 break
-            # self.comm_client.set(
-            #     self._robot_heartbeat_key,
-            #     FloatSendable(value=time.process_time(), timeout=self._robot_heartbeat_expiry),
-            # )
+            self.comm_client.set(
+                self._robot_heartbeat_key,
+                FloatSendable(value=time.process_time(), timeout=self._robot_heartbeat_expiry),
+            )
             time.sleep(self._robot_heartbeat_interval)
 
     @final
@@ -418,9 +415,9 @@ class BaseRobot:
     @final
     def _metrics_pub_internal(self):
         if self._metrics.getall():
-            # self.comm_client.set(
-            #     CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall())
-            # )
+            self.comm_client.set(
+                CommPath(self._ctrl_metrics_key) / "metrics", DictSendable(value=self._metrics.getall())
+            )
             self.telemetry.trace(f"Published system metrics to {self._ctrl_metrics_key}")
         else:
             self.telemetry.warning(
@@ -444,27 +441,24 @@ class BaseRobot:
 
     @final
     def _update_console_enabled(self, enabled: bool):
-        pass
-        # return self.comm_client.set(
-        #     CommPath(self._ctrl_status_root_key) / "enabled",
-        #     BooleanSendable(value=enabled),
-        # )
+        return self.comm_client.set(
+            CommPath(self._ctrl_status_root_key) / "enabled",
+            BooleanSendable(value=enabled),
+        )
 
     @final
     def _update_console_opmodes(self, opmodes: list[str]):
-        pass
-        # return self.comm_client.set(
-        #     CommPath(self._ctrl_status_root_key) / "opmodes",
-        #     AnyListSendable(value=opmodes),
-        # )
+        return self.comm_client.set(
+            CommPath(self._ctrl_status_root_key) / "opmodes",
+            AnyListSendable(value=opmodes),
+        )
 
     @final
     def _update_console_opmode(self, opmode: str):
-        pass
-        # return self.comm_client.set(
-        #     CommPath(self._ctrl_status_root_key) / "opmode",
-        #     StringSendable(value=opmode),
-        # )
+        return self.comm_client.set(
+            CommPath(self._ctrl_status_root_key) / "opmode",
+            StringSendable(value=opmode),
+        )
 
     @final
     def _on_console_enabled_request(self, _: str, sendable: BooleanSendable | None):
@@ -615,7 +609,7 @@ class BaseRobot:
         if value not in self._opmodes:
             msg = f"Opmode '{value}' is not in allowed opmodes: {self._opmodes}"
             raise ValueError(msg)
-        # self.comm_client.set(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable(value=value))
+        self.comm_client.set(CommPath(self._ctrl_request_root_key) / "opmode", StringSendable(value=value))
         self._update_console_opmode(value)
 
     @property
