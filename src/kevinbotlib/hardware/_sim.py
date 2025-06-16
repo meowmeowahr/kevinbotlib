@@ -34,6 +34,7 @@ class SerialConsolePage(QWidget):
         self.console = QTextEdit()
         self.console.setReadOnly(True)
         self.console.setFont(QFont("monospace"))
+        self.console.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
         self.layout.addWidget(self.console)
 
         self.input_layout = QHBoxLayout()
