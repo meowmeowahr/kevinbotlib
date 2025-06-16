@@ -7,7 +7,7 @@ name = "kevinbotlib"
 dynamic = ["version"]
 description = "The KevinbotLib Robot Development Framework"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "LGPL-3.0-or-later"
 keywords = []
 authors = [
@@ -16,7 +16,6 @@ authors = [
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
