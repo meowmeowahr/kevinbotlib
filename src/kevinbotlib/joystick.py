@@ -14,6 +14,7 @@ from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispa
 from kevinbotlib.comm.redis import (
     RedisCommClient,
 )
+from kevinbotlib.comm.request import GetRequest
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
@@ -1195,13 +1196,16 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
     def _poll_loop(self):
         while self.running:
             # Check connection status
-            conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
+            conn_sendable: BooleanSendable
+            button_sendable: AnyListSendable
+            axes_sendable: AnyListSendable
+            pov_sendable: IntegerSendable
+            conn_sendable, button_sendable, axes_sendable, pov_sendable = self.client.multi_get((GetRequest(f"{self._client_key}/connected", BooleanSendable), GetRequest(f"{self._client_key}/buttons", AnyListSendable), GetRequest(f"{self._client_key}/axes", AnyListSendable), GetRequest(f"{self._client_key}/pov", IntegerSendable)))
             self._cached_connected = conn_sendable.value if conn_sendable else False
             self.connected = self._cached_connected
 
             if self._cached_connected:
                 # Check buttons
-                button_sendable = self.client.get(f"{self._client_key}/buttons", AnyListSendable)
                 self._cached_button_states = button_sendable.value if button_sendable else []
                 current_button_states = {btn: True for btn in self._cached_button_states}
 
@@ -1216,11 +1220,9 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
                 self._last_button_states = current_button_states
 
                 # Check axes
-                axes_sendable = self.client.get(f"{self._client_key}/axes", AnyListSendable)
                 self._cached_axis_values = axes_sendable.value if axes_sendable else []
 
                 # Check POV
-                pov_sendable = self.client.get(f"{self._client_key}/pov", IntegerSendable)
                 self._cached_pov_direction = POVDirection(pov_sendable.value) if pov_sendable else POVDirection.NONE
 
                 if self._cached_pov_direction != self._last_pov_state:

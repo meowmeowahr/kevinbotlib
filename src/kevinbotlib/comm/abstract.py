@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from typing import TypeAlias, TypeVar
+from typing import TypeAlias, TypeVar, Sequence
 
 from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.request import GetRequest
 from kevinbotlib.comm.sendables import BaseSendable, SendableGenerator
 
 T = TypeVar("T", bound=BaseSendable)
@@ -17,6 +18,9 @@ class AbstractSetGetNetworkClient(ABC):
 
     @abstractmethod
     def get(self, key: CommPath | str, data_type: type[T]) -> T | None: ...
+
+    @abstractmethod
+    def multi_get(self, requests: Sequence[GetRequest]) -> list[BaseSendable | None]: ...
 
     @abstractmethod
     def get_keys(self) -> list[str]: ...

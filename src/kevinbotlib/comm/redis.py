@@ -2,7 +2,7 @@ import json
 import threading
 import time
 from collections.abc import Callable
-from typing import ClassVar, TypeVar, final
+from typing import ClassVar, TypeVar, final, Unpack, Optional, Tuple, Sequence
 
 import deprecated
 import orjson
@@ -16,6 +16,7 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.request import GetRequest, RequestTypeVar, RequestTypeVars
 from kevinbotlib.comm.sendables import (
     DEFAULT_SENDABLES,
     BaseSendable,
@@ -143,6 +144,44 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         except (orjson.JSONDecodeError, ValidationError, KeyError):
             pass
         return None
+
+    def multi_get(
+        self, requests: Sequence[GetRequest]
+    ) -> list[BaseSendable | None]:
+        """
+        Retrieve and deserialize multiple sendables by a list of GetRequest objects.
+
+        Args:
+            requests: List of GetRequest objects.
+
+        Returns:
+            List of sendables or None for each request if not found.
+        """
+        if not self.redis:
+            _Logger().error("Cannot multi_get: client is not started")
+            return [None] * len(requests)
+        keys = [str(req.key) for req in requests]
+        try:
+            raw_values = self.redis.mget(keys)
+            self._dead.dead = False
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
+            _Logger().error(f"Cannot multi_get: {e}")
+            self._dead.dead = True
+            return [None] * len(requests)
+        results = []
+        for raw, req in zip(raw_values, requests, strict=False):
+            if raw is None:
+                results.append(None)
+                continue
+            try:
+                data = json.loads(raw)
+                if req.data_type:
+                    results.append(req.data_type(**data))
+                else:
+                    results.append(None)
+            except (orjson.JSONDecodeError, ValidationError, KeyError):
+                results.append(None)
+        return results
 
     def get_keys(self) -> list[str]:
         """
