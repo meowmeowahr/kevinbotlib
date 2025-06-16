@@ -8,7 +8,8 @@ import pybase64 as base64
 from annotated_types import Len
 from cv2.typing import MatLike
 
-from kevinbotlib.comm.redis import BinarySendable, RedisCommClient
+from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.sendables import BinarySendable
 
 
 class SingleFrameSendable(BinarySendable):

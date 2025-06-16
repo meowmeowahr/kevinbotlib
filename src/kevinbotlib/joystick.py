@@ -12,10 +12,12 @@ from pydantic.dataclasses import dataclass
 
 from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
 from kevinbotlib.comm.redis import (
+    RedisCommClient,
+)
+from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
     IntegerSendable,
-    RedisCommClient,
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger

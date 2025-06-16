@@ -9,7 +9,8 @@ from kevinbotlib.logger import Logger, LoggerConfiguration
 
 
 def randomword(length):
-    return "".join(random.choice(string.ascii_lowercase) for i in range(length))  # noqa: S311
+    return "".join(random.choice(string.ascii_lowercase) for i in range(length))
+
 
 DATA = randomword(10_000_000)
 SERVER_HOST = "127.0.0.1"

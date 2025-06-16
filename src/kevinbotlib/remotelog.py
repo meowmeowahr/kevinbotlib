@@ -1,20 +1,18 @@
 import contextlib
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
+from kevinbotlib.comm.abstract import AbstractPubSubNetworkClient
+from kevinbotlib.comm.path import CommPath
 from kevinbotlib.comm.sendables import StringSendable
 from kevinbotlib.exceptions import LoggerNotConfiguredException
 from kevinbotlib.logger import Logger
-
-if TYPE_CHECKING:
-    from kevinbotlib.comm.path import CommPath
-    from kevinbotlib.comm.redis import RedisCommClient
 
 
 class ANSILogSender:
     """Class to send ANSI-formatted log entries over Redis Pub/Sub"""
 
-    def __init__(self, logger: Logger, client: "RedisCommClient", key: "CommPath | str"):
+    def __init__(self, logger: Logger, client: AbstractPubSubNetworkClient, key: CommPath | str):
         if not logger.is_configured:
             msg = "Logger must be configured before creating LogSender"
             raise LoggerNotConfiguredException(msg)
@@ -37,7 +35,7 @@ class ANSILogSender:
 class ANSILogReceiver:
     """Class to receive ANSI-formatted log entries over Redis Pub/Sub"""
 
-    def __init__(self, callback: Callable[[str], Any], client: "RedisCommClient", key: "CommPath | str"):
+    def __init__(self, callback: Callable[[str], Any], client: AbstractPubSubNetworkClient, key: CommPath | str):
         self.callback = callback
         self.client = client
         self.key = key

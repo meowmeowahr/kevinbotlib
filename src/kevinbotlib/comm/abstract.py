@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from typing import TypeVar
+from typing import TypeAlias, TypeVar
 
 from kevinbotlib.comm.path import CommPath
 from kevinbotlib.comm.sendables import BaseSendable, SendableGenerator
@@ -107,3 +107,8 @@ class AbstractPubSubNetworkClient(ABC):
     @property
     @abstractmethod
     def timeout(self): ...
+
+
+SetGetClientWithPubSub: TypeAlias = type(
+    "SetGetClientWithPubSub", (AbstractSetGetNetworkClient, AbstractPubSubNetworkClient), {}
+)
