@@ -261,7 +261,6 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             return result
 
     def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator, *, pub_mode: bool = False):
-        """Set sendable in the Redis database."""
         if not self.running or not self.redis:
             _Logger().error(f"Cannot publish/set to {key}: client is not started")
             return
@@ -363,6 +362,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
     def wipeall(self) -> None:
         """Delete all keys in the Redis database."""
+
         if not self.redis:
             _Logger().error("Cannot wipe all: client is not started")
             return
@@ -586,10 +586,23 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
     @property
     def host(self) -> str:
+        """
+        Get the currently connected server host.
+
+        Returns:
+            Server host.
+        """
+
         return self._host
 
     @property
     def port(self) -> int:
+        """
+        Get the currently connected server port.
+
+        Returns:
+            Server port.
+        """
         return self._port
 
     @host.setter
@@ -608,4 +621,10 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
     @property
     def timeout(self):
+        """
+        Get the current server timeout.
+
+        Returns:
+            Server timeout in seconds.
+        """
         return self._timeout
