@@ -4,7 +4,6 @@ import time
 from collections.abc import Callable, Sequence
 from typing import ClassVar, TypeVar, final
 
-import deprecated
 import orjson
 import redis
 import redis.exceptions
@@ -16,7 +15,7 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.request import GetRequest
+from kevinbotlib.comm.request import GetRequest, SetRequest
 from kevinbotlib.comm.sendables import (
     DEFAULT_SENDABLES,
     BaseSendable,
@@ -29,7 +28,6 @@ __all__ = ["RedisCommClient"]
 T = TypeVar("T", bound=BaseSendable)
 
 
-@deprecated.deprecated("Consider switching to the native KevinbotLib networking system")
 class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
     SENDABLE_TYPES: ClassVar[dict[str, type[BaseSendable]]] = DEFAULT_SENDABLES
 
@@ -145,7 +143,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             pass
         return None
 
-    def multi_get(self, requests: Sequence[GetRequest]) -> list[BaseSendable | None]:
+    def multi_get(self, requests):
         """
         Retrieve and deserialize multiple sendables by a list of GetRequest objects.
 
@@ -290,6 +288,31 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             else:
                 _Logger().warning("Connection kwargs changed while getting ping to server. Connection may not be dead.")
 
+    def _apply_multi(self, keys: list[CommPath | str], sendables: list[BaseSendable | SendableGenerator]):
+        if not self.running or not self.redis:
+            _Logger().error("Cannot multi-set: client is not started")
+            return
+
+        if len(keys) != len(sendables):
+            _Logger().error("Keys and sendables must have the same length")
+            return
+
+        try:
+            pipe = self.redis.pipeline()
+            for key, sendable in zip(keys, sendables, strict=False):
+                if isinstance(sendable, SendableGenerator):
+                    sendable = sendable.generate_sendable()
+                data = sendable.get_dict()
+                if sendable.timeout:
+                    pipe.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
+                else:
+                    pipe.set(str(key), orjson.dumps(data))
+            pipe.execute()
+            self._dead.dead = False
+        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError) as e:
+            _Logger().error(f"Cannot multi-set: {e}")
+            self._dead.dead = True
+
     def set(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """
         Set sendable in the Redis database.
@@ -300,6 +323,16 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         """
 
         self._apply(key, sendable, pub_mode=False)
+
+    def multi_set(self, requests) -> None:
+        """
+        Set multiple sendables in the Redis database.
+
+        Args:
+            requests: Sequence of SetRequest objects.
+        """
+
+        self._apply_multi([x.key for x in requests], [x.data for x in requests])
 
     def publish(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator) -> None:
         """
@@ -407,17 +440,27 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                 if not self.redis:
                     time.sleep(0.01)
                     continue
-                for key, _, _ in self.hooks:
+                keys = [key for key, _, _ in self.hooks]
+                # Initialize previous_values for new keys
+                for key in keys:
                     if key not in previous_values:
                         previous_values[key] = None
+
                     if not redis:
-                        continue
-                    message = self.redis.get(key)
+                        return
+
+                # Use mget to fetch all values at once
+                messages = self.redis.mget(keys)
+                key_to_message = dict(zip(keys, messages))
+
+                for key, message in key_to_message.items():
                     if message != previous_values[key]:
-                        # Call the hook
+                        # Call the hook for all hooks matching this key
                         for ckey, data_type, callback in self.hooks:
+                            if ckey != key:
+                                continue
                             try:
-                                raw = self.redis.get(ckey)
+                                raw = message
                                 if raw:
                                     data = orjson.loads(raw)
                                     if data["did"] == data_type(**data).data_id:

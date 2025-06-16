@@ -11,6 +11,7 @@ import sdl2.ext
 from pydantic.dataclasses import dataclass
 
 from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
+from kevinbotlib.comm.pipeline import PipelinedCommSetter
 from kevinbotlib.comm.redis import (
     RedisCommClient,
 )
@@ -935,6 +936,7 @@ class JoystickSender:
         """
 
         self.client = client
+        self._pipeliner = PipelinedCommSetter(client)
 
         self.joystick = joystick
 
@@ -945,13 +947,14 @@ class JoystickSender:
 
     @final
     def _send(self):
-        self.client.set(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
-        self.client.set(
+        self._pipeliner.set(self.key + "/buttons", AnyListSendable(value=self.joystick.get_buttons()))
+        self._pipeliner.set(
             self.key + "/pov",
             IntegerSendable(value=self.joystick.get_pov_direction().value),
         )
-        self.client.set(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
-        self.client.set(self.key + "/connected", BooleanSendable(value=self.joystick.is_connected()))
+        self._pipeliner.set(self.key + "/axes", AnyListSendable(value=self.joystick.get_axes()))
+        self._pipeliner.set(self.key + "/connected", BooleanSendable(value=self.joystick.is_connected()))
+        self._pipeliner.send()
 
     @final
     def _send_loop(self):
@@ -992,6 +995,7 @@ class DynamicJoystickSender:
         """
 
         self.client = client
+        self._pipeliner = PipelinedCommSetter(client)
 
         self.joystick = joystick_getter
 
@@ -1002,13 +1006,14 @@ class DynamicJoystickSender:
 
     @final
     def _send(self):
-        self.client.set(self.key + "/buttons", AnyListSendable(value=self.joystick().get_buttons()))
-        self.client.set(
+        self._pipeliner.set(self.key + "/buttons", AnyListSendable(value=self.joystick().get_buttons()))
+        self._pipeliner.set(
             self.key + "/pov",
             IntegerSendable(value=self.joystick().get_pov_direction().value),
         )
-        self.client.set(self.key + "/axes", AnyListSendable(value=self.joystick().get_axes()))
-        self.client.set(self.key + "/connected", BooleanSendable(value=self.joystick().is_connected()))
+        self._pipeliner.set(self.key + "/axes", AnyListSendable(value=self.joystick().get_axes()))
+        self._pipeliner.set(self.key + "/connected", BooleanSendable(value=self.joystick().is_connected()))
+        self._pipeliner.send()
 
     @final
     def _send_loop(self):

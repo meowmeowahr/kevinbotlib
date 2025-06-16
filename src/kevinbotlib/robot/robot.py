@@ -492,6 +492,7 @@ class BaseRobot:
                 self.telemetry.log(Level.INFO, "Robot started")
 
                 while True:
+                    start_run_time = time.monotonic()
                     if self._signal_stop:
                         msg = "Robot signal stopped"
                         self.robot_end()
@@ -540,7 +541,7 @@ class BaseRobot:
 
                         self.robot_periodic(self._opmode, self._current_enabled)
 
-                    time.sleep(1 / self._cycle_hz)
+                    time.sleep(max((1 / self._cycle_hz) - (time.monotonic() - start_run_time), 0))
             except RobotStoppedException:
                 sys.exit(64)
             except RobotEmergencyStoppedException:
