@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from kevinbotlib.comm.abstract import AbstractSetGetNetworkClient
 from kevinbotlib.comm.path import CommPath

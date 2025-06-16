@@ -17,6 +17,7 @@ class GetRequest(Generic[GetRequestTypeVar]):
     data_type: type[GetRequestTypeVar]
     """Sendable type"""
 
+
 @dataclass
 class SetRequest(Generic[SetRequestTypeVar]):
     """Dataclass for a Comm Set Request"""

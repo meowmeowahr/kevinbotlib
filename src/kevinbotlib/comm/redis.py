@@ -1,7 +1,7 @@
 import json
 import threading
 import time
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from typing import ClassVar, TypeVar, final
 
 import orjson
@@ -15,7 +15,6 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.request import GetRequest, SetRequest
 from kevinbotlib.comm.sendables import (
     DEFAULT_SENDABLES,
     BaseSendable,
@@ -301,7 +300,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             pipe = self.redis.pipeline()
             for key, sendable in zip(keys, sendables, strict=False):
                 if isinstance(sendable, SendableGenerator):
-                    sendable = sendable.generate_sendable()
+                    sendable = sendable.generate_sendable()  # noqa: PLW2901
                 data = sendable.get_dict()
                 if sendable.timeout:
                     pipe.set(str(key), orjson.dumps(data), px=int(sendable.timeout * 1000))
@@ -451,7 +450,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
                 # Use mget to fetch all values at once
                 messages = self.redis.mget(keys)
-                key_to_message = dict(zip(keys, messages))
+                key_to_message = dict(zip(keys, messages, strict=False))
 
                 for key, message in key_to_message.items():
                     if message != previous_values[key]:
