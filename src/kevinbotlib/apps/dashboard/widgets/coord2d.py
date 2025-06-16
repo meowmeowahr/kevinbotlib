@@ -1,10 +1,10 @@
+import math
 from enum import Enum
 from typing import TYPE_CHECKING, Any
-import math
 
 import superqt
-from PySide6.QtCore import QTimer, Signal, QRect, QPointF
-from PySide6.QtGui import QAction, QPainter, QPen, QColor, QFont, QPaintEvent
+from PySide6.QtCore import QPointF, QRect, QTimer, Signal
+from PySide6.QtGui import QAction, QColor, QFont, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
@@ -94,8 +94,7 @@ class GraphWidget(QWidget):
             max_y += y_range * 0.05
 
             return min_x, max_x, min_y, max_y
-        else:
-            return self.min_x, self.max_x, self.min_y, self.max_y
+        return self.min_x, self.max_x, self.min_y, self.max_y
 
     def data_to_screen(self, x, y, plot_rect, min_x, max_x, min_y, max_y):
         """Convert data coordinates to screen coordinates"""
@@ -149,12 +148,11 @@ class GraphWidget(QWidget):
 
         if normalized <= 1:
             return magnitude
-        elif normalized <= 2:
+        if normalized <= 2:  # noqa: PLR2004
             return 2 * magnitude
-        elif normalized <= 5:
+        if normalized <= 5:  # noqa: PLR2004
             return 5 * magnitude
-        else:
-            return 10 * magnitude
+        return 10 * magnitude
 
     def draw_axes_labels(self, painter: QPainter, plot_rect: QRect, min_x, max_x, min_y, max_y):
         """Draw axis labels"""
@@ -184,18 +182,13 @@ class GraphWidget(QWidget):
             painter.drawText(5, int(screen_y - 10), 30, 20, 0x82, label)
             y += y_step
 
-    def paintEvent(self, event: QPaintEvent):
+    def paintEvent(self, _event: QPaintEvent):  # noqa: N802
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, False)
 
         painter.fillRect(self.rect(), self.background_color)
 
-        plot_rect = QRect(
-            self.margin,
-            10,
-            self.width() - self.margin - 10,
-            self.height() - self.margin - 10
-        )
+        plot_rect = QRect(self.margin, 10, self.width() - self.margin - 10, self.height() - self.margin - 10)
 
         if plot_rect.width() <= 0 or plot_rect.height() <= 0:
             return
@@ -218,7 +211,7 @@ class GraphWidget(QWidget):
             points.append(QPointF(screen_x, screen_y))
 
         for i in range(len(points)):
-            painter.drawEllipse(points[i], self.pt_width/2, self.pt_width/2)
+            painter.drawEllipse(points[i], self.pt_width / 2, self.pt_width / 2)
 
 
 class Coord2dWidgetSettings(QDialog):
@@ -355,14 +348,14 @@ class Coord2dWidgetSettings(QDialog):
 
 class Coord2dWidgetItem(WidgetItem):
     def __init__(
-            self,
-            title: str,
-            key: str,
-            options: dict,
-            grid: "GridGraphicsView",
-            span_x=1,
-            span_y=1,
-            _client: RedisCommClient | None = None,
+        self,
+        title: str,
+        key: str,
+        options: dict,
+        grid: "GridGraphicsView",
+        span_x=1,
+        span_y=1,
+        _client: RedisCommClient | None = None,
     ):
         super().__init__(title, key, options, grid, span_x, span_y)
         self.kind = "coord2d"
@@ -418,7 +411,6 @@ class Coord2dWidgetItem(WidgetItem):
             case "kevinbotlib.dtype.list.coord2d" | "kevinbotlib.dtype.list.coord3d":
                 self.data_points = [(c["x"], c["y"]) for c in data["value"]]
 
-
     def create_context_menu(self):
         menu = super().create_context_menu()
         settings_action = QAction("Settings", self)
@@ -430,7 +422,6 @@ class Coord2dWidgetItem(WidgetItem):
         self.options = options
         self.timer.setInterval(self.options.get("interval", 50))
         self.graph.set_options(self.options)
-
 
     def worker_update(self):
         self.graph.set_data(self.data_points)

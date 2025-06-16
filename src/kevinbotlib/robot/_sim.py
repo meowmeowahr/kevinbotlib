@@ -127,9 +127,10 @@ class MetricsWindowView(WindowView):
             self._elapsed = 0.0
 
 
-@register_window_view("kevinbotlib.robot.internal.time")
-class TimeWindowView(WindowView):
+@register_window_view("kevinbotlib.robot.internal.proc")
+class ProcInfoWindowView(WindowView):
     set_process_time = Signal(str)
+    set_cycles = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -143,19 +144,32 @@ class TimeWindowView(WindowView):
         self.layout.addWidget(self.process_time)
         self.set_process_time.connect(self.update_process_time)
 
+        self.cps = QLabel("Cycles/Second: ???.??")
+        self.cps.setFont(QFont("monospace"))
+        self.cps.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.cps)
+        self.set_cycles.connect(self.update_cycles)
+
     @property
     def title(self):
-        return "Process Time"
+        return "Process Info"
 
     def generate(self) -> QWidget:
         return self.widget
 
     def update(self, payload):
-        if isinstance(payload, str):
-            self.set_process_time.emit(payload)
+        if isinstance(payload, dict):
+            match payload["type"]:
+                case "time":
+                    self.set_process_time.emit(payload["proc_time"])
+                case "cps":
+                    self.set_cycles.emit(payload["cps"])
 
     def update_process_time(self, time: str):
         self.process_time.setText(f"Process Time: {time}")
+
+    def update_cycles(self, cycles: str):
+        self.cps.setText(f"Cycles/Second: {cycles}")
 
 
 class StateButtonsEventPayload(WindowViewOutputPayload):
@@ -280,7 +294,7 @@ def make_simulator(robot: "BaseRobot") -> SimulationFramework:
     simulator.add_window("kevinbotlib.robot.internal.telemetry", TelemetryWindowView)
     robot.telemetry.trace("Added Telemetry simulator WindowView")
 
-    simulator.add_window("kevinbotlib.robot.internal.time", TimeWindowView)
+    simulator.add_window("kevinbotlib.robot.internal.proc", ProcInfoWindowView)
     robot.telemetry.trace("Added Time simulator WindowView")
 
     simulator.add_window("kevinbotlib.robot.internal.state_buttons", StateButtonsView)
@@ -296,7 +310,10 @@ def make_simulator(robot: "BaseRobot") -> SimulationFramework:
     def time_updater():
         start = time.monotonic()
         while True:
-            simulator.send_to_window("kevinbotlib.robot.internal.time", f"{time.monotonic()-start:0>9.4f}")
+            simulator.send_to_window(
+                "kevinbotlib.robot.internal.proc", {"type": "time", "proc_time": f"{time.monotonic()-start:0>9.4f}"}
+            )
+            simulator.send_to_window("kevinbotlib.robot.internal.proc", {"type": "cps", "cps": str(robot.current_cps)})
             time.sleep(0.05)
 
     threading.Thread(target=time_updater, daemon=True, name="KevinbotLib.Simulator.LiveWindows.Time.Update").start()

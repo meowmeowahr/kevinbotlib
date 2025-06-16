@@ -1,4 +1,6 @@
+import os
 import socket
+import stat
 import sys
 
 
@@ -42,4 +44,21 @@ def socket_exists(host: str = "localhost", port: int = 6379, timeout: float = 1.
         with socket.create_connection((host, port), timeout=timeout):
             return True
     except (TimeoutError, ConnectionRefusedError, OSError):
+        return False
+
+
+def is_unix_socket(path):
+    """
+    Detect if a path is a valid Unix socket.
+
+    Args:
+        path: Socket path
+
+    Returns:
+        Is a UNIX socket?
+    """
+    try:
+        mode = os.stat(path).st_mode
+        return stat.S_ISSOCK(mode)
+    except FileNotFoundError:
         return False

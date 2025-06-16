@@ -6,6 +6,7 @@ from typing import ClassVar, TypeVar, final
 
 import orjson
 import redis
+import redis.cache
 import redis.exceptions
 from pydantic import ValidationError
 
@@ -23,6 +24,8 @@ from kevinbotlib.comm.sendables import (
 from kevinbotlib.logger import Logger as _Logger
 
 __all__ = ["RedisCommClient"]
+
+from kevinbotlib.util import is_unix_socket
 
 T = TypeVar("T", bound=BaseSendable)
 
@@ -49,6 +52,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self,
         host: str = "localhost",
         port: int = 6379,
+        unix_socket: str | None = None,
         db: int = 0,
         timeout: float = 2,
         on_connect: Callable[[], None] | None = None,
@@ -60,6 +64,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         Args:
             host: Host of the Redis server.
             port: Port of the Redis server.
+            unix_socket: Optional UNIX socket path. A UNIX socket path is preferred over TCP.
             db: Database number to use.
             timeout: Socket timeout in seconds.
             on_connect: Connection callback.
@@ -69,6 +74,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self.redis: redis.Redis | None = None
         self._host = host
         self._port = port
+        self._unix_socket = unix_socket
         self._db = db
         self._timeout = timeout
         self.on_connect = on_connect
@@ -482,9 +488,24 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
     def connect(self) -> None:
         """Connect to the Redis server."""
 
-        self.redis = redis.Redis(
-            host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout
-        )
+        if self._unix_socket and is_unix_socket(self._unix_socket):
+            self.redis = redis.Redis(
+                unix_socket_path=self._unix_socket,
+                decode_responses=True,
+                socket_timeout=self._timeout,
+                protocol=3,
+                cache_config=redis.cache.CacheConfig(),
+            )
+        else:
+            self.redis = redis.Redis(
+                host=self._host,
+                port=self._port,
+                db=self._db,
+                decode_responses=True,
+                socket_timeout=self._timeout,
+                protocol=3,
+                cache_config=redis.cache.CacheConfig(),
+            )
         self.pubsub = self.redis.pubsub()
         self._start_hooks()
         try:
@@ -600,9 +621,24 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
             self.close()
 
-            self.redis = redis.Redis(
-                host=self._host, port=self._port, db=self._db, decode_responses=True, socket_timeout=self._timeout
-            )
+            if self._unix_socket and is_unix_socket(self._unix_socket):
+                self.redis = redis.Redis(
+                    unix_socket_path=self._unix_socket,
+                    decode_responses=True,
+                    socket_timeout=self._timeout,
+                    protocol=3,
+                    cache_config=redis.cache.CacheConfig(),
+                )
+            else:
+                self.redis = redis.Redis(
+                    host=self._host,
+                    port=self._port,
+                    db=self._db,
+                    decode_responses=True,
+                    socket_timeout=self._timeout,
+                    protocol=3,
+                    cache_config=redis.cache.CacheConfig(),
+                )
             self.pubsub = self.redis.pubsub()
             for sub in subscriptions.values():
                 if sub is None:
@@ -657,6 +693,17 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self._port = value
         if self.redis:
             self.redis.connection_pool.connection_kwargs["port"] = value
+        self.reset_connection()
+
+    @property
+    def unix_socket(self) -> str | None:
+        return self._unix_socket
+
+    @unix_socket.setter
+    def unix_socket(self, value: str | None) -> None:
+        self._unix_socket = value
+        if self.redis:
+            self.redis.connection_pool.connection_kwargs["path"] = value
         self.reset_connection()
 
     @property

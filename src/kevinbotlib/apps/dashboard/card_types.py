@@ -5,13 +5,13 @@ from kevinbotlib.apps.dashboard.widgets.battery import BatteryWidgetItem
 from kevinbotlib.apps.dashboard.widgets.biglabel import BigLabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.boolean import BooleanWidgetItem
 from kevinbotlib.apps.dashboard.widgets.color import ColorWidgetItem
+from kevinbotlib.apps.dashboard.widgets.coord2d import Coord2dWidgetItem
 from kevinbotlib.apps.dashboard.widgets.graph import GraphWidgetItem
 from kevinbotlib.apps.dashboard.widgets.label import LabelWidgetItem
 from kevinbotlib.apps.dashboard.widgets.mjpeg import MjpegCameraStreamWidgetItem
 from kevinbotlib.apps.dashboard.widgets.slider import SliderWidgetItem
 from kevinbotlib.apps.dashboard.widgets.speedometer import SpeedometerWidgetItem
 from kevinbotlib.apps.dashboard.widgets.textedit import TextEditWidgetItem
-from kevinbotlib.apps.dashboard.widgets.coord2d import Coord2dWidgetItem
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import Application

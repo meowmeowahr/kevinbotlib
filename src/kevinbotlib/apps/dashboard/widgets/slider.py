@@ -20,8 +20,8 @@ from superqt import QDoubleSlider
 
 from kevinbotlib.apps.common.settings_rows import Divider
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm.sendables import FloatSendable, IntegerSendable
 from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.sendables import FloatSendable, IntegerSendable
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
