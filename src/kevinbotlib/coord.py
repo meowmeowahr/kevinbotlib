@@ -32,11 +32,26 @@ class Angle2d(BaseModel):
 
     @classmethod
     def from_value(cls, angle: float, unit: AngleUnit = AngleUnit.Radian) -> "Angle2d":
+        """
+        Construct the angle
+        Args:
+            angle: Angle in radians or degrees.
+            unit: Angle unit.
+
+        Returns:
+            Angle2d instance.
+        """
         radians = angle if unit == AngleUnit.Radian else math.radians(angle)
         return cls(radians=radians)
 
     @property
     def degrees(self) -> float:
+        """
+        Get the angle in degrees.
+
+        Returns:
+            Degrees.
+        """
         return math.degrees(self.radians)
 
 
@@ -49,6 +64,15 @@ class Angle3d(BaseModel):
     def from_values(cls, yaw: float, pitch: float, roll: float, unit: AngleUnit = AngleUnit.Radian) -> "Angle3d":
         """
         Create an Angle3d instance with angles in the specified unit.
+
+        Args:
+            yaw: Yaw angle in radians or degrees.
+            pitch: Pitch angle in radians or degrees.
+            roll: Roll angle in radians or degrees.
+            unit: Angle unit. Defaults to AngleUnit.Radian.
+
+        Returns:
+            Angle3d instance.
         """
         if unit == AngleUnit.Degree:
             yaw, pitch, roll = map(math.radians, (yaw, pitch, roll))
@@ -58,6 +82,9 @@ class Angle3d(BaseModel):
     def values_degrees(self) -> list[float]:
         """
         Get yaw, pitch, and roll angles in degrees.
+
+        Returns:
+            Angles
         """
         return [math.degrees(self.yaw), math.degrees(self.pitch), math.degrees(self.roll)]
 
@@ -65,6 +92,9 @@ class Angle3d(BaseModel):
     def values_radians(self) -> list[float]:
         """
         Get yaw, pitch, and roll angles in radians.
+
+        Returns:
+            Radians
         """
         return [self.yaw, self.pitch, self.roll]
 

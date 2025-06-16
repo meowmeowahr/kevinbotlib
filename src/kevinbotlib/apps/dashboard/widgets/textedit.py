@@ -13,12 +13,12 @@ from PySide6.QtWidgets import (
 
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm.redis import (
+from kevinbotlib.comm.sendables import (
     FloatSendable,
     IntegerSendable,
-    RedisCommClient,
     StringSendable,
 )
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.logger import Logger
 
 if TYPE_CHECKING:

@@ -147,6 +147,7 @@ nav:
       - reference/fileserver.md
       - reference/hardwareinterface.md
       - reference/hardwarecontroller.md
+      - reference/coord.md
       - reference/vision.md
       - reference/metrics.md
       - reference/ui.md
