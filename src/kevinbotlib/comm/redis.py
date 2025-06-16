@@ -1,8 +1,8 @@
 import json
 import threading
 import time
-from collections.abc import Callable
-from typing import ClassVar, TypeVar, final, Unpack, Optional, Tuple, Sequence
+from collections.abc import Callable, Sequence
+from typing import ClassVar, TypeVar, final
 
 import deprecated
 import orjson
@@ -16,7 +16,7 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.request import GetRequest, RequestTypeVar, RequestTypeVars
+from kevinbotlib.comm.request import GetRequest
 from kevinbotlib.comm.sendables import (
     DEFAULT_SENDABLES,
     BaseSendable,
@@ -145,9 +145,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             pass
         return None
 
-    def multi_get(
-        self, requests: Sequence[GetRequest]
-    ) -> list[BaseSendable | None]:
+    def multi_get(self, requests: Sequence[GetRequest]) -> list[BaseSendable | None]:
         """
         Retrieve and deserialize multiple sendables by a list of GetRequest objects.
 

@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import TypeVar, Generic, TypeVarTuple
+from typing import Generic, TypeVar
 
 from kevinbotlib.comm.path import CommPath
 from kevinbotlib.comm.sendables import BaseSendable
 
-RequestTypeVar = TypeVar('RequestTypeVar', bound=BaseSendable)
+RequestTypeVar = TypeVar("RequestTypeVar", bound=BaseSendable)
+
 
 @dataclass
 class GetRequest(Generic[RequestTypeVar]):

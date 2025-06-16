@@ -17,6 +17,8 @@ import psutil
 
 import kevinbotlib.simulator as _sim
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
@@ -24,8 +26,6 @@ from kevinbotlib.comm.sendables import (
     FloatSendable,
     StringSendable,
 )
-from kevinbotlib.comm.redis import RedisCommClient
-from kevinbotlib.comm.path import CommPath
 from kevinbotlib.exceptions import (
     LoggerNotConfiguredException,
     RobotEmergencyStoppedException,

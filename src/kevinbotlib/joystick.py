@@ -1200,7 +1200,14 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             button_sendable: AnyListSendable
             axes_sendable: AnyListSendable
             pov_sendable: IntegerSendable
-            conn_sendable, button_sendable, axes_sendable, pov_sendable = self.client.multi_get((GetRequest(f"{self._client_key}/connected", BooleanSendable), GetRequest(f"{self._client_key}/buttons", AnyListSendable), GetRequest(f"{self._client_key}/axes", AnyListSendable), GetRequest(f"{self._client_key}/pov", IntegerSendable)))
+            conn_sendable, button_sendable, axes_sendable, pov_sendable = self.client.multi_get(
+                (
+                    GetRequest(f"{self._client_key}/connected", BooleanSendable),
+                    GetRequest(f"{self._client_key}/buttons", AnyListSendable),
+                    GetRequest(f"{self._client_key}/axes", AnyListSendable),
+                    GetRequest(f"{self._client_key}/pov", IntegerSendable),
+                )
+            )
             self._cached_connected = conn_sendable.value if conn_sendable else False
             self.connected = self._cached_connected
 

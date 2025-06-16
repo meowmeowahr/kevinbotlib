@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from collections.abc import Callable
-from typing import TypeAlias, TypeVar, Sequence
+from collections.abc import Callable, Sequence
+from typing import TypeAlias, TypeVar
 
 from kevinbotlib.comm.path import CommPath
 from kevinbotlib.comm.request import GetRequest
