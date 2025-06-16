@@ -8,6 +8,10 @@ import pybase64 as base64
 from annotated_types import Len
 from cv2.typing import MatLike
 
+from kevinbotlib.comm.abstract import (
+    AbstractSetGetNetworkClient,
+    AbstractPubSubNetworkClient,
+)
 from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.comm.sendables import BinarySendable
 
@@ -201,11 +205,11 @@ class VisionCommUtils:
     """
 
     @staticmethod
-    def init_comms_types(client: RedisCommClient) -> None:
+    def init_comms_types(client: AbstractSetGetNetworkClient | AbstractPubSubNetworkClient) -> None:
         """Allows the use of frame data over the communication client
 
         Args:
-            client (RedisCommClient): The communication client to integrate with
+            client (AbstractSetGetNetworkClient | AbstractPubSubNetworkClient): The communication client to integrate with
         """
         client.register_type(SingleFrameSendable)
         client.register_type(MjpegStreamSendable)
