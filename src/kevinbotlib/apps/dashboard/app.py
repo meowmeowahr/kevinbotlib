@@ -773,7 +773,11 @@ class Application(ThemableWindow):
 
     @override
     def closeEvent(self, event: QCloseEvent):
-        if self.controller.get_widgets() == self.settings.value("layout", [], type=list):  # type: ignore
+        current = self.controller.get_widgets()
+        current.sort(key=lambda x: x["key"])
+        old = self.settings.value("layout", [], type=list)
+        old.sort(key=lambda x: x["key"]) # type: ignore
+        if current == old:  # type: ignore
             event.accept()
             return
 
