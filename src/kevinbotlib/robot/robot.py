@@ -216,7 +216,6 @@ class BaseRobot:
             robot_heartbeat_expiry (float, optional): How long the robot heartbeat will stay valid. Must be longer than robot_heartbeat_interval. Defaults to 2.0.
             allow_enable_without_console (bool, optional): Allow the robot to be enabled without an active control console. Defaults to False.
         """
-
         self.telemetry = Logger()
         self.telemetry.configure(
             LoggerConfiguration(

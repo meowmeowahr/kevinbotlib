@@ -137,6 +137,8 @@ nav:
       - cli/index.md
     - commandscheduler.md
     - robot.md
+    - Simulation Framework:
+        sim/index.md
     - fileserver.md
     - KevinbotLib Reference:
       - reference/robot.md
@@ -147,6 +149,7 @@ nav:
       - reference/fileserver.md
       - reference/hardwareinterface.md
       - reference/hardwarecontroller.md
+      - reference/simulator.md
       - reference/coord.md
       - reference/vision.md
       - reference/metrics.md

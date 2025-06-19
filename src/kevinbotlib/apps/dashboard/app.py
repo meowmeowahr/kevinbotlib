@@ -776,7 +776,7 @@ class Application(ThemableWindow):
         current = self.controller.get_widgets()
         current.sort(key=lambda x: x["key"])
         old = self.settings.value("layout", [], type=list)
-        old.sort(key=lambda x: x["key"]) # type: ignore
+        old.sort(key=lambda x: x["key"])  # type: ignore
         if current == old:  # type: ignore
             event.accept()
             return

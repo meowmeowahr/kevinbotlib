@@ -494,7 +494,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                 decode_responses=True,
                 socket_timeout=self._timeout,
                 protocol=3,
-                cache_config=redis.cache.CacheConfig(),
+                # cache_config=redis.cache.CacheConfig(),
             )
         else:
             self.redis = redis.Redis(
@@ -504,7 +504,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                 decode_responses=True,
                 socket_timeout=self._timeout,
                 protocol=3,
-                cache_config=redis.cache.CacheConfig(),
+                # cache_config=redis.cache.CacheConfig(),
             )
         self.pubsub = self.redis.pubsub()
         self._start_hooks()
@@ -627,7 +627,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                     decode_responses=True,
                     socket_timeout=self._timeout,
                     protocol=3,
-                    cache_config=redis.cache.CacheConfig(),
+                    # cache_config=redis.cache.CacheConfig(),
                 )
             else:
                 self.redis = redis.Redis(
@@ -637,7 +637,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                     decode_responses=True,
                     socket_timeout=self._timeout,
                     protocol=3,
-                    cache_config=redis.cache.CacheConfig(),
+                    # cache_config=redis.cache.CacheConfig(),
                 )
             self.pubsub = self.redis.pubsub()
             for sub in subscriptions.values():
