@@ -271,7 +271,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
 
     def on_connect(self):
         self.logger.info("Comms are up!")
-        self.control.state.set(AppState.WAITING)
+        self.control.state.set(AppState.NO_CODE)
         for sender in self.joystick_senders:
             sender.start()
         self.logger.info("Started robot log session")

@@ -361,6 +361,9 @@ class BaseRobot:
                 self._robot_heartbeat_key,
                 FloatSendable(value=time.process_time(), timeout=self._robot_heartbeat_expiry),
             )
+            self._update_console_opmodes(self._opmodes)
+            self._update_console_opmode(self._opmode)
+            self._update_console_enabled(self._current_enabled)
             time.sleep(self._robot_heartbeat_interval)
 
     @final

@@ -27,7 +27,6 @@ from kevinbotlib.ui.widgets import Battery, BatteryManager
 
 class AppState(Enum):
     NO_COMMS = "Communication\nDown"
-    WAITING = "Communication\nWaiting"
     NO_CODE = "No\nCode"
     ROBOT_DISABLED = "{0}\nDisabled"
     ROBOT_ENABLED = "{0}\nEnabled"
@@ -192,6 +191,8 @@ class ControlConsoleControlTab(QWidget):
         self.robot_state.setText(state.value.format(self.opmode))
         if self.opmode in self.opmodes:
             self.opmode_selector.setCurrentRow(self.opmodes.index(self.opmode))
+        if state == AppState.NO_CODE:
+            self.opmode_selector.clear()
 
     def opmode_selection_changed(self, _: QItemSelection, __: QItemSelection, /):
         if len(self.opmode_selector.selectedItems()) == 1:
