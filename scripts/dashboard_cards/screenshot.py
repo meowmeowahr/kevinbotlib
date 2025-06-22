@@ -179,6 +179,36 @@ CONFIG: typing.Final = {
                 }
             ],
         },
+        {
+            "out": "docs/media/dashboard/coord2d-{0}.png",
+            "mod": "kevinbotlib.apps.dashboard.widgets.coord2d",
+            "class": "Coord2dWidgetItem",
+            "title": "2D Coordinate Graph",
+            "span": [2, 2],
+            "data": [
+                {
+                    "did": "kevinbotlib.dtype.coord2d",
+                    "value": {"x": 2, "y": 2},
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
+            "wait": 2,
+        },
+        {
+            "out": "docs/media/dashboard/coord2dlist-{0}.png",
+            "mod": "kevinbotlib.apps.dashboard.widgets.coord2d",
+            "class": "Coord2dWidgetItem",
+            "title": "2D Coordinate Graph",
+            "span": [2, 2],
+            "data": [
+                {
+                    "did": "kevinbotlib.dtype.list.coord2d",
+                    "value": [{"x": 2, "y": 2}, {"x": 3, "y": 3}, {"x": 1, "y": 1}],
+                    "struct": {"dashboard": [{"element": "value", "format": "raw"}]},
+                }
+            ],
+            "wait": 2,
+        },
     ],
 }
 

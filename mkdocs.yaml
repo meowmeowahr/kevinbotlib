@@ -138,7 +138,8 @@ nav:
     - commandscheduler.md
     - robot.md
     - Simulation Framework:
-        sim/index.md
+        - sim/index.md
+        - sim/windowview.md
     - fileserver.md
     - KevinbotLib Reference:
       - reference/robot.md

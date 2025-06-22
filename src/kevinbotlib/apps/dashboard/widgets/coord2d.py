@@ -3,8 +3,8 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 import superqt
-from PySide6.QtCore import QPointF, QRect, QTimer, Signal
-from PySide6.QtGui import QAction, QColor, QFont, QPainter, QPaintEvent, QPen
+from PySide6.QtCore import QPointF, QRect, Qt, QTimer, Signal
+from PySide6.QtGui import QAction, QBrush, QColor, QFont, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
@@ -36,6 +36,14 @@ class GraphColors(Enum):
     Magenta = "#b446b4"
 
 
+class GraphShapes(Enum):
+    Circle = "circle"
+    Triangle = "triangle"
+    Square = "square"
+    Cross = "cross"
+    Line = "line"
+
+
 class GraphWidget(QWidget):
     def __init__(self, background_color="#2e2e2e", parent=None):
         super().__init__(parent)
@@ -52,6 +60,7 @@ class GraphWidget(QWidget):
         self.min_y = 0
         self.max_y = 100
         self.pt_color = QColor("#4682b4")
+        self.pt_shape = "circle"
         self.pt_width = 20
 
         self.setMinimumSize(200, 150)
@@ -64,7 +73,8 @@ class GraphWidget(QWidget):
         self.min_y = options.get("min_y", 0)
         self.max_y = options.get("max_y", 100)
         self.pt_color = QColor(GraphColors(options.get("color", "#4682b4")).value)
-        self.pt_width = options.get("width", 2)
+        self.pt_shape = options.get("shape", "circle")
+        self.pt_width = options.get("width", 10)
         self.update()
 
     def set_data(self, data_points: list):
@@ -204,14 +214,28 @@ class GraphWidget(QWidget):
 
         line_pen = QPen(self.pt_color, self.pt_width)
         painter.setPen(line_pen)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         points = []
-        for x, y in self.data_points:
+        for x, y, _ in self.data_points:
             screen_x, screen_y = self.data_to_screen(x, y, plot_rect, min_x, max_x, min_y, max_y)
             points.append(QPointF(screen_x, screen_y))
 
         for i in range(len(points)):
-            painter.drawEllipse(points[i], self.pt_width / 2, self.pt_width / 2)
+            painter.save()
+            painter.translate(points[i].x(), points[i].y())
+            painter.rotate(math.degrees(self.data_points[i][2]))
+            match self.pt_shape:
+                case "square":
+                    painter.setPen(Qt.PenStyle.NoPen)
+                    painter.setBrush(QBrush(self.pt_color))
+                    painter.drawRect(-self.pt_width // 2, -self.pt_width // 2, self.pt_width, self.pt_width)
+                case "circle":
+                    painter.drawEllipse(-self.pt_width // 2, -self.pt_width // 2, self.pt_width, self.pt_width)
+                case _:
+                    msg = f"Unsupported point shape: {self.pt_shape}"
+                    raise NotImplementedError(msg)
+            painter.restore()
 
 
 class Coord2dWidgetSettings(QDialog):
@@ -295,6 +319,12 @@ class Coord2dWidgetSettings(QDialog):
         self.color.currentEnumChanged.connect(self.set_color)
         self.form.addRow("Point Color", self.color)
 
+        self.shape = superqt.QEnumComboBox()
+        self.shape.setEnumClass(GraphShapes)
+        self.shape.setCurrentEnum(GraphShapes(self.options.get("shape", "circle")))
+        self.shape.currentEnumChanged.connect(self.set_shape)
+        self.form.addRow("Point Shape", self.shape)
+
         self.width = QSpinBox(minimum=6, maximum=20, value=self.options.get("width", 10))
         self.width.valueChanged.connect(self.set_width)
         self.form.addRow("Point Size", self.width)
@@ -313,6 +343,9 @@ class Coord2dWidgetSettings(QDialog):
 
     def set_color(self, color: GraphColors):
         self.options["color"] = color.value
+
+    def set_shape(self, shape: GraphShapes):
+        self.options["shape"] = shape.value
 
     def set_width(self, width: int):
         self.options["width"] = width
@@ -407,9 +440,19 @@ class Coord2dWidgetItem(WidgetItem):
                 if "x" in data["value"] and "y" in data["value"]:
                     x_value = data["value"]["x"]
                     y_value = data["value"]["y"]
-                    self.data_points = [(x_value, y_value)]
+                    self.data_points = [(x_value, y_value, 0.0)]
             case "kevinbotlib.dtype.list.coord2d" | "kevinbotlib.dtype.list.coord3d":
-                self.data_points = [(c["x"], c["y"]) for c in data["value"]]
+                self.data_points = [(c["x"], c["y"], 0.0) for c in data["value"]]
+            case "kevinbotlib.dtype.pose2d" | "kevinbotlib.dtype.pose3d":
+                if "transform" in data["value"] and "orientation" in data["value"]:
+                    x_value = data["value"]["transform"]["x"]
+                    y_value = data["value"]["transform"]["y"]
+                    theta_value = data["value"]["orientation"]["radians"]
+                    self.data_points = [(x_value, y_value, theta_value)]
+            case "kevinbotlib.dtype.list.pose2d" | "kevinbotlib.dtype.list.pose3d":
+                self.data_points = [
+                    (c["transform"]["x"], c["transform"]["y"], c["orientation"]["radians"]) for c in data["value"]
+                ]
 
     def create_context_menu(self):
         menu = super().create_context_menu()

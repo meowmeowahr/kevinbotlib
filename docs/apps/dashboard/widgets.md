@@ -272,3 +272,11 @@ The slider widget can display numeric values on a configurable slider.
 
 * `IntegerSendable`
 * `FloatSendable`
+
+
+## 2D Coordinate Display Widget
+
+![coord2d-dark.png](../../media/dashboard/coord2d-dark.png#only-dark){width=324px}
+![coord2d-light.png](../../media/dashboard/coord2d-light.png#only-light){width=324px}
+![coord2dlist-dark.png](../../media/dashboard/coord2dlist-dark.png#only-dark){width=324px}
+![coord2dlist-light.png](../../media/dashboard/coord2dlist-light.png#only-light){width=324px}

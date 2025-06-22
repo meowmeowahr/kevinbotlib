@@ -16,6 +16,7 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.path import CommPath
+from kevinbotlib.comm.request import GetRequest, SetRequest
 from kevinbotlib.comm.sendables import (
     DEFAULT_SENDABLES,
     BaseSendable,
@@ -148,7 +149,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             pass
         return None
 
-    def multi_get(self, requests):
+    def multi_get(self, requests: list[GetRequest]):
         """
         Retrieve and deserialize multiple sendables by a list of GetRequest objects.
 
@@ -329,7 +330,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
         self._apply(key, sendable, pub_mode=False)
 
-    def multi_set(self, requests) -> None:
+    def multi_set(self, requests: list[SetRequest]) -> None:
         """
         Set multiple sendables in the Redis database.
 
@@ -682,14 +683,14 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         return self._port
 
     @host.setter
-    def host(self, value: str):
+    def host(self, value: str) -> None:
         self._host = value
         if self.redis:
             self.redis.connection_pool.connection_kwargs["host"] = value
         self.reset_connection()
 
     @port.setter
-    def port(self, value: int):
+    def port(self, value: int) -> None:
         self._port = value
         if self.redis:
             self.redis.connection_pool.connection_kwargs["port"] = value
@@ -707,7 +708,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self.reset_connection()
 
     @property
-    def timeout(self):
+    def timeout(self) -> float:
         """
         Get the current server timeout.
 

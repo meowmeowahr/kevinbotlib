@@ -59,6 +59,18 @@ def determine_widget_types(did: str):
             return {"2D Coordinate Grid": Coord2dWidgetItem}
         case "kevinbotlib.dtype.list.coord2d":
             return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.pose2d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.list.pose2d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.coord3d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.list.coord3d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.vision.dtype.pose3d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
+        case "kevinbotlib.dtype.list.pose3d":
+            return {"2D Coordinate Grid": Coord2dWidgetItem}
     return {}
 
 
