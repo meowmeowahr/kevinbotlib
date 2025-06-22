@@ -42,6 +42,7 @@ class GraphShapes(Enum):
     Square = "square"
     Cross = "cross"
     Line = "line"
+    Arrow = "arrow"
 
 
 class GraphWidget(QWidget):
@@ -243,6 +244,14 @@ class GraphWidget(QWidget):
                     painter.setBrush(Qt.BrushStyle.NoBrush)
                     painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(0, self.pt_width // 2))
                     painter.drawLine(QPointF(-self.pt_width // 2, 0), QPointF(self.pt_width // 2, 0))
+                case "arrow":
+                    line_pen = QPen(self.pt_color, self.pt_width // 3)
+                    line_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+                    painter.setPen(line_pen)
+                    painter.setBrush(Qt.BrushStyle.NoBrush)
+                    painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(0, self.pt_width // 2))
+                    painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(self.pt_width // 2, 0))
+                    painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(-self.pt_width // 2, 0))
                 case _:
                     msg = f"Unsupported point shape: {self.pt_shape}"
                     raise NotImplementedError(msg)
