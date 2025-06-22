@@ -23,6 +23,7 @@ from kevinbotlib.comm.sendables import (
 )
 from kevinbotlib.exceptions import JoystickMissingException
 from kevinbotlib.logger import Logger as _Logger
+from kevinbotlib.scheduler import CommandScheduler, Trigger
 
 sdl2.SDL_Init(sdl2.SDL_INIT_JOYSTICK | sdl2.SDL_INIT_GAMECONTROLLER)
 
@@ -231,6 +232,58 @@ class LocalJoystickIdentifiers:
         return joystick_guids
 
 
+class CommandBasedJoystick:
+    """
+    Simple command scheduler interface for joystick devices
+    """
+
+    def __init__(self, scheduler: CommandScheduler, joystick: "AbstractJoystickInterface"):
+        """
+        Initialize the interface
+
+        Args:
+            scheduler: Command scheduler instance
+            joystick: Joystick instance
+        """
+        self.joystick = joystick
+        self.scheduler = scheduler
+
+    def a(self):
+        """
+        Create a new command trigger with the A button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.A in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def b(self):
+        """
+        Create a new command trigger with the B button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.B in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def x(self):
+        """
+        Create a new command trigger with the A button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.X in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def y(self):
+        """
+        Create a new command trigger with the A button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.Y in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
 class AbstractJoystickInterface(ABC):
     """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
 
@@ -359,6 +412,16 @@ class AbstractJoystickInterface(ABC):
 
         return False
 
+    @property
+    def command(self) -> CommandBasedJoystick:
+        """
+        Convert the joystick into a command-based joystick.
+
+        Returns:
+            New command joystick
+        """
+        raise NotImplementedError
+
 
 class NullJoystick(AbstractJoystickInterface):
     """
@@ -461,6 +524,15 @@ class NullJoystick(AbstractJoystickInterface):
 
         return
 
+    @property
+    def command(self) -> CommandBasedJoystick:
+        """
+        Convert the joystick into a command-based joystick.
+
+        Returns:
+            New command joystick
+        """
+        return CommandBasedJoystick(CommandScheduler.get_instance(), self)
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
@@ -785,6 +857,16 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         self.running = False
         sdl2.SDL_GameControllerClose(self._sdl_joystick)
 
+    @property
+    def command(self) -> CommandBasedJoystick:
+        """
+        Convert the joystick into a command-based joystick.
+
+        Returns:
+            New command joystick
+        """
+        return CommandBasedJoystick(CommandScheduler.get_instance(), self)
+
 
 class LocalNamedController(RawLocalJoystickDevice):
     """Controller with named buttons and axes."""
@@ -1038,7 +1120,6 @@ class DynamicJoystickSender:
         """Stop sending data"""
         self.running = False
 
-
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
     """Joystick interface for `JoystickSender`"""
 
@@ -1206,12 +1287,12 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             axes_sendable: AnyListSendable
             pov_sendable: IntegerSendable
             conn_sendable, button_sendable, axes_sendable, pov_sendable = self.client.multi_get(
-                (
+                [
                     GetRequest(f"{self._client_key}/connected", BooleanSendable),
                     GetRequest(f"{self._client_key}/buttons", AnyListSendable),
                     GetRequest(f"{self._client_key}/axes", AnyListSendable),
                     GetRequest(f"{self._client_key}/pov", IntegerSendable),
-                )
+                ]
             )
             self._cached_connected = conn_sendable.value if conn_sendable else False
             self.connected = self._cached_connected
@@ -1258,6 +1339,15 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
         """Stops the polling thread."""
         self.running = False
 
+    @property
+    def command(self) -> CommandBasedJoystick:
+        """
+        Convert the joystick into a command-based joystick.
+
+        Returns:
+            New command joystick
+        """
+        return CommandBasedJoystick(CommandScheduler.get_instance(), self)
 
 class RemoteNamedController(RemoteRawJoystickDevice):
     """Remote controller with named buttons and axes."""
