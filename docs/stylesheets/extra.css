@@ -5,4 +5,14 @@
 [data-md-color-scheme="slate"] {
   --md-default-bg-color: #09090A;
   --md-code-bg-color: #0D0D10;
+  --klib-header-color: #26416285;
+}
+
+[data-md-color-scheme="default"] {
+  --klib-header-color: #0073ff85;
+}
+
+.md-header, .md-tabs, .md-top {
+    background-color: var(--klib-header-color);
+    backdrop-filter: blur(6px);
 }
