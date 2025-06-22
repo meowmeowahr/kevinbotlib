@@ -232,6 +232,17 @@ class GraphWidget(QWidget):
                     painter.drawRect(-self.pt_width // 2, -self.pt_width // 2, self.pt_width, self.pt_width)
                 case "circle":
                     painter.drawEllipse(-self.pt_width // 2, -self.pt_width // 2, self.pt_width, self.pt_width)
+                case "line":
+                    line_pen = QPen(self.pt_color, self.pt_width // 2)
+                    painter.setPen(line_pen)
+                    painter.setBrush(Qt.BrushStyle.NoBrush)
+                    painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(0, self.pt_width // 2))
+                case "cross":
+                    line_pen = QPen(self.pt_color, self.pt_width // 2)
+                    painter.setPen(line_pen)
+                    painter.setBrush(Qt.BrushStyle.NoBrush)
+                    painter.drawLine(QPointF(0, -self.pt_width // 2), QPointF(0, self.pt_width // 2))
+                    painter.drawLine(QPointF(-self.pt_width // 2, 0), QPointF(self.pt_width // 2, 0))
                 case _:
                     msg = f"Unsupported point shape: {self.pt_shape}"
                     raise NotImplementedError(msg)
