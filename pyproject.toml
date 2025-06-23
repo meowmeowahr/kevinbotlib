@@ -60,6 +60,7 @@ dev = [
   "mkdocs-material[imaging]",
   "mkdocstrings[python]>=0.18",
   "mkdocs-rss-plugin[dev]>=1.17.3",
+  "mkdocs-print-site-plugin",
   "mike",
   "pyinstaller",
   "Pillow",
