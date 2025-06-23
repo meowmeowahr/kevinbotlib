@@ -2450,7 +2450,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 """
 
-MDURL_LICENSE = """
+_MDURL_LICENSE = """
 Copyright (c) 2015 Vitaly Puzrin, Alex Kocharin.
 Copyright (c) 2021 Taneli Hukkinen
 
@@ -2541,5 +2541,5 @@ def get_licenses() -> dict[str, str]:
         "pglive": _PGLIVE_LICENSE,
         "rich": _RICH_LICENSE,
         "markdown-it-py": _MARKDOWN_IT_PY_LICENSE,
-        "mdurl": MDURL_LICENSE,
+        "mdurl": _MDURL_LICENSE,
     }
