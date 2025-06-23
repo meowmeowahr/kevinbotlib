@@ -248,7 +248,7 @@ class CommandBasedJoystick:
         self.joystick = joystick
         self.scheduler = scheduler
 
-    def button(self, button: NamedControllerButtons):
+    def button(self, button: NamedControllerButtons) -> Trigger:
         """
         Create a new command trigger with a button
 
@@ -260,7 +260,7 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: button in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
-    def a(self):
+    def a(self) -> Trigger:
         """
         Create a new command trigger with the A button
 
@@ -269,7 +269,7 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: NamedControllerButtons.A in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
-    def b(self):
+    def b(self) -> Trigger:
         """
         Create a new command trigger with the B button
 
@@ -278,7 +278,7 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: NamedControllerButtons.B in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
-    def x(self):
+    def x(self) -> Trigger:
         """
         Create a new command trigger with the X button
 
@@ -287,7 +287,7 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: NamedControllerButtons.X in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
-    def y(self):
+    def y(self) -> Trigger:
         """
         Create a new command trigger with the Y button
 
@@ -296,43 +296,74 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: NamedControllerButtons.Y in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
-    def left_bumper(self):
+    def left_bumper(self) -> Trigger:
         """
         Create a new command trigger with the LeftBumper button
 
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.LeftBumper in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(
+            lambda: NamedControllerButtons.LeftBumper in self.joystick.get_buttons(), CommandScheduler.get_instance()
+        )
 
-    def right_bumper(self):
+    def right_bumper(self) -> Trigger:
         """
         Create a new command trigger with the RightBumper button
 
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.RightBumper in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(
+            lambda: NamedControllerButtons.RightBumper in self.joystick.get_buttons(), CommandScheduler.get_instance()
+        )
 
-    def back(self):
+    def back(self) -> Trigger:
         """
         Create a new command trigger with the Back button
 
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.Back in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(
+            lambda: NamedControllerButtons.Back in self.joystick.get_buttons(), CommandScheduler.get_instance()
+        )
 
-    def start(self):
+    def start(self) -> Trigger:
         """
         Create a new command trigger with the Start button
 
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(
+            lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), CommandScheduler.get_instance()
+        )
 
-    def pov(self, angle: int | POVDirection):
+    def left_stick(self) -> Trigger:
+        """
+        Create a new command trigger with the LeftStick button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(
+            lambda: NamedControllerButtons.LeftStick in self.joystick.get_buttons(), CommandScheduler.get_instance()
+        )
+
+    def right_stick(self) -> Trigger:
+        """
+        Create a new command trigger with the RightStick button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(
+            lambda: NamedControllerButtons.RightStick in self.joystick.get_buttons(),
+            CommandScheduler.get_instance(),
+        )
+
+    def pov(self, angle: int | POVDirection) -> Trigger:
         """
         Create a new command trigger with a POV angle
 
@@ -343,6 +374,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(lambda: angle == self.joystick.get_pov_direction(), CommandScheduler.get_instance())
+
 
 class AbstractJoystickInterface(ABC):
     """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
@@ -593,6 +625,7 @@ class NullJoystick(AbstractJoystickInterface):
             New command joystick
         """
         return CommandBasedJoystick(CommandScheduler.get_instance(), self)
+
 
 class RawLocalJoystickDevice(AbstractJoystickInterface):
     """Gamepad-agnostic polling and event-based joystick input with disconnect detection."""
@@ -1180,6 +1213,7 @@ class DynamicJoystickSender:
         """Stop sending data"""
         self.running = False
 
+
 class RemoteRawJoystickDevice(AbstractJoystickInterface):
     """Joystick interface for `JoystickSender`"""
 
@@ -1408,6 +1442,7 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
             New command joystick
         """
         return CommandBasedJoystick(CommandScheduler.get_instance(), self)
+
 
 class RemoteNamedController(RemoteRawJoystickDevice):
     """Remote controller with named buttons and axes."""
