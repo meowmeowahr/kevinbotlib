@@ -248,6 +248,18 @@ class CommandBasedJoystick:
         self.joystick = joystick
         self.scheduler = scheduler
 
+    def button(self, button: NamedControllerButtons):
+        """
+        Create a new command trigger with a button
+
+        Args:
+            button: Button to use for the trigger
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: button in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
     def a(self):
         """
         Create a new command trigger with the A button
@@ -268,7 +280,7 @@ class CommandBasedJoystick:
 
     def x(self):
         """
-        Create a new command trigger with the A button
+        Create a new command trigger with the X button
 
         Returns:
             Command trigger
@@ -277,12 +289,48 @@ class CommandBasedJoystick:
 
     def y(self):
         """
-        Create a new command trigger with the A button
+        Create a new command trigger with the Y button
 
         Returns:
             Command trigger
         """
         return Trigger(lambda: NamedControllerButtons.Y in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def left_bumper(self):
+        """
+        Create a new command trigger with the LeftBumper button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.LeftBumper in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def right_bumper(self):
+        """
+        Create a new command trigger with the RightBumper button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.RightBumper in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def back(self):
+        """
+        Create a new command trigger with the Back button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.Back in self.joystick.get_buttons(), CommandScheduler.get_instance())
+
+    def start(self):
+        """
+        Create a new command trigger with the Start button
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
 class AbstractJoystickInterface(ABC):
     """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
