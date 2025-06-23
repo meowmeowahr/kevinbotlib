@@ -375,6 +375,36 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: angle == self.joystick.get_pov_direction(), CommandScheduler.get_instance())
 
+    def left_trigger(self, threshold: float = 0.5):
+        """
+        Create a new command trigger with the LeftTrigger axis
+
+        Args:
+            threshold: Axis threshold
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(
+            lambda: self.joystick.get_axis_value(NamedControllerAxis.LeftTrigger) > threshold,
+            CommandScheduler.get_instance(),
+        )
+
+    def right_trigger(self, threshold: float = 0.5):
+        """
+        Create a new command trigger with the RightTrigger axis
+
+        Args:
+            threshold: Axis threshold
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(
+            lambda: self.joystick.get_axis_value(NamedControllerAxis.RightTrigger) > threshold,
+            CommandScheduler.get_instance(),
+        )
+
 
 class AbstractJoystickInterface(ABC):
     """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
