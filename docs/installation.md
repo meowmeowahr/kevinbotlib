@@ -1,7 +1,7 @@
 # Installation
 
 !!! info
-    KevinbotLib requires Python 3.10 or newer.
+    KevinbotLib requires Python 3.11 or newer.
 
 ## Install with pip
 
@@ -28,7 +28,7 @@ pip install kevinbotlib
 1. Install pipx [here](https://pipx.pypa.io/latest/installation/)
 2. Install KevinbotLib
 
-    Run the follwoing:s
+    Run the following:
     ```console
     pipx install kevinbotlib
     ```
@@ -54,4 +54,4 @@ You can check the installed version of KevinbotLb by running the following comma
 kevinbotlib --version
 ```
 
-You should see something like this `KevinbotLib, version 1.0.0-alpha.13`
+You should see something like this `KevinbotLib, version 1.0.0-alpha.16`

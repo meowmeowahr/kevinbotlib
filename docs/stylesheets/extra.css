@@ -6,13 +6,52 @@
   --md-default-bg-color: #09090A;
   --md-code-bg-color: #0D0D10;
   --klib-header-color: #26416285;
+  --klib-nav-color: #09090A45;
 }
 
 [data-md-color-scheme="default"] {
   --klib-header-color: #0073ff85;
+  --klib-nav-color: #FFFFFF45;
 }
 
 .md-header, .md-tabs, .md-top {
     background-color: var(--klib-header-color);
     backdrop-filter: blur(6px);
+}
+
+.md-top {
+    border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-sidebar, .md-nav {
+    background-color: var(--klib-nav-color);
+    backdrop-filter: blur(6px);
+}
+
+.md-nav--primary .md-nav__title~.md-nav__list {
+    background-color: transparent;
+}
+
+span.filename {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Needed for absolute positioning of buttons */
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+span.filename::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ef5552;
+    box-shadow:
+        20px 0 0 #ffc105,
+        40px 0 0 #4cae4f;
 }
