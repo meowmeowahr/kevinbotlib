@@ -332,6 +332,18 @@ class CommandBasedJoystick:
         """
         return Trigger(lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), CommandScheduler.get_instance())
 
+    def pov(self, angle: int | POVDirection):
+        """
+        Create a new command trigger with a POV angle
+
+        Args:
+            angle: POV angle in degrees (must be a valid POVDirection)
+
+        Returns:
+            Command trigger
+        """
+        return Trigger(lambda: angle == self.joystick.get_pov_direction(), CommandScheduler.get_instance())
+
 class AbstractJoystickInterface(ABC):
     """Abstract joystick implementation. Use this as a base if you want to create a custom joystick implementation."""
 
