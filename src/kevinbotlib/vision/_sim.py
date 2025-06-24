@@ -10,7 +10,7 @@ class CameraPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
-        self.resolution = QLabel("Resolution: 640x480")
+        self.resolution = QLabel("Resolution: ????x????")
         self.layout.addWidget(self.resolution)
 
     def set_resolution(self, width: int, height: int):

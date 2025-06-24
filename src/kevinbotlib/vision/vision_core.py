@@ -291,6 +291,7 @@ class CameraByIndex(BaseCamera):
         self.capture = cv2.VideoCapture(index)
         self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
         self.capture.set(cv2.CAP_PROP_FPS, 60)
+        self.set_resolution(640, 480)
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
