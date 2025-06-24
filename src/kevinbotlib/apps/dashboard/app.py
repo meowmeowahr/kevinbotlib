@@ -11,8 +11,8 @@ from types import TracebackType
 from typing import override
 
 import ansi2html
-import qtawesome as qta
 import superqt.utils
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -60,6 +60,9 @@ from superqt import QFlowLayout
 
 import kevinbotlib.apps.dashboard.resources_rc
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.apps import dark as icon_dark
+from kevinbotlib.apps import get_icon as icon
+from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps.common.abc import ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
@@ -347,7 +350,7 @@ class TopicStatusPanel(QStackedWidget):
         while len(self._add_buttons) < needed:
             button = QToolButton()
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            button.setIcon(qta.icon("mdi6.card-plus"))
+            button.setIcon(icon(MDI7.card_plus))
             self.add_layout.addWidget(button)
             self._add_buttons.append(button)
 
@@ -669,20 +672,20 @@ class Application(ThemableWindow):
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
         if theme_name == "Dark":
-            qta.dark(self.app)
+            icon_dark()
             self.theme.set_style(ThemeStyle.Dark)
             self.graphics_view.set_theme(GridThemes.Dark)
         elif theme_name == "Light":
-            qta.light(self.app)
+            icon_light()
             self.theme.set_style(ThemeStyle.Light)
             self.graphics_view.set_theme(GridThemes.Light)
         else:
             self.theme.set_style(ThemeStyle.System)
             if self.theme.is_dark():
-                qta.dark(self.app)
+                icon_dark()
                 self.graphics_view.set_theme(GridThemes.Dark)
             else:
-                qta.light(self.app)
+                icon_light()
                 self.graphics_view.set_theme(GridThemes.Light)
         self.theme.apply(self)
 

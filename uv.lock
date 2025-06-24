@@ -571,6 +571,15 @@ wheels = [
 ]
 
 [[package]]
+name = "fonticon-materialdesignicons7"
+version = "7.2.96"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/92/749e69a86c5c97197daa28ad0532e075d27f33469a7126dc52701395cb9f/fonticon_materialdesignicons7-7.2.96.tar.gz", hash = "sha256:151c800658635d1da6f168ebb808db19f97288e1f9a9a743947854a3f1690e8a", size = 634663 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/01/64d00d540a316169e72ac45d96427b593a2caa2195e949bebd9ff54816de/fonticon_materialdesignicons7-7.2.96-py3-none-any.whl", hash = "sha256:187191b5e9e58c397396d876a6cea9f0a935b26f22056b1605ef6ad7808ffa1d", size = 633252 },
+]
+
+[[package]]
 name = "ghp-import"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -749,6 +758,7 @@ dependencies = [
     { name = "click" },
     { name = "darkdetect" },
     { name = "deprecated" },
+    { name = "fonticon-materialdesignicons7" },
     { name = "hiredis" },
     { name = "jinja2" },
     { name = "line-profiler" },
@@ -766,7 +776,6 @@ dependencies = [
     { name = "pyside6" },
     { name = "pyside6-addons" },
     { name = "pyside6-essentials" },
-    { name = "qtawesome" },
     { name = "qtpy" },
     { name = "redis", extra = ["hiredis"] },
     { name = "rich" },
@@ -793,6 +802,7 @@ requires-dist = [
     { name = "click", specifier = "~=8.2.0" },
     { name = "darkdetect", specifier = ">=0.8.0" },
     { name = "deprecated", specifier = ">=1.2.18" },
+    { name = "fonticon-materialdesignicons7", specifier = ">=7.2.96" },
     { name = "hiredis", specifier = ">=3.2.1" },
     { name = "jinja2", specifier = "~=3.1.6" },
     { name = "line-profiler", specifier = ">=4.2.0" },
@@ -818,7 +828,6 @@ requires-dist = [
     { name = "pyside6", specifier = ">=6.9.0" },
     { name = "pyside6-addons", specifier = ">=6.9.0" },
     { name = "pyside6-essentials", specifier = ">=6.8.0.2" },
-    { name = "qtawesome", specifier = ">=1.4.0" },
     { name = "qtpy", specifier = ">=2.4.3" },
     { name = "redis", extras = ["hiredis"], specifier = ">=6.1.0" },
     { name = "rich", specifier = ">=14.0.0" },
@@ -1901,18 +1910,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/eb/2e/79c822141bfd05a853236b504869ebc6b70159afc570e1d5a20641782eaa/pyyaml_env_tag-1.1.tar.gz", hash = "sha256:2eb38b75a2d21ee0475d6d97ec19c63287a7e140231e4214969d0eac923cd7ff", size = 5737 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/11/432f32f8097b03e3cd5fe57e88efb685d964e2e5178a48ed61e841f7fdce/pyyaml_env_tag-1.1-py3-none-any.whl", hash = "sha256:17109e1a528561e32f026364712fee1264bc2ea6715120891174ed1b980d2e04", size = 4722 },
-]
-
-[[package]]
-name = "qtawesome"
-version = "1.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "qtpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/56/57/2f6c402b4cd91a58fd378a5f36be6b5855cf43dc25f77f581e2612e6d558/qtawesome-1.4.0.tar.gz", hash = "sha256:783e414d1317f3e978bf67ea8e8a1b1498bad9dbd305dec814027e3b50521be6", size = 2614365 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/ee/6e6c6715129c929af2d95ddb2e9decf54c1beffe58f336911197aacc0448/qtawesome-1.4.0-py3-none-any.whl", hash = "sha256:a4d689fa071c595aa6184171ce1f0f847677cb8d2db45382c43129f1d72a3d93", size = 2595296 },
 ]
 
 [[package]]

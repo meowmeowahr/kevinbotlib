@@ -1,4 +1,4 @@
-import qtawesome as qta
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib import __about__
+from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.ui.theme import Theme
 from kevinbotlib.ui.widgets import LicenseDialog
 
@@ -69,14 +70,14 @@ class ControlConsoleAboutTab(QWidget):
         about_qt_btn = QPushButton("About Qt")
         about_qt_btn.setMaximumWidth(200)
         about_qt_btn.clicked.connect(QApplication.aboutQt)
-        about_qt_btn.setIcon(qta.icon("mdi6.information-box"))
+        about_qt_btn.setIcon(icon(MDI7.information_box))
         button_layout.addWidget(about_qt_btn)
 
         # License button
         license_btn = QPushButton("View Licenses")
         license_btn.setMaximumWidth(200)
         license_btn.clicked.connect(self.show_licenses)
-        license_btn.setIcon(qta.icon("mdi6.gavel"))
+        license_btn.setIcon(icon(MDI7.gavel))
         button_layout.addWidget(license_btn)
 
         right_layout.addStretch()

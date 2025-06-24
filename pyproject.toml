@@ -38,7 +38,6 @@ dependencies = [
   "pyside6-essentials>=6.8.0.2",
   "darkdetect>=0.8.0",
   "ansi2html>=1.9.2",
-  "qtawesome>=1.4.0",
   "qtpy>=2.4.3",
   "deprecated>=1.2.18",
   "redis[hiredis]>=6.1.0",
@@ -52,6 +51,7 @@ dependencies = [
   "rich>=14.0.0",
   "hiredis>=3.2.1",
   "line-profiler>=4.2.0",
+  "fonticon-materialdesignicons7>=7.2.96",
 ]
 
 [project.optional-dependencies]

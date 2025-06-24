@@ -5,7 +5,7 @@ from functools import partial
 
 import orjson
 import paramiko
-import qtawesome as qta
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import (
     QObject,
     QRunnable,
@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.apps.common.widgets import QWidgetList
 from kevinbotlib.apps.log_downloader.log_panel import LogPanel
 from kevinbotlib.apps.log_downloader.util import sizeof_fmt
@@ -126,7 +127,7 @@ class LogFileWidget(QFrame):
         self.root_layout.addStretch()
 
         self.delete_button = QPushButton()
-        self.delete_button.setIcon(qta.icon("mdi6.delete-forever", color="#d45b5a"))
+        self.delete_button.setIcon(icon(MDI7.delete_forever, color="#d45b5a"))
         self.delete_button.setIconSize(QSize(24, 24))
         self.delete_button.setFixedSize(QSize(32, 32))
         self.delete_button.clicked.connect(self.deleted.emit)
@@ -153,11 +154,11 @@ class LogViewer(QWidget):
         self.toolbar = QToolBar()
         self.root_layout.addWidget(self.toolbar)
 
-        self.close_connection_action = QAction(qta.icon("mdi6.exit-run", color="#d45b5a"), "Close Connection", self)
+        self.close_connection_action = QAction(icon(MDI7.exit_run, color="#d45b5a"), "Close Connection", self)
         self.close_connection_action.triggered.connect(self.exit)
         self.toolbar.addAction(self.close_connection_action)
 
-        self.reload_action = QAction(qta.icon("mdi6.refresh", color="#c9c95a"), "Reload", self)
+        self.reload_action = QAction(icon(MDI7.refresh, color="#c9c95a"), "Reload", self)
         self.reload_action.triggered.connect(self.reload)
         self.toolbar.addAction(self.reload_action)
 

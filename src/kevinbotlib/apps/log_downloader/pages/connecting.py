@@ -1,7 +1,9 @@
-import qtawesome as qta
-from PySide6.QtCore import QSize, Qt
+from fonticon_mdi7 import MDI7
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
+
+from kevinbotlib.apps import get_icon as icon
 
 
 class ConnectingPage(QWidget):
@@ -11,9 +13,8 @@ class ConnectingPage(QWidget):
         self.root_layout = QVBoxLayout()
         self.setLayout(self.root_layout)
 
-        self.spinner = qta.IconWidget()
-        self.spinner.setIconSize(QSize(128, 125))
-        self.spinner.setIcon(qta.icon("mdi6.timer-sand"))
+        self.spinner = QLabel()
+        self.spinner.setPixmap(icon(MDI7.timer_sand).pixmap(128, 125))
         self.spinner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.root_layout.addWidget(self.spinner)
 

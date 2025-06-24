@@ -3,7 +3,7 @@ from enum import StrEnum
 from functools import partial
 from typing import override
 
-import qtawesome
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import QSettings, QSize, Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtWidgets import (
@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.apps.common.widgets import QWidgetList
 from kevinbotlib.apps.control_console.components.named_reference import (
     NamedDefaultAxisMapWidget,
@@ -174,9 +175,8 @@ class ControllerMapEditWidget(QFrame):
         self.source_selector.valueChanged.connect(lambda x: self.source_changed.emit(x))
         self.root_layout.addWidget(self.source_selector)
 
-        arrow = qtawesome.IconWidget()
-        arrow.setIconSize(QSize(16, 16))
-        arrow.setIcon(qtawesome.icon("mdi6.arrow-right-thick"))
+        arrow = QLabel()
+        arrow.setPixmap(icon(MDI7.arrow_right_thick).pixmap(16, 16))
         arrow.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         self.root_layout.addWidget(arrow)
 
@@ -185,7 +185,7 @@ class ControllerMapEditWidget(QFrame):
         self.root_layout.addWidget(self.destination_selector)
 
         self.delete_button = QPushButton()
-        self.delete_button.setIcon(qtawesome.icon("mdi6.delete-forever", color="#d45b5a"))
+        self.delete_button.setIcon(icon(MDI7.delete_forever, color="#d45b5a"))
         self.delete_button.setIconSize(QSize(24, 24))
         self.delete_button.setFixedSize(QSize(32, 32))
         self.delete_button.clicked.connect(self.delete_button_clicked.emit)

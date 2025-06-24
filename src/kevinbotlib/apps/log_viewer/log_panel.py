@@ -1,7 +1,7 @@
 import html
 
 import orjson
-import qtawesome as qta
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, QUrl, Signal
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWebEngineCore import QWebEngineSettings
@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.apps.common.url_scheme import URL_SCHEME, LogUrlSchemeHandler
 from kevinbotlib.apps.common.webfind import FindDialog
 from kevinbotlib.logger import Logger
@@ -168,28 +169,28 @@ class LogPanel(QStackedWidget):
         self.viewer_bar_layout.addWidget(self.viewer_file_label)
 
         self.find_button = QPushButton()
-        self.find_button.setIcon(qta.icon("mdi6.file-find"))
+        self.find_button.setIcon(icon(MDI7.file_find))
         self.find_button.setIconSize(QSize(24, 24))
         self.find_button.setFixedSize(QSize(32, 32))
         self.find_button.clicked.connect(self.show_find_dialog)
         self.viewer_bar_layout.addWidget(self.find_button)
 
         self.log_zoom_in_button = QPushButton()
-        self.log_zoom_in_button.setIcon(qta.icon("mdi6.magnify-plus"))
+        self.log_zoom_in_button.setIcon(icon(MDI7.magnify_plus))
         self.log_zoom_in_button.setIconSize(QSize(24, 24))
         self.log_zoom_in_button.setFixedSize(QSize(32, 32))
         self.log_zoom_in_button.clicked.connect(lambda: self.text_area.setZoomFactor(self.text_area.zoomFactor() + 0.1))
         self.viewer_bar_layout.addWidget(self.log_zoom_in_button)
 
         self.log_zoom_reset_button = QPushButton()
-        self.log_zoom_reset_button.setIcon(qta.icon("mdi6.magnify-close"))
+        self.log_zoom_reset_button.setIcon(icon(MDI7.magnify_close))
         self.log_zoom_reset_button.setIconSize(QSize(24, 24))
         self.log_zoom_reset_button.setFixedSize(QSize(32, 32))
         self.log_zoom_reset_button.clicked.connect(lambda: self.text_area.setZoomFactor(1))
         self.viewer_bar_layout.addWidget(self.log_zoom_reset_button)
 
         self.log_zoom_out_button = QPushButton()
-        self.log_zoom_out_button.setIcon(qta.icon("mdi6.magnify-minus"))
+        self.log_zoom_out_button.setIcon(icon(MDI7.magnify_minus))
         self.log_zoom_out_button.setIconSize(QSize(24, 24))
         self.log_zoom_out_button.setFixedSize(QSize(32, 32))
         self.log_zoom_out_button.clicked.connect(
@@ -198,14 +199,14 @@ class LogPanel(QStackedWidget):
         self.viewer_bar_layout.addWidget(self.log_zoom_out_button)
 
         self.log_download_button = QPushButton()
-        self.log_download_button.setIcon(qta.icon("mdi6.download", color="#5ac95a"))
+        self.log_download_button.setIcon(icon(MDI7.download, color="#5ac95a"))
         self.log_download_button.setIconSize(QSize(24, 24))
         self.log_download_button.setFixedSize(QSize(32, 32))
         self.log_download_button.clicked.connect(self.download_log)
         self.viewer_bar_layout.addWidget(self.log_download_button)
 
         self.log_close_button = QPushButton()
-        self.log_close_button.setIcon(qta.icon("mdi6.close", color="#d45b5a"))
+        self.log_close_button.setIcon(icon(MDI7.close, color="#d45b5a"))
         self.log_close_button.setIconSize(QSize(24, 24))
         self.log_close_button.setFixedSize(QSize(32, 32))
         self.log_close_button.clicked.connect(self.close_log)

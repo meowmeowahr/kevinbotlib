@@ -2,7 +2,6 @@ import os
 import sys
 from dataclasses import dataclass
 
-import qtawesome as qta
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -23,6 +22,8 @@ from PySide6.QtWidgets import (
 
 import kevinbotlib.apps.log_viewer.resources_rc
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.apps import dark as icon_dark
+from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps.common.abc import ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
@@ -134,17 +135,17 @@ class Application(ThemableWindow):
     def apply_theme(self):
         theme_name = self.settings.value("theme", "Dark")
         if theme_name == "Dark":
-            qta.dark(self.app)
+            icon_dark()
             self.theme.set_style(ThemeStyle.Dark)
         elif theme_name == "Light":
-            qta.light(self.app)
+            icon_light()
             self.theme.set_style(ThemeStyle.Light)
         else:
             self.theme.set_style(ThemeStyle.System)
             if self.theme.is_dark():
-                qta.dark(self.app)
+                icon_dark()
             else:
-                qta.light(self.app)
+                icon_light()
         self.theme.apply(self)
 
     def open_settings(self):

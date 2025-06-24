@@ -55,15 +55,9 @@ scheduler = CommandScheduler()
 controller = LocalNamedController(0)
 controller.start_polling()
 
-controller.command.a().while_true(
-    PrintForOneSecondCommand("A Button Command")
-)
-controller.command.b().on_true(
-    PrintForOneSecondCommand("B Button Command")
-)
-controller.command.x().on_true(
-    PrintCommand("X Button Command")
-)
+controller.command.a().while_true(PrintForOneSecondCommand("A Button Command"))
+controller.command.b().on_true(PrintForOneSecondCommand("B Button Command"))
+controller.command.x().on_true(PrintCommand("X Button Command"))
 
 while True:
     scheduler.iterate()

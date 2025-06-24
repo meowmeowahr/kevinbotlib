@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
 
-import qtawesome as qta
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import QObject, QTimer, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QGraphicsOpacityEffect, QHBoxLayout, QLabel, QMainWindow, QVBoxLayout, QWidget
+
+from kevinbotlib.apps import icon
 
 
 @dataclass
@@ -14,11 +16,11 @@ class CustomSeverity:
 
 
 class Severity(Enum):
-    Success = CustomSeverity("mdi6.check-bold", QColor("#31C376"))
-    Info = CustomSeverity("mdi6.information-outline", QColor("#005C9F"))
-    Warning = CustomSeverity("mdi6.alert", QColor("#FF9800"))
-    Error = CustomSeverity("mdi6.alert-circle", QColor("#F44336"))
-    Critical = CustomSeverity("mdi6.alert-octagon", QColor("#9C27B0"))
+    Success = CustomSeverity(MDI7.check_bold, QColor("#31C376"))
+    Info = CustomSeverity(MDI7.information_outline, QColor("#005C9F"))
+    Warning = CustomSeverity(MDI7.alert, QColor("#FF9800"))
+    Error = CustomSeverity(MDI7.alert_circle, QColor("#F44336"))
+    Critical = CustomSeverity(MDI7.alert_octagon, QColor("#9C27B0"))
 
 
 class NotificationWidget(QWidget):
@@ -43,9 +45,8 @@ class NotificationWidget(QWidget):
         content_layout = QHBoxLayout(self.content)
 
         # Icon
-        icon_label = qta.IconWidget()
-        icon_label.setIconSize(32)
-        icon_label.setIcon(qta.icon(severity.icon, color=severity.color.name()))
+        icon_label = QLabel()
+        icon_label.setPixmap(icon(severity.icon, color=severity.color.name()).pixmap(32, 32))
         content_layout.addWidget(icon_label)
 
         # Text content

@@ -3,14 +3,15 @@ import datetime
 import os
 import sys
 import time
+import traceback
 from dataclasses import dataclass
 from functools import partial
 from queue import Queue
 from threading import Thread
 
 import ansi2html
-import qtawesome as qta
 import wakepy
+from fonticon_mdi7 import MDI7
 from PySide6.QtCore import (
     QCommandLineOption,
     QCommandLineParser,
@@ -35,6 +36,9 @@ from PySide6.QtWidgets import (
 
 import kevinbotlib.apps.control_console.resources_rc
 from kevinbotlib.__about__ import __version__
+from kevinbotlib.apps import dark as icon_dark
+from kevinbotlib.apps import get_icon as icon
+from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps.control_console.pages.about import ControlConsoleAboutTab
 from kevinbotlib.apps.control_console.pages.control import (
     AppState,
@@ -55,6 +59,7 @@ try:
 
     SDL2_OK = True
 except (RuntimeError, ImportError):
+    traceback.print_exc()
     # sdl2 is not installed
     SDL2_OK = False
 
@@ -199,11 +204,11 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.controllers_tab = ControlConsoleControllersTab(self.settings)
         self.metrics_tab = ControlConsoleMetricsTab(self.client, self._ctrl_metrics_key)
 
-        self.tabs.addTab(self.control, qta.icon("mdi6.robot"), "Run")
-        self.tabs.addTab(self.controllers_tab, qta.icon("mdi6.gamepad-variant"), "Controllers")
-        self.tabs.addTab(self.metrics_tab, qta.icon("mdi6.speedometer"), "Metrics")
-        self.tabs.addTab(self.settings_tab, qta.icon("mdi6.cog"), "Settings")
-        self.tabs.addTab(ControlConsoleAboutTab(self.theme), qta.icon("mdi6.information"), "About")
+        self.tabs.addTab(self.control, icon(MDI7.robot), "Run")
+        self.tabs.addTab(self.controllers_tab, icon(MDI7.gamepad_variant), "Controllers")
+        self.tabs.addTab(self.metrics_tab, icon(MDI7.speedometer), "Metrics")
+        self.tabs.addTab(self.settings_tab, icon(MDI7.cog), "Settings")
+        self.tabs.addTab(ControlConsoleAboutTab(self.theme), icon(MDI7.information), "About")
 
         self.connection_governor_thread = Thread(
             target=self.connection_governor, daemon=True, name="KevinbotLib.Console.Connection.Governor"
@@ -257,9 +262,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.theme.apply(self)
 
         if self.theme.is_dark():
-            qta.dark(QApplication.instance())
+            icon_dark()
         else:
-            qta.light(QApplication.instance())
+            icon_light()
 
     def settings_changed(self):
         self.ip_status.setText(str(self.settings.value("network.ip", "10.0.0.2", str)))

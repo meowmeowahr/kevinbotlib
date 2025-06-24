@@ -1,16 +1,18 @@
 from typing import TYPE_CHECKING
 
-import qtawesome as qta
-from PySide6.QtCore import QSize, Signal
+from fonticon_mdi7 import MDI7
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QGraphicsProxyWidget,
     QHBoxLayout,
+    QLabel,
     QLineEdit,
     QPushButton,
     QVBoxLayout,
     QWidget,
 )
 
+from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.apps.dashboard.helpers import get_structure_text
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm.redis import RedisCommClient
@@ -59,9 +61,8 @@ class TextEditWidgetItem(WidgetItem):
         self.line_edit.textEdited.connect(self.on_text_edited)
         self.line_layout.addWidget(self.line_edit)
 
-        self.validate_icon = qta.IconWidget()
-        self.validate_icon.setIconSize(QSize(24, 24))
-        self.validate_icon.setIcon(qta.icon("mdi6.close", color="#b34646"))
+        self.validate_icon = QLabel()
+        self.validate_icon.setPixmap(icon(MDI7.close, color="#b34646").pixmap(24, 24))
         self.line_layout.addWidget(self.validate_icon)
 
         self.actions_layout = QHBoxLayout()
@@ -70,13 +71,13 @@ class TextEditWidgetItem(WidgetItem):
         self.submit_button = QPushButton("Submit")
         self.submit_button.setStyleSheet(self.view.window().styleSheet())
         self.submit_button.clicked.connect(self.submit_clicked)
-        self.submit_button.setIcon(qta.icon("mdi6.send"))
+        self.submit_button.setIcon(icon(MDI7.send))
         self.actions_layout.addWidget(self.submit_button)
 
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setStyleSheet(self.view.window().styleSheet())
         self.cancel_button.clicked.connect(self.cancel_clicked)
-        self.cancel_button.setIcon(qta.icon("mdi6.cancel"))
+        self.cancel_button.setIcon(icon(MDI7.cancel))
         self.actions_layout.addWidget(self.cancel_button)
 
         self.proxy = QGraphicsProxyWidget(self)
@@ -110,7 +111,7 @@ class TextEditWidgetItem(WidgetItem):
         self.line_edit.blockSignals(True)
         self.line_edit.setText(text)
         self.line_edit.blockSignals(False)
-        self.validate_icon.setIcon(qta.icon("mdi6.check", color="#46b346"))
+        self.validate_icon.setPixmap(icon(MDI7.check, color="#46b346").pixmap(24, 24))
 
     def update_text(self, text: str):
         if self.current_value != self.line_edit.text():
@@ -123,7 +124,7 @@ class TextEditWidgetItem(WidgetItem):
         self.setdata.emit(get_structure_text(data))
 
     def on_text_edited(self, _new_text: str):
-        self.validate_icon.setIcon(qta.icon("mdi6.close", color="#b34646"))
+        self.validate_icon.setPixmap(icon(MDI7.close, color="#b34646").pixmap(24, 24))
 
     def submit_clicked(self):
         new_text = self.line_edit.text()
