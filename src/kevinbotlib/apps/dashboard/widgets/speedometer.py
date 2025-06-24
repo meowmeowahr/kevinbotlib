@@ -141,10 +141,10 @@ class SpeedometerWidgetItem(WidgetItem):
 
         # Create the speedometer widget
         self.speedometer = Speedometer()
-        self.speedometer.set_scale_value_color(QColor(self.view.theme.value.foreground))
-        self.speedometer.set_center_point_color(QColor(self.view.theme.value.foreground))
-        self.speedometer.set_display_value_color(QColor(self.view.theme.value.foreground))
-        self.speedometer.set_needle_color(QColor(self.view.theme.value.foreground))
+        self.speedometer.set_scale_value_color(QColor(self.view.theme.foreground))
+        self.speedometer.set_center_point_color(QColor(self.view.theme.foreground))
+        self.speedometer.set_display_value_color(QColor(self.view.theme.foreground))
+        self.speedometer.set_needle_color(QColor(self.view.theme.foreground))
         self.speedometer.set_enable_value_text(options.get("value_display", True))
         self.speedometer.set_enable_fine_scaled_marker(options.get("fine_tick_display", True))
         self.speedometer.set_enable_big_scaled_grid(options.get("coarse_tick_display", True))

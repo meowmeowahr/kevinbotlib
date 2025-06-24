@@ -8,12 +8,13 @@ from PySide6.QtWidgets import (
     QGraphicsView,
 )
 
+from kevinbotlib.apps.dashboard.grid_theme import ThemeOptions
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 
 
 class GridGraphicsView(QGraphicsView):
-    def __init__(self, parent=None, grid_size: int = 48, rows=10, cols=10, theme: GridThemes = GridThemes.Dark):
+    def __init__(self, parent=None, grid_size: int = 48, rows=10, cols=10, theme: ThemeOptions = GridThemes.Dark):
         super().__init__(parent)
         self.grid_size = grid_size
         self.rows, self.cols = rows, cols
@@ -26,7 +27,7 @@ class GridGraphicsView(QGraphicsView):
         self.setOptimizationFlags(
             QGraphicsView.OptimizationFlag.IndirectPainting | QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing
         )
-        self.setBackgroundBrush(QColor(theme.value.background))
+        self.setBackgroundBrush(QColor(theme.background))
 
         self.grid_lines = []
         self.draw_grid()
@@ -37,9 +38,9 @@ class GridGraphicsView(QGraphicsView):
         self.highlight_rect.setZValue(3)
         self.highlight_rect.hide()
 
-    def set_theme(self, theme: GridThemes):
+    def set_theme(self, theme: ThemeOptions):
         self.theme = theme
-        self.setBackgroundBrush(QColor(theme.value.background))
+        self.setBackgroundBrush(QColor(theme.background))
         self.update()
 
     def is_valid_drop_position(self, position, dragging_widget=None, span_x=1, span_y=1):
@@ -77,7 +78,7 @@ class GridGraphicsView(QGraphicsView):
 
         grid_size = self.grid_size
         rows, cols = self.rows, self.cols
-        pen = QPen(QColor(self.theme.value.border), 1, Qt.PenStyle.DashLine)
+        pen = QPen(QColor(self.theme.border), 1, Qt.PenStyle.DashLine)
         for i in range(cols + 1):
             x = i * grid_size
             self.grid_lines.append(self.scene().addLine(x, 0, x, rows * grid_size, pen))

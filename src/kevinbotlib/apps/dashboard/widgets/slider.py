@@ -225,7 +225,7 @@ class SliderWidgetItem(WidgetItem):
         if self.options.get("show_value", True):
             self.value_label = QLabel("0.0")
             self.value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.value_label.setStyleSheet(f"color: {self.view.theme.value.foreground}")
+            self.value_label.setStyleSheet(f"color: {self.view.theme.foreground}")
             self.layout.addWidget(self.value_label)
         else:
             self.value_label = None

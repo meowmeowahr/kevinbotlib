@@ -29,7 +29,7 @@ class BigLabelWidgetItem(WidgetItem):
         self.label = QLabel()
         self.label.setWordWrap(False)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+        self.label.setStyleSheet(f"background: transparent; color: {self.view.theme.foreground}")
 
         self.proxy = QGraphicsProxyWidget(self)
         self.proxy.setWidget(self.label)

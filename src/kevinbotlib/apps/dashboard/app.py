@@ -31,6 +31,7 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QCloseEvent,
+    QColor,
     QFont,
     QIcon,
     QRegularExpressionValidator,
@@ -74,7 +75,7 @@ from kevinbotlib.apps.dashboard.grid import (
     WidgetGridController,
 )
 from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
-from kevinbotlib.apps.dashboard.helpers import get_structure_text
+from kevinbotlib.apps.dashboard.helpers import Colors, get_structure_text
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm.redis import RedisCommClient
@@ -169,6 +170,12 @@ class SettingsWindow(QDialog):
         self.theme = UiColorSettingsSwitcher(settings, "theme", parent)
         self.form.addRow("Theme", self.theme)
 
+        self.color = superqt.QEnumComboBox()
+        self.color.setEnumClass(Colors)
+        self.color.setCurrentEnum(Colors(self.settings.value("color", defaultValue="#4682b4", type=str)))
+        self.color.currentEnumChanged.connect(self.set_color)
+        self.form.addRow("Accent Color", self.color)
+
         self.form.addRow(Divider("Grid"))
 
         self.grid_size = QSpinBox(minimum=8, maximum=256, singleStep=2, value=self.settings.value("grid", 48, int))  # type: ignore
@@ -214,6 +221,9 @@ class SettingsWindow(QDialog):
         self.exit_button = QPushButton("Exit")
         self.exit_button.clicked.connect(self.close)
         self.button_layout.addWidget(self.exit_button)
+
+    def set_color(self, color: Colors):
+        self.settings.setValue("color", color.value)
 
     def apply(self):
         self.on_applied.emit()
@@ -480,7 +490,7 @@ class Application(ThemableWindow):
             grid_size=self.settings.value("grid", 48, int),  # type: ignore
             rows=self.settings.value("rows", 10, int),  # type: ignore
             cols=self.settings.value("cols", 10, int),  # type: ignore
-            theme=GridThemes.Dark,
+            theme=GridThemes.Dark.value,
         )
         self.apply_theme()
 
@@ -674,19 +684,27 @@ class Application(ThemableWindow):
         if theme_name == "Dark":
             icon_dark()
             self.theme.set_style(ThemeStyle.Dark)
-            self.graphics_view.set_theme(GridThemes.Dark)
+            grid_theme = GridThemes.Dark.value
+            grid_theme.primary = QColor(self.settings.value("color", defaultValue=Colors.Blue.value, type=str))
+            self.graphics_view.set_theme(grid_theme)
         elif theme_name == "Light":
             icon_light()
             self.theme.set_style(ThemeStyle.Light)
-            self.graphics_view.set_theme(GridThemes.Light)
+            grid_theme = GridThemes.Light.value
+            grid_theme.primary = QColor(self.settings.value("color", defaultValue=Colors.Blue.value, type=str))
+            self.graphics_view.set_theme(grid_theme)
         else:
             self.theme.set_style(ThemeStyle.System)
             if self.theme.is_dark():
                 icon_dark()
-                self.graphics_view.set_theme(GridThemes.Dark)
+                grid_theme = GridThemes.Dark.value
+                grid_theme.primary = QColor(self.settings.value("color", defaultValue=Colors.Blue.value, type=str))
+                self.graphics_view.set_theme(grid_theme)
             else:
                 icon_light()
-                self.graphics_view.set_theme(GridThemes.Light)
+                grid_theme = GridThemes.Light.value
+                grid_theme.primary = QColor(self.settings.value("color", defaultValue=Colors.Blue.value, type=str))
+                self.graphics_view.set_theme(grid_theme)
         self.theme.apply(self)
 
     def update_latency(self, latency: float | None):
@@ -749,6 +767,9 @@ class Application(ThemableWindow):
         self.connection_status.setText("Robot Disconnected")
 
     def refresh_settings(self):
+        if self.settings.value("color", type=str, defaultValue="NONE") != self.graphics_view.theme.primary:
+            self.apply_theme()
+
         self.settings.setValue("ip", self.settings_window.net_ip.text())
         self.settings.setValue("port", self.settings_window.net_port.value())
         if self.client.host != self.settings.value("ip", "10.0.0.2", str):  # type: ignore

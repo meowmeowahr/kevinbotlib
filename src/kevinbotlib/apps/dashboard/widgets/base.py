@@ -36,7 +36,7 @@ class WidgetItem(QGraphicsObject):
         self.span_y = span_y
         self.width = grid.grid_size * span_x
         self.height = grid.grid_size * span_y
-        self.margin = grid.theme.value.padding
+        self.margin = grid.theme.padding
         self.setAcceptHoverEvents(True)
         self.setFlags(
             QGraphicsObject.GraphicsItemFlag.ItemIsMovable | QGraphicsObject.GraphicsItemFlag.ItemIsSelectable
@@ -52,7 +52,7 @@ class WidgetItem(QGraphicsObject):
         return QRectF(0, 0, self.width, self.height)
 
     def paint(self, painter: QPainter, _option: QStyleOptionGraphicsItem, /, _widget: QWidget | None = None):  # type: ignore
-        painter.setBrush(QBrush(QColor(self.view.theme.value.item_background)))
+        painter.setBrush(QBrush(QColor(self.view.theme.item_background)))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(
             QRect(self.margin, self.margin, self.width - 2 * self.margin, self.height - 2 * self.margin), 10, 10
@@ -60,12 +60,12 @@ class WidgetItem(QGraphicsObject):
 
         title_rect = QRect(self.margin, self.margin, self.width - 2 * self.margin, 30)
 
-        painter.setBrush(QBrush(QColor(self.view.theme.value.primary)))
+        painter.setBrush(QBrush(QColor(self.view.theme.primary)))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(title_rect, 10, 10)
         painter.drawRect(QRect(title_rect.x(), title_rect.y() + 10, title_rect.width(), title_rect.height() - 10))
 
-        painter.setPen(QPen(QColor(self.view.theme.value.foreground)))
+        painter.setPen(QPen(QColor(self.view.theme.foreground)))
         painter.drawText(title_rect, Qt.AlignmentFlag.AlignCenter, self.title)
 
     def mousePressEvent(self, event):  # noqa: N802

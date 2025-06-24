@@ -1,3 +1,5 @@
+from enum import Enum
+
 import blake3
 
 
@@ -45,3 +47,13 @@ def find_diff_indices(old: str, new: str) -> tuple[int, int, int, int]:
         end_new -= 1
 
     return start, end_old, start, end_new
+
+
+class Colors(Enum):
+    Red = "#b44646"
+    Green = "#46b482"
+    Blue = "#4682b4"
+    White = "#e4e4e4"
+    Black = "#060606"
+    Yellow = "#e4e446"
+    Magenta = "#b446b4"

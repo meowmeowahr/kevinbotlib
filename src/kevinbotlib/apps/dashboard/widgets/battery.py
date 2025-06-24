@@ -105,7 +105,7 @@ class BatteryWidgetItem(WidgetItem):
         self.widget.setLayout(self.layout)
 
         self.battery = BatteryGrapher()
-        self.battery.setStyleSheet(f"background: transparent; color: {self.view.theme.value.foreground}")
+        self.battery.setStyleSheet(f"background: transparent; color: {self.view.theme.foreground}")
         self.battery.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.battery.set_range(options.get("min", 5), options.get("max", 14))
         self.layout.addWidget(self.battery)

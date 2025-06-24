@@ -19,21 +19,12 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.apps.common.settings_rows import Divider
+from kevinbotlib.apps.dashboard.helpers import Colors
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
 from kevinbotlib.comm.redis import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
-
-
-class GraphColors(Enum):
-    Red = "#b44646"
-    Green = "#46b482"
-    Blue = "#4682b4"
-    White = "#e4e4e4"
-    Black = "#060606"
-    Yellow = "#e4e446"
-    Magenta = "#b446b4"
 
 
 class GraphShapes(Enum):
@@ -73,7 +64,7 @@ class GraphWidget(QWidget):
         self.max_x = options.get("max_x", 100)
         self.min_y = options.get("min_y", 0)
         self.max_y = options.get("max_y", 100)
-        self.pt_color = QColor(GraphColors(options.get("color", "#4682b4")).value)
+        self.pt_color = QColor(Colors(options.get("color", "#4682b4")).value)
         self.pt_shape = options.get("shape", "circle")
         self.pt_width = options.get("width", 10)
         self.update()
@@ -334,8 +325,8 @@ class Coord2dWidgetSettings(QDialog):
         self.form.addRow(Divider("Visuals"))
 
         self.color = superqt.QEnumComboBox()
-        self.color.setEnumClass(GraphColors)
-        self.color.setCurrentEnum(GraphColors(self.options.get("color", "#4682b4")))
+        self.color.setEnumClass(Colors)
+        self.color.setCurrentEnum(Colors(self.options.get("color", "#4682b4")))
         self.color.currentEnumChanged.connect(self.set_color)
         self.form.addRow("Point Color", self.color)
 
@@ -361,7 +352,7 @@ class Coord2dWidgetSettings(QDialog):
         self.exit_button.clicked.connect(self.close)
         self.button_layout.addWidget(self.exit_button)
 
-    def set_color(self, color: GraphColors):
+    def set_color(self, color: Colors):
         self.options["color"] = color.value
 
     def set_shape(self, shape: GraphShapes):
@@ -416,7 +407,7 @@ class Coord2dWidgetItem(WidgetItem):
         self.min_height = self.grid_size * 3
 
         self.graph = GraphWidget(
-            background_color=grid.theme.value.item_background,
+            background_color=grid.theme.item_background,
         )
         self.graph.set_options(self.options)
 

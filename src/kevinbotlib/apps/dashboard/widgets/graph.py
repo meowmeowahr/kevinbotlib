@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 import pyqtgraph
@@ -18,7 +17,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.apps.common.settings_rows import Divider
-from kevinbotlib.apps.dashboard.helpers import get_structure_text
+from kevinbotlib.apps.dashboard.helpers import Colors, get_structure_text
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.data_connector import DataConnector
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot import LiveLinePlot
 from kevinbotlib.apps.dashboard.widgets._pglive.sources.live_plot_widget import LivePlotWidget
@@ -27,16 +26,6 @@ from kevinbotlib.comm.redis import RedisCommClient
 
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
-
-
-class GraphColors(Enum):
-    Red = "#b44646"
-    Green = "#46b482"
-    Blue = "#4682b4"
-    White = "#e4e4e4"
-    Black = "060606"
-    Yellow = "#e4e446"
-    Magenta = "#b446b4"
 
 
 class GraphWidgetSettings(QDialog):
@@ -97,8 +86,8 @@ class GraphWidgetSettings(QDialog):
         self.form.addRow(Divider("Visuals"))
 
         self.color = superqt.QEnumComboBox()
-        self.color.setEnumClass(GraphColors)
-        self.color.setCurrentEnum(GraphColors(self.options.get("color", "#4682b4")))
+        self.color.setEnumClass(Colors)
+        self.color.setCurrentEnum(Colors(self.options.get("color", "#4682b4")))
         self.color.currentEnumChanged.connect(self.set_color)
         self.form.addRow("Line Color", self.color)
 
@@ -118,7 +107,7 @@ class GraphWidgetSettings(QDialog):
         self.exit_button.clicked.connect(self.close)
         self.button_layout.addWidget(self.exit_button)
 
-    def set_color(self, color: GraphColors):
+    def set_color(self, color: Colors):
         self.options["color"] = color.value
 
     def set_width(self, width: int):
@@ -162,7 +151,7 @@ class GraphWidgetItem(WidgetItem):
         self.min_height = self.grid_size * 3
 
         self.graph = LivePlotWidget(
-            background=grid.theme.value.item_background,
+            background=grid.theme.item_background,
         )
         self.graph.setMouseTracking(False)
         self.graph.setMouseEnabled(x=False, y=False)
@@ -174,9 +163,7 @@ class GraphWidgetItem(WidgetItem):
         self.graph.setAntialiasing(False)
 
         self.plot = LiveLinePlot(
-            pen=pyqtgraph.mkPen(
-                GraphColors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2)
-            )
+            pen=pyqtgraph.mkPen(Colors(self.options.get("color", "#4682b4")).value, width=self.options.get("width", 2))
         )
         self.graph.addItem(self.plot)
 
@@ -240,7 +227,7 @@ class GraphWidgetItem(WidgetItem):
         self.timer.setInterval(self.options.get("interval", 50))
         self.max_points = self.options.get("points", 50)
         self.plot.setPen(
-            color=GraphColors(self.options.get("color", "#4682b4")).value,
+            color=Colors(self.options.get("color", "#4682b4")).value,
             width=self.options.get("width", 2),
         )
         self.connector.max_points = self.max_points
