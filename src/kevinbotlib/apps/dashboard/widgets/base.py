@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QRect, QRectF, Qt, Signal
-from PySide6.QtGui import QAction, QBrush, QColor, QPainter, QPen
+from PySide6.QtGui import QAction, QBrush, QColor, QPainter, QPen, QTextOption, QFont
 from PySide6.QtWidgets import QGraphicsObject, QInputDialog, QMenu, QStyleOptionGraphicsItem, QWidget
 
 from kevinbotlib.comm.redis import RedisCommClient
@@ -10,6 +10,8 @@ from kevinbotlib.comm.redis import RedisCommClient
 if TYPE_CHECKING:
     from kevinbotlib.apps.dashboard.app import GridGraphicsView
 
+def get_contrasting_font_color(bg: QColor):
+    return "#000000" if (bg.red()*0.299 + bg.green()*0.587 + bg.blue()*0.114) > 186 else "#ffffff"
 
 class WidgetItem(QGraphicsObject):
     item_deleted = Signal(object)
@@ -65,7 +67,8 @@ class WidgetItem(QGraphicsObject):
         painter.drawRoundedRect(title_rect, 10, 10)
         painter.drawRect(QRect(title_rect.x(), title_rect.y() + 10, title_rect.width(), title_rect.height() - 10))
 
-        painter.setPen(QPen(QColor(self.view.theme.foreground)))
+        painter.setPen(QPen(get_contrasting_font_color(QColor(self.view.theme.primary))))
+        painter.setFont(QFont(self.view.font().family(), 10.5, QFont.Weight.Medium)) # type: ignore
         painter.drawText(title_rect, Qt.AlignmentFlag.AlignCenter, self.title)
 
     def mousePressEvent(self, event):  # noqa: N802
