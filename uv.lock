@@ -448,6 +448,16 @@ wheels = [
 ]
 
 [[package]]
+name = "cv2-enumerate-cameras"
+version = "1.1.18.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/b1/6678a76c7a5e6aec76aa55cb02e6163901835e6c2e11fb247e9e99c6b926/cv2_enumerate_cameras-1.1.18.3.tar.gz", hash = "sha256:73784f13e9d31d406db95c3843f44e3b135e5c3c5c159ebf0aaeb342d84e7978", size = 9679 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/24/53/1d78e7b724669b29a24b5b2c9b6374ee44ae365b2c425a2d27a7d5a27533/cv2_enumerate_cameras-1.1.18.3-cp32-abi3-win_amd64.whl", hash = "sha256:e81611708c55f2b734b01c6c0b9afccd4b1f99613c7f9ffd6bb2421453b07bc6", size = 19833 },
+    { url = "https://files.pythonhosted.org/packages/2a/e2/4caf537f04ce21aff0f46712b868c0a36f3950c91cb274367bf5910240cb/cv2_enumerate_cameras-1.1.18.3-py3-none-any.whl", hash = "sha256:e3774d0d7b01058461a453eef8fd0203e5e9f1a035857eed18140a8abe0104df", size = 10194 },
+]
+
+[[package]]
 name = "darkdetect"
 version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -756,6 +766,7 @@ dependencies = [
     { name = "ansi2html" },
     { name = "blake3" },
     { name = "click" },
+    { name = "cv2-enumerate-cameras" },
     { name = "darkdetect" },
     { name = "deprecated" },
     { name = "fonticon-materialdesignicons7" },
@@ -800,6 +811,7 @@ requires-dist = [
     { name = "ansi2html", specifier = ">=1.9.2" },
     { name = "blake3", specifier = ">=1.0.5" },
     { name = "click", specifier = "~=8.2.0" },
+    { name = "cv2-enumerate-cameras", specifier = ">=1.1.18.3" },
     { name = "darkdetect", specifier = ">=0.8.0" },
     { name = "deprecated", specifier = ">=1.2.18" },
     { name = "fonticon-materialdesignicons7", specifier = ">=7.2.96" },

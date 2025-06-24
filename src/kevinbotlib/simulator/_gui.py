@@ -33,7 +33,8 @@ from kevinbotlib.simulator._events import (
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import WINDOW_VIEW_REGISTRY, WindowView
 from kevinbotlib.ui.theme import Theme, ThemeStyle
-
+from kevinbotlib.apps import light as icon_light
+from kevinbotlib.apps import dark as icon_dark
 
 class SettingsWindow(QDialog):
     on_applied = Signal()
@@ -246,10 +247,16 @@ class SimMainWindow(_ThemableWindow):
         theme_name = self.settings.value("theme", "Dark")
         if theme_name == "Dark":
             self.theme.set_style(ThemeStyle.Dark)
+            icon_dark()
         elif theme_name == "Light":
             self.theme.set_style(ThemeStyle.Light)
+            icon_light()
         else:
             self.theme.set_style(ThemeStyle.System)
+            if self.theme.is_dark():
+                icon_dark()
+            else:
+                icon_light()
         self.theme.apply(self)
         self.mdi.setBackground(
             QPixmap(":/mdi_background/grid-dark.svg" if self.theme.is_dark() else ":/mdi_background/grid-light.svg")
