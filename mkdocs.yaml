@@ -108,8 +108,6 @@ nav:
       - examples/joystick.md
       - examples/system.md
       - examples/fileserver.md
-      - examples/hardwareinterface.md
-      - examples/hardwarecontroller.md
       - examples/scheduler.md
     - Applications:
       - Control Console:
@@ -143,6 +141,12 @@ nav:
     - Simulation Framework:
         - sim/index.md
         - sim/windowview.md
+    - Hardware:
+        - hardware/interface-vs-controller.md
+        - Controllers:
+            - hardware/controllers/keyvalue.md
+        - Interfaces:
+            - hardware/interfaces/serial.md
     - fileserver.md
     - KevinbotLib Reference:
       - reference/robot.md

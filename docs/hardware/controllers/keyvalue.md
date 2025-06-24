@@ -1,9 +1,14 @@
-# Hardware Controller Examples
+# Key-Value
 
-## Serial Raw Key/Value Protocol Example
+The Key-Value controller will communicate with a serial device using a key=value protocol.
+Delimiter and line endings are configurable.
+
+## Examples
+
+### Serial Raw Key/Value Protocol
 
 !!! example
-    ![Image title](../media/nano.png){ align=left }
+    ![Microcontroller](../../media/nano.png){ align=left }
 
     This example requires a serial device responding to commands to be connected.
 

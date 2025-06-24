@@ -52,22 +52,6 @@ All examples can be found on the project's [GitHub repo](https://github.com/meow
 
     [:octicons-arrow-right-24: View Examples](fileserver.md)
 
-- :material-serial-port:{ .lg .middle } __Hardware Interface Examples__
-
-    ---
-
-    View examples using KevinbotLib's low-level hardware interfaces
-
-    [:octicons-arrow-right-24: View Examples](hardwareinterface.md)
-
-- :material-serial-port:{ .lg .middle } __Hardware Controller Examples__
-
-    ---
-
-    View examples using KevinbotLib's low-level hardware interface protocols
-
-    [:octicons-arrow-right-24: View Examples](hardwarecontroller.md)
-
 - :material-clock:{ .lg .middle } __Command Scheduler Examples__
 
     ---

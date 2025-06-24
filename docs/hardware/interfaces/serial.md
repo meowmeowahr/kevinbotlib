@@ -1,15 +1,24 @@
-# Hardware Interface Examples
+# Serial
 
-## Serial Hardware Query Example
+The serial interface will connect to a local serial device.
+
+The serial interface is capable of connection to devices with arbitrary baud-rates (may not be supported on some hardware), flow control, parity, and differing stop bits.
+
+!!! Note
+    RS-485 support has not been tested yet. Feel free to submit a GitHub issue on your findings.
+
+## Examples
+
+### Serial Hardware Query
 
 ```python title="examples/hardware/serial_query.py" linenums="1"
 --8<-- "examples/hardware/serial_query.py"
 ```
 
-### Serial Raw Ping/Pong Example
+### Serial Raw Ping/Pong
 
 !!! example
-    ![Image title](../media/nano.png){ align=left }
+    ![Microcontroller](../../media/nano.png){ align=left }
 
     This example requires a serial device responding to pings to be connected.
 

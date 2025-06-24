@@ -4,16 +4,16 @@ from kevinbotlib.hardware.interfaces.serial import RawSerialInterface
 class RawKeyValueSerialController:
     """A controller for managing key-value pairs over a raw serial interface"""
 
-    def __init__(self, interface: RawSerialInterface, delimeter: bytes = b"=", terminator: bytes = b"\n") -> None:
+    def __init__(self, interface: RawSerialInterface, delimiter: bytes = b"=", terminator: bytes = b"\n") -> None:
         """Initialize the controller with a serial interface
 
         Args:
             interface (RawSerialInterface): The serial interface to use
-            delimeter (bytes): Key-value delimeter
+            delimiter (bytes): Key-value delimiter
             terminator (bytes): EOL character
         """
         self._iface = interface
-        self._delimiter = delimeter
+        self._delimiter = delimiter
         self._terminator = terminator
 
     def write(self, key: bytes, value: bytes | None = None) -> int | None:

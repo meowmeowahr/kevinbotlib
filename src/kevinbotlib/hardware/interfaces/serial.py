@@ -266,14 +266,13 @@ class RawSerialInterface(io.IOBase):
 
     @property
     def is_open(self) -> bool:
-        """Is the serial port open?
+        """
+        Is the serial port open?
 
         Returns:
             bool: Open state
         """
         return self._serial.is_open
-
-    # * read
 
     def read(self, n: int = 1) -> bytes:
         """
@@ -304,10 +303,9 @@ class RawSerialInterface(io.IOBase):
         """
         return self._serial.read_until(term, size)
 
-    # * write
-
     def write(self, data: bytes) -> int | None:
-        """Write bytes to the serial port
+        """
+        Write bytes to the serial port
 
         Args:
             data (bytes): Bytes to write
