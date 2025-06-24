@@ -43,7 +43,7 @@ Set the current OpMode, Enable, Disable, or E-Stop the robot
 
 Display each used Serial Interface in a tab
 
-View more info here
+View more info [here](../hardware/interfaces/serial#simulation)
 
 ## Using the Simulator Within a Robot
 
