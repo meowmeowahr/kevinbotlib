@@ -47,7 +47,7 @@ def socket_exists(host: str = "localhost", port: int = 6379, timeout: float = 1.
         return False
 
 
-def is_unix_socket(path):
+def is_unix_socket(path) -> bool:
     """
     Detect if a path is a valid Unix socket.
 

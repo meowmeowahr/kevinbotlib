@@ -13,6 +13,8 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.sendables import BinarySendable
+from kevinbotlib.robot import BaseRobot
+from kevinbotlib.vision._sim import CamerasWindowView
 
 
 class SingleFrameSendable(BinarySendable):
@@ -217,6 +219,28 @@ class VisionCommUtils:
 class BaseCamera(ABC):
     """Abstract class for creating Vision Cameras"""
 
+    def __init__(self, robot: BaseRobot | None):
+        self.robot = robot
+
+        if robot and robot.simulator:
+            robot.simulator.add_window("kevinbotlib.vision.cameras", CamerasWindowView)
+            self._simulated = True
+        else:
+            self._simulated = False
+        self._sim_camera_name = None
+
+    def simulator_register_camera_name(self, camera_name: str) -> None:
+        """
+        Register a camera name for the simulator
+
+        Args:
+            camera_name: Name of the camera
+        """
+        if not self.simulated:
+            return
+        self.robot.simulator.send_to_window("kevinbotlib.vision.cameras", {"type": "new", "name": camera_name})
+        self._sim_camera_name = camera_name
+
     @abstractmethod
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -233,6 +257,21 @@ class BaseCamera(ABC):
             width (int): Frame width in px
             height (int): Frame height in px
         """
+        if not self.simulated:
+            return
+        self.robot.simulator.send_to_window(
+            "kevinbotlib.vision.cameras", {"type": "res", "res": (width, height), "name": self._sim_camera_name}
+        )
+
+    @property
+    def simulated(self) -> bool:
+        """
+        Is the camera simulated? Should be used in all cameras to disable hardware connections.
+
+        Returns:
+            Running in simulator?
+        """
+        return self._simulated
 
 
 class CameraByIndex(BaseCamera):
@@ -241,12 +280,14 @@ class CameraByIndex(BaseCamera):
     Not recommended if you have more than one camera on a system
     """
 
-    def __init__(self, index: int):
+    def __init__(self, robot: BaseRobot | None, index: int):
         """Initialize the camera
 
         Args:
             index (int): Index of the camera
         """
+        super().__init__(robot)
+        self.simulator_register_camera_name(f"Index: {index}")
         self.capture = cv2.VideoCapture(index)
         self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
         self.capture.set(cv2.CAP_PROP_FPS, 60)
@@ -267,7 +308,7 @@ class CameraByIndex(BaseCamera):
             width (int): Frame width in px
             height (int): Frame height in px
         """
-
+        super().set_resolution(width, height)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
@@ -275,12 +316,14 @@ class CameraByIndex(BaseCamera):
 class CameraByDevicePath(BaseCamera):
     """Create an OpenCV camera from a device path"""
 
-    def __init__(self, path: str):
+    def __init__(self, robot: BaseRobot | None, path: str):
         """Initialize the camera
 
         Args:
             path (str): Device path of the camera ex: `/dev/video0`
         """
+        super().__init__(robot)
+        self.simulator_register_camera_name(path)
         self.capture = cv2.VideoCapture(path)
 
     def get_frame(self) -> tuple[bool, MatLike]:
@@ -299,7 +342,7 @@ class CameraByDevicePath(BaseCamera):
             width (int): Frame width in px
             height (int): Frame height in px
         """
-
+        super().set_resolution(width, height)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
