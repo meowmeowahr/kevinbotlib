@@ -219,6 +219,8 @@ class VisionCommUtils:
 class BaseCamera(ABC):
     """Abstract class for creating Vision Cameras"""
 
+    _SIM_REGISTERED_CAMERAS: ClassVar[list[str]] = []
+
     def __init__(self, robot: BaseRobot | None):
         self.robot = robot
 
@@ -228,6 +230,29 @@ class BaseCamera(ABC):
         else:
             self._simulated = False
         self._sim_camera_name = None
+        self._resolution = (640, 480)
+        self._fps = 60
+        self._sim_frame = np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
+
+    def __init_sim__(self) -> None:
+        """
+        Initialize the simulator window.
+
+        Simulator camera name must be registered using simulator_register_camera_name() before this.
+
+        This method is for internal use within a camera implementation.
+        """
+        if self.simulated:
+            if len(BaseCamera._SIM_REGISTERED_CAMERAS) == 0:
+                msg = "Simulator camera name must be registered using simulator_register_camera_name() before calling super().__init_sim__() in a custom camera implementation."
+                raise RuntimeError(msg)
+            self.robot.simulator.send_to_window(
+                "kevinbotlib.vision.cameras",
+                {"type": "fps", "fps": self._fps, "name": self._sim_camera_name},
+            )
+            self.robot.simulator.send_to_window(
+                "kevinbotlib.vision.cameras", {"type": "res", "res": self.resolution, "name": self._sim_camera_name}
+            )
 
     def simulator_register_camera_name(self, camera_name: str) -> None:
         """
@@ -238,12 +263,14 @@ class BaseCamera(ABC):
         """
         if not self.simulated:
             return
+        BaseCamera._SIM_REGISTERED_CAMERAS.append(camera_name)
         self.robot.simulator.send_to_window("kevinbotlib.vision.cameras", {"type": "new", "name": camera_name})
         self._sim_camera_name = camera_name
 
     @abstractmethod
     def get_frame(self) -> tuple[bool, MatLike]:
-        """Get the current frame from the camera. Method is blocking until a frame is available.
+        """
+        Get the current frame from the camera. Method is blocking until a frame is available.
 
         Returns:
             tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
@@ -257,11 +284,46 @@ class BaseCamera(ABC):
             width (int): Frame width in px
             height (int): Frame height in px
         """
+        self._resolution = (width, height)
         if not self.simulated:
             return
         self.robot.simulator.send_to_window(
             "kevinbotlib.vision.cameras", {"type": "res", "res": (width, height), "name": self._sim_camera_name}
         )
+
+    @property
+    def resolution(self) -> tuple:
+        """
+        Get the current camera resolution
+
+        Returns:
+            Width x Height
+        """
+        return self._resolution
+
+    def set_frame_rate(self, fps: int) -> None:
+        """
+        Set the current camera frame rate.
+
+        Args:
+            fps: Frame rate
+        """
+        self._fps = fps
+        if not self.simulated:
+            return
+        self.robot.simulator.send_to_window(
+            "kevinbotlib.vision.cameras", {"type": "fps", "fps": fps, "name": self._sim_camera_name}
+        )
+
+    @property
+    def fps(self) -> int:
+        """
+        Get the current camera frame rate.
+
+        Returns:
+            FPS
+        """
+        return self._fps
 
     @property
     def simulated(self) -> bool:
@@ -288,10 +350,13 @@ class CameraByIndex(BaseCamera):
         """
         super().__init__(robot)
         self.simulator_register_camera_name(f"Index: {index}")
-        self.capture = cv2.VideoCapture(index)
-        self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
-        self.capture.set(cv2.CAP_PROP_FPS, 60)
-        self.set_resolution(640, 480)
+
+        if not self.simulated:
+            self.capture = cv2.VideoCapture(index)
+            self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
+            self.capture.set(cv2.CAP_PROP_FPS, self.fps)
+
+        super().__init_sim__() # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -299,8 +364,10 @@ class CameraByIndex(BaseCamera):
         Returns:
             tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
         """
-
-        return self.capture.read()
+        if not self.simulated:
+            return self.capture.read()
+        else:
+            return True, self._sim_frame
 
     def set_resolution(self, width: int, height: int) -> None:
         """Attempt to set the current camera resolution
@@ -310,8 +377,21 @@ class CameraByIndex(BaseCamera):
             height (int): Frame height in px
         """
         super().set_resolution(width, height)
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        if not self.simulated:
+            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+    def set_frame_rate(self, fps: int) -> None:
+        """
+        Set the current camera frame rate.
+
+        Args:
+            fps: Frame rate
+        """
+        super().set_frame_rate(fps)
+        if not self.simulated:
+            self.capture.set(cv2.CAP_PROP_FPS, fps)
+
 
 
 class CameraByDevicePath(BaseCamera):
@@ -324,8 +404,13 @@ class CameraByDevicePath(BaseCamera):
             path (str): Device path of the camera ex: `/dev/video0`
         """
         super().__init__(robot)
+
         self.simulator_register_camera_name(path)
-        self.capture = cv2.VideoCapture(path)
+        if not self.simulated:
+            self.capture = cv2.VideoCapture(path)
+        self.set_resolution(*self.resolution)
+
+        super().__init_sim__() # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -333,8 +418,11 @@ class CameraByDevicePath(BaseCamera):
         Returns:
             tuple[bool, MatLike]: Frame retrieval success and an OpenCV Mat
         """
-
-        return self.capture.read()
+        super().get_frame()
+        if not self.simulated:
+            return self.capture.read()
+        else:
+            return True, np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
 
     def set_resolution(self, width: int, height: int) -> None:
         """Attempt to set the current camera resolution
@@ -344,8 +432,20 @@ class CameraByDevicePath(BaseCamera):
             height (int): Frame height in px
         """
         super().set_resolution(width, height)
-        self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        if not self.simulated:
+            self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+    def set_frame_rate(self, fps: int) -> None:
+        """
+        Set the current camera frame rate.
+
+        Args:
+            fps: Frame rate
+        """
+        super().set_frame_rate(fps)
+        if not self.simulated:
+            self.capture.set(cv2.CAP_PROP_FPS, fps)
 
 
 class VisionPipeline(ABC):

@@ -13,8 +13,14 @@ class CameraPage(QWidget):
         self.resolution = QLabel("Resolution: ????x????")
         self.layout.addWidget(self.resolution)
 
+        self.fps = QLabel("FPS: ??")
+        self.layout.addWidget(self.fps)
+
     def set_resolution(self, width: int, height: int):
         self.resolution.setText(f"Resolution: {width}x{height}")
+
+    def set_fps(self, fps: float):
+        self.fps.setText(f"FPS: {fps:.2f}")
 
 
 @register_window_view("kevinbotlib.vision.cameras")
@@ -54,3 +60,5 @@ class CamerasWindowView(WindowView):
                     self.new_tab.emit(payload["name"])
                 case "res":
                     self.pages[payload["name"]].set_resolution(*payload["res"])
+                case "fps":
+                    self.pages[payload["name"]].set_fps(payload["fps"])
