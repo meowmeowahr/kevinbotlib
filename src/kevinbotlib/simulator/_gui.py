@@ -18,6 +18,8 @@ from PySide6.QtWidgets import (
 
 import kevinbotlib.simulator.resources_rc as _rcc
 from kevinbotlib import __about__
+from kevinbotlib.apps import dark as icon_dark
+from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps.common.abc import ThemableWindow as _ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher
@@ -33,8 +35,7 @@ from kevinbotlib.simulator._events import (
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import WINDOW_VIEW_REGISTRY, WindowView
 from kevinbotlib.ui.theme import Theme, ThemeStyle
-from kevinbotlib.apps import light as icon_light
-from kevinbotlib.apps import dark as icon_dark
+
 
 class SettingsWindow(QDialog):
     on_applied = Signal()

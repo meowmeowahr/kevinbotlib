@@ -1,25 +1,25 @@
 import sys
 
-from cv2_enumerate_cameras import enumerate_cameras, supported_backends
-
-from PySide6.QtCore import Signal, QTimer, QSize, QEvent, Qt, QThread
-from PySide6.QtGui import QPixmap, QResizeEvent, QColor, QPainter, QFont
+import cv2
+from cv2_enumerate_cameras import enumerate_cameras
+from fonticon_mdi7 import MDI7
+from PySide6.QtCore import QSize, Qt, QThread, Signal
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
+    QComboBox,
+    QFormLayout,
+    QHBoxLayout,
     QLabel,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
     QTabWidget,
     QVBoxLayout,
     QWidget,
-    QFormLayout,
-    QComboBox,
-    QHBoxLayout,
-    QPushButton,
-    QSizePolicy,
-    QMessageBox,
 )
-from fonticon_mdi7 import MDI7
 
-from kevinbotlib.simulator.windowview import WindowView, register_window_view
 from kevinbotlib.apps import get_icon as icon
+from kevinbotlib.simulator.windowview import WindowView, register_window_view
 
 
 class FrameTimerThread(QThread):
@@ -37,9 +37,15 @@ class FrameTimerThread(QThread):
     def stop(self):
         self._running = False
 
+
 class CameraPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.open_camera: cv2.VideoCapture | None = None
+        self.open_camera_index: int | None = None
+        self.resolution_size = QSize(640, 480)
+        self.fps_value = 30.0
+
         self.root_layout = QVBoxLayout(self)
 
         self.form = QFormLayout(self)
@@ -93,19 +99,29 @@ class CameraPage(QWidget):
 
     def set_resolution(self, width: int, height: int):
         self.resolution.setText(f"Resolution: {width}x{height}")
+        self.resolution_size = QSize(width, height)
+        self.frame = self.frame.scaled(
+            QSize(width, height), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation
+        )
+        if self.open_camera:
+            self.open_camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution_size.width())
+            self.open_camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution_size.height())
 
     def set_fps(self, fps: float):
         self.fps.setText(f"FPS: {fps:.2f}")
         self.frame_timer_thread.interval_ms = int(1000 / fps)
+        self.fps_value = fps
+        if self.open_camera:
+            self.open_camera.set(cv2.CAP_PROP_FPS, int(self.fps_value))
 
     def refresh_video_sources(self):
         current = self.source.currentText()
         self.source.clear()
         self.source.addItem("Uploaded Image")
 
-        if not sys.platform == "darwin":
+        if sys.platform != "darwin":
             cameras = enumerate_cameras()
-            cameras.sort(key=lambda x: x.index)
+            cameras.sort(key=lambda x: x.index, reverse=True)
             for camera in reversed(cameras):
                 # remove duplicated
                 if camera.name not in [self.source.itemText(i) for i in range(self.source.count())]:
@@ -125,12 +141,62 @@ class CameraPage(QWidget):
             )
             self.image.setPixmap(scaled)
 
-    def resizeEvent(self, event: QResizeEvent):
+    def resizeEvent(self, event: QResizeEvent):  # noqa: N802
         self.update_scaled_pixmap()
         super().resizeEvent(event)
 
     def update_frame(self):
-        print(self.source.currentText())
+        if self.source.currentIndex() == 0:
+            if self.open_camera:
+                self.open_camera.release()
+                self.open_camera = None
+                self.open_camera_index = None
+
+            self.frame.fill(Qt.GlobalColor.darkRed)
+            painter = QPainter(self.frame)
+            painter.setPen(QColor("white"))
+            font = QFont()
+            font.setPointSize(60)
+            font.setBold(True)
+            painter.setFont(font)
+            rect = self.frame.rect()
+            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, "No Image")
+            painter.end()
+        else:
+            if self.open_camera_index != self.source.currentData(Qt.ItemDataRole.UserRole):
+                self.open_camera.release() if self.open_camera else None
+                self.open_camera_index = self.source.currentData(Qt.ItemDataRole.UserRole)
+                self.open_camera = cv2.VideoCapture(self.open_camera_index)
+                self.open_camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution_size.width())
+                self.open_camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution_size.height())
+                self.open_camera.set(cv2.CAP_PROP_FPS, int(self.fps_value))
+            if self.open_camera:
+                ret, frame = self.open_camera.read()
+                if ret:
+                    height, width, channels = frame.shape
+                    bytes_per_line = channels * width
+                    cv_image_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.frame = QPixmap.fromImage(
+                        QImage(
+                            cv_image_rgb.data,
+                            width,
+                            height,
+                            bytes_per_line,
+                            QImage.Format.Format_RGB888,
+                        )
+                    )
+                else:
+                    self.frame.fill(Qt.GlobalColor.darkRed)
+                    painter = QPainter(self.frame)
+                    painter.setPen(QColor("white"))
+                    font = QFont()
+                    font.setPointSize(60)
+                    font.setBold(True)
+                    painter.setFont(font)
+                    rect = self.frame.rect()
+                    painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, "Camera Error")
+        self.update_scaled_pixmap()
+
 
 @register_window_view("kevinbotlib.vision.cameras")
 class CamerasWindowView(WindowView):

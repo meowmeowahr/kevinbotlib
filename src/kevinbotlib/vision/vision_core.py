@@ -356,7 +356,7 @@ class CameraByIndex(BaseCamera):
             self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
             self.capture.set(cv2.CAP_PROP_FPS, self.fps)
 
-        super().__init_sim__() # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
+        super().__init_sim__()  # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -366,8 +366,7 @@ class CameraByIndex(BaseCamera):
         """
         if not self.simulated:
             return self.capture.read()
-        else:
-            return True, self._sim_frame
+        return True, self._sim_frame
 
     def set_resolution(self, width: int, height: int) -> None:
         """Attempt to set the current camera resolution
@@ -393,7 +392,6 @@ class CameraByIndex(BaseCamera):
             self.capture.set(cv2.CAP_PROP_FPS, fps)
 
 
-
 class CameraByDevicePath(BaseCamera):
     """Create an OpenCV camera from a device path"""
 
@@ -410,7 +408,7 @@ class CameraByDevicePath(BaseCamera):
             self.capture = cv2.VideoCapture(path)
         self.set_resolution(*self.resolution)
 
-        super().__init_sim__() # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
+        super().__init_sim__()  # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -421,8 +419,7 @@ class CameraByDevicePath(BaseCamera):
         super().get_frame()
         if not self.simulated:
             return self.capture.read()
-        else:
-            return True, np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
+        return True, np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
 
     def set_resolution(self, width: int, height: int) -> None:
         """Attempt to set the current camera resolution
