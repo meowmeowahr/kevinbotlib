@@ -1,5 +1,6 @@
 import multiprocessing
 from collections.abc import Callable
+from multiprocessing import Queue as MpQueue
 from threading import Thread
 from typing import TYPE_CHECKING, Any, TypeVar
 
@@ -25,6 +26,7 @@ from kevinbotlib.util import socket_exists
 if TYPE_CHECKING:
     from kevinbotlib.robot import BaseRobot
 
+
 T = TypeVar("T", bound=WindowViewOutputPayload)
 
 
@@ -46,8 +48,8 @@ class SimulationFramework:
         self.sim_process: multiprocessing.Process | None = None
         self.event_watcher: multiprocessing.Process | None = None
 
-        self.sim_in_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
-        self.sim_out_queue: multiprocessing.Queue[_SimulatorInputEvent] = multiprocessing.Queue()
+        self.sim_in_queue: MpQueue[_SimulatorInputEvent] = MpQueue()
+        self.sim_out_queue: MpQueue[_SimulatorInputEvent] = MpQueue()
 
         self._payload_callbacks: dict[
             type[WindowViewOutputPayload], list[Callable[[WindowViewOutputPayload], None]]
@@ -56,9 +58,7 @@ class SimulationFramework:
         self._windows: list[str] = []
 
     @staticmethod
-    def _simulator_bringup(
-        port: int | None, host: str | None, in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue
-    ):
+    def _simulator_bringup(port: int | None, host: str | None, in_queue: MpQueue, out_queue: MpQueue):
         app = QApplication([])
 
         if port and host and not socket_exists(host, port, 5):

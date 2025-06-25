@@ -11,11 +11,10 @@ import time
 from collections.abc import Callable
 from threading import Thread
 from types import TracebackType
-from typing import Any, NoReturn, final
+from typing import TYPE_CHECKING, Any, NoReturn, final
 
 import psutil
 
-import kevinbotlib.simulator as _sim
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.comm.path import CommPath
 from kevinbotlib.comm.redis import RedisCommClient
@@ -48,6 +47,9 @@ from kevinbotlib.robot._sim import (
     make_simulator,
 )
 from kevinbotlib.system import SystemPerformanceData
+
+if TYPE_CHECKING:
+    import kevinbotlib.simulator as _sim
 
 
 class InstanceLocker:
@@ -335,9 +337,7 @@ class BaseRobot:
         BaseRobot.IS_SIM = args.simulate
 
         if BaseRobot.IS_SIM:
-            _sim.freeze_support()
             self._allow_enable_without_console = True
-            self.telemetry.trace("Added freeze support for simulator process")
             self.simulator = make_simulator(self)
 
     @property

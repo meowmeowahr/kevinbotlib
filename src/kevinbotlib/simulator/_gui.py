@@ -33,7 +33,11 @@ from kevinbotlib.simulator._events import (
     _WindowViewUpdateEvent,
 )
 from kevinbotlib.simulator._mdi import _MdiChild
-from kevinbotlib.simulator.windowview import WINDOW_VIEW_REGISTRY, WindowView
+from kevinbotlib.simulator.windowview import (
+    WINDOW_VIEW_REGISTRY,
+    WindowView,
+    WindowViewOutputPayload,
+)
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 
 
@@ -209,7 +213,10 @@ class SimMainWindow(_ThemableWindow):
         *,
         default_open: bool = False,
     ) -> QWidget:
-        view.send_payload = lambda x: self.out_queue.put_nowait(_WindowViewPayloadEvent(winid, x))
+        def payload_sender(payload: WindowViewOutputPayload):
+            self.out_queue.put_nowait(_WindowViewPayloadEvent(winid, payload))
+
+        view.send_payload = payload_sender
 
         self.views[winid] = view
         action: QAction = self.windows_menu.addAction(view.title)

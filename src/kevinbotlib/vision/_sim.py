@@ -1,6 +1,10 @@
+import re
 import sys
+from collections.abc import Callable
 
 import cv2
+import numpy as np
+import zmq
 from cv2_enumerate_cameras import enumerate_cameras
 from fonticon_mdi7 import MDI7
 from PySide6.QtCore import QSize, Qt, QThread, Signal
@@ -19,6 +23,7 @@ from PySide6.QtWidgets import (
 )
 
 from kevinbotlib.apps import get_icon as icon
+from kevinbotlib.logger import Logger
 from kevinbotlib.simulator.windowview import WindowView, register_window_view
 
 
@@ -39,14 +44,16 @@ class FrameTimerThread(QThread):
 
 
 class CameraPage(QWidget):
-    def __init__(self):
+    def __init__(self, new_frame_callback: Callable[[np.ndarray], None] = lambda _: None):
         super().__init__()
+        self.new_frame = new_frame_callback
         self.open_camera: cv2.VideoCapture | None = None
         self.open_camera_index: int | None = None
         self.resolution_size = QSize(640, 480)
         self.fps_value = 30.0
 
-        self.root_layout = QVBoxLayout(self)
+        self.root_layout = QVBoxLayout()
+        self.setLayout(self.root_layout)
 
         self.form = QFormLayout(self)
         self.root_layout.addLayout(self.form)
@@ -197,10 +204,29 @@ class CameraPage(QWidget):
                     painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, "Camera Error")
         self.update_scaled_pixmap()
 
+        # convert self.frame to Mat
+        qimage = self.frame.toImage().convertToFormat(QImage.Format.Format_RGB888)
+
+        # Get the dimensions and buffer
+        width = qimage.width()
+        height = qimage.height()
+        ptr = qimage.bits()
+
+        # Convert to array
+        arr = np.array(ptr, dtype=np.uint8).reshape((height, width, 3))
+
+        # RGB to BGR
+        mat = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
+        self.new_frame(mat)
+
+
+ZMQ_SEND_BUFFER_SIZE = 1024 * 1024
+
 
 @register_window_view("kevinbotlib.vision.cameras")
 class CamerasWindowView(WindowView):
     new_tab = Signal(str)
+    set_port = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -212,7 +238,11 @@ class CamerasWindowView(WindowView):
         self.layout.addWidget(self.tabs)
 
         self.pages: dict[str, CameraPage] = {}
+        self.camera_zmq_tcp_port: int | None = None
+        self.camera_zmq_context: zmq.Context | None = None
+        self.camera_zmq_socket: zmq.Socket | None = None
         self.new_tab.connect(self.create_tab)
+        self.set_port.connect(self.set_zmq_port)
 
     @property
     def title(self) -> str:
@@ -221,9 +251,28 @@ class CamerasWindowView(WindowView):
     def generate(self) -> QWidget:
         return self.widget
 
+    def set_zmq_port(self, port: int):
+        if not self.camera_zmq_tcp_port:
+            self.camera_zmq_tcp_port = port
+            self.camera_zmq_context = zmq.Context()
+            self.camera_zmq_socket = self.camera_zmq_context.socket(zmq.PUB)
+            self.camera_zmq_socket.setsockopt(zmq.SNDBUF, ZMQ_SEND_BUFFER_SIZE)
+            self.camera_zmq_socket.bind(f"tcp://*:{self.camera_zmq_tcp_port}")
+
     def create_tab(self, camera_name: str):
         if camera_name not in self.pages:
-            page = CameraPage()
+
+            def send_frame(frame: np.ndarray) -> None:
+                if not self.camera_zmq_context or not self.camera_zmq_socket:
+                    Logger().warning("CameraZMQContext is not initialized.")
+                    return
+
+                sanitized_name = re.sub(r"[^A-Za-z0-9-_]", "_", camera_name)
+
+                success, encoded_image = cv2.imencode(".jpg", frame)
+                self.camera_zmq_socket.send_multipart([sanitized_name.encode("utf-8"), encoded_image.tobytes()])
+
+            page = CameraPage(send_frame)
             self.tabs.addTab(page, camera_name)
             self.pages[camera_name] = page
         self.tabs.setCurrentWidget(self.pages[camera_name])
@@ -237,3 +286,5 @@ class CamerasWindowView(WindowView):
                     self.pages[payload["name"]].set_resolution(*payload["res"])
                 case "fps":
                     self.pages[payload["name"]].set_fps(payload["fps"])
+                case "port":
+                    self.set_port.emit(payload["port"])

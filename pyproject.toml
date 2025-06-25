@@ -53,6 +53,7 @@ dependencies = [
   "line-profiler>=4.2.0",
   "fonticon-materialdesignicons7>=7.2.96",
   "cv2-enumerate-cameras>=1.1.18.3",
+  "pyzmq>=27.0.0",
 ]
 
 [project.optional-dependencies]

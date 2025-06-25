@@ -1,3 +1,6 @@
+import re
+import socket
+import threading
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import Annotated, Any, ClassVar
@@ -5,6 +8,7 @@ from typing import Annotated, Any, ClassVar
 import cv2
 import numpy as np
 import pybase64 as base64
+import zmq
 from annotated_types import Len
 from cv2.typing import MatLike
 
@@ -13,6 +17,7 @@ from kevinbotlib.comm.abstract import (
     AbstractSetGetNetworkClient,
 )
 from kevinbotlib.comm.sendables import BinarySendable
+from kevinbotlib.logger import Logger
 from kevinbotlib.robot import BaseRobot
 from kevinbotlib.vision._sim import CamerasWindowView
 
@@ -216,25 +221,32 @@ class VisionCommUtils:
         client.register_type(MjpegStreamSendable)
 
 
+ZMQ_RECV_BUFFER_SIZE = 1024 * 1024
+
+
 class BaseCamera(ABC):
     """Abstract class for creating Vision Cameras"""
 
     _SIM_REGISTERED_CAMERAS: ClassVar[list[str]] = []
+    _SIM_ZMQ_PORT: ClassVar[int | None] = None
 
     def __init__(self, robot: BaseRobot | None):
         self.robot = robot
 
         if robot and robot.simulator:
-            robot.simulator.add_window("kevinbotlib.vision.cameras", CamerasWindowView)
+            if not BaseCamera._SIM_REGISTERED_CAMERAS:
+                robot.simulator.add_window("kevinbotlib.vision.cameras", CamerasWindowView)
             self._simulated = True
         else:
             self._simulated = False
-        self._sim_camera_name = None
+        self._sim_camera_name: str | None = None
         self._resolution = (640, 480)
         self._fps = 60
         self._sim_frame = np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
+        self._sim_zmq: zmq.Context | None = None
+        self._sim_zmq_socket: zmq.Socket | None = None
 
-    def __init_sim__(self) -> None:
+    def __init_sim__(self, camera_name: str) -> None:
         """
         Initialize the simulator window.
 
@@ -243,9 +255,40 @@ class BaseCamera(ABC):
         This method is for internal use within a camera implementation.
         """
         if self.simulated:
-            if len(BaseCamera._SIM_REGISTERED_CAMERAS) == 0:
-                msg = "Simulator camera name must be registered using simulator_register_camera_name() before calling super().__init_sim__() in a custom camera implementation."
-                raise RuntimeError(msg)
+            BaseCamera._SIM_REGISTERED_CAMERAS.append(camera_name)
+            self._sim_camera_name = camera_name
+
+            # create a zmq context
+            self._sim_zmq = zmq.Context()
+            self._sim_zmq_socket = self._sim_zmq.socket(zmq.SUB)
+            if not BaseCamera._SIM_ZMQ_PORT:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.bind(("", 0))  # 0 = request ephemeral port
+                    port = s.getsockname()[1]
+                    Logger().debug(f"Simulator: Camera streaming ZMQ port: {port}")
+                    BaseCamera._SIM_ZMQ_PORT = port
+            self._sim_zmq_socket.connect(f"tcp://127.0.0.1:{BaseCamera._SIM_ZMQ_PORT}")
+            self._sim_zmq_socket.setsockopt_string(zmq.SUBSCRIBE, re.sub(r"[^A-Za-z0-9-_]", "_", self._sim_camera_name))
+            self._sim_zmq_socket.setsockopt(zmq.RCVBUF, ZMQ_RECV_BUFFER_SIZE)
+            self.robot.simulator.send_to_window(
+                "kevinbotlib.vision.cameras", {"type": "port", "port": BaseCamera._SIM_ZMQ_PORT}
+            )
+
+            def sim_frame_recv_loop():
+                while True:
+                    parts = self._sim_zmq_socket.recv_multipart()
+                    if len(parts) != 2:  # noqa: PLR2004
+                        Logger().warning("Invalid frame data received from simulator")
+                        continue
+
+                    image_bytes = parts[1]
+                    img_array = np.frombuffer(image_bytes, dtype=np.uint8)
+                    self._sim_frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+
+            threading.Thread(target=sim_frame_recv_loop, daemon=True, name="KevinbotLib.Vision.SimIO.FrameRecv").start()
+
+            self.robot.simulator.send_to_window("kevinbotlib.vision.cameras", {"type": "new", "name": camera_name})
+
             self.robot.simulator.send_to_window(
                 "kevinbotlib.vision.cameras",
                 {"type": "fps", "fps": self._fps, "name": self._sim_camera_name},
@@ -253,19 +296,6 @@ class BaseCamera(ABC):
             self.robot.simulator.send_to_window(
                 "kevinbotlib.vision.cameras", {"type": "res", "res": self.resolution, "name": self._sim_camera_name}
             )
-
-    def simulator_register_camera_name(self, camera_name: str) -> None:
-        """
-        Register a camera name for the simulator
-
-        Args:
-            camera_name: Name of the camera
-        """
-        if not self.simulated:
-            return
-        BaseCamera._SIM_REGISTERED_CAMERAS.append(camera_name)
-        self.robot.simulator.send_to_window("kevinbotlib.vision.cameras", {"type": "new", "name": camera_name})
-        self._sim_camera_name = camera_name
 
     @abstractmethod
     def get_frame(self) -> tuple[bool, MatLike]:
@@ -349,14 +379,15 @@ class CameraByIndex(BaseCamera):
             index (int): Index of the camera
         """
         super().__init__(robot)
-        self.simulator_register_camera_name(f"Index: {index}")
 
         if not self.simulated:
             self.capture = cv2.VideoCapture(index)
             self.capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc(*"MJPG"))
             self.capture.set(cv2.CAP_PROP_FPS, self.fps)
 
-        super().__init_sim__()  # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
+        super().__init_sim__(
+            f"Index: {index}"
+        )  # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -403,12 +434,11 @@ class CameraByDevicePath(BaseCamera):
         """
         super().__init__(robot)
 
-        self.simulator_register_camera_name(path)
         if not self.simulated:
             self.capture = cv2.VideoCapture(path)
         self.set_resolution(*self.resolution)
 
-        super().__init_sim__()  # Initialize the camera simulation window. Must be called after simulator_register_camera_name()
+        super().__init_sim__(path)
 
     def get_frame(self) -> tuple[bool, MatLike]:
         """Get the current frame from the camera. Method is blocking until a frame is available.
@@ -419,7 +449,7 @@ class CameraByDevicePath(BaseCamera):
         super().get_frame()
         if not self.simulated:
             return self.capture.read()
-        return True, np.zeros((self.resolution[0], self.resolution[1], 3), dtype=np.uint8)
+        return True, self._sim_frame
 
     def set_resolution(self, width: int, height: int) -> None:
         """Attempt to set the current camera resolution
@@ -459,7 +489,7 @@ class VisionPipeline(ABC):
         self.source = source
 
     @abstractmethod
-    def run(*args, **kwargs) -> tuple[bool, MatLike | None]:
+    def run(self, *args, **kwargs) -> tuple[bool, MatLike | None]:
         """Runs the vision pipeline
 
         Returns:
