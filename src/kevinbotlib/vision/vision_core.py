@@ -268,7 +268,7 @@ class BaseCamera(ABC):
                     Logger().debug(f"Simulator: Camera streaming ZMQ port: {port}")
                     BaseCamera._SIM_ZMQ_PORT = port
             self._sim_zmq_socket.connect(f"tcp://127.0.0.1:{BaseCamera._SIM_ZMQ_PORT}")
-            self._sim_zmq_socket.setsockopt_string(zmq.SUBSCRIBE, re.sub(r"[^A-Za-z0-9-_]", "_", self._sim_camera_name))
+            self._sim_zmq_socket.subscribe(re.sub(r"[^A-Za-z0-9-_]", "_", self._sim_camera_name))
             self._sim_zmq_socket.setsockopt(zmq.RCVBUF, ZMQ_RECV_BUFFER_SIZE)
             self.robot.simulator.send_to_window(
                 "kevinbotlib.vision.cameras", {"type": "port", "port": BaseCamera._SIM_ZMQ_PORT}
