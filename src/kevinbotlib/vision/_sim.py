@@ -55,7 +55,7 @@ class CameraPage(QWidget):
         self.root_layout = QVBoxLayout()
         self.setLayout(self.root_layout)
 
-        self.form = QFormLayout(self)
+        self.form = QFormLayout()
         self.root_layout.addLayout(self.form)
 
         self.resolution = QLabel("Resolution: ????x????")
