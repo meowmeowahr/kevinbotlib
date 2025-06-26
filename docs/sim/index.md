@@ -45,6 +45,14 @@ Display each used Serial Interface in a tab
 
 View more info [here](../hardware/interfaces/serial#simulation)
 
+### Vision Cameras
+
+![camera.png](../media/windowview/camera.png){ width=480px }
+
+Simulate vision cameras by using local cameras, or imag uploads
+
+View more info [here](../vision/simulation)
+
 ## Using the Simulator Within a Robot
 
 [`BaseRobot.run()`](../reference/robot.md#kevinbotlib.robot.BaseRobot.run) will automatically detect the `--simulate` command line flag.

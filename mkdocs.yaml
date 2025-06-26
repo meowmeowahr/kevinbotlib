@@ -141,6 +141,9 @@ nav:
     - Simulation Framework:
         - sim/index.md
         - sim/windowview.md
+    - Vision:
+        - vision/extend-basecamera.md
+        - vision/simulation.md
     - Hardware:
         - hardware/interface-vs-controller.md
         - Controllers:
