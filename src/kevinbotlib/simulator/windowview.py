@@ -3,7 +3,11 @@ from typing import Any, final
 
 from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QWidget
+from PySide6.QtGui import QIcon
 
+from fonticon_mdi7.mdi7 import MDI7 as _MDI7
+
+from kevinbotlib.apps import get_icon
 
 class WindowView(QObject):
     """
@@ -20,6 +24,20 @@ class WindowView(QObject):
         """
 
         return f"New WindowView <{hex(self.__hash__())}>"
+
+    # noinspection PyMethodMayBeStatic
+    def icon(self, dark_mode: bool) -> QIcon:
+        """
+        Gets the icon for the WindowView.
+
+        Args:
+            dark_mode: Is the WindowView in dark mode?
+
+        Returns:
+            Qt Icon. Defaults to basic window icon
+        """
+
+        return get_icon(_MDI7.application_brackets_outline)
 
     def generate(self) -> QWidget:
         """

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 
 
 class _MdiTitleBar(QFrame):
-    def __init__(self, parent: QMdiSubWindow, title: str) -> None:
+    def __init__(self, parent: QMdiSubWindow, title: str, icon: QIcon) -> None:
         super().__init__(parent)
         self._parent = parent
         self._drag_position = QPoint()
@@ -26,6 +26,12 @@ class _MdiTitleBar(QFrame):
         layout.setSpacing(0)
 
         # Title label
+        self.icon_label = QLabel(self)
+        self.icon_label.setPixmap(icon.pixmap(16, 16))
+        layout.addWidget(self.icon_label)
+
+        layout.addSpacing(4)
+
         self.title_label = QLabel(title, self)
         layout.addWidget(self.title_label)
         layout.addStretch()
@@ -51,7 +57,7 @@ class _MdiTitleBar(QFrame):
 
 
 class _MdiChild(QMdiSubWindow):
-    def __init__(self, winid: str, name: str, content: QWidget, settings: QSettings) -> None:
+    def __init__(self, winid: str, name: str, icon: QIcon, content: QWidget, settings: QSettings) -> None:
         super().__init__()
         self._name = name
         self._winid = winid
@@ -64,7 +70,7 @@ class _MdiChild(QMdiSubWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
-        self.title_bar = _MdiTitleBar(self, name)
+        self.title_bar = _MdiTitleBar(self, name, icon)
         self.title_bar.setFixedHeight(28)
         main_layout.addWidget(self.title_bar)
 
