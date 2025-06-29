@@ -12,6 +12,14 @@ The BaseCamera class has support for integrating with a [Simulation Framework Wi
 The Simulation Window consists of a tab for each of the robot's cameras.
 Each tab will have independent resolution and frame rates, according to the robot configuration.
 
+Upon initializing the camera simulator, an ephemeral TCP port will be assigned to an internal ZeroMQ server/client for IPC.
+
+!!! Bug
+    The internal ZeroMQ server **does not** use any form of encryption. 
+    Virtual cameras can be monitored through outside processes.
+    The ZeroMQ server will eventually be encrypted, using a different key on every simulation startup.    
+
+
 ### Video Sources
 
 Each simulated camera can connect to a physically connected camera using camera passthrough, or an uploaded image file.

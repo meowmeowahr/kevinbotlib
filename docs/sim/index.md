@@ -1,6 +1,6 @@
 # Simulation Framework
 
-![sim-framework-marketing-image.png](../media/sim-framework-marketing-image.png)
+![sim-framework-marketing-image.gif](../media/sim-framework-marketing-image.gif)
 
 The _KevinbotLib Simulation Framework_ allows for the testing of robot code before deployment.
 
@@ -15,7 +15,7 @@ The _KevinbotLib Simulation Framework_ allows for the testing of robot code befo
 
 ![procinfo.png](../media/windowview/procinfo.png){ width=180px }
 
-Display Process robot process running time, and robot cycle time
+Display robot process running time, and robot cycle time
 
 ### Telemetry
 
@@ -49,7 +49,7 @@ View more info [here](../hardware/interfaces/serial#simulation)
 
 ![camera.png](../media/windowview/camera.png){ width=480px }
 
-Simulate vision cameras by using local cameras, or imag uploads
+Simulate vision cameras by using local cameras, or image uploads
 
 View more info [here](../vision/simulation)
 
