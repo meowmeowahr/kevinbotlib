@@ -2,13 +2,14 @@ import re
 import sys
 from collections.abc import Callable
 from multiprocessing import current_process
+from typing import ClassVar
 
 import cv2
 import numpy as np
 import zmq
 from cv2_enumerate_cameras import enumerate_cameras
 from fonticon_mdi7 import MDI7
-from PySide6.QtCore import QSize, Qt, QThread, Signal, Slot
+from PySide6.QtCore import QSize, Qt, QThread, Signal, Slot, QMutex
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QComboBox,
@@ -29,8 +30,9 @@ from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.logger import Logger
 from kevinbotlib.simulator.windowview import WindowView, register_window_view
 
-
 class FrameTimerThread(QThread):
+    _frame_timer_mutex: ClassVar[QMutex] = QMutex()
+
     def __init__(self, callback, interval_ms=33, parent=None):
         super().__init__(parent)
         self.callback = callback
@@ -39,7 +41,9 @@ class FrameTimerThread(QThread):
 
     def run(self):
         while self._running:
+            FrameTimerThread._frame_timer_mutex.lock()
             self.callback()
+            FrameTimerThread._frame_timer_mutex.unlock()
             self.msleep(self.interval_ms)
 
     def stop(self):
@@ -203,7 +207,6 @@ class CameraPage(QWidget):
 
     def trigger_file_dialog(self):
         if current_process().name != "MainProcess":
-            Logger().warning("File dialog requested from non-main process. Emitting signal to main thread.")
             self.request_file_dialog.emit()
         else:
             self.upload_image()
