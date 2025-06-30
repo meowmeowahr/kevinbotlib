@@ -39,6 +39,7 @@ span.filename {
     position: relative; /* Needed for absolute positioning of buttons */
     padding-top: 6px !important;
     padding-bottom: 6px !important;
+    background: var(--md-default-fg-color--lightest) !important;
 }
 
 span.filename::before {
