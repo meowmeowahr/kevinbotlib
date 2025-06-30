@@ -1,4 +1,4 @@
-__version__ = "1.0.0-alpha.16"
+__version__ = "1.0.0-alpha.17"
 
 __license__ = """
 GNU LESSER GENERAL PUBLIC LICENSE
