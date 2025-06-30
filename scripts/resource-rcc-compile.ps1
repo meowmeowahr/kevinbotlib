@@ -1,4 +1,4 @@
-yside6-rcc.exe resources/kevinbotlib/theme_resources.qrc -o src/kevinbotlib/ui/resources_rc.py --no-compress
+pyside6-rcc.exe resources/kevinbotlib/theme_resources.qrc -o src/kevinbotlib/ui/resources_rc.py --no-compress
 pyside6-rcc.exe resources/kevinbotlib/controlconsole_resources.qrc -o src/kevinbotlib/apps/control_console/resources_rc.py --no-compress
 pyside6-rcc.exe resources/kevinbotlib/dashboard_resources.qrc -o src/kevinbotlib/apps/dashboard/resources_rc.py --no-compress
 pyside6-rcc.exe resources/kevinbotlib/logdownloader_resources.qrc -o src/kevinbotlib/apps/log_downloader/resources_rc.py --no-compress
