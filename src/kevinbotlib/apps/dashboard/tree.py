@@ -54,6 +54,7 @@ class DictTreeModel(QAbstractItemModel):
             return self.createIndex(row, column, child_item)
         return QModelIndex()
 
+    # noinspection PyMethodOverriding
     def parent(self, index: QModelIndex) -> QModelIndex:
         if not index.isValid():
             return QModelIndex()

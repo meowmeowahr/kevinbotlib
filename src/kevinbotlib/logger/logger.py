@@ -434,3 +434,27 @@ class StreamRedirector(IO):
 
     def flush(self):
         pass
+
+    def close(self):
+        """Close the stream."""
+
+    def readable(self) -> bool:
+        """Return False as this stream is not readable."""
+        return False
+
+    def writable(self) -> bool:
+        """Return True as this stream is writable."""
+        return True
+
+    def seekable(self) -> bool:
+        """Return False as this stream is not seekable."""
+        return False
+
+    def fileno(self) -> int:
+        """Raise OSError as this stream has no underlying file descriptor."""
+        msg = "StreamRedirector has no file descriptor"
+        raise OSError(msg)
+
+    def isatty(self) -> bool:
+        """Return False as this is not a terminal."""
+        return False

@@ -36,7 +36,7 @@ class SingleFrameSendable(BinarySendable):
     """
     data_id: str = "kevinbotlib.vision.dtype.frame"
     """Internally used to differentiate sendable types"""
-    struct: ClassVar[dict[str, Any]] = {
+    struct: dict[str, Any] = {  # noqa: RUF012
         "dashboard": [
             {"element": "value", "format": "limit:1024"},
             {"element": "resolution", "format": "raw"},
@@ -72,7 +72,7 @@ class MjpegStreamSendable(SingleFrameSendable):
     """A two integer list containing the video resolution (WIDTH x HEIGHT)"""
     encoding: str = "JPG"
     """Frame encoding format"""
-    struct: ClassVar[dict[str, Any]] = {
+    struct: dict[str, Any] = {  # noqa: RUF012
         "dashboard": [
             {"element": "value", "format": "limit:1024"},
             {"element": "resolution", "format": "raw"},
