@@ -1,5 +1,5 @@
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QIcon, QImage, QColor, QPixmap
+from PySide6.QtGui import QColor, QIcon, QImage, QPixmap
 from PySide6.QtWidgets import QLabel, QWidget
 
 from kevinbotlib.robot import BaseRobot
@@ -18,6 +18,7 @@ class MyWindowView(WindowView):
     # ! optional - define an icon for the WindowView
     # Icons must be PySide6 QIcon and scalable down to 16x16
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         # this seems like a lot, but it just generates a red icon for use in this example
         image = QImage(QSize(16, 16), QImage.Format.Format_RGB888)
         image.fill(QColor(255, 0, 0))

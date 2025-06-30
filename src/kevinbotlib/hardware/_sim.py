@@ -2,6 +2,7 @@ import binascii
 import unicodedata
 
 import serial
+from fonticon_mdi7 import MDI7 as _MDI7
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
@@ -18,7 +19,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from fonticon_mdi7 import MDI7 as _MDI7
 
 from kevinbotlib.apps import get_icon
 from kevinbotlib.simulator.windowview import (
@@ -185,6 +185,7 @@ class SerialWindowView(WindowView):
         return "Serial Devices"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return get_icon(_MDI7.serial_port)
 
     def create_tab(self, devname: str):

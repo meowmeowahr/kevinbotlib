@@ -19,8 +19,8 @@ from PySide6.QtWidgets import (
 import kevinbotlib.simulator.resources_rc as _rcc
 from kevinbotlib import __about__
 from kevinbotlib.apps import dark as icon_dark
-from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps import dark_mode as global_dark_mode
+from kevinbotlib.apps import light as icon_light
 from kevinbotlib.apps.common.abc import ThemableWindow as _ThemableWindow
 from kevinbotlib.apps.common.about import AboutDialog
 from kevinbotlib.apps.common.settings_rows import Divider, UiColorSettingsSwitcher

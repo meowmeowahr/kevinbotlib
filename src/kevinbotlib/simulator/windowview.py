@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Any, final
 
-from PySide6.QtCore import QObject
-from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QIcon
-
 from fonticon_mdi7.mdi7 import MDI7 as _MDI7
+from PySide6.QtCore import QObject
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QWidget
 
 from kevinbotlib.apps import get_icon
+
 
 class WindowView(QObject):
     """
@@ -26,7 +26,7 @@ class WindowView(QObject):
         return f"New WindowView <{hex(self.__hash__())}>"
 
     # noinspection PyMethodMayBeStatic
-    def icon(self, dark_mode: bool) -> QIcon:
+    def icon(self, dark_mode: bool) -> QIcon:  # noqa: ARG002
         """
         Gets the icon for the WindowView.
 

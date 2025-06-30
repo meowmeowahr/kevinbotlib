@@ -3,6 +3,7 @@ import time
 from typing import TYPE_CHECKING
 
 import ansi2html
+from fonticon_mdi7.mdi7 import MDI7 as _MDI7
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtWidgets import (
@@ -15,7 +16,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from fonticon_mdi7.mdi7 import MDI7 as _MDI7
 
 from kevinbotlib.apps import get_icon
 from kevinbotlib.simulator import SimulationFramework
@@ -53,6 +53,7 @@ class TelemetryWindowView(WindowView):
         return "Telemetry"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return get_icon(_MDI7.text)
 
     def generate(self) -> QWidget:
@@ -109,6 +110,7 @@ class MetricsWindowView(WindowView):
         return "Metrics"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return get_icon(_MDI7.speedometer)
 
     def generate(self) -> QWidget:
@@ -163,6 +165,7 @@ class ProcInfoWindowView(WindowView):
         return "Process Info"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return get_icon(_MDI7.information)
 
     def generate(self) -> QWidget:
@@ -247,6 +250,7 @@ class StateButtonsView(WindowView):
         return "Robot State"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return get_icon(_MDI7.gesture_tap_button)
 
     def generate(self) -> QWidget:

@@ -9,8 +9,9 @@ import numpy as np
 import zmq
 from cv2_enumerate_cameras import enumerate_cameras
 from fonticon_mdi7 import MDI7
-from PySide6.QtCore import QSize, Qt, QThread, Signal, Slot, QMutex
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap, QResizeEvent, QIcon
+from fonticon_mdi7.mdi7 import MDI7 as _MDI7
+from PySide6.QtCore import QMutex, QSize, Qt, QThread, Signal, Slot
+from PySide6.QtGui import QColor, QFont, QIcon, QImage, QPainter, QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -25,11 +26,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from fonticon_mdi7.mdi7 import MDI7 as _MDI7
 
 from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.logger import Logger
 from kevinbotlib.simulator.windowview import WindowView, register_window_view
+
 
 class FrameTimerThread(QThread):
     _frame_timer_mutex: ClassVar[QMutex] = QMutex()
@@ -377,6 +378,7 @@ class CamerasWindowView(WindowView):
         return "Cameras"
 
     def icon(self, dark_mode: bool) -> QIcon:
+        super().icon(dark_mode)
         return icon(_MDI7.camera)
 
     def generate(self) -> QWidget:
