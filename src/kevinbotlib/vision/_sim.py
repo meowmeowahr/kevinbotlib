@@ -260,14 +260,14 @@ class CameraPage(QWidget):
         self.source.clear()
         self.source.addItem("Uploaded Image")
 
-        if sys.platform != "darwin":
-            cameras = enumerate_cameras()
-            cameras.sort(key=lambda x: x.index, reverse=True)
-            for camera in reversed(cameras):
-                if camera.name not in [self.source.itemText(i) for i in range(self.source.count())]:
-                    self.source.addItem(camera.name, camera.index)
-        else:
-            QMessageBox.warning(self, "Platform Support", "Camera passthrough currently does not support macOS.")
+        if sys.platform == "darwin":
+            Logger().warning("macOS support for video passthrough is EXPERIMENTAL. Expect bugs.")
+
+        cameras = enumerate_cameras()
+        cameras.sort(key=lambda x: x.index, reverse=True)
+        for camera in reversed(cameras):
+            if camera.name not in [self.source.itemText(i) for i in range(self.source.count())]:
+                self.source.addItem(camera.name, camera.index)
 
         if current in [self.source.itemText(i) for i in range(self.source.count())]:
             self.source.setCurrentText(current)
