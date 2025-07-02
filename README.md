@@ -19,13 +19,15 @@ KevinbotLib includes many utility classes for developing robots, such as communi
 
 ## Table of Contents
 
-- [KevinbotLib](#kevinbotlib)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Developing](#developing)
-    - [Set up module in development mode](#set-up-module-in-development-mode)
-    - [Formatting](#formatting)
-  - [License](#license)
+<!-- TOC -->
+* [KevinbotLib](#kevinbotlib)
+  * [Table of Contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Developing](#developing)
+    * [Set up KevinbotLib in development mode](#set-up-kevinbotlib-in-development-mode)
+    * [Formatting](#formatting)
+  * [License](#license)
+<!-- TOC -->
 
 ## Installation
 
@@ -35,11 +37,11 @@ pip install kevinbotlib
 
 ## Developing
 
-### Set up module in development mode
+### Set up KevinbotLib in development mode
 
 - Install hatch
   
-  [Hatch Installation](https://hatch.pypa.io/1.12/install/) (I recommend using pipx)
+  [Hatch Installation](https://hatch.pypa.io/1.12/install/)
 - Clone this repo
 
   ```console
@@ -56,6 +58,12 @@ pip install kevinbotlib
 
   ```console
   hatch shell
+  ```
+  
+* Install development dependencies
+
+  ```console
+  uv sync --active --upgrade --extra dev
   ```
 
 ### Formatting
