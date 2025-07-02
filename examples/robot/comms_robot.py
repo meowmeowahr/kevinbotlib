@@ -1,4 +1,5 @@
-from kevinbotlib.comm.redis import (
+from kevinbotlib.comm.request import SetRequest
+from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
     FloatSendable,
@@ -30,11 +31,15 @@ class DemoRobot(BaseRobot):
             "Starting robot..."
         )  # print statements are redirected to the KevinbotLib logging system - please don't do this in production
 
-        self.comm_client.set("example/string", StringSendable(value="Hello World!"))
-        self.comm_client.set("example/integer", IntegerSendable(value=1234))
-        self.comm_client.set("example/float", FloatSendable(value=1234.56))
-        self.comm_client.set("example/list", AnyListSendable(value=[1, 2, 3, 4]))
-        self.comm_client.set("example/boolean", BooleanSendable(value=True))
+        self.comm_client.multi_set(
+            [
+                SetRequest("example/string", StringSendable(value="Hello World!")),
+                SetRequest("example/integer", IntegerSendable(value=1234)),
+                SetRequest("example/float", FloatSendable(value=1234.56)),
+                SetRequest("example/list", AnyListSendable(value=[1, 2, 3, 4])),
+                SetRequest("example/boolean", BooleanSendable(value=True)),
+            ]
+        )
 
 
 if __name__ == "__main__":
