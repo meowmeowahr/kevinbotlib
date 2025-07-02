@@ -1,4 +1,5 @@
 from kevinbotlib import __about__
+from kevinbotlib.util import is_binary
 
 _JINJA2_LICENSE = """
 Copyright 2007 Pallets
@@ -2528,8 +2529,13 @@ def get_licenses() -> dict[str, str]:
     Returns:
         dict[str, str]: license name-license text
     """
-    return {
-        "kevinbotlib": __about__.__license__,
+    li = {}
+    if is_binary():
+        li["KevinbotLib Binary Distribution"] = __about__.__binary_license__
+        li["KevinbotLib Source Code"] = __about__.__license__
+    else:
+        li["kevinbotlib"] = __about__.__license__
+    li.update({
         "Jinja2": _JINJA2_LICENSE,
         "MarkupSafe": _MARKUPSAFE_LICENSE,
         "pySDL2": _PYSDL2_LICENSE,
@@ -2566,4 +2572,5 @@ def get_licenses() -> dict[str, str]:
         "rich": _RICH_LICENSE,
         "markdown-it-py": _MARKDOWN_IT_PY_LICENSE,
         "mdurl": _MDURL_LICENSE,
-    }
+    })
+    return li
