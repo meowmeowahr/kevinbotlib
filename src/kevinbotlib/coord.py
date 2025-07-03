@@ -60,7 +60,7 @@ class Pose2d:
 
     transform: Coord2d
     """Transformation"""
-    orientation: Angle2d = Field(default_factory=lambda: Angle2d.from_value(0.0))
+    orientation: Angle2d = Field(default_factory=lambda: Angle2d(0.0))
     """Orientation"""
 
 
@@ -72,5 +72,5 @@ class Pose3d:
 
     transform: Coord3d
     """Transformation"""
-    orientation: Angle3d = Field(default_factory=lambda: Angle3d.from_values(0.0, 0.0, 0.0))
+    orientation: Angle3d = Field(default_factory=lambda: Angle3d(0.0, 0.0, 0.0))
     """Orientation"""

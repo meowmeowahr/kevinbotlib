@@ -50,7 +50,7 @@ dependencies = [
   "rich~=14.0.0",
   "hiredis>=3.2.1",
   "fonticon-materialdesignicons7~=7.2.96",
-  "cv2-enumerate-cameras~=1.2.0",
+  "cv2-enumerate-cameras~=1.2.02",
   "pyzmq~=27.0.0",
 ]
 
