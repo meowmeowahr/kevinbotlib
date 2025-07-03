@@ -486,7 +486,17 @@ class VisionPipeline(ABC):
         Args:
             source (Callable[[], tuple[bool, MatLike]]): Getter for the frame to process
         """
-        self.source = source
+        self._source = source
+
+    @property
+    def input_frame(self) -> tuple[bool, MatLike]:
+        """
+        Get the next input frame.
+
+        Returns:
+            Successful frame retrieval and frame
+        """
+        return self._source()
 
     @abstractmethod
     def run(self, *args, **kwargs) -> tuple[bool, MatLike | None]:
@@ -496,6 +506,7 @@ class VisionPipeline(ABC):
             tuple[bool, MatLike | None]: An OpenCV Mat for pipeline visualization purposes. Can be ignored depending on the use case.
         """
 
+    @abstractmethod
     def return_values(self) -> Any:
         """Retrieves the calculations from the latest pipeline iteration
 
@@ -516,4 +527,13 @@ class EmptyPipeline(VisionPipeline):
         Returns: Source values
 
         """
-        return self.source()
+        return self.input_frame
+
+    def return_values(self) -> Any:
+        """
+        Will always return None.
+
+        Returns:
+            None
+        """
+        return None

@@ -142,6 +142,7 @@ nav:
         - sim/index.md
         - sim/windowview.md
     - Vision:
+        - vision/index.md
         - vision/extend-basecamera.md
         - vision/simulation.md
     - Hardware:
