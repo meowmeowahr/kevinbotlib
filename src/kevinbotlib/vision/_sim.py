@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from zmq import curve_keypair
 
 from kevinbotlib.apps import get_icon as icon
 from kevinbotlib.logger import Logger
@@ -355,7 +356,7 @@ ZMQ_SEND_BUFFER_SIZE = 1024 * 1024
 @register_window_view("kevinbotlib.vision.cameras")
 class CamerasWindowView(WindowView):
     new_tab = Signal(str)
-    set_port = Signal(int)
+    set_port_encryption = Signal(int, bytes)
 
     def __init__(self):
         super().__init__()
@@ -371,7 +372,7 @@ class CamerasWindowView(WindowView):
         self.camera_zmq_context: zmq.Context | None = None
         self.camera_zmq_socket: zmq.Socket | None = None
         self.new_tab.connect(self.create_tab)
-        self.set_port.connect(self.set_zmq_port)
+        self.set_port_encryption.connect(self.set_zmq_port_encryption)
 
     @property
     def title(self) -> str:
@@ -384,11 +385,16 @@ class CamerasWindowView(WindowView):
     def generate(self) -> QWidget:
         return self.widget
 
-    def set_zmq_port(self, port: int):
+    def set_zmq_port_encryption(self, port: int, server_public_key: bytes):
         if not self.camera_zmq_tcp_port:
+            client_public, client_secret = curve_keypair()
+
             self.camera_zmq_tcp_port = port
             self.camera_zmq_context = zmq.Context()
             self.camera_zmq_socket = self.camera_zmq_context.socket(zmq.PUB)
+            self.camera_zmq_socket.curve_secretkey = client_secret
+            self.camera_zmq_socket.curve_publickey = client_public
+            self.camera_zmq_socket.curve_serverkey = server_public_key
             self.camera_zmq_socket.setsockopt(zmq.SNDBUF, ZMQ_SEND_BUFFER_SIZE)
             self.camera_zmq_socket.bind(f"tcp://*:{self.camera_zmq_tcp_port}")
 
@@ -419,4 +425,4 @@ class CamerasWindowView(WindowView):
                 case "fps":
                     self.pages[payload["name"]].set_fps(payload["fps"])
                 case "port":
-                    self.set_port.emit(payload["port"])
+                    self.set_port_encryption.emit(payload["port"], payload["key"])

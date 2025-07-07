@@ -11,6 +11,7 @@ import pybase64 as base64
 import zmq
 from annotated_types import Len
 from cv2.typing import MatLike
+from zmq import curve_keypair
 
 from kevinbotlib.comm.abstract import (
     AbstractPubSubNetworkClient,
@@ -258,9 +259,15 @@ class BaseCamera(ABC):
             BaseCamera._SIM_REGISTERED_CAMERAS.append(camera_name)
             self._sim_camera_name = camera_name
 
+            # encryption keys
+            server_public, server_secret = curve_keypair()
+
             # create a zmq context
             self._sim_zmq = zmq.Context()
             self._sim_zmq_socket = self._sim_zmq.socket(zmq.SUB)
+            self._sim_zmq_socket.curve_secretkey = server_secret
+            self._sim_zmq_socket.curve_publickey = server_public
+            self._sim_zmq_socket.curve_server = True
             if not BaseCamera._SIM_ZMQ_PORT:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.bind(("", 0))  # 0 = request ephemeral port
@@ -271,7 +278,7 @@ class BaseCamera(ABC):
             self._sim_zmq_socket.subscribe(re.sub(r"[^A-Za-z0-9-_]", "_", self._sim_camera_name))
             self._sim_zmq_socket.setsockopt(zmq.RCVBUF, ZMQ_RECV_BUFFER_SIZE)
             self.robot.simulator.send_to_window(
-                "kevinbotlib.vision.cameras", {"type": "port", "port": BaseCamera._SIM_ZMQ_PORT}
+                "kevinbotlib.vision.cameras", {"type": "port", "port": BaseCamera._SIM_ZMQ_PORT, "key": server_public}
             )
 
             def sim_frame_recv_loop():
