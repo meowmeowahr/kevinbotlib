@@ -1,9 +1,6 @@
-import math
-
 from kevinbotlib.coord import (
     Angle2d,
     Angle3d,
-    AngleUnit,
     Coord2d,
     Coord3d,
     Pose2d,
