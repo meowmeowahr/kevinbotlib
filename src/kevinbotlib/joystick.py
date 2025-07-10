@@ -1451,7 +1451,9 @@ class RemoteRawJoystickDevice(AbstractJoystickInterface):
 
     def start_polling(self):
         """Starts the polling loop in a separate thread."""
+        _Logger().error("POLL")
         if not self.running:
+            _Logger().error("POLLBEGIN")
             self.running = True
             threading.Thread(
                 target=self._poll_loop,
@@ -1621,38 +1623,3 @@ class RemoteNamedController(RemoteRawJoystickDevice):
             super().get_axis_value(NamedControllerAxis.RightX, precision),
             super().get_axis_value(NamedControllerAxis.RightY, precision),
         ]
-
-    def _poll_loop(self):
-        while self.running:
-            # Check connection status
-            conn_sendable = self.client.get(f"{self._client_key}/connected", BooleanSendable)
-            self.connected = conn_sendable.value if conn_sendable else False
-
-            if self.connected:
-                # Check buttons
-                buttons = self.get_buttons()
-                current_button_states = {btn: True for btn in buttons}
-
-                # Check for button state changes
-                for button in set(self._last_button_states.keys()) | set(current_button_states.keys()):
-                    old_state = self._last_button_states.get(button, False)
-                    new_state = current_button_states.get(button, False)
-
-                    if old_state != new_state and button in self._button_callbacks:
-                        self._button_callbacks[button](new_state)
-
-                self._last_button_states = current_button_states
-
-                # Check POV/D-pad
-                current_pov = self.get_dpad_direction()
-                if current_pov != self._last_pov_state:
-                    for callback in self._pov_callbacks:
-                        callback(current_pov)
-                self._last_pov_state = current_pov
-
-                # Check axes (only update states here, specific methods handle formatting)
-                current_axes = super().get_axes()
-                for axis_id in range(len(current_axes)):
-                    self._last_axis_states[axis_id] = current_axes[axis_id]
-
-            time.sleep(1 / self.polling_hz)
