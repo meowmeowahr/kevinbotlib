@@ -23,7 +23,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -1595,6 +1595,10 @@
     
       
         
+          
+        
+      
+        
       
         
       
@@ -1612,8 +1616,9 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
-            
+          <div class="md-nav__link md-nav__container">
+            <a href="../../vision/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -1622,8 +1627,14 @@
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9">
@@ -1631,6 +1642,8 @@
             Vision
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -2538,6 +2551,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.vision.EmptyPipeline.return_values" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;return_values
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2782,9 +2804,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.vision.VisionPipeline.source" class="md-nav__link">
+  <a href="#kevinbotlib.vision.VisionPipeline.input_frame" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;source
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;input_frame
     </span>
   </a>
   
@@ -3428,6 +3450,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#kevinbotlib.vision.EmptyPipeline.return_values" class="md-nav__link">
+    <span class="md-ellipsis">
+      <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;return_values
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3672,9 +3703,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#kevinbotlib.vision.VisionPipeline.source" class="md-nav__link">
+  <a href="#kevinbotlib.vision.VisionPipeline.input_frame" class="md-nav__link">
     <span class="md-ellipsis">
-      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;source
+      <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;input_frame
     </span>
   </a>
   
@@ -3733,7 +3764,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/vision.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/reference/vision.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -4741,6 +4772,47 @@
 
         <p>Fake pipeline. Return the inputs.</p>
 <p>Returns: Source values</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="kevinbotlib.vision.EmptyPipeline.return_values" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">return_values</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Will always return None.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -5915,17 +5987,42 @@
 
 
 
-<h4 id="kevinbotlib.vision.VisionPipeline.source" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">source</span> <span class="o">=</span> <span class="n">source</span></code>
+<h4 id="kevinbotlib.vision.VisionPipeline.input_frame" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">input_frame</span></code>
 
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 </h4>
 
 
     <div class="doc doc-contents ">
+
+        <p>Get the next input frame.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span>[<span title="bool">bool</span>, <span title="cv2.typing.MatLike">MatLike</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Successful frame retrieval and frame</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
     </div>
 
@@ -6032,6 +6129,10 @@
 
 <h4 id="kevinbotlib.vision.VisionPipeline.return_values" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">return_values</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
 
 </h4>
 
@@ -6185,7 +6286,7 @@
       <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="../../js/print-site.js"></script>
       

@@ -23,7 +23,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -1675,6 +1675,10 @@
     
       
         
+          
+        
+      
+        
       
         
       
@@ -1692,8 +1696,9 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
-            
+          <div class="md-nav__link md-nav__container">
+            <a href="../../vision/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -1702,8 +1707,14 @@
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9">
@@ -1711,6 +1722,8 @@
             Vision
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -2755,7 +2768,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/comm.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/comm.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2786,9 +2799,18 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetRequest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">StringSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
@@ -2802,8 +2824,15 @@
 <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;demo </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="c1"># ! don&#39;t do this</span>
+        <span class="c1"># client.set(&quot;example/hierarchy/test&quot;, IntegerSendable(value=i))</span>
+        <span class="c1"># client.set(&quot;example/hierarchy/test2&quot;, StringSendable(value=f&quot;demo {i}&quot;))</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">multi_set</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">i</span><span class="p">)),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;demo </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
@@ -2828,9 +2857,22 @@
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span><span class="p">,</span> <span class="n">StringSendable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">StringSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
@@ -2842,8 +2884,17 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">))</span>
+        <span class="c1"># ! don&#39;t do this</span>
+        <span class="c1"># print(client.get(&quot;example/hierarchy/test&quot;, IntegerSendable))</span>
+        <span class="c1"># print(client.get(&quot;example/hierarchy/test2&quot;, StringSendable))</span>
+        <span class="n">test</span><span class="p">,</span> <span class="n">test2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">multi_get</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">GetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">),</span>
+                <span class="n">GetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -2872,9 +2923,11 @@
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
@@ -3067,7 +3120,7 @@
       <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="../../js/print-site.js"></script>
       

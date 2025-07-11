@@ -19,7 +19,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -1590,6 +1590,10 @@
     
       
         
+          
+        
+      
+        
       
         
       
@@ -1607,8 +1611,9 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
         
           
-          <label class="md-nav__link" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
-            
+          <div class="md-nav__link md-nav__container">
+            <a href="../vision/" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -1617,8 +1622,14 @@
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_9">
@@ -1626,6 +1637,8 @@
             Vision
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -3072,9 +3085,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.9.1 Vision
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#vision-extend-basecamera" class="md-nav__link">
     <span class="md-ellipsis">
-      1.9.1 Extending BaseCamera
+      1.9.2 Extending BaseCamera
     </span>
   </a>
   
@@ -3083,7 +3105,7 @@
           <li class="md-nav__item">
   <a href="#vision-simulation" class="md-nav__link">
     <span class="md-ellipsis">
-      1.9.2 Simulation
+      1.9.3 Simulation
     </span>
   </a>
   
@@ -4135,7 +4157,13 @@ Use the regular pip installation if you want any development modules.</p>
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AnyListSendable</span><span class="p">,</span>
     <span class="n">BooleanSendable</span><span class="p">,</span>
     <span class="n">FloatSendable</span><span class="p">,</span>
@@ -4167,11 +4195,15 @@ Use the regular pip installation if you want any development modules.</p>
             <span class="s2">&quot;Starting robot...&quot;</span>
         <span class="p">)</span>  <span class="c1"># print statements are redirected to the KevinbotLib logging system - please don&#39;t do this in production</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/string&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/integer&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1234</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/float&quot;</span><span class="p">,</span> <span class="n">FloatSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">1234.56</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/list&quot;</span><span class="p">,</span> <span class="n">AnyListSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/boolean&quot;</span><span class="p">,</span> <span class="n">BooleanSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comm_client</span><span class="o">.</span><span class="n">multi_set</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/string&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/integer&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1234</span><span class="p">)),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/float&quot;</span><span class="p">,</span> <span class="n">FloatSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">1234.56</span><span class="p">)),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/list&quot;</span><span class="p">,</span> <span class="n">AnyListSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/boolean&quot;</span><span class="p">,</span> <span class="n">BooleanSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -4199,9 +4231,18 @@ Use the regular pip installation if you want any development modules.</p>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetRequest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">StringSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
@@ -4215,8 +4256,15 @@ Use the regular pip installation if you want any development modules.</p>
 <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;demo </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="c1"># ! don&#39;t do this</span>
+        <span class="c1"># client.set(&quot;example/hierarchy/test&quot;, IntegerSendable(value=i))</span>
+        <span class="c1"># client.set(&quot;example/hierarchy/test2&quot;, StringSendable(value=f&quot;demo {i}&quot;))</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">multi_set</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">i</span><span class="p">)),</span>
+                <span class="n">SetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;demo </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
@@ -4241,9 +4289,22 @@ Use the regular pip installation if you want any development modules.</p>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
-<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span><span class="p">,</span> <span class="n">StringSendable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">StringSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
@@ -4255,8 +4316,17 @@ Use the regular pip installation if you want any development modules.</p>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">))</span>
+        <span class="c1"># ! don&#39;t do this</span>
+        <span class="c1"># print(client.get(&quot;example/hierarchy/test&quot;, IntegerSendable))</span>
+        <span class="c1"># print(client.get(&quot;example/hierarchy/test2&quot;, StringSendable))</span>
+        <span class="n">test</span><span class="p">,</span> <span class="n">test2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">multi_get</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">GetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test&quot;</span><span class="p">,</span> <span class="n">IntegerSendable</span><span class="p">),</span>
+                <span class="n">GetRequest</span><span class="p">(</span><span class="s2">&quot;example/hierarchy/test2&quot;</span><span class="p">,</span> <span class="n">StringSendable</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -4285,9 +4355,11 @@ Use the regular pip installation if you want any development modules.</p>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span><span class="p">,</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.sendables</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerSendable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
@@ -6115,7 +6187,216 @@ It is recommended to use reverse domain name notation (e.g., <code>com.example.m
                     <section class='print-page md-section' id='section-1-9' heading-number='1.9'>
                         <h1>Vision<a class='headerlink' href='#section-1-9' title='Permanent link'></a>
                         </h1>
-                    <section class="print-page" id="vision-extend-basecamera" heading-number="1.9.1"><h1 id="vision-extend-basecamera-extending-basecamera">Extending BaseCamera</h1>
+                    <section class="print-page" id="vision" heading-number="1.9.1"><h1 id="vision-vision">Vision</h1>
+<p>The KevinbotLib Vision System is a pipeline-based computer vision framework building on top of <a href="https://opencv.org/">OpenCV</a>.</p>
+<h2 id="vision-cameras">Cameras</h2>
+<p>A KevinbotLib Camera will retrieve frames from a connected camera and can set its resolution and frame rate.</p>
+<p>KevinbotLib includes two built-in camera connectors, <a href="#reference-vision-kevinbotlib.vision.CameraByIndex">CameraByIndex</a> and <a href="#reference-vision-kevinbotlib.vision.CameraByDevicePath">CameraByDevicePath</a>.</p>
+<h3 id="vision-creating-custom-cameras">Creating Custom Cameras</h3>
+<p>Custom camera implementations must extend <a href="#reference-vision-kevinbotlib.vision.BaseCamera">BaseCamera</a> for proper simulation support.
+See more info <a href="#vision-extend-basecamera">here</a>.</p>
+<h2 id="vision-pipelines">Pipelines</h2>
+<p>A pipeline will take in camera frames (or another video source), and produce output calculations as well as a frame for visualization.</p>
+<p><img alt="vision-pipeline-diagram-dark.svg" src="../media/vision-pipeline-diagram-dark.svg#only-dark" />
+<img alt="vision-pipeline-diagram-dark.svg" src="../media/vision-pipeline-diagram-light.svg#only-light" /></p>
+<p>KevinbotLib includes one basic pipeline, the <a href="#reference-vision-kevinbotlib.vision.EmptyPipeline">EmptyPipeline</a>.
+The EmptyPipeline will output exactly what is put in.</p>
+<h2 id="vision-comms-encoding-and-decoding">Comms, Encoding, and Decoding</h2>
+<p>The KevinbotLib Vision Systems includes comm sendables and encode/decode support for (M)JPG and PNG</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The sendables are not activated by default for performance reasons.
+Use the following to activate them before attempting to set/get video data.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">VisionCommUtils</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>    
+</code></pre></div>
+</div>
+<h2 id="vision-examples">Examples</h2>
+<h3 id="vision-pipeline">Pipeline</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/pipeline.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cv2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatLike</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">CameraByIndex</span><span class="p">,</span> <span class="n">VisionPipeline</span>
+
+<span class="n">Logger</span><span class="p">()</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+
+<span class="n">camera</span> <span class="o">=</span> <span class="n">CameraByIndex</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyPipeline</span><span class="p">(</span><span class="n">VisionPipeline</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">MatLike</span><span class="p">]]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">MatLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="c1"># convert to grayscale as an example</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span>
+        <span class="k">return</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">MyPipeline</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">get_frame</span><span class="p">)</span>
+    <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
+        <span class="k">break</span>
+</code></pre></div></td></tr></table></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following examples require a running Redis server for RedisCommClient.</p>
+</div>
+<h3 id="vision-sending-a-video-stream-over-redis">Sending a Video Stream over Redis</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/video_sender.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileLoggerConfig</span><span class="p">,</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CameraByIndex</span><span class="p">,</span>
+    <span class="n">EmptyPipeline</span><span class="p">,</span>
+    <span class="n">FrameEncoders</span><span class="p">,</span>
+    <span class="n">MjpegStreamSendable</span><span class="p">,</span>
+    <span class="n">VisionCommUtils</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">(</span><span class="n">file_logger</span><span class="o">=</span><span class="n">FileLoggerConfig</span><span class="p">()))</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
+
+<span class="n">camera</span> <span class="o">=</span> <span class="n">CameraByIndex</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">set_resolution</span><span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">1080</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">EmptyPipeline</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">get_frame</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">FrameEncoders</span><span class="o">.</span><span class="n">encode_jpg</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="s2">&quot;streams/camera0&quot;</span><span class="p">,</span>
+            <span class="n">MjpegStreamSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">encoded</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="vision-receiving-a-video-stream-over-redis">Receiving a Video Stream over Redis</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/video_rx.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrameDecoders</span><span class="p">,</span> <span class="n">MjpegStreamSendable</span><span class="p">,</span> <span class="n">VisionCommUtils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">(</span><span class="s2">&quot;robot.local&quot;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">)</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">sendable</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streams/camera0&quot;</span><span class="p">,</span> <span class="n">MjpegStreamSendable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sendable</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">FrameDecoders</span><span class="o">.</span><span class="n">decode_sendable</span><span class="p">(</span><span class="n">sendable</span><span class="p">))</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="vision-see-also">See also</h2>
+<p><a href="#reference-vision">Vision System Reference</a></p></section><section class="print-page" id="vision-extend-basecamera" heading-number="1.9.2"><h1 id="vision-extend-basecamera-extending-basecamera">Extending BaseCamera</h1>
 <p>When creating a custom camera, the simulator must always be initialized after your camera instantiation.
 Failure to do so may result in a broken <a href="#vision-simulation-simulation-window">Simulator WindowView</a></p>
 <h2 id="vision-extend-basecamera-basic-example">Basic Example</h2>
@@ -6143,7 +6424,7 @@ Failure to do so may result in a broken <a href="#vision-simulation-simulation-w
     <span class="k">def</span><span class="w"> </span><span class="nf">set_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_resolution</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
         <span class="c1"># set your camera resolution here</span>
-</code></pre></div></section><section class="print-page" id="vision-simulation" heading-number="1.9.2"><h1 id="vision-simulation-simulation">Simulation</h1>
+</code></pre></div></section><section class="print-page" id="vision-simulation" heading-number="1.9.3"><h1 id="vision-simulation-simulation">Simulation</h1>
 <p>The BaseCamera class has support for integrating with a <a href="#sim-windowview">Simulation Framework WindowView</a></p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -30240,7 +30521,7 @@ Args:
 
 
 <h4 id="reference-coord-kevinbotlib.coord.Pose2d.orientation" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">orientation</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Angle2d</span><span class="o">.</span><span class="n">from_value</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">orientation</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Angle2d</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -30328,7 +30609,7 @@ Args:
 
 
 <h4 id="reference-coord-kevinbotlib.coord.Pose3d.orientation" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">orientation</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Angle3d</span><span class="o">.</span><span class="n">from_values</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span></code>
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">orientation</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Angle3d</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
@@ -31363,6 +31644,47 @@ Args:
 
         <p>Fake pipeline. Return the inputs.</p>
 <p>Returns: Source values</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="reference-vision-kevinbotlib.vision.EmptyPipeline.return_values" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">return_values</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Will always return None.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><autoref identifier="typing.Any" backlink-type="returned-by" backlink-anchor="kevinbotlib.vision.EmptyPipeline.return_values" optional hover>Any</autoref></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>None</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
     </div>
@@ -32537,17 +32859,42 @@ Args:
 
 
 
-<h4 id="reference-vision-kevinbotlib.vision.VisionPipeline.source" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">source</span> <span class="o">=</span> <span class="n">source</span></code>
+<h4 id="reference-vision-kevinbotlib.vision.VisionPipeline.input_frame" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <code class="highlight language-python"><span class="n">input_frame</span></code>
 
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 </h4>
 
 
     <div class="doc doc-contents ">
+
+        <p>Get the next input frame.</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><autoref identifier="tuple" optional>tuple</autoref>[<autoref identifier="bool" optional>bool</autoref>, <autoref identifier="cv2.typing.MatLike" optional hover>MatLike</autoref>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Successful frame retrieval and frame</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
     </div>
 
@@ -32654,6 +33001,10 @@ Args:
 
 <h4 id="reference-vision-kevinbotlib.vision.VisionPipeline.return_values" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <code class="highlight language-python"><span class="n">return_values</span><span class="p">()</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
 
 </h4>
 
@@ -36831,9 +37182,11 @@ Args:
 .print-site-enumerate-headings #sim-windowview > h1:before { content: '1.8.2 ' }
 
 .print-site-enumerate-headings #section-1-9 > h1:before { content: '1.9 ' }
-.print-site-enumerate-headings #vision-extend-basecamera > h1:before { content: '1.9.1 ' }
+.print-site-enumerate-headings #vision > h1:before { content: '1.9.1 ' }
 
-.print-site-enumerate-headings #vision-simulation > h1:before { content: '1.9.2 ' }
+.print-site-enumerate-headings #vision-extend-basecamera > h1:before { content: '1.9.2 ' }
+
+.print-site-enumerate-headings #vision-simulation > h1:before { content: '1.9.3 ' }
 
 .print-site-enumerate-headings #section-1-10 > h1:before { content: '1.10 ' }
 .print-site-enumerate-headings #hardware-interface-vs-controller > h1:before { content: '1.10.1 ' }
@@ -36955,7 +37308,7 @@ Args:
       <script id="__config" type="application/json">{"base": "/kevinbotlib/latest", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="../js/print-site.js"></script>
       

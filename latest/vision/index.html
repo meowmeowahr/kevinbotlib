@@ -10,31 +10,31 @@
         <meta name="author" content="Kevin Ahr">
       
       
-        <link rel="canonical" href="https://meowmeowahr.github.io/kevinbotlib/latest/apps/logdownloader/viewing/">
+        <link rel="canonical" href="https://meowmeowahr.github.io/kevinbotlib/latest/vision/">
       
       
-        <link rel="prev" href="../controls/">
+        <link rel="prev" href="../sim/windowview/">
       
       
-        <link rel="next" href="../../logviewer/">
+        <link rel="next" href="extend-basecamera/">
       
       
-        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../feed_rss_created.xml">
-        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Remote Log Viewing - KevinbotLib</title>
+        <title>Vision - KevinbotLib</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -53,15 +53,15 @@
       
     
     
-      <link rel="stylesheet" href="../../../css/print-site.css">
+      <link rel="stylesheet" href="../css/print-site.css">
     
-      <link rel="stylesheet" href="../../../css/print-site-material.css">
+      <link rel="stylesheet" href="../css/print-site-material.css">
     
-      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#remote-log-viewing" class="md-skip">
+        <a href="#vision" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +105,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="KevinbotLib" class="md-header__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
+    <a href=".." title="KevinbotLib" class="md-header__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Remote Log Viewing
+              Vision
             
           </span>
         </div>
@@ -250,7 +250,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../.." class="md-tabs__link">
+        <a href=".." class="md-tabs__link">
           
   
   
@@ -272,7 +272,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../../blog/" class="md-tabs__link">
+        <a href="../blog/" class="md-tabs__link">
           
   
   
@@ -308,7 +308,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="KevinbotLib" class="md-nav__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
+    <a href=".." title="KevinbotLib" class="md-nav__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -386,7 +386,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../.." class="md-nav__link ">
+            <a href=".." class="md-nav__link ">
               
   
   
@@ -421,7 +421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -479,7 +479,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../examples/" class="md-nav__link ">
+            <a href="../examples/" class="md-nav__link ">
               
   
   
@@ -514,7 +514,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/robot/" class="md-nav__link">
+      <a href="../examples/robot/" class="md-nav__link">
         
   
   
@@ -537,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/comm/" class="md-nav__link">
+      <a href="../examples/comm/" class="md-nav__link">
         
   
   
@@ -560,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/logger/" class="md-nav__link">
+      <a href="../examples/logger/" class="md-nav__link">
         
   
   
@@ -583,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/joystick/" class="md-nav__link">
+      <a href="../examples/joystick/" class="md-nav__link">
         
   
   
@@ -606,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/system/" class="md-nav__link">
+      <a href="../examples/system/" class="md-nav__link">
         
   
   
@@ -629,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/fileserver/" class="md-nav__link">
+      <a href="../examples/fileserver/" class="md-nav__link">
         
   
   
@@ -652,7 +652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/scheduler/" class="md-nav__link">
+      <a href="../examples/scheduler/" class="md-nav__link">
         
   
   
@@ -680,10 +680,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -702,11 +700,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
         
           
           <label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
@@ -722,7 +720,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4">
             <span class="md-nav__icon md-icon"></span>
             Applications
@@ -767,7 +765,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../console/" class="md-nav__link ">
+            <a href="../apps/console/" class="md-nav__link ">
               
   
   
@@ -802,7 +800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../console/launching/" class="md-nav__link">
+      <a href="../apps/console/launching/" class="md-nav__link">
         
   
   
@@ -825,7 +823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../console/run/" class="md-nav__link">
+      <a href="../apps/console/run/" class="md-nav__link">
         
   
   
@@ -848,7 +846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../console/controllers/" class="md-nav__link">
+      <a href="../apps/console/controllers/" class="md-nav__link">
         
   
   
@@ -871,7 +869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../console/metrics/" class="md-nav__link">
+      <a href="../apps/console/metrics/" class="md-nav__link">
         
   
   
@@ -894,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../console/settings/" class="md-nav__link">
+      <a href="../apps/console/settings/" class="md-nav__link">
         
   
   
@@ -954,7 +952,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../dashboard/" class="md-nav__link ">
+            <a href="../apps/dashboard/" class="md-nav__link ">
               
   
   
@@ -989,7 +987,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/launching/" class="md-nav__link">
+      <a href="../apps/dashboard/launching/" class="md-nav__link">
         
   
   
@@ -1012,7 +1010,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/ui/" class="md-nav__link">
+      <a href="../apps/dashboard/ui/" class="md-nav__link">
         
   
   
@@ -1035,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/settings/" class="md-nav__link">
+      <a href="../apps/dashboard/settings/" class="md-nav__link">
         
   
   
@@ -1058,7 +1056,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/widgets/" class="md-nav__link">
+      <a href="../apps/dashboard/widgets/" class="md-nav__link">
         
   
   
@@ -1086,8 +1084,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1112,15 +1108,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../apps/logdownloader/" class="md-nav__link ">
               
   
   
@@ -1139,7 +1135,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_4_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_4_3">
             <span class="md-nav__icon md-icon"></span>
             Log Downloader
@@ -1155,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../launching/" class="md-nav__link">
+      <a href="../apps/logdownloader/launching/" class="md-nav__link">
         
   
   
@@ -1178,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../connection/" class="md-nav__link">
+      <a href="../apps/logdownloader/connection/" class="md-nav__link">
         
   
   
@@ -1201,7 +1197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../controls/" class="md-nav__link">
+      <a href="../apps/logdownloader/controls/" class="md-nav__link">
         
   
   
@@ -1221,32 +1217,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Remote Log Viewing
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../apps/logdownloader/viewing/" class="md-nav__link">
         
   
   
@@ -1257,35 +1231,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#navigation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Navigation
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1333,7 +1278,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../logviewer/" class="md-nav__link ">
+            <a href="../apps/logviewer/" class="md-nav__link ">
               
   
   
@@ -1368,7 +1313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../logviewer/launching/" class="md-nav__link">
+      <a href="../apps/logviewer/launching/" class="md-nav__link">
         
   
   
@@ -1391,7 +1336,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../logviewer/loading/" class="md-nav__link">
+      <a href="../apps/logviewer/loading/" class="md-nav__link">
         
   
   
@@ -1414,7 +1359,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../logviewer/viewing/" class="md-nav__link">
+      <a href="../apps/logviewer/viewing/" class="md-nav__link">
         
   
   
@@ -1474,7 +1419,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../cli/" class="md-nav__link ">
+            <a href="../cli/" class="md-nav__link ">
               
   
   
@@ -1512,7 +1457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../commandscheduler/" class="md-nav__link">
+      <a href="../commandscheduler/" class="md-nav__link">
         
   
   
@@ -1535,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../robot/" class="md-nav__link">
+      <a href="../robot/" class="md-nav__link">
         
   
   
@@ -1581,7 +1526,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../sim/" class="md-nav__link ">
+            <a href="../sim/" class="md-nav__link ">
               
   
   
@@ -1616,7 +1561,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../sim/windowview/" class="md-nav__link">
+      <a href="../sim/windowview/" class="md-nav__link">
         
   
   
@@ -1644,6 +1589,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1664,15 +1611,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_9" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../vision/" class="md-nav__link ">
+            <a href="./" class="md-nav__link md-nav__link--active">
               
   
   
@@ -1685,13 +1632,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
+              <label class="md-nav__link md-nav__link--active" for="__nav_1_9" id="__nav_1_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1_9">
             <span class="md-nav__icon md-icon"></span>
             Vision
@@ -1707,7 +1654,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../vision/extend-basecamera/" class="md-nav__link">
+      <a href="extend-basecamera/" class="md-nav__link">
         
   
   
@@ -1730,7 +1677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../vision/simulation/" class="md-nav__link">
+      <a href="simulation/" class="md-nav__link">
         
   
   
@@ -1810,7 +1757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../hardware/interface-vs-controller/" class="md-nav__link">
+      <a href="../hardware/interface-vs-controller/" class="md-nav__link">
         
   
   
@@ -1878,7 +1825,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../hardware/controllers/keyvalue/" class="md-nav__link">
+      <a href="../hardware/controllers/keyvalue/" class="md-nav__link">
         
   
   
@@ -1954,7 +1901,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../hardware/interfaces/serial/" class="md-nav__link">
+      <a href="../hardware/interfaces/serial/" class="md-nav__link">
         
   
   
@@ -1993,7 +1940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../fileserver/" class="md-nav__link">
+      <a href="../fileserver/" class="md-nav__link">
         
   
   
@@ -2089,7 +2036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/robot/" class="md-nav__link">
+      <a href="../reference/robot/" class="md-nav__link">
         
   
   
@@ -2112,7 +2059,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/logging/" class="md-nav__link">
+      <a href="../reference/logging/" class="md-nav__link">
         
   
   
@@ -2135,7 +2082,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/scheduler/" class="md-nav__link">
+      <a href="../reference/scheduler/" class="md-nav__link">
         
   
   
@@ -2158,7 +2105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/comm/" class="md-nav__link">
+      <a href="../reference/comm/" class="md-nav__link">
         
   
   
@@ -2181,7 +2128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/joystick/" class="md-nav__link">
+      <a href="../reference/joystick/" class="md-nav__link">
         
   
   
@@ -2204,7 +2151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/fileserver/" class="md-nav__link">
+      <a href="../reference/fileserver/" class="md-nav__link">
         
   
   
@@ -2227,7 +2174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/hardwareinterface/" class="md-nav__link">
+      <a href="../reference/hardwareinterface/" class="md-nav__link">
         
   
   
@@ -2250,7 +2197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/hardwarecontroller/" class="md-nav__link">
+      <a href="../reference/hardwarecontroller/" class="md-nav__link">
         
   
   
@@ -2273,7 +2220,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/simulator/" class="md-nav__link">
+      <a href="../reference/simulator/" class="md-nav__link">
         
   
   
@@ -2296,7 +2243,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/coord/" class="md-nav__link">
+      <a href="../reference/coord/" class="md-nav__link">
         
   
   
@@ -2319,7 +2266,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/vision/" class="md-nav__link">
+      <a href="../reference/vision/" class="md-nav__link">
         
   
   
@@ -2342,7 +2289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/metrics/" class="md-nav__link">
+      <a href="../reference/metrics/" class="md-nav__link">
         
   
   
@@ -2365,7 +2312,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/ui/" class="md-nav__link">
+      <a href="../reference/ui/" class="md-nav__link">
         
   
   
@@ -2388,7 +2335,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/misc/" class="md-nav__link">
+      <a href="../reference/misc/" class="md-nav__link">
         
   
   
@@ -2411,7 +2358,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/exceptions/" class="md-nav__link">
+      <a href="../reference/exceptions/" class="md-nav__link">
         
   
   
@@ -2474,7 +2421,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../blog/" class="md-nav__link ">
+            <a href="../blog/" class="md-nav__link ">
               
   
   
@@ -2556,7 +2503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/archive/2025/" class="md-nav__link">
+      <a href="../blog/archive/2025/" class="md-nav__link">
         
   
   
@@ -2634,7 +2581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/goals/" class="md-nav__link">
+      <a href="../blog/category/goals/" class="md-nav__link">
         
   
   
@@ -2692,9 +2639,93 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#navigation" class="md-nav__link">
+  <a href="#cameras" class="md-nav__link">
     <span class="md-ellipsis">
-      Navigation
+      Cameras
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cameras">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-custom-cameras" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Custom Cameras
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipelines
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comms-encoding-and-decoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comms, Encoding, and Decoding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-a-video-stream-over-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending a Video Stream over Redis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#receiving-a-video-stream-over-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Receiving a Video Stream over Redis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See also
     </span>
   </a>
   
@@ -2716,7 +2747,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/apps/logdownloader/viewing.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/vision/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2724,30 +2755,216 @@
   
 
 
-<h1 id="remote-log-viewing">Remote Log Viewing</h1>
-<p>KevinbotLib Log Viewer features an extensive log browser with the following features:</p>
-<ul>
-<li>Color-coded log entries</li>
-<li>Log level, timestamp, and entry origin</li>
-<li>Formatted tracebacks</li>
-<li>Search</li>
-</ul>
-<p><img alt="log-downloader-viewer.png" src="../../../media/log-downloader-viewer.png" /></p>
-<h2 id="navigation">Navigation</h2>
-<p><img alt="log-viewer-nav.png" src="../../../media/log-viewer-nav.png" /></p>
-<p>The navigational buttons correspond to the following actions in left-to-right order:</p>
-<ul>
-<li>Find</li>
-<li>Zoom In</li>
-<li>Reset Zoom</li>
-<li>Zoom Out</li>
-<li>Download Log</li>
-<li>Exit to Connection Page</li>
-</ul>
+<h1 id="vision">Vision</h1>
+<p>The KevinbotLib Vision System is a pipeline-based computer vision framework building on top of <a href="https://opencv.org/">OpenCV</a>.</p>
+<h2 id="cameras">Cameras</h2>
+<p>A KevinbotLib Camera will retrieve frames from a connected camera and can set its resolution and frame rate.</p>
+<p>KevinbotLib includes two built-in camera connectors, <a href="../reference/vision/#kevinbotlib.vision.CameraByIndex">CameraByIndex</a> and <a href="../reference/vision/#kevinbotlib.vision.CameraByDevicePath">CameraByDevicePath</a>.</p>
+<h3 id="creating-custom-cameras">Creating Custom Cameras</h3>
+<p>Custom camera implementations must extend <a href="../reference/vision/#kevinbotlib.vision.BaseCamera">BaseCamera</a> for proper simulation support.
+See more info <a href="extend-basecamera/">here</a>.</p>
+<h2 id="pipelines">Pipelines</h2>
+<p>A pipeline will take in camera frames (or another video source), and produce output calculations as well as a frame for visualization.</p>
+<p><img alt="vision-pipeline-diagram-dark.svg" src="../media/vision-pipeline-diagram-dark.svg#only-dark" />
+<img alt="vision-pipeline-diagram-dark.svg" src="../media/vision-pipeline-diagram-light.svg#only-light" /></p>
+<p>KevinbotLib includes one basic pipeline, the <a href="../reference/vision/#kevinbotlib.vision.EmptyPipeline">EmptyPipeline</a>.
+The EmptyPipeline will output exactly what is put in.</p>
+<h2 id="comms-encoding-and-decoding">Comms, Encoding, and Decoding</h2>
+<p>The KevinbotLib Vision Systems includes comm sendables and encode/decode support for (M)JPG and PNG</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The sendables are not activated by default for performance reasons.
+Use the following to activate them before attempting to set/get video data.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">VisionCommUtils</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>    
+</code></pre></div>
+</div>
+<h2 id="examples">Examples</h2>
+<h3 id="pipeline">Pipeline</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/pipeline.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cv2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatLike</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">CameraByIndex</span><span class="p">,</span> <span class="n">VisionPipeline</span>
+
+<span class="n">Logger</span><span class="p">()</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+
+<span class="n">camera</span> <span class="o">=</span> <span class="n">CameraByIndex</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyPipeline</span><span class="p">(</span><span class="n">VisionPipeline</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">MatLike</span><span class="p">]]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">MatLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="c1"># convert to grayscale as an example</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span>
+        <span class="k">return</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">return_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">MyPipeline</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">get_frame</span><span class="p">)</span>
+    <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">):</span>
+        <span class="k">break</span>
+</code></pre></div></td></tr></table></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>KevinbotLib Log Downloader is powered by QtWebEngine, which is licensed under the GPLv3, and is based on Chromium.</p>
+<p>The following examples require a running Redis server for RedisCommClient.</p>
 </div>
+<h3 id="sending-a-video-stream-over-redis">Sending a Video Stream over Redis</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/video_sender.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileLoggerConfig</span><span class="p">,</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CameraByIndex</span><span class="p">,</span>
+    <span class="n">EmptyPipeline</span><span class="p">,</span>
+    <span class="n">FrameEncoders</span><span class="p">,</span>
+    <span class="n">MjpegStreamSendable</span><span class="p">,</span>
+    <span class="n">VisionCommUtils</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">(</span><span class="n">file_logger</span><span class="o">=</span><span class="n">FileLoggerConfig</span><span class="p">()))</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">()</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
+
+<span class="n">camera</span> <span class="o">=</span> <span class="n">CameraByIndex</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">set_resolution</span><span class="p">(</span><span class="mi">1920</span><span class="p">,</span> <span class="mi">1080</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">EmptyPipeline</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">get_frame</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">FrameEncoders</span><span class="o">.</span><span class="n">encode_jpg</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="s2">&quot;streams/camera0&quot;</span><span class="p">,</span>
+            <span class="n">MjpegStreamSendable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">encoded</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h3 id="receiving-a-video-stream-over-redis">Receiving a Video Stream over Redis</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/vision/video_rx.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.comm.redis</span><span class="w"> </span><span class="kn">import</span> <span class="n">RedisCommClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrameDecoders</span><span class="p">,</span> <span class="n">MjpegStreamSendable</span><span class="p">,</span> <span class="n">VisionCommUtils</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">RedisCommClient</span><span class="p">(</span><span class="s2">&quot;robot.local&quot;</span><span class="p">,</span> <span class="mi">6379</span><span class="p">)</span>
+<span class="n">VisionCommUtils</span><span class="o">.</span><span class="n">init_comms_types</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">wait_until_connected</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">sendable</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streams/camera0&quot;</span><span class="p">,</span> <span class="n">MjpegStreamSendable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sendable</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">FrameDecoders</span><span class="o">.</span><span class="n">decode_sendable</span><span class="p">(</span><span class="n">sendable</span><span class="p">))</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="see-also">See also</h2>
+<p><a href="../reference/vision/">Vision System Reference</a></p>
 
 
 
@@ -2785,7 +3002,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../controls/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Remote Log Controls">
+          <a href="../sim/windowview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: WindowView API">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2795,20 +3012,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Remote Log Controls
+                WindowView API
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../logviewer/" class="md-footer__link md-footer__link--next" aria-label="Next: KevinbotLib Log Viewer">
+          <a href="extend-basecamera/" class="md-footer__link md-footer__link--next" aria-label="Next: Extending BaseCamera">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                KevinbotLib Log Viewer
+                Extending BaseCamera
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2846,12 +3063,12 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
-        <script src="../../../js/print-site.js"></script>
+        <script src="../js/print-site.js"></script>
       
     
   </body>
