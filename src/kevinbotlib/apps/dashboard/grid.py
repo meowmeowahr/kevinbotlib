@@ -100,6 +100,8 @@ class GridGraphicsView(QGraphicsView):
                 old_x = item.pos().x() // item.grid_size
                 old_y = item.pos().y() // item.grid_size
                 item.grid_size = size
+                item.width = size * item.span_x
+                item.height = size * item.span_y
                 item.set_span(item.span_x, item.span_y)
                 item.setPos(old_x * self.grid_size, old_y * self.grid_size)
 
