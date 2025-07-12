@@ -14,18 +14,16 @@ Each tab will have independent resolution and frame rates, according to the robo
 
 Upon initializing the camera simulator, an ephemeral TCP port will be assigned to an internal ZeroMQ server/client for IPC.
 
-!!! Bug
-    The internal ZeroMQ server **does not** use any form of encryption. 
-    Virtual cameras can be monitored through outside processes.
-    The ZeroMQ server will eventually be encrypted, using a different key on every simulation startup.    
-
+!!! Info
+    The internal ZeroMQ server uses CURVE encryption based on a differing random key.
+    It is currently not possible to get video frames outside the KevinbotLib robot.
 
 ### Video Sources
 
 Each simulated camera can connect to a physically connected camera using camera passthrough, or an uploaded image file.
 
 !!! Note
-    Camera passthrough is not currently available on macOS
+    Camera passthrough is experimental on macOS
 
 !!! Warning
     A physical camera can only connect to one simulated camera, since connections aren't pooled.

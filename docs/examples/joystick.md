@@ -35,3 +35,9 @@
 ```python title="examples/joystick/rx_named.py" linenums="1"
 --8<-- "examples/joystick/rx_named.py"
 ```
+
+## Robot Controller with Joystick Listening
+
+```python title="examples/robot/joystick_robot.py" linenums="1"
+--8<-- "examples/robot/joystick_robot.py"
+```

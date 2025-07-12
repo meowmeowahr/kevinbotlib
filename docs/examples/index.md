@@ -4,14 +4,6 @@ All examples can be found on the project's [GitHub repo](https://github.com/meow
 
 <div class="grid cards" markdown>
 
-- :material-robot:{ .lg .middle } __Robot Examples__
-
-    ---
-
-    View examples using KevinbotLib's Advanced Robot Control System
-
-    [:octicons-arrow-right-24: View Examples](robot.md)
-
 - :material-network:{ .lg .middle } __Communication Examples__
 
     ---
