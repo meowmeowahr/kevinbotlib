@@ -79,15 +79,9 @@ def deploy_code_command(directory, custom_wheels: list, verbose: int, *, no_serv
         try:
             repo = pygit2.Repository(os.path.join(directory, ".git"))
             head_ref = repo.head
-            head_name = (
-                repo.head.name
-            )  # e.g., 'refs/heads/main' or 'HEAD' (if detached)
+            head_name = repo.head.name  # e.g., 'refs/heads/main' or 'HEAD' (if detached)
 
-            current_branch = (
-                head_name.split("/")[-1]
-                if head_name.startswith("refs/heads/")
-                else None
-            )
+            current_branch = head_name.split("/")[-1] if head_name.startswith("refs/heads/") else None
 
             latest_commit = repo[head_ref.target]
 
@@ -101,11 +95,7 @@ def deploy_code_command(directory, custom_wheels: list, verbose: int, *, no_serv
                     if ref.startswith("refs/tags/"):
                         tag_ref = repo.references[ref]
                         tag_obj = repo[tag_ref.target]
-                        tag_target = (
-                            tag_obj.target
-                            if isinstance(tag_obj, pygit2.Tag)
-                            else tag_obj.oid
-                        )
+                        tag_target = tag_obj.target if isinstance(tag_obj, pygit2.Tag) else tag_obj.oid
                         if tag_target == latest_commit.id:
                             current_tag = ref.split("/")[-1]
                             break
@@ -116,7 +106,7 @@ def deploy_code_command(directory, custom_wheels: list, verbose: int, *, no_serv
 
         manifest = {
             "deploytool": __about__.__version__,
-            "timestamp": datetime.datetime.now(datetime.timezone.utc).timestamp(),
+            "timestamp": datetime.datetime.now(datetime.UTC).timestamp(),
             "git": {
                 "branch": current_branch if current_branch else None,
                 "tag": current_tag,

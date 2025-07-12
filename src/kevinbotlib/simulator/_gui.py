@@ -29,9 +29,10 @@ from kevinbotlib.logger import Logger, LoggerDirectories
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _ExitSimulatorEvent,
+    _RobotProcessEndEvent,
     _SimulatorExitEvent,
     _WindowViewPayloadEvent,
-    _WindowViewUpdateEvent, _RobotProcessEndEvent,
+    _WindowViewUpdateEvent,
 )
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import (

@@ -13,12 +13,12 @@ from kevinbotlib.comm.abstract import SetGetClientWithPubSub
 from kevinbotlib.simulator._events import (
     _AddWindowEvent,
     _ExitSimulatorEvent,
+    _RobotProcessEndEvent,
     _SimulatorExitEvent,
     _SimulatorInputEvent,
     _WindowReadyEvent,
     _WindowViewPayloadEvent,
     _WindowViewUpdateEvent,
-    _RobotProcessEndEvent,
 )
 from kevinbotlib.simulator._gui import SimMainWindow
 from kevinbotlib.simulator.windowview import WindowView, WindowViewOutputPayload

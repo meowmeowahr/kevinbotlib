@@ -2914,6 +2914,7 @@ consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License."""
 
+
 def get_licenses() -> dict[str, str]:
     """Return all licenses of KevinbotLib and it's dependencies
 

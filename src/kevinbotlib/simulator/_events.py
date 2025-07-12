@@ -44,8 +44,10 @@ class _AddWindowEvent(_SimulatorInputEvent):
         self.view_cls = view_cls
         self.default_open = default_open
 
+
 class _RobotProcessEndEvent(_SimulatorInputEvent):
     pass
+
 
 class _ExitSimulatorEvent(_SimulatorInputEvent):
     pass

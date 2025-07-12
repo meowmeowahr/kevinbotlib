@@ -52,12 +52,4 @@ All examples can be found on the project's [GitHub repo](https://github.com/meow
 
     [:octicons-arrow-right-24: View Examples](fileserver.md)
 
-- :material-clock:{ .lg .middle } __Command Scheduler Examples__
-
-    ---
-
-    View examples using KevinbotLib's Command Scheduler
-
-    [:octicons-arrow-right-24: View Examples](scheduler.md)
-
 </div>

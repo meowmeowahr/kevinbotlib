@@ -150,6 +150,42 @@ class ParallelCommand(Command):
         return len(self.remaining_commands) == 0
 
 
+class ConditionallyForkedCommand(Command):
+    def __init__(self, condition: Callable[[], bool], command_met: Command, command_unmet: Command) -> None:
+        """
+        Construct a new conditionally forked command.
+
+        Args:
+            condition: Choose which command to run based on a condition.
+            command_met: Command to run if the condition is met.
+            command_unmet: Command to run if the condition is not met.
+        """
+
+        super().__init__()
+        self.command_met = command_met
+        self.command_unmet = command_unmet
+        self.condition = condition
+        self.running_command: Command | None = None
+
+    def init(self) -> None:
+        self.running_command = self.command_met if self.condition() else self.command_unmet
+        self.running_command.init()
+
+    def execute(self) -> None:
+        if self.running_command:
+            self.running_command.execute()
+
+    def end(self) -> None:
+        if self.running_command:
+            self.running_command.end()
+
+    def finished(self) -> bool:
+        finished = self.running_command.finished() if self.running_command else False
+        if finished:
+            self.running_command = None
+        return finished
+
+
 @dataclass
 class TriggerActions:
     """Trigger types to be used internally within the command scheduler"""

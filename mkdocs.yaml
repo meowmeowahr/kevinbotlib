@@ -108,7 +108,6 @@ nav:
       - examples/joystick.md
       - examples/system.md
       - examples/fileserver.md
-      - examples/scheduler.md
     - Applications:
       - Control Console:
         - apps/console/index.md
