@@ -176,6 +176,9 @@ class SettingsWindow(QDialog):
         self.color.currentEnumChanged.connect(self.set_color)
         self.form.addRow("Accent Color", self.color)
 
+        self.radius = QSpinBox(minimum=0, maximum=16, value=self.settings.value("radius", 10, int)) # type: ignore
+        self.form.addRow("Radius", self.radius)
+
         self.form.addRow(Divider("Grid"))
 
         self.grid_size = QSpinBox(minimum=8, maximum=256, singleStep=2, value=self.settings.value("grid", 48, int))  # type: ignore
@@ -769,6 +772,12 @@ class Application(ThemableWindow):
     def refresh_settings(self):
         if self.settings.value("color", type=str, defaultValue="NONE") != self.graphics_view.theme.primary:
             self.apply_theme()
+        if self.settings.value("radius", type=int, defaultValue=10) != self.graphics_view.grid_size:
+            self.settings.setValue("radius", int(self.settings_window.radius.value()))
+            for item in self.graphics_view.scene().items():
+                if isinstance(item, WidgetItem):
+                    item.radius = self.settings.value("radius", type=int)
+                    item.update()
 
         self.settings.setValue("ip", self.settings_window.net_ip.text())
         self.settings.setValue("port", self.settings_window.net_port.value())

@@ -26,6 +26,7 @@ class WidgetItem(QGraphicsObject):
         grid: "GridGraphicsView",
         span_x=1,
         span_y=1,
+        radius=10,
         _client: RedisCommClient | None = None,
     ):
         super().__init__()
@@ -47,6 +48,7 @@ class WidgetItem(QGraphicsObject):
         )
         self.setZValue(1)
         self.resizing = False
+        self.radius = radius
         self.resize_grip_size = 15
         self.min_width = self.grid_size * 2  # Minimum width in pixels
         self.min_height = self.grid_size * 2  # Minimum height in pixels
@@ -59,15 +61,15 @@ class WidgetItem(QGraphicsObject):
         painter.setBrush(QBrush(QColor(self.view.theme.item_background)))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(
-            QRect(self.margin, self.margin, self.width - 2 * self.margin, self.height - 2 * self.margin), 10, 10
+            QRect(self.margin, self.margin, self.width - 2 * self.margin, self.height - 2 * self.margin), self.radius, self.radius
         )
 
         title_rect = QRect(self.margin, self.margin, self.width - 2 * self.margin, 30)
 
         painter.setBrush(QBrush(QColor(self.view.theme.primary)))
         painter.setPen(Qt.PenStyle.NoPen)
-        painter.drawRoundedRect(title_rect, 10, 10)
-        painter.drawRect(QRect(title_rect.x(), title_rect.y() + 10, title_rect.width(), title_rect.height() - 10))
+        painter.drawRoundedRect(title_rect, self.radius, self.radius)
+        painter.drawRect(QRect(title_rect.x(), title_rect.y() + self.radius, title_rect.width(), title_rect.height() - self.radius))
 
         painter.setPen(QPen(get_contrasting_font_color(QColor(self.view.theme.primary))))
         painter.setFont(QFont(self.view.font().family(), 10.5, QFont.Weight.Medium))  # type: ignore
