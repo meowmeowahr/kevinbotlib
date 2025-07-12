@@ -1,3 +1,4 @@
+import atexit
 import threading
 import time
 from typing import TYPE_CHECKING
@@ -293,6 +294,7 @@ class StateButtonsView(WindowView):
 
 def make_simulator(robot: "BaseRobot") -> SimulationFramework:
     simulator = SimulationFramework(robot)
+    atexit.register(simulator.robot_shutdown)
 
     # noinspection PyProtectedMember
     def sim_ready():

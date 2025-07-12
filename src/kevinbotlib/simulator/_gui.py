@@ -31,7 +31,7 @@ from kevinbotlib.simulator._events import (
     _ExitSimulatorEvent,
     _SimulatorExitEvent,
     _WindowViewPayloadEvent,
-    _WindowViewUpdateEvent,
+    _WindowViewUpdateEvent, _RobotProcessEndEvent,
 )
 from kevinbotlib.simulator._mdi import _MdiChild
 from kevinbotlib.simulator.windowview import (
@@ -168,6 +168,20 @@ class SimMainWindow(_ThemableWindow):
         self.top_bar_text_stack.addWidget(self.top_bar_version)
         self.top_bar_text_stack.addStretch()
 
+        self.process_end_widget = QWidget()
+        self.process_end_widget.setStyleSheet("background-color: #EF5350;")
+        self.process_end_widget.setContentsMargins(0, 0, 0, 0)
+        self.root_layout.addWidget(self.process_end_widget)
+        self.process_end_widget.setVisible(False)
+
+        self.process_end_layout = QHBoxLayout()
+        self.process_end_widget.setLayout(self.process_end_layout)
+
+        self.process_end_text = QLabel("The Robot Process has ended")
+        self.process_end_text.setStyleSheet("color: #212121; font-weight: bold;")
+        self.process_end_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.process_end_layout.addWidget(self.process_end_text)
+
         self.divider = QFrame()
         self.divider.setContentsMargins(8, 8, 8, 8)
         self.divider.setFrameShape(QFrame.Shape.HLine)
@@ -196,6 +210,8 @@ class SimMainWindow(_ThemableWindow):
                     view.update(event.payload)
             elif isinstance(event, _AddWindowEvent):
                 self._handle_add_window_event(event)
+            elif isinstance(event, _RobotProcessEndEvent):
+                self.process_end_widget.setVisible(True)
             elif isinstance(event, _ExitSimulatorEvent):
                 self.close()
 

@@ -18,6 +18,7 @@ from kevinbotlib.simulator._events import (
     _WindowReadyEvent,
     _WindowViewPayloadEvent,
     _WindowViewUpdateEvent,
+    _RobotProcessEndEvent,
 )
 from kevinbotlib.simulator._gui import SimMainWindow
 from kevinbotlib.simulator.windowview import WindowView, WindowViewOutputPayload
@@ -102,6 +103,12 @@ class SimulationFramework:
             target=self._watch_events, daemon=True, name="KevinbotLib.SimFramework.SimulatorLifecycleOutputEventWatcher"
         )
         self.event_watcher.start()
+
+    def robot_shutdown(self) -> None:
+        """
+        Display the robot shut down message in the simulator.
+        """
+        self.sim_in_queue.put_nowait(_RobotProcessEndEvent())
 
     def exit_simulator(self) -> None:
         """

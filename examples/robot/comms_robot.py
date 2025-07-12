@@ -1,3 +1,5 @@
+import atexit
+
 from kevinbotlib.comm.request import SetRequest
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
