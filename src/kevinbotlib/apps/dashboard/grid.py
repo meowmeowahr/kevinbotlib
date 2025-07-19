@@ -1,7 +1,7 @@
 import functools
 from collections.abc import Callable
 
-from PySide6.QtCore import QObject, QPointF, QRectF, QSize, Qt, QTimer
+from PySide6.QtCore import QObject, QPointF, QRectF, QSize, Qt
 from PySide6.QtGui import QBrush, QColor, QPainter, QPen
 from PySide6.QtWidgets import (
     QGraphicsScene,
@@ -22,7 +22,7 @@ class GridGraphicsView(QGraphicsView):
 
         self.setScene(QGraphicsScene(self))
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
-        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.MinimalViewportUpdate)
+        self.setViewportUpdateMode(QGraphicsView.ViewportUpdateMode.FullViewportUpdate)
         self.setCacheMode(QGraphicsView.CacheModeFlag.CacheBackground)
         self.setOptimizationFlags(
             QGraphicsView.OptimizationFlag.IndirectPainting | QGraphicsView.OptimizationFlag.DontAdjustForAntialiasing
