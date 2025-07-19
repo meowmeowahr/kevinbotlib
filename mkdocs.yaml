@@ -151,6 +151,9 @@ nav:
         - Interfaces:
             - hardware/interfaces/serial.md
     - fileserver.md
+    - KevinbotLib DeployTool:
+        - deploytool/index.md
+        - deploytool/commands.md
     - KevinbotLib Reference:
       - reference/robot.md
       - reference/logging.md

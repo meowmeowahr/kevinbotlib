@@ -1,8 +1,5 @@
 import click
 
-from kevinbotlib.apps.log_downloader.util import sizeof_fmt
-
-
 @click.command("size")
 @click.option(
     "-b",
@@ -14,6 +11,7 @@ from kevinbotlib.apps.log_downloader.util import sizeof_fmt
 def size(use_bytes: bool):
     """Get the total size of all log files in the default logging location"""
     from kevinbotlib.logger import LoggerDirectories
+    from kevinbotlib.apps.log_downloader.util import sizeof_fmt
 
     if use_bytes:
         click.echo(int(LoggerDirectories.get_directory_size(LoggerDirectories.get_logger_directory()) * 1024 * 1024))

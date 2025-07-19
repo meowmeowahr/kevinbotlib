@@ -213,3 +213,13 @@ The `kevinbotlib logs size` command output the size of the default logging direc
 
     `-b` *or* `--bytes`: Output raw number of bytes
 </div>
+
+## `deploytool`
+
+The `deploytool` group contains the commands to deploy to a robot over SSH/SFTP.
+
+View more information [here](../deploytool/index.md)
+
+## `deploy`
+
+Alias to [`deploytool`](#deploytool)

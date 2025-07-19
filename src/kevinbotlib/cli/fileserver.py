@@ -2,8 +2,6 @@ import time
 
 import click
 
-from kevinbotlib.logger import Logger, LoggerConfiguration
-
 
 @click.command()
 @click.option(
@@ -42,6 +40,7 @@ def fileserver(verbose: bool, trace: bool, dir: str, port: int, host: str):  # n
     Serve files over HTTP
     """
     from kevinbotlib.fileserver.fileserver import FileServer
+    from kevinbotlib.logger import Logger, LoggerConfiguration
     from kevinbotlib.logger import Level
 
     log_level = Level.INFO

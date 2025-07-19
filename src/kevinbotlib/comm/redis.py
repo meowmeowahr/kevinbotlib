@@ -55,7 +55,7 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         port: int = 6379,
         unix_socket: str | None = None,
         db: int = 0,
-        timeout: float = 2,
+        timeout: float = 5,
         on_connect: Callable[[], None] | None = None,
         on_disconnect: Callable[[], None] | None = None,
     ) -> None:
@@ -354,8 +354,8 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
     def _listen_loop(self):
         if not self.pubsub:
             return
-        try:
-            while True:
+        while True:
+            try:
                 for message in self.pubsub.listen():
                     if not self.running:
                         break
@@ -370,9 +370,9 @@ class RedisCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                             _Logger().error(f"Failed to process message: {e!r}")
                     self._dead.dead = False
                 time.sleep(1)  # 1-second delay if there are no subscriptions
-        except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError):
-            self._dead.dead = True
-        _Logger().warning("Listener loop ended")
+            except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError, ValueError, AttributeError) as e:
+                _Logger().error(f"Experienced error during listen loop: {e!r}, reporting dead before retry")
+                self._dead.dead = True
 
     def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
         """
