@@ -40,8 +40,7 @@ def fileserver(verbose: bool, trace: bool, dir: str, port: int, host: str):  # n
     Serve files over HTTP
     """
     from kevinbotlib.fileserver.fileserver import FileServer
-    from kevinbotlib.logger import Logger, LoggerConfiguration
-    from kevinbotlib.logger import Level
+    from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 
     log_level = Level.INFO
     if verbose:

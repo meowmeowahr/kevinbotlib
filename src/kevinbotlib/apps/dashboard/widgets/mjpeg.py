@@ -139,10 +139,10 @@ class MjpegCameraStreamWidgetItem(WidgetItem):
     def update_label_geometry(self):
         label_margin = self.margin + 30  # Leave room for title
         self.label_rect = (
-            self.margin+self.radius//2,
-            label_margin+self.radius//2,
-            self.width - 2 * self.margin-self.radius,
-            self.height - label_margin - self.margin-self.radius,
+            self.margin + self.radius // 2,
+            label_margin + self.radius // 2,
+            self.width - 2 * self.margin - self.radius,
+            self.height - label_margin - self.margin - self.radius,
         )
         self.proxy.setGeometry(*self.label_rect)
 

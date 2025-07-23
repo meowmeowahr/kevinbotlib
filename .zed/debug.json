@@ -1,0 +1,38 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "adapter": "Debugpy",
+    "label": "Test Robot",
+    "request": "launch",
+    "program": "examples/robot/robot.py",
+    "console": "integratedTerminal",
+    "args": ["--simulate"]
+  },
+  {
+    "adapter": "Debugpy",
+    "label": "Test Metrics Robot",
+    "request": "launch",
+    "program": "examples/robot/metrics_robot.py",
+    "console": "integratedTerminal",
+    "args": ["--simulate"]
+  },
+  {
+    "adapter": "Debugpy",
+    "label": "Test Joystick Robot",
+    "request": "launch",
+    "program": "examples/robot/joystick_robot.py",
+    "console": "integratedTerminal",
+    "args": ["--simulate"]
+  },
+  {
+    "adapter": "Debugpy",
+    "label": "App - Dashboard",
+    "request": "launch",
+    "program": "src/kevinbotlib/apps/dashboard/app.py",
+    "console": "integratedTerminal",
+    "args": ["--trace"]
+  }
+]

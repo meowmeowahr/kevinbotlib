@@ -176,7 +176,7 @@ class SettingsWindow(QDialog):
         self.color.currentEnumChanged.connect(self.set_color)
         self.form.addRow("Accent Color", self.color)
 
-        self.radius = QSpinBox(minimum=0, maximum=16, value=self.settings.value("radius", 10, int)) # type: ignore
+        self.radius = QSpinBox(minimum=0, maximum=16, value=self.settings.value("radius", 10, int))  # type: ignore
         self.form.addRow("Radius", self.radius)
 
         self.form.addRow(Divider("Grid"))

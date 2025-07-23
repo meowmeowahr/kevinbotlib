@@ -61,7 +61,9 @@ class WidgetItem(QGraphicsObject):
         painter.setBrush(QBrush(QColor(self.view.theme.item_background)))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(
-            QRect(self.margin, self.margin, self.width - 2 * self.margin, self.height - 2 * self.margin), self.radius, self.radius
+            QRect(self.margin, self.margin, self.width - 2 * self.margin, self.height - 2 * self.margin),
+            self.radius,
+            self.radius,
         )
 
         title_rect = QRect(self.margin, self.margin, self.width - 2 * self.margin, 30)
@@ -69,7 +71,9 @@ class WidgetItem(QGraphicsObject):
         painter.setBrush(QBrush(QColor(self.view.theme.primary)))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(title_rect, self.radius, self.radius)
-        painter.drawRect(QRect(title_rect.x(), title_rect.y() + self.radius, title_rect.width(), title_rect.height() - self.radius))
+        painter.drawRect(
+            QRect(title_rect.x(), title_rect.y() + self.radius, title_rect.width(), title_rect.height() - self.radius)
+        )
 
         painter.setPen(QPen(get_contrasting_font_color(QColor(self.view.theme.primary))))
         painter.setFont(QFont(self.view.font().family(), 10.5, QFont.Weight.Medium))  # type: ignore
