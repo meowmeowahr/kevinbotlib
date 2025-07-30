@@ -10,64 +10,62 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "LGPL-3.0-or-later"
 keywords = []
-authors = [
-  { name = "Kevin Ahr", email = "meowmeowahr@gmail.com" },
-]
+authors = [{ name = "Kevin Ahr", email = "meowmeowahr@gmail.com" }]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-  "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
 ]
 dependencies = [
-  "pyserial~=3.5",
-  "loguru~=0.7.3",
-  "pydantic~=2.11.7",
-  "click~=8.2.1",
-  "platformdirs~=4.3.8",
-  "orjson~=3.10.18",
-  "pybase64~=1.4.1",
-  "pysdl2~=0.9.17",
-  "opencv-python~=4.11.0",
-  "jinja2~=3.1.6",
-  "psutil~=7.0.0",
-  "darkdetect~=0.8.0",
-  "ansi2html~=1.9.2",
-  "qtpy~=2.4.3",
-  "deprecated~=1.2.18",
-  "redis[hiredis]~=6.2.0",
-  "wakepy~=0.10.2.post1",
-  "superqt~=0.7.3",
-  "paramiko~=3.5.1",
-  "pyside6-addons>=6.9.0",
-  "pyside6>=6.9.0",
-  "blake3~=1.0.5",
-  "pyqtgraph~=0.13.7",
-  "rich~=14.0.0",
-  "hiredis>=3.2.1",
-  "fonticon-materialdesignicons7~=7.2.96",
-  "cv2-enumerate-cameras~=1.2.02",
-  "pyzmq~=27.0.0",
-  "hatch>=1.14.0",
-  "toml>=0.10.2",
-  "pygit2>=1.18.0",
-  "jinja2>=3.1.6",
+    "pyserial~=3.5",
+    "loguru~=0.7.3",
+    "pydantic~=2.11.7",
+    "click~=8.2.1",
+    "platformdirs~=4.3.8",
+    "orjson~=3.10.18",
+    "pybase64~=1.4.2",
+    "pysdl2~=0.9.17",
+    "opencv-python~=4.11.0",
+    "jinja2~=3.1.6",
+    "psutil~=7.0.0",
+    "darkdetect~=0.8.0",
+    "ansi2html~=1.9.2",
+    "qtpy~=2.4.3",
+    "deprecated~=1.2.18",
+    "redis[hiredis]~=6.2.0",
+    "wakepy~=0.10.2.post1",
+    "superqt~=0.7.3",
+    "paramiko~=3.5.1",
+    "pyside6-addons>=6.9.0",
+    "pyside6>=6.9.0",
+    "blake3~=1.0.5",
+    "pyqtgraph~=0.13.7",
+    "rich~=14.0.0",
+    "hiredis>=3.2.1",
+    "fonticon-materialdesignicons7~=7.2.96",
+    "cv2-enumerate-cameras~=1.2.02",
+    "pyzmq~=27.0.0",
+    "hatch>=1.14.0",
+    "toml>=0.10.2",
+    "pygit2>=1.18.1",
+    "jinja2>=3.1.6",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "mkdocs",
-  "mkdocs-material[imaging]",
-  "mkdocstrings[python]>=0.18",
-  "mkdocs-rss-plugin[dev]>=1.17.3",
-  "mkdocs-print-site-plugin",
-  "mike",
-  "pyinstaller",
-  "Pillow",
+    "mkdocs",
+    "mkdocs-material[imaging]",
+    "mkdocstrings[python]>=0.18",
+    "mkdocs-rss-plugin[dev]>=1.17.3",
+    "mkdocs-print-site-plugin",
+    "mike",
+    "pyinstaller",
+    "Pillow",
 ]
 
 
@@ -89,12 +87,10 @@ force_include_editable = [
 path = "src/kevinbotlib/__about__.py"
 
 [tool.hatch.envs]
-default = { scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" }}
+default = { scripts = { serve-docs = "mkdocs serve", build-docs = "mkdocs build" } }
 
 [tool.hatch.envs.types]
-extra-dependencies = [
-  "mypy>=1.0.0",
-]
+extra-dependencies = ["mypy>=1.0.0"]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/kevinbotlib tests}"
 
@@ -102,22 +98,20 @@ check = "mypy --install-types --non-interactive {args:src/kevinbotlib tests}"
 source_pkgs = ["kevinbotlib", "tests"]
 branch = true
 parallel = true
-omit = [
-  "src/kevinbotlib/__about__.py",
-]
+omit = ["src/kevinbotlib/__about__.py"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.13", "3.12", "3.11", "3.10"]
 
 [tool.hatch.envs.hatch-test]
 dependencies = [
-  "coverage-enable-subprocess==1.0",
-  "coverage[toml]~=7.4",
-  "pytest~=8.1",
-  "pytest-mock~=3.12",
-  "pytest-randomly~=3.15",
-  "pytest-rerunfailures~=14.0",
-  "pytest-xdist[psutil]~=3.5",
+    "coverage-enable-subprocess==1.0",
+    "coverage[toml]~=7.4",
+    "pytest~=8.1",
+    "pytest-mock~=3.12",
+    "pytest-randomly~=3.15",
+    "pytest-rerunfailures~=14.0",
+    "pytest-xdist[psutil]~=3.5",
 ]
 
 [tool.hatch.envs.hatch-test.scripts]
@@ -132,11 +126,7 @@ kevinbotlib = ["src/kevinbotlib", "*/kevinbotlib/src/kevinbotlib"]
 tests = ["tests", "*/kevinbotlib/tests"]
 
 [tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 
 [tool.ruff.lint]
 ignore = ["G004", "TRY400"]
@@ -149,10 +139,4 @@ ignore = ["G004", "TRY400"]
 "src/kevinbotlib/apps/dashboard/widgets/_pglive/sources/*" = ["ALL"]
 
 [tool.hatch.build.targets.sdist]
-exclude = [
-  "docs/",
-  "mkdocs.yaml",
-  "build/",
-  "scripts/",
-  ".github/"
-]
+exclude = ["docs/", "mkdocs.yaml", "build/", "scripts/", ".github/"]
