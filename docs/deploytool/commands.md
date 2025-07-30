@@ -242,3 +242,157 @@ Delete a virtual environment on the remote robot.
     `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
 
 </div>
+
+## `deploytool robot` (Group)
+
+### `deploytool robot delete`
+
+Delete a robot code on the remote robot.
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+### `deploytool robot service` (Group)
+
+#### `deploytool robot service estop`
+
+Send an E-Stop (SIGUSR2) signal to the robot process. This is for debugging purposes only, and should not be used for a real emergency stop.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+#### `deploytool robot service stop`
+
+Gracefully terminate the robot process.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+#### `deploytool robot service start`
+
+Start the robot process. This will not restart a running process.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+#### `deploytool robot service status`
+
+Output the status of the robot process using systemctl.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+#### `deploytool robot service install`
+
+Install the robot process to auto-start on user login. Login linger can be manually set up to ensure the robot process is started even if the user is not logged in.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+#### `deploytool robot service uninstall`
+
+Fully uninstall the robot process from auto-starting on user login.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+### `deploytool robot deploy`
+
+Deploy code to the remote robot.
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+- :material-cog:{ .lg .middle } __Custom Python Wheels__
+
+    ---
+
+    `-W` *or* `--custom-wheels`: Optional. Custom wheel to install on the remote environment. Multiple `-W` args can be used at once.
+
+- :material-pause:{ .lg .middle } __No Service Start__
+
+    ---
+
+    `-N` *or* `--no-service-start`: Optional. Do not start the code after deploying. Existing code will still be stopped.
+
+- :material-text:{ .lg .middle } __Verbose Logging__
+
+    ---
+
+    `-v` *or* `--verbose`: Optional. Enables verbose-level logging. Can be chained up to 3 times. Ex: `-vvv`.
+
+</div>
+
+## `deploytool deploy`
+
+Alias to [`robot deploy`](#deploytool-robot-deploy)
