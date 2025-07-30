@@ -226,3 +226,19 @@ An unprovided python location will require user input before the venv is created
     `--python-location`: Python binary location on the remote robot. Ex: /usr/bin/python3
 
 </div>
+
+### `deploytool venv delete`
+
+Delete a virtual environment on the remote robot.
+
+#### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
