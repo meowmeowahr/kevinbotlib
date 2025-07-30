@@ -10,31 +10,31 @@
         <meta name="author" content="Kevin Ahr">
       
       
-        <link rel="canonical" href="https://meowmeowahr.github.io/kevinbotlib/latest/examples/scheduler/">
+        <link rel="canonical" href="https://meowmeowahr.github.io/kevinbotlib/latest/deploytool/">
       
       
         <link rel="prev" href="../fileserver/">
       
       
-        <link rel="next" href="../../apps/console/">
+        <link rel="next" href="commands/">
       
       
-        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
-        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
       
-      <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
     
     
       
-        <title>Command Scheduler Examples - KevinbotLib</title>
+        <title>KevinbotLib DeployTool - KevinbotLib</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -53,15 +53,15 @@
       
     
     
-      <link rel="stylesheet" href="../../css/print-site.css">
+      <link rel="stylesheet" href="../css/print-site.css">
     
-      <link rel="stylesheet" href="../../css/print-site-material.css">
+      <link rel="stylesheet" href="../css/print-site-material.css">
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#command-scheduler-examples" class="md-skip">
+        <a href="#kevinbotlib-deploytool" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +105,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="KevinbotLib" class="md-header__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
+    <a href=".." title="KevinbotLib" class="md-header__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -125,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Command Scheduler Examples
+              KevinbotLib DeployTool
             
           </span>
         </div>
@@ -218,7 +218,7 @@
         <a href="https://github.com/meowmeowahr/kevinbotlib" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -250,7 +250,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../.." class="md-tabs__link">
+        <a href=".." class="md-tabs__link">
           
   
   
@@ -272,7 +272,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../blog/" class="md-tabs__link">
+        <a href="../blog/" class="md-tabs__link">
           
   
   
@@ -308,7 +308,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="KevinbotLib" class="md-nav__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
+    <a href=".." title="KevinbotLib" class="md-nav__button md-logo" aria-label="KevinbotLib" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5"/></svg>
@@ -321,7 +321,7 @@
       <a href="https://github.com/meowmeowahr/kevinbotlib" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -368,6 +368,8 @@
       
         
       
+        
+      
     
     
     
@@ -386,7 +388,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../.." class="md-nav__link ">
+            <a href=".." class="md-nav__link ">
               
   
   
@@ -421,7 +423,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -441,8 +443,6 @@
                 
   
   
-    
-  
   
   
     
@@ -464,8 +464,6 @@
       
         
       
-        
-      
     
     
     
@@ -473,15 +471,15 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../examples/" class="md-nav__link ">
               
   
   
@@ -500,7 +498,7 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_3">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -516,12 +514,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../robot/" class="md-nav__link">
+      <a href="../examples/robot.md" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Robot Examples
+    None
     
   </span>
   
@@ -539,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../comm/" class="md-nav__link">
+      <a href="../examples/comm/" class="md-nav__link">
         
   
   
@@ -562,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../logger/" class="md-nav__link">
+      <a href="../examples/logger/" class="md-nav__link">
         
   
   
@@ -585,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../joystick/" class="md-nav__link">
+      <a href="../examples/joystick/" class="md-nav__link">
         
   
   
@@ -608,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../system/" class="md-nav__link">
+      <a href="../examples/system/" class="md-nav__link">
         
   
   
@@ -631,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fileserver/" class="md-nav__link">
+      <a href="../examples/fileserver/" class="md-nav__link">
         
   
   
@@ -642,107 +640,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Command Scheduler Examples
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Command Scheduler Examples
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parallel-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parallel Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sequential-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sequential Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#named-controller-command-trigger" class="md-nav__link">
-    <span class="md-ellipsis">
-      Named Controller Command Trigger
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -845,7 +742,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../apps/console/" class="md-nav__link ">
+            <a href="../apps/console/" class="md-nav__link ">
               
   
   
@@ -880,7 +777,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/launching/" class="md-nav__link">
+      <a href="../apps/console/launching/" class="md-nav__link">
         
   
   
@@ -903,7 +800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/run/" class="md-nav__link">
+      <a href="../apps/console/run/" class="md-nav__link">
         
   
   
@@ -926,7 +823,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/controllers/" class="md-nav__link">
+      <a href="../apps/console/controllers/" class="md-nav__link">
         
   
   
@@ -949,7 +846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/metrics/" class="md-nav__link">
+      <a href="../apps/console/metrics/" class="md-nav__link">
         
   
   
@@ -972,7 +869,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/console/settings/" class="md-nav__link">
+      <a href="../apps/console/settings/" class="md-nav__link">
         
   
   
@@ -1032,7 +929,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../apps/dashboard/" class="md-nav__link ">
+            <a href="../apps/dashboard/" class="md-nav__link ">
               
   
   
@@ -1067,7 +964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/dashboard/launching/" class="md-nav__link">
+      <a href="../apps/dashboard/launching/" class="md-nav__link">
         
   
   
@@ -1090,7 +987,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/dashboard/ui/" class="md-nav__link">
+      <a href="../apps/dashboard/ui/" class="md-nav__link">
         
   
   
@@ -1113,7 +1010,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/dashboard/settings/" class="md-nav__link">
+      <a href="../apps/dashboard/settings/" class="md-nav__link">
         
   
   
@@ -1136,7 +1033,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/dashboard/widgets/" class="md-nav__link">
+      <a href="../apps/dashboard/widgets/" class="md-nav__link">
         
   
   
@@ -1196,7 +1093,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../apps/logdownloader/" class="md-nav__link ">
+            <a href="../apps/logdownloader/" class="md-nav__link ">
               
   
   
@@ -1231,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logdownloader/launching/" class="md-nav__link">
+      <a href="../apps/logdownloader/launching/" class="md-nav__link">
         
   
   
@@ -1254,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logdownloader/connection/" class="md-nav__link">
+      <a href="../apps/logdownloader/connection/" class="md-nav__link">
         
   
   
@@ -1277,7 +1174,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logdownloader/controls/" class="md-nav__link">
+      <a href="../apps/logdownloader/controls/" class="md-nav__link">
         
   
   
@@ -1300,7 +1197,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logdownloader/viewing/" class="md-nav__link">
+      <a href="../apps/logdownloader/viewing/" class="md-nav__link">
         
   
   
@@ -1358,7 +1255,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../apps/logviewer/" class="md-nav__link ">
+            <a href="../apps/logviewer/" class="md-nav__link ">
               
   
   
@@ -1393,7 +1290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logviewer/launching/" class="md-nav__link">
+      <a href="../apps/logviewer/launching/" class="md-nav__link">
         
   
   
@@ -1416,7 +1313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logviewer/loading/" class="md-nav__link">
+      <a href="../apps/logviewer/loading/" class="md-nav__link">
         
   
   
@@ -1439,7 +1336,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../apps/logviewer/viewing/" class="md-nav__link">
+      <a href="../apps/logviewer/viewing/" class="md-nav__link">
         
   
   
@@ -1499,7 +1396,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../cli/" class="md-nav__link ">
+            <a href="../cli/" class="md-nav__link ">
               
   
   
@@ -1537,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commandscheduler/" class="md-nav__link">
+      <a href="../commandscheduler/" class="md-nav__link">
         
   
   
@@ -1560,7 +1457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../robot/" class="md-nav__link">
+      <a href="../robot/" class="md-nav__link">
         
   
   
@@ -1606,7 +1503,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../sim/" class="md-nav__link ">
+            <a href="../sim/" class="md-nav__link ">
               
   
   
@@ -1641,7 +1538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sim/windowview/" class="md-nav__link">
+      <a href="../sim/windowview/" class="md-nav__link">
         
   
   
@@ -1697,7 +1594,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../vision/" class="md-nav__link ">
+            <a href="../vision/" class="md-nav__link ">
               
   
   
@@ -1732,7 +1629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vision/extend-basecamera/" class="md-nav__link">
+      <a href="../vision/extend-basecamera/" class="md-nav__link">
         
   
   
@@ -1755,7 +1652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vision/simulation/" class="md-nav__link">
+      <a href="../vision/simulation/" class="md-nav__link">
         
   
   
@@ -1835,7 +1732,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../hardware/interface-vs-controller/" class="md-nav__link">
+      <a href="../hardware/interface-vs-controller/" class="md-nav__link">
         
   
   
@@ -1903,7 +1800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../hardware/controllers/keyvalue/" class="md-nav__link">
+      <a href="../hardware/controllers/keyvalue/" class="md-nav__link">
         
   
   
@@ -1979,7 +1876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../hardware/interfaces/serial/" class="md-nav__link">
+      <a href="../hardware/interfaces/serial/" class="md-nav__link">
         
   
   
@@ -2018,7 +1915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../fileserver/" class="md-nav__link">
+      <a href="../fileserver/" class="md-nav__link">
         
   
   
@@ -2029,6 +1926,97 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    KevinbotLib DeployTool
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_12">
+            <span class="md-nav__icon md-icon"></span>
+            KevinbotLib DeployTool
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Command Line Modules
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2084,10 +2072,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_13" >
         
           
-          <label class="md-nav__link" for="__nav_1_12" id="__nav_1_12_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_13" id="__nav_1_13_label" tabindex="0">
             
   
   
@@ -2100,8 +2088,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_12_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_12">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_13">
             <span class="md-nav__icon md-icon"></span>
             KevinbotLib Reference
           </label>
@@ -2114,7 +2102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/robot/" class="md-nav__link">
+      <a href="../reference/robot/" class="md-nav__link">
         
   
   
@@ -2137,7 +2125,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/logging/" class="md-nav__link">
+      <a href="../reference/logging/" class="md-nav__link">
         
   
   
@@ -2160,7 +2148,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/scheduler/" class="md-nav__link">
+      <a href="../reference/scheduler/" class="md-nav__link">
         
   
   
@@ -2183,7 +2171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/comm/" class="md-nav__link">
+      <a href="../reference/comm/" class="md-nav__link">
         
   
   
@@ -2206,7 +2194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/joystick/" class="md-nav__link">
+      <a href="../reference/joystick/" class="md-nav__link">
         
   
   
@@ -2229,7 +2217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/fileserver/" class="md-nav__link">
+      <a href="../reference/fileserver/" class="md-nav__link">
         
   
   
@@ -2252,7 +2240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/hardwareinterface/" class="md-nav__link">
+      <a href="../reference/hardwareinterface/" class="md-nav__link">
         
   
   
@@ -2275,7 +2263,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/hardwarecontroller/" class="md-nav__link">
+      <a href="../reference/hardwarecontroller/" class="md-nav__link">
         
   
   
@@ -2298,7 +2286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/simulator/" class="md-nav__link">
+      <a href="../reference/simulator/" class="md-nav__link">
         
   
   
@@ -2321,7 +2309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/coord/" class="md-nav__link">
+      <a href="../reference/coord/" class="md-nav__link">
         
   
   
@@ -2344,7 +2332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/vision/" class="md-nav__link">
+      <a href="../reference/vision/" class="md-nav__link">
         
   
   
@@ -2367,7 +2355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/metrics/" class="md-nav__link">
+      <a href="../reference/metrics/" class="md-nav__link">
         
   
   
@@ -2390,7 +2378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/ui/" class="md-nav__link">
+      <a href="../reference/ui/" class="md-nav__link">
         
   
   
@@ -2413,7 +2401,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/misc/" class="md-nav__link">
+      <a href="../reference/misc/" class="md-nav__link">
         
   
   
@@ -2436,7 +2424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/exceptions/" class="md-nav__link">
+      <a href="../reference/exceptions/" class="md-nav__link">
         
   
   
@@ -2499,7 +2487,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../blog/" class="md-nav__link ">
+            <a href="../blog/" class="md-nav__link ">
               
   
   
@@ -2581,7 +2569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../blog/archive/2025/" class="md-nav__link">
+      <a href="../blog/archive/2025/" class="md-nav__link">
         
   
   
@@ -2659,7 +2647,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../blog/category/goals/" class="md-nav__link">
+      <a href="../blog/category/goals/" class="md-nav__link">
         
   
   
@@ -2717,36 +2705,27 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
+  <a href="#target-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Basic Usage
+      Target Requirements
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#parallel-commands" class="md-nav__link">
+  <a href="#code-requirements" class="md-nav__link">
     <span class="md-ellipsis">
-      Parallel Commands
+      Code Requirements
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sequential-commands" class="md-nav__link">
+  <a href="#functional-diagram" class="md-nav__link">
     <span class="md-ellipsis">
-      Sequential Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#named-controller-command-trigger" class="md-nav__link">
-    <span class="md-ellipsis">
-      Named Controller Command Trigger
+      Functional Diagram
     </span>
   </a>
   
@@ -2768,7 +2747,7 @@
 
 
   
-    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/examples/scheduler.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/meowmeowahr/kevinbotlib/edit/master/docs/deploytool/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2776,327 +2755,24 @@
   
 
 
-<h1 id="command-scheduler-examples">Command Scheduler Examples</h1>
-<h2 id="basic-usage">Basic Usage</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/basic_example.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">PrintCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span>
-
-
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
-<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">PrintCommand</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">))</span>
-<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">PrintCommand</span><span class="p">(</span><span class="s2">&quot;Test2&quot;</span><span class="p">))</span>
-<span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="parallel-commands">Parallel Commands</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/parallel.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span><span class="p">,</span> <span class="n">ParallelCommand</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
-
-
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
-<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">ParallelCommand</span><span class="p">([</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 1&quot;</span><span class="p">),</span> <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 2&quot;</span><span class="p">)]))</span>
-
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="sequential-commands">Sequential Commands</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/sequential.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span><span class="p">,</span> <span class="n">SequentialCommand</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
-
-
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
-<span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">SequentialCommand</span><span class="p">([</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 1&quot;</span><span class="p">),</span> <span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;command 2&quot;</span><span class="p">)]))</span>
-
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-<h2 id="named-controller-command-trigger">Named Controller Command Trigger</h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/scheduler/joystick_trigger.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.joystick</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalNamedController</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">CommandScheduler</span>
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">PrintCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">PrintForOneSecondCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finished</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
-
-
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">CommandScheduler</span><span class="p">()</span>
-
-<span class="n">controller</span> <span class="o">=</span> <span class="n">LocalNamedController</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">start_polling</span><span class="p">()</span>
-
-<span class="n">controller</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">a</span><span class="p">()</span><span class="o">.</span><span class="n">while_true</span><span class="p">(</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;A Button Command&quot;</span><span class="p">))</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">b</span><span class="p">()</span><span class="o">.</span><span class="n">on_true</span><span class="p">(</span><span class="n">PrintForOneSecondCommand</span><span class="p">(</span><span class="s2">&quot;B Button Command&quot;</span><span class="p">))</span>
-<span class="n">controller</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">x</span><span class="p">()</span><span class="o">.</span><span class="n">on_true</span><span class="p">(</span><span class="n">PrintCommand</span><span class="p">(</span><span class="s2">&quot;X Button Command&quot;</span><span class="p">))</span>
-
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">scheduler</span><span class="o">.</span><span class="n">iterate</span><span class="p">()</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
+<h1 id="kevinbotlib-deploytool">KevinbotLib DeployTool</h1>
+<p>KevinbotLib DeployTool allows you to deploy robot code to a networked robot over SSH/SFTP.</p>
+<h2 id="target-requirements">Target Requirements</h2>
+<ul>
+<li>Linux with systemd</li>
+<li>A non-root user account</li>
+<li>User account with linger-login enabled</li>
+<li>Target Python version of 3.11 or greater (can be installed at a custom location)</li>
+</ul>
+<h2 id="code-requirements">Code Requirements</h2>
+<ul>
+<li>Must use uv and hatch</li>
+<li>uv and hatch must be added as local requirements and locally installed</li>
+<li>Code entrypoint in <code>./src/__main__.py</code></li>
+</ul>
+<h2 id="functional-diagram">Functional Diagram</h2>
+<p><img alt="deploytool-diagram-dark.svg" src="../media/deploytool-diagram-dark.svg#only-dark" />
+<img alt="deploytool-diagram-dark.svg" src="../media/deploytool-diagram-light.svg#only-light" /></p>
 
 
 
@@ -3134,7 +2810,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../fileserver/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Fileserver Examples">
+          <a href="../fileserver/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The File Server">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -3144,20 +2820,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Fileserver Examples
+                The File Server
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../apps/console/" class="md-footer__link md-footer__link--next" aria-label="Next: Control Console">
+          <a href="commands/" class="md-footer__link md-footer__link--next" aria-label="Next: Command Line Modules">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Control Console
+                Command Line Modules
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3195,12 +2871,12 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.tabs.link", "content.action.edit", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.footer", "navigation.indexes", "navigation.tabs"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
       
-        <script src="../../js/print-site.js"></script>
+        <script src="../js/print-site.js"></script>
       
     
   </body>

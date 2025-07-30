@@ -1,0 +1,116 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0" version="27.2.0" pages="2">
+  <diagram name="Deploy" id="7H7E4NXmnUPydR_QwePN">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BoAaOEzfVGBLyncLPv35-66" value="" style="swimlane;childLayout=stackLayout;horizontal=1;fillColor=none;horizontalStack=1;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;strokeColor=none;stackBorder=10;stackSpacing=-12;resizable=1;align=center;points=[];whiteSpace=wrap;html=1;startSize=0;" vertex="1" parent="1">
+          <mxGeometry x="510" y="560" width="932" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-67" value="&lt;div&gt;Generate&lt;/div&gt;&lt;div&gt;Code&amp;nbsp;&lt;/div&gt;&lt;div&gt;Tarball&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="10" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-68" value="&lt;div&gt;Connect&amp;nbsp;&lt;/div&gt;&lt;div&gt;SFTP&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="98" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-69" value="&lt;div&gt;Create&lt;/div&gt;&lt;div&gt;Directories&lt;/div&gt;&lt;div&gt;If&lt;/div&gt;&lt;div&gt;Needed&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="186" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-77" value="&lt;div&gt;Stop&lt;/div&gt;&lt;div&gt;Code&lt;/div&gt;&lt;div&gt;Service&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="274" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-78" value="&lt;div&gt;Delete&lt;/div&gt;&lt;div&gt;Robot&lt;/div&gt;&lt;div&gt;Code&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="362" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fillColor=#d80073;strokeColor=#A50040;" edge="1" parent="BoAaOEzfVGBLyncLPv35-66" source="BoAaOEzfVGBLyncLPv35-67" target="BoAaOEzfVGBLyncLPv35-79">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="495" y="90" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="60" y="190" />
+              <mxPoint x="495" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-79" value="&lt;div&gt;Upload&lt;/div&gt;&lt;div&gt;Tarball&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="450" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-81" value="&lt;div&gt;Extract&lt;/div&gt;&lt;div&gt;Tarball&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="538" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-82" value="&lt;div&gt;Install&lt;/div&gt;&lt;div&gt;Deps&lt;/div&gt;&lt;div&gt;with pip&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="626" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="W1d6NbL3SS3u4banT88Q-4" value="&lt;div&gt;Install&lt;/div&gt;&lt;div&gt;Custom&lt;/div&gt;&lt;div&gt;Wheels&lt;/div&gt;&lt;div&gt;from -W args&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="714" y="10" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-83" value="&lt;div&gt;Restart&lt;/div&gt;&lt;div&gt;Code&lt;/div&gt;&lt;div&gt;Service&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;points=[];whiteSpace=wrap;html=1;shadow=0;" vertex="1" parent="BoAaOEzfVGBLyncLPv35-66">
+          <mxGeometry x="822" y="10" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-75" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="BoAaOEzfVGBLyncLPv35-72" target="BoAaOEzfVGBLyncLPv35-68">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-72" value="SSH Key Manager" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="593" y="430" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BoAaOEzfVGBLyncLPv35-93" value="" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image=img/lib/active_directory/key.svg;imageBackground=none;imageBorder=none;" vertex="1" parent="1">
+          <mxGeometry x="642.46" y="510" width="31.08" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-1" value="Robot Code" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;html=1;glass=0;swimlaneLine=1;swimlaneFillColor=default;" vertex="1" parent="1">
+          <mxGeometry x="710" y="690" width="140" height="130" as="geometry">
+            <mxRectangle x="300" y="170" width="100" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-2" value="src" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="pcZ0-ckn7FtvvnfKstGV-1">
+          <mxGeometry y="26" width="140" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-3" value="assets" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="pcZ0-ckn7FtvvnfKstGV-1">
+          <mxGeometry y="52" width="140" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-4" value="deploy" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="pcZ0-ckn7FtvvnfKstGV-1">
+          <mxGeometry y="78" width="140" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-5" value="pyproject.toml" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="pcZ0-ckn7FtvvnfKstGV-1">
+          <mxGeometry y="104" width="140" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="pcZ0-ckn7FtvvnfKstGV-6" target="BoAaOEzfVGBLyncLPv35-67">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pcZ0-ckn7FtvvnfKstGV-6" value="Robot Code" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="430" width="130" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="9Vua3vH_CtVlWO-5X2AS" name="Robot Code Directory Structure">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7D_O-X16J4g-W-c_W3G--1" value="Deploy Folder Structure" style="swimlane;startSize=20;horizontal=1;childLayout=treeLayout;horizontalTree=0;sortEdges=1;resizable=0;containerType=tree;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="290" y="340" width="280" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--2" value="~" style="whiteSpace=wrap;html=1;" vertex="1" parent="7D_O-X16J4g-W-c_W3G--1">
+          <mxGeometry x="90" y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=0;" edge="1" parent="7D_O-X16J4g-W-c_W3G--1" source="7D_O-X16J4g-W-c_W3G--3" target="7D_O-X16J4g-W-c_W3G--8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;flowAnimation=0;curved=0;" edge="1" parent="7D_O-X16J4g-W-c_W3G--1" source="7D_O-X16J4g-W-c_W3G--3" target="7D_O-X16J4g-W-c_W3G--7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--3" value="&lt;div&gt;Deployed Robot Name&lt;/div&gt;&lt;div&gt;ex: `kevinbotv3/`&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="7D_O-X16J4g-W-c_W3G--1">
+          <mxGeometry x="70.81" y="130" width="138.38" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--4" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="7D_O-X16J4g-W-c_W3G--1" source="7D_O-X16J4g-W-c_W3G--2" target="7D_O-X16J4g-W-c_W3G--3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--7" value="&lt;div&gt;robot&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="7D_O-X16J4g-W-c_W3G--1">
+          <mxGeometry x="20" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7D_O-X16J4g-W-c_W3G--8" value="env" style="whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="7D_O-X16J4g-W-c_W3G--1">
+          <mxGeometry x="160" y="230" width="100" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
