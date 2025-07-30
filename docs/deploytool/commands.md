@@ -191,8 +191,6 @@ Test Deployfile by connecting to a robot.
 
 #### Options
 
-Unprovided arguments will require user input before the test starts.
-
 <div class="grid cards" markdown>
 
 - :material-folder:{ .lg .middle } __Deploy Directory__
@@ -200,5 +198,31 @@ Unprovided arguments will require user input before the test starts.
     ---
 
     `-d` *or* `--directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
+## `deploytool venv` (Group)
+
+### `deploytool venv create`
+
+Create a virtual environment on the remote robot.
+
+#### Options
+
+An unprovided python location will require user input before the venv is created.
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+- :material-language-python:{ .lg .middle } __Target Python Location__
+
+    ---
+
+    `--python-location`: Python binary location on the remote robot. Ex: /usr/bin/python3
 
 </div>
