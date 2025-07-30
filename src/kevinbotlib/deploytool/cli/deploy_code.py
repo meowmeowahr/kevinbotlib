@@ -103,6 +103,7 @@ def deploy_code_command(directory, custom_wheels: list, verbose: int, *, no_serv
             current_tag = None
             current_branch = None
             latest_commit = None
+            is_dirty = True
 
         manifest = {
             "deploytool": __about__.__version__,

@@ -70,7 +70,7 @@ Unprovided arguments will require user input before the `Deployfile.toml` is gen
 Initialize a new robot SSH private and public key.
 
 !!! Info
-    SSH keys will be stored globally, and available for all projects.
+    SSH keys will be stored globally, and available for all projects. Accidentally committing your SSH keys is not a risk.
 
 #### Options
 
@@ -146,5 +146,59 @@ Unprovided arguments will require user input before the `Deployfile.toml` is gen
     ---
 
     `--port`: Port for SSH.
+
+</div>
+
+### `deploytool ssh test`
+
+Test the SSH connection to a robot.
+
+#### Options
+
+Unprovided arguments will require user input before the test starts.
+
+<div class="grid cards" markdown>
+
+- :material-robot:{ .lg .middle } __Key Name__
+
+    ---
+
+    `--key-name`: Name of the SSH key pair. Must not contain spaces or special characters.
+
+- :material-account:{ .lg .middle } __SSH Username__
+
+    ---
+
+    `--user`: Username to apply the SSH key using.
+
+- :material-network:{ .lg .middle } __SSH Host__
+
+    ---
+
+    `--host`: Hostname of IP address for SSH.
+
+- :material-network:{ .lg .middle } __SSH Port__
+
+    ---
+
+    `--port`: Port for SSH.
+
+</div>
+
+## `deploytool test`
+
+Test Deployfile by connecting to a robot.
+
+#### Options
+
+Unprovided arguments will require user input before the test starts.
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
 
 </div>

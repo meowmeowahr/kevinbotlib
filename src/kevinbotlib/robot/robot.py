@@ -483,6 +483,22 @@ class BaseRobot:
         return self.comm_client.get_raw(CommPath(self._ctrl_heartbeat_key) / "heartbeat") is not None
 
     @final
+    def _check_stops(self) -> None:
+        if self._signal_stop:
+            msg = "Robot signal stopped"
+            self.robot_end()
+            raise RobotStoppedException(msg)
+        if self._signal_estop:
+            msg = "Robot signal e-stopped"
+            raise RobotEmergencyStoppedException(msg)
+
+        if self._get_estop_request():
+            self.telemetry.critical("Control Console EMERGENCY STOP detected... Stopping now")
+            msg = "Robot control console e-stopped"
+            self._estop = True
+            raise RobotEmergencyStoppedException(msg)
+
+    @final
     def run(self) -> NoReturn:
         """Run the robot loop and parse command-line arguments. Method is **final**."""
         with contextlib.redirect_stdout(StreamRedirector(self.telemetry, self._print_log_level)):
@@ -498,19 +514,7 @@ class BaseRobot:
 
                 while True:
                     start_run_time = time.monotonic()
-                    if self._signal_stop:
-                        msg = "Robot signal stopped"
-                        self.robot_end()
-                        raise RobotStoppedException(msg)  # noqa: TRY301
-                    if self._signal_estop:
-                        msg = "Robot signal e-stopped"
-                        raise RobotEmergencyStoppedException(msg)  # noqa: TRY301
-
-                    if self._get_estop_request():
-                        self.telemetry.critical("Control Console EMERGENCY STOP detected... Stopping now")
-                        msg = "Robot control console e-stopped"
-                        self._estop = True
-                        raise RobotEmergencyStoppedException(msg)  # noqa: TRY301
+                    self._check_stops()
 
                     current_opmode: str = self._get_console_opmode_request()
 

@@ -14,3 +14,8 @@ KevinbotLib DeployTool allows you to deploy robot code to a networked robot over
 * Must use uv and hatch
 * uv and hatch must be added as local requirements and locally installed
 * Code entrypoint in `./src/__main__.py`
+
+## Functional Diagram
+
+![deploytool-diagram-dark.svg](../media/deploytool-diagram-dark.svg#only-dark)
+![deploytool-diagram-dark.svg](../media/deploytool-diagram-light.svg#only-light)
