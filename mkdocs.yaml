@@ -19,8 +19,7 @@ theme:
     text: Inter
     code: JetBrains Mono
   icon:
-    logo:
-      material/robot
+    logo: material/robot
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -32,7 +31,7 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       primary: #60a5fa
-      scheme: default 
+      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -68,28 +67,28 @@ markdown_extensions:
 plugins:
   - mkdocstrings:
       handlers:
-          python:
-            options:
-              heading_level: 2
-              members_order: source
-              show_root_heading: true
-              show_symbol_type_heading: true
-              show_symbol_type_toc: true
-              show_root_members_full_path: true
-              parameter_headings: false
-              show_source: false
-              show_if_no_docstring: true
-              filters: ["!^_", "^__init__$"]
+        python:
+          options:
+            heading_level: 2
+            members_order: source
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_root_members_full_path: true
+            parameter_headings: false
+            show_source: false
+            show_if_no_docstring: true
+            filters: ["!^_", "^__init__$"]
   - search
   - mike
   - blog
   - rss:
-        match_path: blog/posts/.*
-        date_from_meta:
-          as_creation: date
-        categories:
-          - categories
-          - tags
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
   - print-site # must be at end
 
 extra:
@@ -98,80 +97,78 @@ extra:
 
 nav:
   - Docs:
-    - index.md
-    - installation.md
-    - Examples:
-      - examples/index.md
-      - examples/robot.md
-      - examples/comm.md
-      - examples/logger.md
-      - examples/joystick.md
-      - examples/system.md
-      - examples/fileserver.md
-    - Applications:
-      - Control Console:
-        - apps/console/index.md
-        - apps/console/launching.md
-        - apps/console/run.md
-        - apps/console/controllers.md
-        - apps/console/metrics.md
-        - apps/console/settings.md
-      - Dashboard:
-        - apps/dashboard/index.md
-        - apps/dashboard/launching.md
-        - apps/dashboard/ui.md
-        - apps/dashboard/settings.md
-        - apps/dashboard/widgets.md
-      - Log Downloader:
-        - apps/logdownloader/index.md
-        - apps/logdownloader/launching.md
-        - apps/logdownloader/connection.md
-        - apps/logdownloader/controls.md
-        - apps/logdownloader/viewing.md
-      - Log Viewer:
-        - apps/logviewer/index.md
-        - apps/logviewer/launching.md
-        - apps/logviewer/loading.md
-        - apps/logviewer/viewing.md
-    - Command Line Tools:
-      - cli/index.md
-    - commandscheduler.md
-    - robot.md
-    - Simulation Framework:
-        - sim/index.md
-        - sim/windowview.md
-    - Vision:
-        - vision/index.md
-        - vision/extend-basecamera.md
-        - vision/simulation.md
-    - Hardware:
-        - hardware/interface-vs-controller.md
-        - Controllers:
-            - hardware/controllers/keyvalue.md
-        - Interfaces:
-            - hardware/interfaces/serial.md
-    - fileserver.md
-    - KevinbotLib DeployTool:
-        - deploytool/index.md
-        - deploytool/commands.md
-    - KevinbotLib Reference:
-      - reference/robot.md
-      - reference/logging.md
-      - reference/scheduler.md
-      - reference/comm.md
-      - reference/joystick.md
-      - reference/fileserver.md
-      - reference/hardwareinterface.md
-      - reference/hardwarecontroller.md
-      - reference/simulator.md
-      - reference/coord.md
-      - reference/vision.md
-      - reference/metrics.md
-      - reference/ui.md
-      - reference/misc.md
-      - reference/exceptions.md
+      - index.md
+      - installation.md
+      - Examples:
+          - examples/index.md
+          - examples/comm.md
+          - examples/logger.md
+          - examples/joystick.md
+          - examples/system.md
+      - Applications:
+          - Control Console:
+              - apps/console/index.md
+              - apps/console/launching.md
+              - apps/console/run.md
+              - apps/console/controllers.md
+              - apps/console/metrics.md
+              - apps/console/settings.md
+          - Dashboard:
+              - apps/dashboard/index.md
+              - apps/dashboard/launching.md
+              - apps/dashboard/ui.md
+              - apps/dashboard/settings.md
+              - apps/dashboard/widgets.md
+          - Log Downloader:
+              - apps/logdownloader/index.md
+              - apps/logdownloader/launching.md
+              - apps/logdownloader/connection.md
+              - apps/logdownloader/controls.md
+              - apps/logdownloader/viewing.md
+          - Log Viewer:
+              - apps/logviewer/index.md
+              - apps/logviewer/launching.md
+              - apps/logviewer/loading.md
+              - apps/logviewer/viewing.md
+      - Command Line Tools:
+          - cli/index.md
+      - commandscheduler.md
+      - robot.md
+      - Simulation Framework:
+          - sim/index.md
+          - sim/windowview.md
+      - Vision:
+          - vision/index.md
+          - vision/extend-basecamera.md
+          - vision/simulation.md
+      - Hardware:
+          - hardware/interface-vs-controller.md
+          - Controllers:
+              - hardware/controllers/keyvalue.md
+          - Interfaces:
+              - hardware/interfaces/serial.md
+      - fileserver.md
+      - KevinbotLib DeployTool:
+          - deploytool/index.md
+          - deploytool/commands.md
+      - KevinbotLib Reference:
+          - reference/robot.md
+          - reference/logging.md
+          - reference/scheduler.md
+          - reference/comm.md
+          - reference/joystick.md
+          - reference/fileserver.md
+          - reference/hardwareinterface.md
+          - reference/hardwarecontroller.md
+          - reference/simulator.md
+          - reference/coord.md
+          - reference/vision.md
+          - reference/metrics.md
+          - reference/ui.md
+          - reference/misc.md
+          - reference/exceptions.md
   - Blog:
-    - blog/index.md
+      - blog/index.md
 
 repo_url: https://github.com/meowmeowahr/kevinbotlib
 
