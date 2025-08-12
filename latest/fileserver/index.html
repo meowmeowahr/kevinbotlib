@@ -460,10 +460,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -505,29 +501,6 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../examples/robot.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    None
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -612,29 +585,6 @@
   
   <span class="md-ellipsis">
     System Examples
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../examples/fileserver/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Fileserver Examples
     
   </span>
   
@@ -1924,6 +1874,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    The File Server
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1935,6 +1898,49 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2706,6 +2712,38 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2729,7 +2767,7 @@
 
 
 <h1 id="the-file-server">The File Server</h1>
-<p>The KevinbotLib file server is a simple HTML/HTTP file server for KevinbotLib. 
+<p>The KevinbotLib file server is a simple HTML/HTTP file server for KevinbotLib.
 Files and subdirectories can be served.</p>
 <p>The KevinbotLib file server is used internally inside <a href="../robot/">The Robot Class</a> to serve log files.</p>
 <div class="admonition note">
@@ -2737,6 +2775,48 @@ Files and subdirectories can be served.</p>
 <p>The File server is not required to use the <a href="../apps/logdownloader/">KevinbotLib Log Downloader</a>, since that uses SFTP/SSH.</p>
 </div>
 <p><img alt="fileserver.png" src="../media/fileserver.png" /></p>
+<h2 id="examples">Examples</h2>
+<h3 id="basic-server">Basic Server</h3>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">examples/fileserver/serve.py</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.fileserver</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileServer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kevinbotlib.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">Logger</span><span class="p">,</span> <span class="n">LoggerConfiguration</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">LoggerConfiguration</span><span class="p">())</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">FileServer</span><span class="p">(</span>
+    <span class="n">http_port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>  <span class="c1"># http</span>
+    <span class="n">directory</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span>  <span class="c1"># serve directory</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
 
 
 
