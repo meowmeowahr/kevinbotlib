@@ -56,7 +56,7 @@ KevinbotLib is a modular robot control system integrating a high-speed server-cl
 * Operate a KevinbotLib robot through a simple GUI interface
 * Supports up to 8 gamepad devices (up to 32 buttons each)
 * View live robot telemetry
-* View battery voltage (planned)
+* Monitor battery voltage
 * Change robot state and OpModes
 * Monitor robot system metrics
 
