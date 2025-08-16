@@ -62,7 +62,6 @@ dev = [
     "mkdocs-material[imaging]",
     "mkdocstrings[python]>=0.18",
     "mkdocs-rss-plugin[dev]>=1.17.3",
-    "mkdocs-print-site-plugin",
     "mike",
     "pyinstaller",
     "Pillow",
@@ -101,7 +100,7 @@ parallel = true
 omit = ["src/kevinbotlib/__about__.py"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.13", "3.12", "3.11", "3.10"]
+python = ["3.13", "3.12", "3.11"]
 
 [tool.hatch.envs.hatch-test]
 dependencies = [
@@ -115,7 +114,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.hatch-test.scripts]
-python = ["3.13", "3.12", "3.11", "3.10"]
+python = ["3.13", "3.12", "3.11"]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
 run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
 cov-combine = "coverage combine"

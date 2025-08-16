@@ -89,7 +89,6 @@ plugins:
       categories:
         - categories
         - tags
-  - print-site # must be at end
 
 extra:
   version:
