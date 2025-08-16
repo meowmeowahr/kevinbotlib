@@ -275,7 +275,7 @@ def start_service(df_directory: str):
 
     confirm_host_key_df(console, df, pkey)
 
-    with rich_spinner(console, "Stopping service over SSH"):
+    with rich_spinner(console, "Starting service over SSH"):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # noqa: S507 # * this is ok, because the user is asked beforehand
         ssh.connect(hostname=df.host, port=df.port, username=df.user, pkey=pkey, timeout=10)
@@ -283,11 +283,11 @@ def start_service(df_directory: str):
         check_systemd_ver(ssh)
         if check_service_file(df, ssh):
             console.print(
-                f"[yellow]User service file exists at ~/.config/systemd/user/{df.name}.service. Stopping service...",
+                f"[yellow]User service file exists at ~/.config/systemd/user/{df.name}.service. Starting service...",
             )
         else:
             console.print(
-                f"[yellow]User service file does not exist at ~/.config/systemd/user/{df.name}.service. Nothing to stop.[/yellow]"
+                f"[yellow]User service file does not exist at ~/.config/systemd/user/{df.name}.service. Nothing to start.[/yellow]"
             )
             return
 
@@ -296,6 +296,42 @@ def start_service(df_directory: str):
         console.print("[bold green]✔ Service started successfully[/bold green]")
         ssh.close()
 
+@click.command("restart")
+@click.option(
+    "-d",
+    "--df-directory",
+    default=".",
+    help="Directory of the Deployfile",
+    type=click.Path(file_okay=False, dir_okay=True, writable=True),
+)
+def restart_service(df_directory: str):
+    """Stop the robot systemd service"""
+    df = deployfile.read_deployfile(Path(df_directory) / "Deployfile.toml")
+
+    _, pkey = get_private_key(console, df)
+
+    confirm_host_key_df(console, df, pkey)
+
+    with rich_spinner(console, "Restarting service over SSH"):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # noqa: S507 # * this is ok, because the user is asked beforehand
+        ssh.connect(hostname=df.host, port=df.port, username=df.user, pkey=pkey, timeout=10)
+
+        check_systemd_ver(ssh)
+        if check_service_file(df, ssh):
+            console.print(
+                f"[yellow]User service file exists at ~/.config/systemd/user/{df.name}.service. Restarting service...",
+            )
+        else:
+            console.print(
+                f"[yellow]User service file does not exist at ~/.config/systemd/user/{df.name}.service. Nothing to stop.[/yellow]"
+            )
+            return
+
+        console.print("[green]Restarting service...[/green]")
+        ssh.exec_command(f"systemctl --user restart {df.name}.service")
+        console.print("[bold green]✔ Service restarted successfully[/bold green]")
+        ssh.close()
 
 service_group.add_command(install_service)
 service_group.add_command(uninstall_service)
@@ -303,6 +339,7 @@ service_group.add_command(status_service)
 service_group.add_command(stop_service)
 service_group.add_command(estop_service)
 service_group.add_command(start_service)
+service_group.add_command(restart_service)
 
 
 def check_systemd_ver(ssh: paramiko.SSHClient):

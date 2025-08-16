@@ -311,6 +311,22 @@ Start the robot process. This will not restart a running process.
 
 </div>
 
+#### `deploytool robot service restart`
+
+Restart the robot process.
+
+##### Options
+
+<div class="grid cards" markdown>
+
+- :material-folder:{ .lg .middle } __Deploy Directory__
+
+    ---
+
+    `-d` *or* `--df-directory`: Optional. Path to the directory containing the Deployfile.toml. Defaults to the current working directory.
+
+</div>
+
 #### `deploytool robot service status`
 
 Output the status of the robot process using systemctl.
