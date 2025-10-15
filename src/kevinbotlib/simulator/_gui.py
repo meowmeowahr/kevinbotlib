@@ -238,6 +238,7 @@ class SimMainWindow(_ThemableWindow):
 
         self.views[winid] = view
         action: QAction = self.windows_menu.addAction(view.title)
+        action.setIcon(view.icon(global_dark_mode))
 
         def _show_window() -> QWidget:
             mdi_child = self._mdi_children.get(winid)

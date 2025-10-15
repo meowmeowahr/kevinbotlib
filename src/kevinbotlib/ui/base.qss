@@ -818,6 +818,7 @@ QCheckBox::indicator:hover:disabled {
 
 QMdiSubWindow {
     background: {{bg3}};
+    border: 1px solid {{bg4}};
 }
 
 #SimulatorMdiTitleBar {
