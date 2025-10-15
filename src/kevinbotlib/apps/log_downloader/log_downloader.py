@@ -177,7 +177,7 @@ class ConnectionWorker(QObject):
         except socket.gaierror as e:
             self.error.emit(f"Could not resolve hostname: {e!r}")
             return
-        except paramiko.SSHException as e:
+        except (paramiko.SSHException, socket.error) as e:
             self.error.emit(f"Connection failed: {e!r}")
             return
         self.connected.emit()
