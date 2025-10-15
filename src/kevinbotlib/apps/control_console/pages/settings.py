@@ -46,7 +46,7 @@ class ControlConsoleSettingsTab(QWidget):
         # Port Setting
         self.port_input = QSpinBox()
         self.port_input.setRange(0, 65535)  # Valid port range
-        self.port_input.setValue(int(self.settings.value("network.port", 8765)))  # type: ignore
+        self.port_input.setValue(int(self.settings.value("network.port", 6379)))  # type: ignore
         self.port_input.valueChanged.connect(self.save_port)
         self.form.addRow("Port", self.port_input)
 

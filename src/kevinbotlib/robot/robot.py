@@ -204,7 +204,7 @@ class BaseRobot:
 
         Args:
             opmodes (list[str]): List of operational mode names.
-            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 8765.
+            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 6379.
             serve_unix_socket (str, optional): Unix socket for comm server. Unix socket will be preferred over networked connection.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
