@@ -36,12 +36,4 @@ All examples can be found on the project's [GitHub repo](https://github.com/meow
 
     [:octicons-arrow-right-24: View Examples](system.md)
 
-- :material-server:{ .lg .middle } __File Server Examples__
-
-    ---
-
-    View examples using KevinbotLib's file server
-
-    [:octicons-arrow-right-24: View Examples](fileserver.md)
-
 </div>

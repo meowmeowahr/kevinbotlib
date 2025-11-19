@@ -133,6 +133,9 @@ nav:
           - cli/index.md
       - commandscheduler.md
       - robot.md
+      - Communications:
+          - comms/index.md
+          - comms/sendables.md
       - Simulation Framework:
           - sim/index.md
           - sim/windowview.md

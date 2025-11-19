@@ -43,7 +43,7 @@ Set the current OpMode, Enable, Disable, or E-Stop the robot
 
 Display each used Serial Interface in a tab
 
-View more info [here](../hardware/interfaces/serial#simulation)
+View more info [here](../hardware/interfaces/serial.md#simulation)
 
 ### Vision Cameras
 
@@ -57,7 +57,7 @@ View more info [here](../vision/simulation)
 
 [`BaseRobot.run()`](../reference/robot.md#kevinbotlib.robot.BaseRobot.run) will automatically detect the `--simulate` command line flag.
 
-The simulator can be detected at runtime using the [`BaseRobot.IS_SIM`](../reference/robot.md#kevinbotlib.robot.BaseRobot.IS_SIM) attribute, or if [`BaseRobot.simulator`](../reference/robot/#kevinbotlib.robot.BaseRobot.simulator) is a [`SimulationFramework`](../reference/simulator/#kevinbotlib.simulator.SimulationFramework) class.
+The simulator can be detected at runtime using the [`BaseRobot.IS_SIM`](../reference/robot.md#kevinbotlib.robot.BaseRobot.IS_SIM) attribute, or if [`BaseRobot.simulator`](../reference/robot.md#kevinbotlib.robot.BaseRobot.simulator) is a [`SimulationFramework`](../reference/simulator/#kevinbotlib.simulator.SimulationFramework) class.
 
 ### Examples
 
