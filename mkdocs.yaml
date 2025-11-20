@@ -153,6 +153,7 @@ nav:
       - KevinbotLib DeployTool:
           - deploytool/index.md
           - deploytool/commands.md
+          - deploytool/deployfile.md
       - KevinbotLib Reference:
           - reference/robot.md
           - reference/logging.md
