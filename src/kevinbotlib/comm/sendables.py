@@ -19,8 +19,6 @@ class BaseSendable(BaseModel, ABC):
     data_id: str = "kevinbotlib.dtype.null"
     """Internally used to differentiate sendable types"""
     flags: list[str] = []
-    struct: dict[str, Any] = {}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
