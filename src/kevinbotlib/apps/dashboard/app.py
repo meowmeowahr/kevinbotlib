@@ -86,7 +86,7 @@ from kevinbotlib.vision import VisionCommUtils
 
 class LatencyWorker(QObject):
     get_latency = Signal()
-    latency = Signal(float)
+    latency = Signal(object)
 
     def __init__(self, client: RedisCommClient):
         super().__init__()
