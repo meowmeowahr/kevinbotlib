@@ -30,7 +30,6 @@ class BaseSendable(BaseModel, ABC):
             "timeout": self.timeout,
             "value": None,
             "did": self.data_id,
-            "struct": self.struct,
         }
 
 
@@ -53,8 +52,6 @@ class IntegerSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.int"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -72,8 +69,6 @@ class BooleanSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.bool"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -91,8 +86,6 @@ class StringSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.str"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -110,8 +103,6 @@ class FloatSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.float"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -129,8 +120,6 @@ class AnyListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.any"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -148,8 +137,6 @@ class DictSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.dict"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -167,8 +154,6 @@ class BinarySendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.bin"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "limit:1024"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -186,8 +171,6 @@ class Coord2dSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.coord2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -204,8 +187,6 @@ class Coord3dSendable(BaseSendable):
     value: Coord3d
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.coord3d"
-    """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
     """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
@@ -224,8 +205,6 @@ class Angle2dSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.angle2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -243,8 +222,6 @@ class Angle3dSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.angle3d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -262,8 +239,6 @@ class Pose2dSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.pose2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -281,8 +256,6 @@ class Pose3dSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.pose3d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -300,8 +273,6 @@ class Coord2dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.coord2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -319,8 +290,6 @@ class Coord3dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.coord3d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -338,8 +307,6 @@ class Angle2dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.angle2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -357,8 +324,6 @@ class Angle3dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.angle3d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -376,8 +341,6 @@ class Pose2dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.pose2d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
@@ -395,8 +358,6 @@ class Pose3dListSendable(BaseSendable):
     """Value to send"""
     data_id: str = "kevinbotlib.dtype.list.pose3d"
     """Internally used to differentiate sendable types"""
-    struct: dict[str, Any] = {"dashboard": [{"element": "value", "format": "raw"}]}
-    """Data structure _suggestion_ for use in dashboard applications"""
 
     def get_dict(self) -> dict:
         """Return the sendable in dictionary form
