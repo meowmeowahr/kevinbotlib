@@ -14,13 +14,19 @@ import click
     is_flag=True,
     help="Enable tracing (TRACE) logging",
 )
-def dashboard(verbose: bool, trace: bool):
+@click.option(
+    "-f",
+    "--fullscreen",
+    is_flag=True,
+    help="Run the app in fullscreen",
+)
+def dashboard(verbose: bool, trace: bool, fullscreen: bool):
     """APP: The KevinbotLib Dashboard"""
     from kevinbotlib.apps.dashboard.app import (
         DashboardApplicationRunner,
         DashboardApplicationStartupArguments,
     )
 
-    args = DashboardApplicationStartupArguments(verbose=verbose, trace=trace)
+    args = DashboardApplicationStartupArguments(verbose=verbose, trace=trace, fullscreen=fullscreen)
     runner = DashboardApplicationRunner(args)
     runner.run()

@@ -829,6 +829,7 @@ class Application(ThemableWindow):
 class DashboardApplicationStartupArguments:
     verbose: bool = False
     trace: bool = True
+    fullscreen: bool = False
 
 
 class DashboardApplicationRunner:
@@ -841,6 +842,7 @@ class DashboardApplicationRunner:
 
         self.configure_logger(args)
         self.window = None
+        self.args = args
 
     def configure_logger(self, args: DashboardApplicationStartupArguments | None):
         # this is needed on Windows when using --windowed in PyInstaller
@@ -879,7 +881,10 @@ class DashboardApplicationRunner:
     def run(self):
         kevinbotlib.apps.dashboard.resources_rc.qInitResources()
         self.window = Application(self.app, self.logger)
-        self.window.show()
+        if self.args.fullscreen:
+            self.window.showFullScreen()
+        else:
+            self.window.show()
         sys.exit(self.app.exec())
 
 
