@@ -259,7 +259,6 @@ class SliderWidgetItem(WidgetItem):
                         self.key,
                         FloatSendable(
                             value=self.pending_value,
-                            struct=self.raw_data.get("struct", FloatSendable(value=0).struct),
                             timeout=self.raw_data.get("timeout", None),
                             flags=self.raw_data.get("flags", []),
                         ),
@@ -269,7 +268,6 @@ class SliderWidgetItem(WidgetItem):
                         self.key,
                         IntegerSendable(
                             value=int(self.pending_value),
-                            struct=self.raw_data.get("struct", IntegerSendable(value=0).struct),
                             timeout=self.raw_data.get("timeout", None),
                             flags=self.raw_data.get("flags", []),
                         ),

@@ -258,7 +258,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: button in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(lambda: button in self.joystick.get_buttons(), self.scheduler)
 
     def a(self) -> Trigger:
         """
@@ -267,7 +267,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.A in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(lambda: NamedControllerButtons.A in self.joystick.get_buttons(), self.scheduler)
 
     def b(self) -> Trigger:
         """
@@ -276,7 +276,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.B in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(lambda: NamedControllerButtons.B in self.joystick.get_buttons(), self.scheduler)
 
     def x(self) -> Trigger:
         """
@@ -285,7 +285,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.X in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(lambda: NamedControllerButtons.X in self.joystick.get_buttons(), self.scheduler)
 
     def y(self) -> Trigger:
         """
@@ -294,7 +294,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: NamedControllerButtons.Y in self.joystick.get_buttons(), CommandScheduler.get_instance())
+        return Trigger(lambda: NamedControllerButtons.Y in self.joystick.get_buttons(), self.scheduler)
 
     def left_bumper(self) -> Trigger:
         """
@@ -304,7 +304,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.LeftBumper in self.joystick.get_buttons(), CommandScheduler.get_instance()
+            lambda: NamedControllerButtons.LeftBumper in self.joystick.get_buttons(), self.scheduler
         )
 
     def right_bumper(self) -> Trigger:
@@ -315,7 +315,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.RightBumper in self.joystick.get_buttons(), CommandScheduler.get_instance()
+            lambda: NamedControllerButtons.RightBumper in self.joystick.get_buttons(), self.scheduler
         )
 
     def back(self) -> Trigger:
@@ -326,7 +326,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.Back in self.joystick.get_buttons(), CommandScheduler.get_instance()
+            lambda: NamedControllerButtons.Back in self.joystick.get_buttons(), self.scheduler
         )
 
     def start(self) -> Trigger:
@@ -337,7 +337,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), CommandScheduler.get_instance()
+            lambda: NamedControllerButtons.Start in self.joystick.get_buttons(), self.scheduler
         )
 
     def left_stick(self) -> Trigger:
@@ -348,7 +348,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.LeftStick in self.joystick.get_buttons(), CommandScheduler.get_instance()
+            lambda: NamedControllerButtons.LeftStick in self.joystick.get_buttons(), self.scheduler
         )
 
     def right_stick(self) -> Trigger:
@@ -359,8 +359,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: NamedControllerButtons.RightStick in self.joystick.get_buttons(),
-            CommandScheduler.get_instance(),
+            lambda: NamedControllerButtons.RightStick in self.joystick.get_buttons(), self.scheduler,
         )
 
     def pov(self, angle: int | POVDirection) -> Trigger:
@@ -373,7 +372,7 @@ class CommandBasedJoystick:
         Returns:
             Command trigger
         """
-        return Trigger(lambda: angle == self.joystick.get_pov_direction(), CommandScheduler.get_instance())
+        return Trigger(lambda: angle == self.joystick.get_pov_direction(), self.scheduler)
 
     def left_trigger(self, threshold: float = 0.5):
         """
@@ -386,8 +385,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: self.joystick.get_axis_value(NamedControllerAxis.LeftTrigger) > threshold,
-            CommandScheduler.get_instance(),
+            lambda: self.joystick.get_axis_value(NamedControllerAxis.LeftTrigger) > threshold, self.scheduler,
         )
 
     def right_trigger(self, threshold: float = 0.5):
@@ -401,8 +399,7 @@ class CommandBasedJoystick:
             Command trigger
         """
         return Trigger(
-            lambda: self.joystick.get_axis_value(NamedControllerAxis.RightTrigger) > threshold,
-            CommandScheduler.get_instance(),
+            lambda: self.joystick.get_axis_value(NamedControllerAxis.RightTrigger) > threshold, self.scheduler,
         )
 
 
@@ -1576,7 +1573,7 @@ class RemoteNamedController(RemoteRawJoystickDevice):
             msg = "Invalid trigger specified"
             raise ValueError(msg)
         value = super().get_axis_value(trigger, precision)
-        return (max(value, 0.0) + 1) / 2  # Ensure triggers are 0.0 to 1.0
+        return max(value, 0.0)  # Ensure triggers are 0.0 to 1.0
 
     def get_triggers(self, precision: int = 3) -> list[float]:
         """

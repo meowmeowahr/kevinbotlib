@@ -119,6 +119,9 @@ class RawSerialInterface(io.IOBase):
             robot.simulator.add_window("kevinbotlib.serial.internal.view", SerialWindowView)
             robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "new", "name": port})
             self._simulating = True
+        elif robot and robot.IS_SIM:
+            robot.simulator.send_to_window("kevinbotlib.serial.internal.view", {"type": "new", "name": port})
+            self._simulating = True
 
         self._serial: serial.Serial | SimSerial = (serial.Serial if not self._simulating else SimSerial)(
             port,

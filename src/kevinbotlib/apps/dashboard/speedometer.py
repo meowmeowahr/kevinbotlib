@@ -402,7 +402,7 @@ class Speedometer(QWidget):
 
         x = text_radius * math.cos(math.radians(angle))
         y = text_radius * math.sin(math.radians(angle))
-        painter.drawText(x - w // 2, int(y - h // 2), w, h, Qt.AlignmentFlag.AlignCenter, str(self.value))
+        painter.drawText(x - w // 2, int(y - h // 2), w, h, Qt.AlignmentFlag.AlignCenter, f"{self.value:.2f}")
 
     def draw_big_needle_center_point(self, diameter=30):
         painter = QPainter(self)

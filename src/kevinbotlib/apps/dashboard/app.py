@@ -415,28 +415,8 @@ class PollingWorker(QObject):
             if not value:
                 continue
 
-            if "struct" in value and "dashboard" in value["struct"]:
-                structured = {}
-                for viewable in value["struct"]["dashboard"]:
-                    display = ""
-                    if "element" in viewable:
-                        raw = value.get(viewable["element"], "")
-                        if "format" in viewable:
-                            fmt = viewable["format"]
-                            if fmt == "percent":
-                                display = f"{raw * 100:.2f}%"
-                            elif fmt == "degrees":
-                                display = f"{raw}°"
-                            elif fmt == "radians":
-                                display = f"{raw} rad"
-                            elif fmt.startswith("limit:"):
-                                limit = int(fmt.split(":")[1])
-                                display = raw[:limit]
-                            else:
-                                display = raw
-
-                        structured[viewable["element"]] = display
-                data[key] = structured
+            display = raw = value.get("value", None)
+            data[key] = display
 
         def to_hierarchical_dict(flat_dict: dict):
             hierarchical_dict = {}
