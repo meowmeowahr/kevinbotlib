@@ -672,12 +672,12 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         self.guid = bytes(sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)
         self._logger = _Logger()
 
-        if not self._sdl_joystick:
-            msg = f"No joystick of index {index} present"
-            raise JoystickMissingException(msg)
+        # if not self._sdl_joystick:
+        #     msg = f"No joystick of index {index} present"
+        #     raise JoystickMissingException(msg)
 
         self._logger.info(
-            f"Init joystick {index} of name: {sdl2.SDL_GameControllerName(self._sdl_joystick).decode('utf-8')}"
+            f"Init joystick {index} of name: {self.name}"
         )
         self._logger.info(
             f"Init joystick {index} of GUID: {''.join(f'{b:02x}' for b in sdl2.SDL_JoystickGetGUID(sdl2.SDL_GameControllerGetJoystick(self._sdl_joystick)).data)}"
@@ -700,6 +700,19 @@ class RawLocalJoystickDevice(AbstractJoystickInterface):
         num_axes = sdl2.SDL_CONTROLLER_AXIS_MAX
         for i in range(num_axes):
             self._axis_states[i] = 0.0
+
+    @property
+    def name(self) -> str:
+        """
+        Get the name of the joystick
+
+        Returns:
+            Device name
+        """
+        raw = sdl2.SDL_GameControllerName(self._sdl_joystick)
+        if not raw:
+            return "Not Connected"
+        return raw.decode("utf-8")
 
     def is_connected(self) -> bool:
         """
