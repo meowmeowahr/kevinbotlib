@@ -825,9 +825,7 @@ QMdiSubWindow {
     background: {{bg4}};
 }
 
-QToolBox
-{
-    background: {{bg1}};
+QToolBox {
 	icon-size: 24px;
 }
 
@@ -847,8 +845,6 @@ QToolBox::tab
     padding-right: 5px;
     padding-left: 14px;
     background-repeat: no-repeat;
-    background-image: url(icon:/normal/toolbox_tab_closed.svg);
-    background-position: center left;
 }
 
 
@@ -857,6 +853,8 @@ QToolBox::tab:selected
     background-color: {{border}};
     color: {{primary1}};
     border-color: {{primary1}};
-    background-image: url(icon:/normal/toolbox_tab_open.svg);
-    background-position: center left;
+}
+
+QToolBox::tab > QFrame {
+    background: red;
 }
