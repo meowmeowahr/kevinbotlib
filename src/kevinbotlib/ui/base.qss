@@ -824,3 +824,39 @@ QMdiSubWindow {
 #SimulatorMdiTitleBar {
     background: {{bg4}};
 }
+
+QToolBox
+{
+    background: {{bg1}};
+	icon-size: 24px;
+}
+
+
+QToolBox > QScrollArea
+{
+    background: {{bg1}};
+    padding: -9px;
+}
+
+
+QToolBox::tab
+{
+    background-color: {{bg2}};
+    border: 1px solid {{border}};
+    color: #cccccc;
+    padding-right: 5px;
+    padding-left: 14px;
+    background-repeat: no-repeat;
+    background-image: url(icon:/normal/toolbox_tab_closed.svg);
+    background-position: center left;
+}
+
+
+QToolBox::tab:selected
+{
+    background-color: {{border}};
+    color: {{primary1}};
+    border-color: {{primary1}};
+    background-image: url(icon:/normal/toolbox_tab_open.svg);
+    background-position: center left;
+}
