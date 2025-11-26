@@ -881,7 +881,7 @@ class DashboardApplicationRunner:
     def run(self):
         kevinbotlib.apps.dashboard.resources_rc.qInitResources()
         self.window = Application(self.app, self.logger)
-        if self.args.fullscreen:
+        if self.args and self.args.fullscreen:
             self.window.showFullScreen()
         else:
             self.window.show()
