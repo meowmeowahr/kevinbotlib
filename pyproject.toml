@@ -22,6 +22,7 @@ classifiers = [
     "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
 ]
 dependencies = [
+    "kevinbotlib-theme",
     "pyserial~=3.5",
     "loguru~=0.7.3",
     "pydantic~=2.12.4",

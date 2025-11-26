@@ -824,3 +824,63 @@ QMdiSubWindow {
 #SimulatorMdiTitleBar {
     background: {{bg4}};
 }
+
+/* QToolBox Styling */
+QToolBox {
+    background-color: {{bg2}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 2px;
+}
+
+/* QToolBox Tab Styling */
+QToolBox::tab {
+    background-color: {{bg3}};
+    color: {{fg}};
+    border: 1px solid {{border}};
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 2px;
+    font-weight: normal;
+}
+
+QToolBox::tab:hover {
+    background-color: {{bg4}};
+    border-color: {{primary1}};
+}
+
+QToolBox::tab:pressed {
+    background-color: {{bg5}};
+    border-color: {{primary2}};
+}
+
+QToolBox::tab:selected {
+    background-color: {{bg5}};
+    color: {{fg_highlight}};
+    border: 1px solid {{primary1}};
+    border-bottom: 2px solid {{primary1}};
+    font-weight: 500;
+}
+
+QToolBox::tab:disabled {
+    background-color: {{bg2}};
+    color: {{fg_disabled}};
+    border-color: {{border}};
+}
+
+/* QToolBox Content Area */
+QToolBox > QWidget {
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+/* Focus styling */
+QToolBox:focus {
+    outline: none;
+}
+
+QToolBox::tab:focus {
+    border: 1px solid {{primary1}};
+}
