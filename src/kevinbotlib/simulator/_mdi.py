@@ -95,6 +95,7 @@ class _MdiChild(QMdiSubWindow):
             if pos.y() < 0:
                 self.move(pos.x(), 0)
             if pos.x() + self.width() > area.width():
-                self.move(area.width() - self.width(), pos.y())
+                # self.move(area.width() - self.width(), pos.y())
+                pass
             if pos.y() + self.height() > area.height():
                 self.move(pos.x(), area.height() - self.height())
