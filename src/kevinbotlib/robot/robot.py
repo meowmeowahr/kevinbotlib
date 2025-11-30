@@ -250,7 +250,7 @@ class BaseRobot:
         self._ctrl_batteries_key = "%ControlConsole/batteries"
         self._robot_heartbeat_key = "%Robot/heartbeat"
 
-        self.comm_client = CNSCommClient(port=serve_port)
+        self.comm_client = CNSCommClient(port=serve_port, timeout=1.0)
         self.comm_client._flag_robot = self.__class__.__name__
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
@@ -303,8 +303,7 @@ class BaseRobot:
             CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
         )
 
-        self._comm_connection_check_thread = Thread(target=self._comm_connection_check, daemon=True)
-        self._comm_connection_check_thread.start()
+
 
         self.fileserver.start()
 
@@ -369,12 +368,7 @@ class BaseRobot:
             self._update_console_enabled(self._current_enabled)
             time.sleep(self._robot_heartbeat_interval)
 
-    @final
-    def _comm_connection_check(self):
-        while True:
-            if not self.comm_client.is_connected():
-                self.comm_client.connect()
-            time.sleep(2)
+
 
     @final
     def _update_batteries(self):
@@ -520,6 +514,9 @@ class BaseRobot:
                     self._check_stops()
 
                     current_opmode: str = self._get_console_opmode_request()
+
+                    if not self.comm_client.is_connected():
+                        self.comm_client.connect()
 
                     if not self._get_console_heartbeat_present() and not self._allow_enable_without_console:
                         if self._current_enabled:

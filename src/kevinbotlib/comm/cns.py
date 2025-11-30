@@ -76,9 +76,9 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self._timeout = timeout  # TODO: CNS doesn't support timeouts
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
-        self.running = False
         self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable | None], None]]] = []
         self._flag_robot: str | None = None # to be set by BaseRobot
+        self._client_id: str | None = None
 
         self._lock = threading.Lock()
         self._dead: CNSCommClient._ConnectionLivelinessController = CNSCommClient._ConnectionLivelinessController(
@@ -259,7 +259,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             return None
 
     def _apply(self, key: CommPath | str, sendable: BaseSendable | SendableGenerator):
-        if not self.running or not self.client:
+        if not self.client:
             _Logger().error(f"Cannot publish/set to {key}: client is not started")
             return
 
@@ -274,12 +274,12 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             
             self.client.set(str(key), data)
             self._dead.dead = False
-        except (ConnectionError, TimeoutError, ValueError, AttributeError, websockets.exceptions.ConnectionClosedError) as e:
+        except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish/set to {key}: {e}")
             self._dead.dead = True
 
     def _apply_multi(self, keys: list[CommPath | str], sendables: list[BaseSendable | SendableGenerator]):
-        if not self.running or not self.client:
+        if not self.client:
             _Logger().error("Cannot multi-set: client is not started")
             return
 
@@ -400,23 +400,30 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         """Connect to the CNS server."""
 
         if self._flag_robot:
-            cid = f"robot~{self._flag_robot}-{str(uuid.uuid4())[:8]}"
+            if not self._client_id:
+                self._client_id = f"robot~{self._flag_robot}-{str(uuid.uuid4())[:8]}"
         else:
-            cid = f"client~KevinbotLib-{str(uuid.uuid4())[:8]}"
+            if not self._client_id:
+                self._client_id = f"client~KevinbotLib-{str(uuid.uuid4())[:8]}"
+
+        if self.client:
+            try:
+                self.client.disconnect()
+            except Exception:
+                pass
 
         self.client = CNSClient(
             url=f"ws://{self._host}:{self._port}/cns",
-            client_id=cid,
+            client_id=self._client_id,
         )
         try:
             self.client.connect()
             # TODO: CNS doesn't have a ping method, so we just check if client exists
             self._dead.dead = False
-            self.running = True
             if self.on_connect:
                 self.on_connect()
         except (ConnectionError, TimeoutError, socket.gaierror) as e:
-            _Logger().error(f"CNS connection error: {e}")
+            _Logger().error(f"CNS connection error: {e!r}")
             self._dead.dead = True
             self.client = None
             if self.on_disconnect:
@@ -443,6 +450,9 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             return None
         try:
             seconds = self.client.ping()
+            if not seconds:
+                return None
+
             self._dead.dead = False
             return seconds * 1000
         except (ConnectionError, TimeoutError) as e:
@@ -468,43 +478,24 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
     def close(self):
         """Close the CNS connection and stop the threads."""
-        self.running = False
         if self.client:
             self.client.disconnect()
             self.client = None
         if self.on_disconnect:
             self.on_disconnect()
 
-    @final
-    def _cns_connection_check(self):
-        try:
-            if not self.client:
-                return
-            # TODO: CNS doesn't have a ping method
-            if self.on_connect:
-                self.on_connect()
-            self._dead.dead = False
-        except (ConnectionError, TimeoutError, ValueError, AttributeError):
-            self._dead.dead = True
-            return
-
     def reset_connection(self):
         """Reset the connection to the CNS server"""
-        if self.running:
-            self.close()
-
-            self.client = CNSClient(
-                url=f"ws://{self._host}:{self._port}/cns",
-                client_id=f"client~KevinbotLib-{str(uuid.uuid4())[:8]}",
-            )
-            self.client.connect()
-
-            for key, dtype, callback in self.hooks:
-                self.subscribe(key, dtype, callback)
-
-            checker = threading.Thread(target=self._cns_connection_check, daemon=True)
-            checker.name = "KevinbotLib.CNS.ConnCheck"
-            checker.start()
+        _Logger().info("Resetting CNS connection...")
+        self.close()
+        
+        # Just reconnect with the existing client (which will recreate loop/thread if needed)
+        # Don't create a new client - that would lose the persistent client_id
+        try:
+            self.connect()
+            _Logger().info("CNS connection reset successful")
+        except Exception as e:
+            _Logger().error(f"Failed to reset CNS connection: {e!r}")
 
     @property
     def host(self) -> str:
