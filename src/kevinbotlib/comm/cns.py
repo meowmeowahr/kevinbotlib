@@ -367,11 +367,15 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
     def wipeall(self) -> None:
         """Delete all keys in the CNS database."""
-        # TODO: CNS doesn't support flushall operation
-        _Logger().warning("CNS does not support wipeall/flushall operation")
         if not self.client:
-            _Logger().error("Cannot wipe all: client is not started")
+            _Logger().error("Cannot flush database: client is not started")
             return
+        try:
+            self.client.flushdb()
+            self._dead.dead = False
+        except (ConnectionError, TimeoutError) as e:
+            _Logger().error(f"Cannot delete {key}: {e}")
+            self._dead.dead = True
 
     def delete(self, key: CommPath | str) -> None:
         """
@@ -386,7 +390,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             return
         try:
             # CNS delete is done by setting to None or empty
-            self.client.set(str(key), None)
+            self.client.delete(str(key))
             self._dead.dead = False
         except (ConnectionError, TimeoutError) as e:
             _Logger().error(f"Cannot delete {key}: {e}")
