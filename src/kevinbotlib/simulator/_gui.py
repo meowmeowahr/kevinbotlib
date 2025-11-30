@@ -1,7 +1,7 @@
 import multiprocessing
 import sys
 
-from PySide6.QtCore import QByteArray, QSettings, Qt, QTimer, QUrl, Signal
+from PySide6.QtCore import QByteArray, QObject, QSettings, Qt, QThread, QUrl, Signal
 from PySide6.QtGui import QAction, QDesktopServices, QFont, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QDialog,
@@ -41,6 +41,26 @@ from kevinbotlib.simulator.windowview import (
     WindowViewOutputPayload,
 )
 from kevinbotlib.ui.theme import Theme, ThemeStyle
+
+
+class QueueDrainWorker(QObject):
+    event_received = Signal(object)
+    
+    def __init__(self, queue: multiprocessing.Queue):
+        super().__init__()
+        self._queue = queue
+        self._running = True
+    
+    def run(self):
+        while self._running:
+            try:
+                event = self._queue.get()
+                self.event_received.emit(event)
+            except Exception as e:
+                Logger().error(f"Error in queue drain worker: {e!r}")
+    
+    def stop(self):
+        self._running = False
 
 
 class SettingsWindow(QDialog):
@@ -90,9 +110,13 @@ class SimMainWindow(_ThemableWindow):
     def __init__(self, in_queue: multiprocessing.Queue, out_queue: multiprocessing.Queue):
         super().__init__()
         self._in_queue = in_queue
-        self._queue_drain_timer = QTimer(self)
-        self._queue_drain_timer.timeout.connect(self._drain_queue)
-        self._queue_drain_timer.start(0)  # run every event-loop iteration
+        
+        self._queue_thread = QThread()
+        self._queue_worker = QueueDrainWorker(in_queue)
+        self._queue_worker.moveToThread(self._queue_thread)
+        self._queue_worker.event_received.connect(self._handle_event)
+        self._queue_thread.started.connect(self._queue_worker.run)
+        self._queue_thread.start()
 
         self.out_queue = out_queue
 
@@ -200,21 +224,17 @@ class SimMainWindow(_ThemableWindow):
 
         self.apply_theme()
 
-    def _drain_queue(self):
-        """Handle everything currently waiting in `in_queue`."""
-        while not self._in_queue.empty():
-            event = self._in_queue.get_nowait()
-
-            if isinstance(event, _WindowViewUpdateEvent):
-                view = self.views.get(event.view_name)
-                if view is not None:  # wrong name ⇒ silently ignore
-                    view.update(event.payload)
-            elif isinstance(event, _AddWindowEvent):
-                self._handle_add_window_event(event)
-            elif isinstance(event, _RobotProcessEndEvent):
-                self.process_end_widget.setVisible(True)
-            elif isinstance(event, _ExitSimulatorEvent):
-                self.close()
+    def _handle_event(self, event):
+        if isinstance(event, _WindowViewUpdateEvent):
+            view = self.views.get(event.view_name)
+            if view is not None:
+                view.update(event.payload)
+        elif isinstance(event, _AddWindowEvent):
+            self._handle_add_window_event(event)
+        elif isinstance(event, _RobotProcessEndEvent):
+            self.process_end_widget.setVisible(True)
+        elif isinstance(event, _ExitSimulatorEvent):
+            self.close()
 
     def _handle_add_window_event(self, event: "_AddWindowEvent"):
         cls = WINDOW_VIEW_REGISTRY.get(event.name)
@@ -300,6 +320,10 @@ class SimMainWindow(_ThemableWindow):
             self.settings.setValue(f"windows/{name}/visible", child.isVisible())
             self.settings.setValue(f"windows/{name}/geometry", child.saveGeometry())
 
+        self._queue_worker.stop()
+        self._queue_thread.quit()
+        self._queue_thread.wait()
+        
         self.out_queue.put_nowait(_SimulatorExitEvent())
         super().closeEvent(event)
         event.accept()
