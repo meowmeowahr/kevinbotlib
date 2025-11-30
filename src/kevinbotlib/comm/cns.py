@@ -7,6 +7,7 @@ from collections.abc import Callable
 from typing import ClassVar, TypeVar, final
 
 import orjson
+import websockets
 from kevinbotlib_cns.client import CNSClient
 from kevinbotlib_cns.types import JSONType
 from pydantic import ValidationError
@@ -76,7 +77,6 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
         self.running = False
-        self.sub_thread: threading.Thread | None = None
         self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable | None], None]]] = []
         self._flag_robot: str | None = None # to be set by BaseRobot
 
@@ -141,7 +141,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                 data = json.loads(raw)
             if data_type:
                 return data_type(**data)
-        except (orjson.JSONDecodeError, ValidationError, KeyError, TypeError):
+        except (orjson.JSONDecodeError, ValidationError, KeyError, TypeError, websockets.exceptions.ConnectionClosedError):
             pass
         return None
 
@@ -175,7 +175,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                     results.append(req.data_type(**data))
                 else:
                     results.append(None)
-            except (ConnectionError, TimeoutError, orjson.JSONDecodeError, ValidationError, KeyError, TypeError):
+            except (ConnectionError, TimeoutError, orjson.JSONDecodeError, ValidationError, KeyError, TypeError, websockets.exceptions.ConnectionClosedError):
                 results.append(None)
         return results
 
@@ -194,7 +194,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             keys = self.client.topics()
             self._dead.dead = False
             return keys if keys else []
-        except (ConnectionError, TimeoutError) as e:
+        except (ConnectionError, TimeoutError, websockets.exceptions.ConnectionClosedError) as e:
             _Logger().error(f"Cannot get keys: {e}")
             self._dead.dead = True
             return []
@@ -209,7 +209,6 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         Returns:
             Raw JSON value or None if not found.
         """
-
         if not self.client:
             _Logger().error("Cannot get raw: client is not started")
             return None
@@ -221,7 +220,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             elif raw is not None:
                 return orjson.loads(raw) if isinstance(raw, (str, bytes)) else None
             return None
-        except (ConnectionError, TimeoutError) as e:
+        except (ConnectionError, TimeoutError, websockets.exceptions.ConnectionClosedError) as e:
             _Logger().error(f"Cannot get raw {key}: {e}")
             self._dead.dead = True
             return None
@@ -254,7 +253,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                         result[key] = orjson.loads(value) if isinstance(value, (str, bytes)) else value
             self._dead.dead = False
             return result
-        except (ConnectionError, TimeoutError) as e:
+        except (ConnectionError, TimeoutError, websockets.exceptions.ConnectionClosedError) as e:
             _Logger().error(f"Cannot get all raw: {e}")
             self._dead.dead = True
             return None
@@ -275,7 +274,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             
             self.client.set(str(key), data)
             self._dead.dead = False
-        except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
+        except (ConnectionError, TimeoutError, ValueError, AttributeError, websockets.exceptions.ConnectionClosedError) as e:
             _Logger().error(f"Cannot publish/set to {key}: {e}")
             self._dead.dead = True
 
@@ -298,7 +297,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                     _Logger().warning(f"CNS does not support timeouts. Ignoring timeout for {key}")
                 self.client.set(str(key), data)
             self._dead.dead = False
-        except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
+        except (ConnectionError, TimeoutError, ValueError, AttributeError, websockets.exceptions.ConnectionClosedError) as e:
             _Logger().error(f"Cannot multi-set: {e}")
             self._dead.dead = True
 
@@ -358,6 +357,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             if self.client:
                 try:
                     self.client.subscribe(key_str, sub_callback)
+                    self.hooks.append((key_str, data_type, callback))
                     self._dead.dead = False
                 except (ConnectionError, TimeoutError) as e:
                     _Logger().error(f"Cannot subscribe to {key_str}: {e}")
@@ -374,7 +374,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             self.client.flushdb()
             self._dead.dead = False
         except (ConnectionError, TimeoutError) as e:
-            _Logger().error(f"Cannot delete {key}: {e}")
+            _Logger().error(f"Cannot flush database: {e}")
             self._dead.dead = True
 
     def delete(self, key: CommPath | str) -> None:
@@ -498,6 +498,9 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                 client_id=f"client~KevinbotLib-{str(uuid.uuid4())[:8]}",
             )
             self.client.connect()
+
+            for key, dtype, callback in self.hooks:
+                self.subscribe(key, dtype, callback)
 
             checker = threading.Thread(target=self._cns_connection_check, daemon=True)
             checker.name = "KevinbotLib.CNS.ConnCheck"
