@@ -251,6 +251,7 @@ class BaseRobot:
         self._robot_heartbeat_key = "%Robot/heartbeat"
 
         self.comm_client = CNSCommClient(port=serve_port)
+        self.comm_client._flag_robot = self.__class__.__name__
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level

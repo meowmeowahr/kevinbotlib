@@ -78,6 +78,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         self.running = False
         self.sub_thread: threading.Thread | None = None
         self.hooks: list[tuple[str, type[BaseSendable], Callable[[str, BaseSendable | None], None]]] = []
+        self._flag_robot: str | None = None # to be set by BaseRobot
 
         self._lock = threading.Lock()
         self._dead: CNSCommClient._ConnectionLivelinessController = CNSCommClient._ConnectionLivelinessController(
@@ -394,9 +395,14 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
     def connect(self) -> None:
         """Connect to the CNS server."""
 
+        if self._flag_robot:
+            cid = f"robot~{self._flag_robot}-{str(uuid.uuid4())[:8]}"
+        else:
+            cid = f"client~KevinbotLib-{str(uuid.uuid4())[:8]}"
+
         self.client = CNSClient(
             url=f"ws://{self._host}:{self._port}/cns",
-            client_id=f"client~KevinbotLib-{str(uuid.uuid4())[:8]}",
+            client_id=cid,
         )
         try:
             self.client.connect()
@@ -429,16 +435,12 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
         Returns:
             Latency in milliseconds or None if not connected.
         """
-        # TODO: CNS doesn't have a ping method for latency measurement
         if not self.client:
             return None
         try:
-            start_time = time.time()
-            # Use a lightweight operation to measure latency
-            self.client.topics()
-            end_time = time.time()
+            seconds = self.client.ping()
             self._dead.dead = False
-            return (end_time - start_time) * 1000  # Convert to milliseconds
+            return seconds * 1000
         except (ConnectionError, TimeoutError) as e:
             _Logger().error(f"Cannot measure latency: {e}")
             self._dead.dead = True
