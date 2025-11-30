@@ -268,11 +268,10 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
         data = sendable.get_dict()
         try:
-            # TODO: CNS doesn't support timeouts natively
             if sendable.timeout:
-                _Logger().warning(f"CNS does not support timeouts. Ignoring timeout for {key}")
-            
-            self.client.set(str(key), data)
+                self.client.set(str(key), data, timeout=int(sendable.timeout * 1000))
+            else:
+                self.client.set(str(key), data)
             self._dead.dead = False
         except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot publish/set to {key}: {e}")
@@ -333,7 +332,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
         self._apply(key, sendable)
 
-    def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T], None]) -> None:
+    def subscribe(self, key: CommPath | str, data_type: type[T], callback: Callable[[str, T | None], None]) -> None:
         """
         Subscribe to a topic.
 
@@ -345,10 +344,13 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
 
         def sub_callback(topic: str, data: JSONType):
             try:
-                sendable = data_type(**data)
-                callback(topic, sendable)
-            except (ValidationError, TypeError) as e:
-                _Logger().error(f"Failed to deserialize data for topic {topic}: {e}")
+                if data:
+                    sendable = data_type(**data)
+                    callback(topic, sendable)
+                else:
+                    callback(topic, None)
+            except (ValidationError, TypeError) as ex:
+                _Logger().error(f"Failed to deserialize data for topic {topic}: {ex}")
 
         if isinstance(key, CommPath):
             key = str(key)
