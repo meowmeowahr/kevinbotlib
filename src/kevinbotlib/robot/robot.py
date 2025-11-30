@@ -17,7 +17,7 @@ import psutil
 
 from kevinbotlib.__about__ import __version__
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.cns import CNSCommClient
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
@@ -186,8 +186,7 @@ class BaseRobot:
     def __init__(
         self,
         opmodes: list[str],
-        serve_port: int = 6379,
-        serve_unix_socket: str | None = "/tmp/kevinbotlib.redis.sock",  # noqa: S108 # TODO: is this safe?
+        serve_port: int = 4800,
         log_level: Level = Level.INFO,
         print_level: Level = Level.INFO,
         default_opmode: str | None = None,
@@ -206,8 +205,7 @@ class BaseRobot:
 
         Args:
             opmodes (list[str]): List of operational mode names.
-            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 6379.
-            serve_unix_socket (str, optional): Unix socket for comm server. Unix socket will be preferred over networked connection.
+            serve_port (int, optional): Port for comm server. Shouldn't have to be changed in most cases. Defaults to 4800.
             log_level (Level, optional): Level to logging. Defaults to Level.INFO.
             print_level (Level, optional): Level for print statement redirector. Defaults to Level.INFO.
             enable_stderr_logger (bool, optional): Enable logging to STDERR, may cause issues when using signal stop. Defaults to False.
@@ -252,7 +250,7 @@ class BaseRobot:
         self._ctrl_batteries_key = "%ControlConsole/batteries"
         self._robot_heartbeat_key = "%Robot/heartbeat"
 
-        self.comm_client = RedisCommClient(port=serve_port, unix_socket=serve_unix_socket)
+        self.comm_client = CNSCommClient(port=serve_port)
         self.log_sender = ANSILogSender(self.telemetry, self.comm_client, self._ctrl_logs_key)
 
         self._print_log_level = print_level
@@ -299,11 +297,11 @@ class BaseRobot:
         signal.signal(signal.SIGUSR2, self._signal_usr2_capture)
         self.telemetry.debug(f"{self.__class__.__name__}'s process id is {os.getpid()}")
 
+        self.comm_client.connect()
         self.comm_client.subscribe(
             CommPath(self._ctrl_request_root_key) / "enabled", BooleanSendable, self._on_console_enabled_request
         )
 
-        self.comm_client.connect()
         self._comm_connection_check_thread = Thread(target=self._comm_connection_check, daemon=True)
         self._comm_connection_check_thread.start()
 

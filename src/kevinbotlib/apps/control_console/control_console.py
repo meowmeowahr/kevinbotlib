@@ -46,8 +46,8 @@ from kevinbotlib.apps.control_console.pages.control import (
 )
 from kevinbotlib.apps.control_console.pages.metrics import ControlConsoleMetricsTab
 from kevinbotlib.apps.control_console.pages.settings import ControlConsoleSettingsTab
+from kevinbotlib.comm.cns import CNSCommClient
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.comm.sendables import AnyListSendable, StringSendable
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration
 from kevinbotlib.remotelog import ANSILogReceiver
@@ -67,7 +67,7 @@ except (RuntimeError, ImportError):
 class HeartbeatWorker(QObject):
     send_heartbeat = Signal()
 
-    def __init__(self, client: RedisCommClient, key: str):
+    def __init__(self, client: CNSCommClient, key: str):
         super().__init__()
         self.client = client
         self.key = key
@@ -87,7 +87,7 @@ class LatencyWorker(QObject):
     get_latency = Signal()
     latency = Signal(float)
 
-    def __init__(self, client: RedisCommClient):
+    def __init__(self, client: CNSCommClient):
         super().__init__()
         self.client = client
         self.get_latency.connect(self.get)
@@ -138,7 +138,7 @@ class ControlConsoleApplicationWindow(QMainWindow):
         self.on_disconnect_signal.connect(self.on_disconnect)
         self.on_connect_signal.connect(self.on_connect)
 
-        self.client = RedisCommClient(
+        self.client = CNSCommClient(
             host=str(self.settings.value("network.ip", "10.0.0.2", str)),
             port=int(self.settings.value("network.port", 6379, int)),  # type: ignore
             on_connect=self.on_connect_signal.emit,
@@ -286,6 +286,9 @@ class ControlConsoleApplicationWindow(QMainWindow):
             AnyListSendable,
             self.control.on_battery_update,
         )
+
+        self.metrics_tab.on_connect()
+        self.control.on_connect()
 
     def on_disconnect(self):
         self.control.clear_opmodes()

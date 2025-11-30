@@ -11,6 +11,10 @@ import sdl2.ext
 from pydantic.dataclasses import dataclass
 
 from kevinbotlib._joystick_sdl2_internals import dispatcher as _sdl2_event_dispatcher
+from kevinbotlib.comm.abstract import (
+    SetGetClientWithPubSub,
+    AbstractSetGetNetworkClient,
+)
 from kevinbotlib.comm.pipeline import PipelinedCommSetter
 from kevinbotlib.comm.redis import (
     RedisCommClient,
@@ -1198,7 +1202,7 @@ class DynamicJoystickSender:
     """Joystick data sender for `RedisCommClient` that can switch out joystick classes while running"""
 
     def __init__(
-        self, client: RedisCommClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
+        self, client: AbstractSetGetNetworkClient, joystick_getter: Callable[[], AbstractJoystickInterface], key: str
     ) -> None:
         """
         Initialize the joystick sender

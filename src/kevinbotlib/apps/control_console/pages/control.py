@@ -14,8 +14,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from kevinbotlib.comm.cns import CNSCommClient
 from kevinbotlib.comm.path import CommPath
-from kevinbotlib.comm.redis import RedisCommClient
 from kevinbotlib.comm.sendables import (
     AnyListSendable,
     BooleanSendable,
@@ -49,7 +49,7 @@ class StateManager:
 class ControlConsoleControlTab(QWidget):
     battery_update = Signal(list)
 
-    def __init__(self, client: RedisCommClient, robot_key: str, status_key: str, request_key: str, batteries_key: str):
+    def __init__(self, client: CNSCommClient, robot_key: str, status_key: str, request_key: str, batteries_key: str):
         super().__init__()
 
         self.client = client
@@ -58,23 +58,6 @@ class ControlConsoleControlTab(QWidget):
         self.status_key = status_key
         self.request_key = request_key
         self.batteries_key = batteries_key
-
-        self.client.add_hook(
-            CommPath(self.status_key) / "opmodes",
-            AnyListSendable,
-            self.on_opmodes_update,
-        )
-        self.client.add_hook(CommPath(self.status_key) / "opmode", StringSendable, self.on_opmode_update)
-        self.client.add_hook(
-            CommPath(self.status_key) / "enabled",
-            BooleanSendable,
-            self.on_enabled_update,
-        )
-        self.client.add_hook(
-            CommPath(self.robot_key) / "heartbeat",
-            FloatSendable,
-            self.update_heartbeat,
-        )
 
         self.opmodes = []
         self.opmode = None
@@ -171,6 +154,24 @@ class ControlConsoleControlTab(QWidget):
 
         self.logs_layout.addLayout(log_controls_layout)
         self.logs_layout.addWidget(self.logs)
+
+    def on_connect(self):
+        self.client.add_hook(
+            CommPath(self.status_key) / "opmodes",
+            AnyListSendable,
+            self.on_opmodes_update,
+        )
+        self.client.add_hook(CommPath(self.status_key) / "opmode", StringSendable, self.on_opmode_update)
+        self.client.add_hook(
+            CommPath(self.status_key) / "enabled",
+            BooleanSendable,
+            self.on_enabled_update,
+        )
+        self.client.add_hook(
+            CommPath(self.robot_key) / "heartbeat",
+            FloatSendable,
+            self.update_heartbeat,
+        )
 
     def update_heartbeat(self, _, sendable: FloatSendable | None):
         self.code_alive = bool(sendable)

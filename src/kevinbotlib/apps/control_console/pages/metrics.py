@@ -12,11 +12,10 @@ class ControlConsoleMetricsTab(QWidget):
 
     def __init__(self, client: AbstractSetGetNetworkClient, key: str | CommPath):
         super().__init__()
+        self.client = client
+        self.key = key
 
         self.metrics_update.connect(self.on_metrics_update)
-        client.add_hook(
-            CommPath(key) / "metrics", DictSendable, lambda key, sendable: self.metrics_update.emit((key, sendable))
-        )
 
         root_layout = QHBoxLayout()
         self.setLayout(root_layout)
@@ -35,3 +34,8 @@ class ControlConsoleMetricsTab(QWidget):
             text += f"{metric.title}: {metric.display()}\n"
 
         self.text.setPlainText(text)
+
+    def on_connect(self):
+        self.client.add_hook(
+            CommPath(self.key) / "metrics", DictSendable, lambda key, sendable: self.metrics_update.emit((key, sendable))
+        )
