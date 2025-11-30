@@ -296,7 +296,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                     _Logger().warning(f"CNS does not support timeouts. Ignoring timeout for {key}")
                 self.client.set(str(key), data)
             self._dead.dead = False
-        except (ConnectionError, TimeoutError, ValueError, AttributeError, websockets.exceptions.ConnectionClosedError) as e:
+        except (ConnectionError, TimeoutError, ValueError, AttributeError) as e:
             _Logger().error(f"Cannot multi-set: {e}")
             self._dead.dead = True
 
@@ -424,7 +424,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
             self._dead.dead = False
             if self.on_connect:
                 self.on_connect()
-        except (ConnectionError, TimeoutError, socket.gaierror) as e:
+        except (ConnectionError, TimeoutError, socket.gaierror, OSError) as e:
             _Logger().error(f"CNS connection error: {e!r}")
             self._dead.dead = True
             self.client = None

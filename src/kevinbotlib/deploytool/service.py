@@ -2,7 +2,8 @@
 ROBOT_SYSTEMD_USER_SERVICE_TEMPLATE = """
 [Unit]
 Description=KevinbotLib Robot Service
-After=network.target
+After=network.target cns-server.service
+Requires=cns-server.service
 
 [Service]
 Type=simple
@@ -12,6 +13,23 @@ Restart=on-failure
 RestartSec=5
 KillSignal=SIGUSR1
 Environment='DEPLOY=true'
+
+[Install]
+WantedBy=default.target
+"""
+
+CNS_SYSTEMD_USER_SERVICE_TEMPLATE = """
+[Unit]
+Description=KevinbotLib CNS Server Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ working_directory }}
+ExecStart={{ exec }}
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
 
 [Install]
 WantedBy=default.target
