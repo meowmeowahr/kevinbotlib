@@ -1,4 +1,5 @@
 import binascii
+import time
 import unicodedata
 
 import serial
@@ -282,10 +283,25 @@ class SimSerial:
 
     def read(self, size=1):
         """Simulate reading `size` bytes from the serial buffer."""
+        if self._timeout is None:
+            # Block indefinitely until data is available
+            while not self.mock_buffer:
+                time.sleep(0.01)  # Small sleep to prevent CPU hogging
+        elif self._timeout > 0:
+            # Block for specified timeout duration
+            start_time = time.time()
+            while not self.mock_buffer:
+                if time.time() - start_time >= self._timeout:
+                    return b""
+                time.sleep(0.01)
+        else:
+            # Non-blocking (timeout = 0)
+            if not self.mock_buffer:
+                return b""
+
         data = self.mock_buffer[:size]
         self.mock_buffer = self.mock_buffer[size:]
         return data
-
     def readline(self):
         """Simulate reading a line, ending with a newline character."""
         newline_index = self.mock_buffer.find(b"\n")
@@ -312,6 +328,18 @@ class SimSerial:
 
     def read_until(self, expected=b"\n", size: int | None = None):
         """Simulate reading a line, ending with a newline character."""
+        if self._timeout is None:
+            while self.mock_buffer.find(expected) == -1:
+                time.sleep(0.01)
+        elif self._timeout > 0:
+            start_time = time.time()
+            while self.mock_buffer.find(expected) == -1:
+                if time.time() - start_time >= self._timeout:
+                    return b""
+                time.sleep(0.01)
+        elif not self.mock_buffer:
+            return b""
+
         newline_index = self.mock_buffer.find(expected)
         if newline_index == -1:
             # No newline found
