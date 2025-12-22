@@ -253,7 +253,7 @@ class CNSCommClient(AbstractSetGetNetworkClient, AbstractPubSubNetworkClient):
                         result[key] = orjson.loads(value) if isinstance(value, (str, bytes)) else value
             self._dead.dead = False
             return result
-        except (ConnectionError, TimeoutError, websockets.exceptions.ConnectionClosedError) as e:
+        except (ConnectionError, TimeoutError) as e:
             _Logger().error(f"Cannot get all raw: {e}")
             self._dead.dead = True
             return None

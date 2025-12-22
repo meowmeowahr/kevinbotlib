@@ -78,7 +78,7 @@ from kevinbotlib.apps.dashboard.grid_theme import Themes as GridThemes
 from kevinbotlib.apps.dashboard.helpers import Colors, get_structure_text
 from kevinbotlib.apps.dashboard.tree import DictTreeModel
 from kevinbotlib.apps.dashboard.widgets.base import WidgetItem
-from kevinbotlib.comm.redis import RedisCommClient
+from kevinbotlib.comm.cns import CNSCommClient
 from kevinbotlib.logger import Level, Logger, LoggerConfiguration, LoggerWriteOpts
 from kevinbotlib.ui.theme import Theme, ThemeStyle
 from kevinbotlib.vision import VisionCommUtils
@@ -88,7 +88,7 @@ class LatencyWorker(QObject):
     get_latency = Signal()
     latency = Signal(object)
 
-    def __init__(self, client: RedisCommClient):
+    def __init__(self, client: CNSCommClient):
         super().__init__()
         self.client = client
         self.get_latency.connect(self.get)
@@ -100,7 +100,7 @@ class LatencyWorker(QObject):
 
 
 class WidgetPalette(QWidget):
-    def __init__(self, graphics_view, client: RedisCommClient, parent=None):
+    def __init__(self, graphics_view, client: CNSCommClient, parent=None):
         super().__init__(parent)
 
         self.client = client
@@ -235,7 +235,7 @@ class SettingsWindow(QDialog):
 class TopicStatusPanel(QStackedWidget):
     added = Signal(tuple)
 
-    def __init__(self, client: RedisCommClient):
+    def __init__(self, client: CNSCommClient):
         super().__init__()
         self.setFrameShape(QFrame.Shape.Panel)
 
@@ -384,7 +384,7 @@ class TopicStatusPanel(QStackedWidget):
 class PollingWorker(QObject):
     result_ready = Signal(dict, list, list, dict)
 
-    def __init__(self, client: RedisCommClient, model, tree, get_index_path, controller: WidgetGridController):
+    def __init__(self, client: CNSCommClient, model, tree, get_index_path, controller: WidgetGridController):
         super().__init__()
         self.client = client
         self.model = model
@@ -480,9 +480,9 @@ class Application(ThemableWindow):
         self.on_connect_signal.connect(self.on_connect)
         self.on_disconnect_signal.connect(self.on_disconnect)
 
-        self.client = RedisCommClient(
+        self.client = CNSCommClient(
             host=self.settings.value("ip", "10.0.0.2", str),  # type: ignore
-            port=self.settings.value("port", 6379, int),  # type: ignore
+            port=self.settings.value("port", 4800, int),  # type: ignore
             on_disconnect=self.on_disconnect_signal.emit,
             on_connect=self.on_connect_signal.emit,
         )

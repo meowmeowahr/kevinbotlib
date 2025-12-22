@@ -194,7 +194,7 @@ class SliderWidgetItem(WidgetItem):
 
     def create_slider(self):
         self.slider = QDoubleSlider()
-        self.slider.setStyleSheet(self.view.window().styleSheet())
+        self.slider.setStyleSheet(self.view.window().styleSheet() + "QSlider{background: transparent;}")
 
         orientation = Qt.Orientation.Vertical if self.options.get("vertical", False) else Qt.Orientation.Horizontal
         self.slider.setOrientation(orientation)
